@@ -1,0 +1,40 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-statusline.js"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-context-monitor.js"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

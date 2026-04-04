@@ -1,0 +1,43 @@
+{
+  "name": "@pdlc-os/pdlc",
+  "version": "0.1.0",
+  "description": "Product Development Lifecycle — a Claude Code plugin for small startup teams",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "pdlc",
+    "ai-development",
+    "product-lifecycle",
+    "tdd",
+    "agentic"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pdlc-os/pdlc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pdlc-os/pdlc/issues"
+  },
+  "homepage": "https://github.com/pdlc-os/pdlc#readme",
+  "engines": { "node": ">=18" },
+  "bin": { "pdlc": "./bin/pdlc.js" },
+  "main": "./bin/pdlc.js",
+  "files": [
+    "CLAUDE.md",
+    ".claude/",
+    "agents/",
+    "skills/",
+    "hooks/",
+    "scripts/",
+    "templates/",
+    "bin/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "postinstall": "node bin/pdlc.js postinstall"
+  }
+}

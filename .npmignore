@@ -1,0 +1,15 @@
+# Development and planning files
+docs/
+.claude/settings.local.json
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
