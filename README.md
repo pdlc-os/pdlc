@@ -233,6 +233,8 @@ All inferred content is clearly marked `(inferred — please verify)` so the tea
 
 Four sub-phases, each with a human approval gate:
 
+At any point during Socratic questioning, type **`skip`** to stop questions and proceed immediately with the information collected so far.
+
 | Sub-phase | Output |
 |-----------|--------|
 | **Discover** | Socratic Q&A + external context (web, Figma, Notion, OneDrive) + visual companion |
@@ -414,6 +416,13 @@ The server shuts down automatically when Inception ends or after 30 minutes of i
 ---
 
 ## pdlc-os Marketplace
+
+| Resource | URL |
+|----------|-----|
+| GitHub org | https://github.com/pdlc-os |
+| Core package | https://www.npmjs.com/package/@pdlc-os/pdlc |
+| Registry index | https://github.com/pdlc-os/registry |
+| Contribution guide | https://github.com/pdlc-os/registry/blob/main/CONTRIBUTING.md |
 
 The `pdlc-os` GitHub organisation hosts community-contributed extensions that extend PDLC's built-in capabilities. All packages are published under the `@pdlc-os/` npm scope.
 
