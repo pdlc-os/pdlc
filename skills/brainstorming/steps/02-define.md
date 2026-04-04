@@ -1,0 +1,42 @@
+# Sub-phase 2: DEFINE
+## Steps 6–7
+
+---
+
+### Step 6 — Generate the PRD draft
+
+Auto-generate a complete PRD draft from the discovery conversation. Use `templates/PRD.md` as the exact structure. Fill in every section:
+
+- **Overview**: 2–4 sentences connecting the feature to a goal in INTENT.md
+- **Problem Statement**: concrete, feature-specific problem from the discovery
+- **Target User**: from the discovery answer, cross-referencing INTENT.md personas
+- **Requirements**: numbered list using MUST/SHOULD/MAY (RFC 2119). Derive from the discovery answers. Minimum 4 requirements.
+- **Assumptions**: surfaced from the discovery session. Minimum 3.
+- **Acceptance Criteria**: numbered, binary pass/fail conditions. Map 1:1 or 1:many with requirements. Minimum 4.
+- **User Stories**: BDD Given/When/Then format. Label as US-001, US-002, etc. One story per major acceptance criterion group. Cross-reference AC numbers.
+- **Non-Functional Requirements**: performance, security, accessibility derived from constraints and CONSTITUTION.md
+- **Out of Scope**: from the discovery answer
+- **Design Docs**: leave as template placeholder — will be filled in after Design sub-phase
+- **Approval**: leave blank — to be filled by human
+
+Set **Status**: `Draft` and **Date**: today's date.
+
+Save the file to: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
+
+---
+
+### Step 7 — PRD approval gate
+
+Tell the user:
+
+> "PRD draft is ready at `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
+>
+> Please review it. Reply **approve** to continue to Design, or provide feedback and I will revise."
+
+Wait for explicit approval. Do not proceed to Design until the user approves.
+
+If the user provides feedback: revise the PRD, save the updated file, and re-present for approval. Repeat until approved.
+
+When approved: update the PRD's **Status** field to `Approved` and record the approver's name/initials and date in the Approval section.
+
+Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Design`.
