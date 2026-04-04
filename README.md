@@ -1,6 +1,6 @@
 # PDLC — Product Development Lifecycle
 
-A Claude Code plugin that guides small startup teams (2–5 engineers) through the full arc of feature development — from raw idea to shipped, production feature — using structured phases, a named specialist agent team, persistent memory, and safety guardrails.
+A Claude Code plugin that guides small startup-style teams (2–5 engineers) through the full arc of feature development — from raw idea to shipped, production feature — using structured phases, a named specialist agent team, persistent memory, and safety guardrails.
 
 PDLC combines the best of three Claude Code workflows:
 - **[obra/superpowers](https://github.com/obra/superpowers)** — TDD discipline, systematic debugging, visual brainstorming companion
