@@ -34,20 +34,43 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ## Sub-phase 1: DISCOVER
 
-### Step 1 — Start the Visual Companion Server
+### Step 1 — Offer the Visual Companion
+
+Assess whether the upcoming Discover questions for this feature are likely to involve visual content — UI layouts, wireframes, architecture diagrams, flow comparisons, mockup options.
+
+**If yes:** send the following as a **standalone message with no other content** — no clarifying questions, no summaries, nothing else. Wait for the user's response before continuing.
+
+> "Some of what we're working on might be easier to explain if I can show it to you in a web browser. I can put together mockups, wireframes, architecture diagrams, and visual comparisons as we go. Want to try it? (Requires opening a local URL)"
+
+**If the user accepts:**
 
 Run:
 ```bash
-bash scripts/start-server.sh --project-dir $(pwd)
+bash scripts/start-server.sh --project-dir $(pwd) --feature [feature-name]
 ```
 
-Capture the URL from the output (it will be a `localhost` address on a random high port, e.g. `http://localhost:49823`).
+Capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorming/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
 
-Tell the user:
+**If the user declines, or this is a non-visual feature:**
 
-> "Visual companion is running at [URL] — open it in your browser. It will update live as we work through discovery."
+Proceed text-only. Do not start the server. Do not mention the visual companion again.
 
-If the script is not yet available (scripts directory missing), note it and continue without the visual companion — do not block the workflow.
+If the scripts directory is missing, skip this step entirely and proceed text-only — do not block the workflow.
+
+---
+
+**Per-question decision (applies throughout all of Discover):**
+
+For each question, decide whether to use the browser or the terminal:
+
+- **Use the browser** for content that IS visual: UI mockups, wireframes, layout comparisons, architecture diagrams, flowcharts, side-by-side designs
+- **Use the terminal** for content that is text: requirements questions, conceptual choices, tradeoff lists, scope decisions, anything answered in words
+
+A question *about* a UI topic is not automatically a visual question. "What navigation structure do you want?" is conceptual — use the terminal. "Which of these navigation layouts feels right?" is visual — use the browser.
+
+When using the browser, follow the loop in `skills/brainstorming/visual-companion.md` (write fragment to `screen_dir`, remind user of URL, read `state_dir/events` on next turn, push waiting screen when returning to terminal).
+
+---
 
 ### Step 2 — Socratic discovery
 
@@ -271,7 +294,25 @@ Run:
 bd dep tree --format mermaid
 ```
 
-Capture the Mermaid output. If the visual companion server is running, write this Mermaid diagram as an HTML fragment to display in the browser.
+Capture the Mermaid output.
+
+If the visual companion server is running, write the dependency graph as an HTML fragment to `screen_dir` so the user can see the task waves in the browser. Use the `.mockup` container and a Mermaid diagram block (the frame template loads Mermaid automatically):
+
+```html
+<!-- filename: dependency-tree.html -->
+<h2>Task Dependency Graph — [feature-name]</h2>
+<p class="subtitle">Wave-based execution order. Tasks in the same wave can run in parallel.</p>
+<div class="mockup">
+  <div class="mockup-header">Dependency Tree</div>
+  <div class="mockup-body">
+    <pre class="mermaid">
+[paste mermaid output here]
+    </pre>
+  </div>
+</div>
+```
+
+Remind the user of the URL and tell them: "The dependency graph is now showing in the browser."
 
 ### Step 15 — Save the plan file
 
@@ -327,6 +368,8 @@ After plan approval:
 ```bash
 bash scripts/stop-server.sh
 ```
+
+Mockup files created during Inception persist in `.pdlc/brainstorm/` for reference.
 
 **Update `docs/pdlc/memory/STATE.md`**:
 - **Current Phase**: `Inception Complete — Ready for /pdlc build`
