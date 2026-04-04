@@ -135,72 +135,122 @@ Merge, deploy, reflect, and commit the episode record.
 
 ```mermaid
 flowchart TD
-    START([Session Start]) --> RESUME{docs/pdlc/memory/\nSTATE.md exists?}
+    START([Session Start]) --> RESUME{STATE.md exists?}
     RESUME -->|No| INIT
-    RESUME -->|Yes| AUTOLOAD[Auto-resume from\nlast checkpoint]
+    RESUME -->|Yes| AUTOLOAD[Auto-resume from last checkpoint]
     AUTOLOAD --> PHASE_CHECK{Current phase?}
     PHASE_CHECK -->|Inception| INCEPTION
     PHASE_CHECK -->|Construction| CONSTRUCTION
     PHASE_CHECK -->|Operation| OPERATION
 
-    INIT["/init"] --> I1[Setup CONSTITUTION.md · INTENT.md]
-    I1 --> I2[Create Memory Bank]
-    I2 --> I3[bd init → .beads/]
-    I3 --> I4([Ready for /brainstorm])
+    %% ── PHASE 0: INIT ──────────────────────────────────────────────
+    INIT["/init"] --> PREREQ[Check prereqs\nbd + git]
+    PREREQ --> FIELD{Existing code?}
+    FIELD -->|Brownfield| SCAN[Offer repo scan\nskills/repo-scan]
+    SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings for approval]
+    SCANRUN --> MEM
+    SCAN -->|Declined| SOC
+    FIELD -->|Greenfield| SOC[7 Socratic questions\nor type skip to proceed early]
+    SOC --> MEM[Generate memory files\nCONSTITUTION · INTENT · STATE\nROADMAP · DECISIONS · CHANGELOG · OVERVIEW]
+    MEM --> BDI[bd init → .beads/]
+    BDI --> INITPROMPT{Start brainstorming now?}
+    INITPROMPT -->|Yes| INCEPTION
+    INITPROMPT -->|No| IDLE1([Idle — run /brainstorm])
 
-    INCEPTION["/brainstorm"] --> D1[Offer Visual Companion\nstandalone consent message]
-    D1 --> D2[DISCOVER — Socratic questioning\nper-question visual or terminal]
-    D2 --> D3[Human approves output]
-    D3 --> D4[DEFINE — Claude drafts PRD]
-    D4 --> D5{Human approves PRD?}
-    D5 -->|Revise| D4
-    D5 -->|Approved| D6[DESIGN — Architecture · Data model · API contracts]
-    D6 --> D7{Human approves design?}
-    D7 -->|Revise| D6
-    D7 -->|Approved| D8[PLAN — Create Beads tasks]
-    D8 --> D9{Human approves plan?}
-    D9 -->|Revise| D8
-    D9 -->|Approved| D10[Stop Visual Server · Update STATE.md]
-    D10 --> D11([Ready for /build])
+    %% ── PHASE 1: INCEPTION ─────────────────────────────────────────
+    INCEPTION["/brainstorm feature-name"] --> PREF[Load CONSTITUTION.md + INTENT.md]
+    PREF --> SCOPE{Scope check}
+    SCOPE -->|Too large — multiple subsystems| DECOMP[Decompose into sub-projects\nRun first sub-project through full cycle\nRemaining sub-projects queued for future sessions]
+    DECOMP --> SCOPE
+    SCOPE -->|Single scoped feature| VCOFF{Visual content likely?}
+    VCOFF -->|Yes — standalone offer| VCASK{User accepts\nvisual companion?}
+    VCASK -->|Yes| VCSTART[Start local server\nCapture screen_dir + state_dir]
+    VCASK -->|No| D_LOOP
+    VCOFF -->|No| D_LOOP
+    VCSTART --> D_LOOP
 
-    CONSTRUCTION["/build"] --> C1[bd ready → pick task]
-    C1 --> C2[Claim task · Update STATE.md]
-    C2 --> C3{Execution mode?}
-    C3 -->|Agent Teams| C4[Neo · Echo · Phantom · Jarvis + context roles]
-    C3 -->|Sub-Agent| C5[Single focused subagent]
-    C4 & C5 --> C6[BUILD — TDD enforced]
-    C6 --> C7{Tests pass?}
-    C7 -->|Fail ≤3 attempts| C6
-    C7 -->|Fail attempt 3| C8{Human choice}
-    C8 -->|Continue| C6
-    C8 -->|Intervene| C9[Human guides → Claude resumes]
-    C9 --> C6
-    C7 -->|Pass| C10[REVIEW — Always-on team + builder]
-    C10 --> C11[Generate REVIEW file]
-    C11 --> C12{Human approves review?}
-    C12 -->|Revise| C10
-    C12 -->|Approved| C13[Push PR comments]
-    C13 --> C14[TEST — 6 layers]
-    C14 --> C15{Constitution gates pass?}
-    C15 -->|Soft warnings| C16[Human: fix or accept?]
-    C16 --> C15
-    C15 -->|Pass| C17[bd done · Update STATE.md]
-    C17 --> C18{More tasks?}
-    C18 -->|Yes| C1
-    C18 -->|No| C19[Claude drafts episode file]
-    C19 --> C20([Ready for /ship])
+    D_LOOP[DISCOVER\nSocratic Q&A — one question at a time\nPer-question: browser if visual · terminal if text\nExternal context: web · Figma · Notion · docs\nType skip to proceed with collected answers] --> DSUM[Present discovery summary]
+    DSUM --> DCONF{Human confirms\nsummary?}
+    DCONF -->|Adjust| DSUM
+    DCONF -->|Confirmed| PRD[DEFINE\nAuto-generate PRD\nBDD user stories · AC · NFRs\nskills/writing-clearly-and-concisely]
+    PRD --> PRDGATE{Approve PRD?}
+    PRDGATE -->|Revise| PRD
+    PRDGATE -->|Approved| DESIGN[DESIGN\nARCHITECTURE.md · data-model.md · api-contracts.md\nMermaid diagrams · linked from PRD\nskills/writing-clearly-and-concisely]
+    DESIGN --> DGATE{Approve design?}
+    DGATE -->|Revise| DESIGN
+    DGATE -->|Approved| PLAN[PLAN\nBreak into Beads tasks\nSet dependencies · Generate tree\nDependency graph → visual companion if running]
+    PLAN --> PGATE{Approve plan?}
+    PGATE -->|Revise| PLAN
+    PGATE -->|Approved| VCSTOP[Stop visual server\nUpdate STATE.md]
+    VCSTOP --> INCPROMPT{Start building now?}
+    INCPROMPT -->|Yes| CONSTRUCTION
+    INCPROMPT -->|No| IDLE2([Idle — run /build])
 
-    OPERATION["/ship"] --> O1[SHIP — Merge commit to main]
-    O1 --> O2[Trigger CI/CD via Pulse]
-    O2 --> O3[Jarvis: release notes + CHANGELOG]
-    O3 --> O4[Auto-tag semver commit]
-    O4 --> O5[VERIFY — Smoke tests]
-    O5 --> O6{Human sign-off?}
-    O6 -->|Issues found| O5
-    O6 -->|Approved| O7[REFLECT — Retro + metrics]
-    O7 --> O8[Human approves episode file]
-    O8 --> O9[Commit episode · Update OVERVIEW.md]
-    O9 --> O10([Feature delivered])
+    %% ── PHASE 2: CONSTRUCTION ──────────────────────────────────────
+    CONSTRUCTION["/build"] --> BPRE[Load STATE.md + CONSTITUTION.md\nCreate or checkout feature branch]
+    BPRE --> READY{bd ready\nreturns tasks?}
+    READY -->|No — queue empty| REVIEW
+    READY -->|Yes| PICK[Select highest-priority\nunblocked task\nbackend → frontend → devops]
+    PICK --> CLAIM[bd update --claim · Update STATE.md]
+    CLAIM --> MODE{Execution mode?}
+    MODE -->|A — Agent Teams| TEAM[Neo · Echo · Phantom · Jarvis\n+ Bolt · Friday · Muse · Oracle · Pulse\nbased on task labels]
+    MODE -->|B — Sub-Agent| SOLO[Single focused agent]
+    TEAM & SOLO --> TDD[TDD per acceptance criterion\nRed — write failing test\nGreen — minimal implementation\nRefactor — clean up]
+    TDD --> TPASS{Tests pass?}
+    TPASS -->|Fail — attempt 1 or 2| TDD
+    TPASS -->|Fail — attempt 3| STRIKE{3-strike:\nhuman decision}
+    STRIKE -->|A — auto approach 1\nB — auto approach 2| TDD
+    STRIKE -->|C — take the wheel| GUIDE[Human suggests\ncourse of action]
+    GUIDE --> TDD
+    TPASS -->|All pass + no regressions| TASKDONE[bd done · Commit to feature branch\nUpdate STATE.md]
+    TASKDONE --> READY
+
+    REVIEW[REVIEW — skills/review/SKILL.md\nNeo · Echo · Phantom · Jarvis] --> RFILE[Generate REVIEW_feature_date.md\nArchitecture · Security · Coverage · Docs]
+    RFILE --> RGATE{Human decision?}
+    RGATE -->|Fix| REVIEW
+    RGATE -->|Accept warnings| RLOG[Log Tier 3 events\nDeferred items → DECISIONS.md]
+    RGATE -->|Approve| RLOG
+    RLOG --> TEST[TEST — skills/test/SKILL.md\nUnit → Integration → E2E real Chromium\n→ Performance → Accessibility → Visual Regression]
+    TEST --> TGATE{Constitution\ngates pass?}
+    TGATE -->|Failure| TFAIL{Human decision}
+    TFAIL -->|A — Fix| TEST
+    TFAIL -->|B — Accept| TACC[Log Tier 3 warning]
+    TFAIL -->|C — Defer| TDEF[Append to tech debt]
+    TACC & TDEF --> TGATE
+    TGATE -->|Pass| EPIDRAFT[Draft episode file\nWhat built · Links · Decisions\nFiles · Test results · Tech debt]
+    EPIDRAFT --> BUILDPROMPT{Ship now?}
+    BUILDPROMPT -->|Yes| OPERATION
+    BUILDPROMPT -->|No| IDLE3([Idle — run /ship])
+
+    %% ── PHASE 3: OPERATION ─────────────────────────────────────────
+    OPERATION["/ship"] --> SGATES[Verify Constitution test gates\nvs episode file Test Summary]
+    SGATES --> SGATE{Confirm merge\nto main?}
+    SGATE -->|No| SBLOCK([Blocked — resolve before re-running /ship])
+    SGATE -->|Yes| MERGE[git merge --no-ff\nfeature branch → main]
+    MERGE --> CHLOG[Jarvis: CHANGELOG entry\nDetermine semver — patch · minor · major]
+    CHLOG --> TAG[git tag vX.Y.Z · push main + tag]
+    TAG --> CICD[Trigger CI/CD\nPulse: npm deploy · make deploy · gh workflow · manual]
+    CICD --> SMOKE[VERIFY\nHTTP health checks · Primary user journey\nAuth flow if applicable]
+    SMOKE --> VGATE{Human sign-off?}
+    VGATE -->|Issues found| DIAG[Diagnose with human]
+    DIAG --> SMOKE
+    VGATE -->|Approved| RETRO[REFLECT — skills/reflect/SKILL.md\nPer-agent contributions · Metrics snapshot\nWhat went well · What broke · Improvements]
+    RETRO --> EUPDATE[Update episode file\nAppend Reflect notes · Set Status → Approved]
+    EUPDATE --> EGATE{Approve episode?}
+    EGATE -->|Changes| EUPDATE
+    EGATE -->|Approved| COMMIT[Commit episode\nUpdate OVERVIEW.md · episodes/index.md\nUpdate STATE.md → Idle]
+    COMMIT --> DONE([Feature delivered\nRun /brainstorm for next feature])
+
+    %% ── STYLE ──────────────────────────────────────────────────────
+    style STRIKE fill:#ff4444,color:#fff
+    style SBLOCK fill:#ff4444,color:#fff
+    style SGATE fill:#f0a500,color:#fff
+    style PRDGATE fill:#f0a500,color:#fff
+    style DGATE fill:#f0a500,color:#fff
+    style PGATE fill:#f0a500,color:#fff
+    style RGATE fill:#f0a500,color:#fff
+    style VGATE fill:#f0a500,color:#fff
+    style EGATE fill:#f0a500,color:#fff
 ```
 
 ### Approval gates
