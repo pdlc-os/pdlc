@@ -89,6 +89,8 @@ When using the browser, follow the loop in `skills/brainstorming/visual-companio
 
 7. **Go back and clarify freely.** If a later answer contradicts or complicates an earlier one, revisit it. Accuracy of the discovery output matters more than linear progress.
 
+8. **Use clear & precise language.** When generating documents for human review (PRD, Design docs, Plan), apply `skills/writing-clearly-and-concisely/SKILL.md`. Active voice, definite language, no needless words.
+
 ---
 
 ### Step 2 — Socratic discovery

@@ -339,6 +339,7 @@ PDLC is built entirely from skills. Phase skills are user-invocable via slash co
 | **Safety Guardrails** | `skills/safety-guardrails/SKILL.md` | Tier 1/2/3 definitions; double-RED override protocol; Tier 2→3 downgrade via Constitution |
 | **Repo Scan** | `skills/repo-scan/SKILL.md` | Brownfield deep-scan; pre-populates memory files from existing codebase |
 | **Visual Companion** | `skills/brainstorming/visual-companion.md` | Browser-based mockup and diagram loop during Inception |
+| **Writing Clearly and Concisely** | `skills/writing-clearly-and-concisely/SKILL.md` | Strunk's *Elements of Style* rules applied to PRDs, design docs, episode files, and any prose for human review |
 
 ---
 
