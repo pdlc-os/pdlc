@@ -367,9 +367,21 @@ Append to Phase History:
 >
 > - All [N] tasks done in Beads
 > - Review approved: `docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md`
-> - Episode draft: `docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md`
+> - Episode draft ready: `docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md`"
+
+Then immediately ask:
+
+> "Would you like to move to Operation and ship `[feature-name]` now?
 >
-> Review the episode draft, then run `/pdlc ship` to deploy."
+> - Say **yes** to begin immediately
+> - Or type `/pdlc ship` at any time to start manually"
+
+**If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
+→ Immediately begin executing the `/pdlc ship` flow without waiting for the user to type the command.
+
+**If the user responds with "no", "not yet", "later", or any deferral**:
+→ Acknowledge and stop:
+> "No problem. The episode draft is ready for your review. Run `/pdlc ship` when you're ready to deploy."
 
 ---
 

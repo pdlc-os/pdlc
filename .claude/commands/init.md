@@ -365,6 +365,27 @@ Replace counts (e.g. `[N] decisions`) with actual numbers from the scan.
 
 ---
 
+## Step 10 — Prompt for next phase
+
+After printing the initialization summary, ask the user:
+
+> "Would you like to start Inception now and brainstorm your first feature?
+>
+> - Say **yes** (or provide a feature name) to begin immediately
+> - Or type `/pdlc brainstorm <feature-name>` at any time to start manually"
+
+**If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative** (with or without a feature name):
+→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/pdlc brainstorm` flow.
+
+**If the user provides a feature name directly** (e.g. "yes, user-auth" or just "user-auth"):
+→ Immediately begin executing `/pdlc brainstorm user-auth` without any further prompting.
+
+**If the user responds with "no", "not yet", "later", or any deferral**:
+→ Acknowledge and stop:
+> "No problem. When you're ready, run `/pdlc brainstorm <feature-name>` to start Inception."
+
+---
+
 ## Safety notes
 
 - This command is safe to run only once. If `docs/pdlc/memory/CONSTITUTION.md` already exists, warn the user: "PDLC appears to already be initialized (docs/pdlc/memory/CONSTITUTION.md exists). Re-running init will overwrite the memory files. Are you sure? (yes/no)" — wait for confirmation before proceeding.

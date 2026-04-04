@@ -345,9 +345,21 @@ Append to Phase History:
 > - PRD: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
 > - Design: `docs/pdlc/design/[feature-name]/`
 > - Plan: `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md`
-> - Beads tasks created: [N]
+> - Beads tasks created: [N]"
+
+Then immediately ask:
+
+> "Would you like to move to Construction and start building `[feature-name]` now?
 >
-> Run `/pdlc build` to begin Construction."
+> - Say **yes** to begin immediately
+> - Or type `/pdlc build` at any time to start manually"
+
+**If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
+→ Immediately begin executing the `/pdlc build` flow without waiting for the user to type the command.
+
+**If the user responds with "no", "not yet", "later", or any deferral**:
+→ Acknowledge and stop:
+> "No problem. When you're ready, run `/pdlc build` to begin Construction."
 
 ---
 
