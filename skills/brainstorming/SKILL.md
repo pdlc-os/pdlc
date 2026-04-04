@@ -73,6 +73,24 @@ When using the browser, follow the loop in `skills/brainstorming/visual-companio
 
 ---
 
+**Discover guidelines (apply throughout all of Discover):**
+
+1. **Assess scope before asking detailed questions.** If the request describes multiple independent subsystems (e.g. "build a platform with chat, file storage, billing, and analytics"), flag this immediately — do not spend questions refining details of a project that needs decomposition first.
+
+2. **Decompose large projects before proceeding.** If the feature is too large for a single PRD, help the user break it into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then run the full `/brainstorm → /build → /ship` cycle for the first sub-project only. Each sub-project gets its own inception.
+
+3. **Prefer multiple-choice questions.** When a question has a natural set of options, present them as choices (A / B / C) rather than asking open-ended. Open-ended is fine when the space of answers is genuinely unconstrained.
+
+4. **Focus each question on one of:** purpose, constraints, or success criteria. Avoid multi-part questions — one question per message, always.
+
+5. **When exploring approaches, propose 2–3 options conversationally.** Lead with your recommendation and explain why. Include trade-offs. Do not present options as a neutral list — have a point of view.
+
+6. **Ensure the following are covered before moving to Define:** architecture fit, key components, data flow, error handling approach, and testing strategy. If any of these are still unclear after the structured questions, ask targeted follow-ups before proceeding.
+
+7. **Go back and clarify freely.** If a later answer contradicts or complicates an earlier one, revisit it. Accuracy of the discovery output matters more than linear progress.
+
+---
+
 ### Step 2 — Socratic discovery
 
 Before asking the first question, print this notice in blue text using ANSI escape codes:
