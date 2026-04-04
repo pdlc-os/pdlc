@@ -139,7 +139,7 @@ If the user chose **B**: proceed as a single focused sub-agent.
 
 ### Step 9 — TDD: Build the task
 
-Follow the TDD protocol from `skills/tdd.md` exactly. The key steps:
+Follow the TDD protocol from `skills/tdd/SKILL.md` exactly. The key steps:
 
 **9a. Read the task context:**
 - Run `bd show [task-id]` to get the full task with acceptance criteria
@@ -214,7 +214,7 @@ Once `bd ready` is empty (all tasks complete):
 
 ### Step 12 — Run the review protocol
 
-Follow `skills/review.md` exactly.
+Follow `skills/review/SKILL.md` exactly.
 
 **Context to load:**
 - The full list of tasks completed (from Phase History in STATE.md)
@@ -276,7 +276,7 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ### Step 15 — Run each test layer
 
-Run the test layers per `skills/test.md` (when available). Check CONSTITUTION.md §7 for which gates are required.
+Run the test layers per `skills/test/SKILL.md` (when available). Check CONSTITUTION.md §7 for which gates are required.
 
 Run each layer in this order:
 

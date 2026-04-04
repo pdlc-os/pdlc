@@ -56,7 +56,7 @@ For a brownfield project, tell the user:
 > - **Yes** — I'll analyse the codebase and pre-populate your memory files. You'll review and approve my findings before anything is written.
 > - **No** — We'll continue with the standard Socratic questions and blank templates."
 
-**If the user says yes:** run the full `skills/repo-scan.md` protocol now. The repo scan will:
+**If the user says yes:** run the full `skills/repo-scan/SKILL.md` protocol now. The repo scan will:
 1. Map the repo structure and read key files
 2. Synthesise findings into a structured summary
 3. Present the summary for your review and approval
