@@ -98,12 +98,12 @@ When using the browser, follow the loop in `skills/brainstorming/visual-companio
 Before asking the first question, print this notice in blue text using ANSI escape codes:
 
 ```
-\x1b[34mTip: You can type 'skip' at any time to stop the questions and proceed to PRD generation with whatever information has been collected so far.\x1b[0m
+\x1b[34mTip: You can type 'skip' at any time to stop the questions and proceed with whatever information has been collected so far.\x1b[0m
 ```
 
 Ask the user probing questions **one at a time**. Wait for each answer before asking the next. Minimum 6 questions. Use the answers to build a rich understanding of the feature before generating any output.
 
-After each answer, check: **if the user's response is exactly `skip` (case-insensitive), stop asking questions immediately and proceed to Step 3 (external context ingestion) using whatever answers have been collected so far.** Mark unanswered questions as `TBD — skipped during discovery` in the PRD draft.
+After each answer, check: **if the user's response is exactly `skip` (case-insensitive), stop asking questions immediately and proceed to Step 3 (adversarial review) using whatever answers have been collected so far.** Mark unanswered questions as `TBD — skipped during discovery` in the PRD draft.
 
 Ask these questions in this order:
 
@@ -127,7 +127,53 @@ Ask follow-up questions as needed based on the answers. Good follow-ups probe:
 
 Continue until you have a clear, concrete picture of the feature. Stop when you are confident you can write a complete PRD.
 
-### Step 3 — Ingest external context (if applicable)
+### Step 3 — Adversarial review and targeted follow-ups
+
+PDLC now switches into devil's advocate mode. Review everything gathered in the Socratic session with extreme skepticism — you are the toughest critic of this feature on the team, and you assume the concept was submitted by someone who cut corners.
+
+**Your role:** Cynical, jaded reviewer with zero patience for sloppy thinking. Use a precise, professional tone — no personal attacks. Look for what is missing, not just what is wrong.
+
+Review the discovery answers across these dimensions:
+
+- **Assumption gaps** — Are any stated assumptions unverified, optimistic, or plausibly wrong?
+- **Scope leaks** — Does the "out of scope" list hold up? Would any excluded item block in-scope items from working?
+- **Success metric fragility** — Can the stated metrics actually be measured? Are they gameable? Are they lagging indicators that won't catch problems fast enough?
+- **Technical risk blindspots** — What technical risks were never surfaced in the Socratic questions?
+- **User problem validity** — Is the stated problem real and specific enough? Is the user group narrow enough to be actionable?
+- **Dependency blindspots** — What external systems, data, teams, or permissions weren't mentioned but are clearly required?
+- **Edge case silence** — What critical edge cases got no attention (error paths, concurrent usage, data migration, rollback)?
+- **Requirement conflicts** — Do any requirements contradict each other, or contradict the constraints from CONSTITUTION.md?
+- **Definition-of-done gaps** — Are there acceptance criteria that can't be tested, verified, or falsified as written?
+- **Timeline and sizing naivety** — Is the scoped work realistically achievable, or are there hidden depths that weren't discussed?
+
+Find **at least 10 issues**. If you genuinely cannot find 10, re-analyze with greater skepticism — this is suspicious. Do not suppress findings to be polite.
+
+Present your findings to the user in a clearly labelled block:
+
+```
+ADVERSARIAL REVIEW — [feature-name]
+
+The following concerns must be addressed before this feature concept is solid:
+
+1. [finding]
+2. [finding]
+...
+10+. [finding]
+```
+
+Then immediately tell the user:
+
+> "I'm going to ask follow-up questions on the most impactful of these. You can type `skip` at any time to stop and proceed to the discovery summary."
+
+Convert the **top 5 most impactful findings** (by risk to the feature succeeding) into targeted follow-up questions. Ask them **one at a time** following the same rules as the Socratic session: one question per message, wait for the answer, prefer multiple-choice where options exist.
+
+After each answer, update your internal model of the feature — if the answer resolves other findings, drop those follow-ups. If the answer surfaces new concerns, add them.
+
+Continue until the top findings are addressed or the user types `skip`.
+
+When done, proceed to Step 4.
+
+### Step 4 — Ingest external context (if applicable)
 
 If during the conversation the user mentions:
 - A URL → use WebFetch to retrieve the content and summarize what is relevant
@@ -137,7 +183,7 @@ If during the conversation the user mentions:
 
 Summarize any external content you retrieve and confirm with the user what you have extracted as relevant requirements.
 
-### Step 4 — Present discovery summary
+### Step 5 — Present discovery summary
 
 After the Socratic session is complete, present a structured summary to the user for confirmation before proceeding to Define. Format it clearly:
 
@@ -163,7 +209,7 @@ Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Define`.
 
 ## Sub-phase 2: DEFINE
 
-### Step 5 — Generate the PRD draft
+### Step 6 — Generate the PRD draft
 
 Auto-generate a complete PRD draft from the discovery conversation. Use `templates/PRD.md` as the exact structure. Fill in every section:
 
@@ -183,7 +229,7 @@ Set **Status**: `Draft` and **Date**: today's date.
 
 Save the file to: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
 
-### Step 6 — PRD approval gate
+### Step 7 — PRD approval gate
 
 Tell the user:
 
@@ -203,18 +249,18 @@ Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Design`.
 
 ## Sub-phase 3: DESIGN
 
-### Step 7 — Create the design directory
+### Step 8 — Create the design directory
 
 Run:
 ```bash
 mkdir -p docs/pdlc/design/[feature-name]
 ```
 
-### Step 8 — Generate design documents
+### Step 9 — Generate design documents
 
 Generate three design documents based on the approved PRD and the tech stack from `CONSTITUTION.md`:
 
-**8a. `docs/pdlc/design/[feature-name]/ARCHITECTURE.md`**
+**9a. `docs/pdlc/design/[feature-name]/ARCHITECTURE.md`**
 
 Document how this feature fits into the existing architecture. Include:
 - Where this feature lives in the system (which layer, which service)
@@ -227,7 +273,7 @@ Document how this feature fits into the existing architecture. Include:
 
 Use the tech stack from CONSTITUTION.md to ensure the architecture is specific to the actual stack, not generic.
 
-**8b. `docs/pdlc/design/[feature-name]/data-model.md`**
+**9b. `docs/pdlc/design/[feature-name]/data-model.md`**
 
 Document any new or modified data structures. Include:
 - New database tables or collections, with all columns/fields and their types
@@ -239,7 +285,7 @@ Document any new or modified data structures. Include:
 
 If this feature requires no data model changes, write: "No data model changes. This feature operates on existing schema." and explain why.
 
-**8c. `docs/pdlc/design/[feature-name]/api-contracts.md`**
+**9c. `docs/pdlc/design/[feature-name]/api-contracts.md`**
 
 Document any new or modified API endpoints. For each endpoint:
 - Method and path
@@ -252,11 +298,11 @@ Document any new or modified API endpoints. For each endpoint:
 
 If this feature requires no new API endpoints, write: "No new API endpoints. This feature is [client-only / uses existing endpoints / etc.]" and explain.
 
-### Step 9 — Update PRD design doc links
+### Step 10 — Update PRD design doc links
 
 Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to the three files just created.
 
-### Step 10 — Design approval gate
+### Step 11 — Design approval gate
 
 Tell the user:
 
@@ -277,7 +323,7 @@ Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Plan`.
 
 ## Sub-phase 4: PLAN
 
-### Step 11 — Break the feature into tasks
+### Step 12 — Break the feature into tasks
 
 Analyze the approved PRD and design documents. Break the feature into discrete, implementable tasks. Follow these rules:
 
@@ -287,7 +333,7 @@ Analyze the approved PRD and design documents. Break the feature into discrete, 
 - Group tasks under their relevant user stories using the `story:[US-id]` label.
 - Identify dependency relationships: which tasks must complete before others can begin.
 
-### Step 12 — Create tasks in Beads
+### Step 13 — Create tasks in Beads
 
 For each task, run:
 ```bash
@@ -299,7 +345,7 @@ bd create "[Task title]" \
 
 Capture the Beads task ID returned for each task (format: `bd-XXXX`).
 
-### Step 13 — Set up task dependencies
+### Step 14 — Set up task dependencies
 
 For each dependency relationship (task B cannot start before task A completes), run:
 ```bash
@@ -308,7 +354,7 @@ bd dep add [task-b-id] --blocks [task-a-id]
 
 Set up all dependency relationships before generating the tree.
 
-### Step 14 — Generate the dependency tree
+### Step 15 — Generate the dependency tree
 
 Run:
 ```bash
@@ -335,7 +381,7 @@ If the visual companion server is running, write the dependency graph as an HTML
 
 Remind the user of the URL and tell them: "The dependency graph is now showing in the browser."
 
-### Step 15 — Save the plan file
+### Step 16 — Save the plan file
 
 Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this content:
 
@@ -352,13 +398,13 @@ Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this cont
 
 | Beads ID | Title | Labels | Depends On |
 |----------|-------|--------|-----------|
-[one row per task, filled in from Step 12 and 13]
+[one row per task, filled in from Step 13 and 14]
 
 ---
 
 ## Dependency Graph
 
-[paste the Mermaid output from Step 14 here in a code block]
+[paste the Mermaid output from Step 15 here in a code block]
 
 ---
 
@@ -367,7 +413,7 @@ Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this cont
 [A numbered list describing the natural wave order: which tasks can run in parallel in each wave, based on the dependency graph]
 ```
 
-### Step 16 — Plan approval gate
+### Step 17 — Plan approval gate
 
 Tell the user:
 
@@ -381,7 +427,7 @@ Wait for explicit approval. Do not proceed until approved.
 
 If the user requests changes (add/remove/split tasks): make the changes in Beads and update the plan file. Re-present for approval.
 
-### Step 17 — Wrap up Inception
+### Step 18 — Wrap up Inception
 
 After plan approval:
 
