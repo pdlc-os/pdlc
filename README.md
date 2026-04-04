@@ -106,25 +106,25 @@ Re-running `install` is idempotent — it strips old hook paths and re-registers
 Once installed, open any project in Claude Code:
 
 ```
-/pdlc init
+/init
 ```
 
 PDLC will ask you 7 questions about your project (tech stack, constraints, test gates) and scaffold the full memory bank. Then start your first feature:
 
 ```
-/pdlc brainstorm user-authentication
+/brainstorm user-authentication
 ```
 
 Work through Inception (discovery → PRD → design → plan), then:
 
 ```
-/pdlc build
+/build
 ```
 
 Build, review, and test the feature. When ready:
 
 ```
-/pdlc ship
+/ship
 ```
 
 Merge, deploy, reflect, and commit the episode record.
@@ -143,13 +143,13 @@ flowchart TD
     PHASE_CHECK -->|Construction| CONSTRUCTION
     PHASE_CHECK -->|Operation| OPERATION
 
-    INIT["/pdlc init"] --> I1[Setup CONSTITUTION.md · INTENT.md]
+    INIT["/init"] --> I1[Setup CONSTITUTION.md · INTENT.md]
     I1 --> I2[Create Memory Bank]
     I2 --> I3[bd init → .beads/]
-    I3 --> I4([Ready for /pdlc brainstorm])
+    I3 --> I4([Ready for /brainstorm])
 
-    INCEPTION["/pdlc brainstorm"] --> D1[Start Visual Companion Server]
-    D1 --> D2[DISCOVER — Socratic questioning]
+    INCEPTION["/brainstorm"] --> D1[Offer Visual Companion\nstandalone consent message]
+    D1 --> D2[DISCOVER — Socratic questioning\nper-question visual or terminal]
     D2 --> D3[Human approves output]
     D3 --> D4[DEFINE — Claude drafts PRD]
     D4 --> D5{Human approves PRD?}
@@ -161,9 +161,9 @@ flowchart TD
     D8 --> D9{Human approves plan?}
     D9 -->|Revise| D8
     D9 -->|Approved| D10[Stop Visual Server · Update STATE.md]
-    D10 --> D11([Ready for /pdlc build])
+    D10 --> D11([Ready for /build])
 
-    CONSTRUCTION["/pdlc build"] --> C1[bd ready → pick task]
+    CONSTRUCTION["/build"] --> C1[bd ready → pick task]
     C1 --> C2[Claim task · Update STATE.md]
     C2 --> C3{Execution mode?}
     C3 -->|Agent Teams| C4[Neo · Echo · Phantom · Jarvis + context roles]
@@ -188,9 +188,9 @@ flowchart TD
     C17 --> C18{More tasks?}
     C18 -->|Yes| C1
     C18 -->|No| C19[Claude drafts episode file]
-    C19 --> C20([Ready for /pdlc ship])
+    C19 --> C20([Ready for /ship])
 
-    OPERATION["/pdlc ship"] --> O1[SHIP — Merge commit to main]
+    OPERATION["/ship"] --> O1[SHIP — Merge commit to main]
     O1 --> O2[Trigger CI/CD via Pulse]
     O2 --> O3[Jarvis: release notes + CHANGELOG]
     O3 --> O4[Auto-tag semver commit]
@@ -229,7 +229,7 @@ When Claude enters a bug-fix loop during Construction, PDLC caps automatic retri
 
 ## Phases in Detail
 
-### Phase 0 — Initialization (`/pdlc init`)
+### Phase 0 — Initialization (`/init`)
 
 Run once per project. PDLC detects whether you're starting fresh or bringing in an existing codebase.
 
@@ -255,7 +255,7 @@ All inferred content is clearly marked `(inferred — please verify)` so the tea
 - `docs/pdlc/memory/episodes/index.md` — searchable episode history
 - `.beads/` — Beads task database (via `bd init`)
 
-### Phase 1 — Inception (`/pdlc brainstorm <feature>`)
+### Phase 1 — Inception (`/brainstorm <feature>`)
 
 Four sub-phases, each with a human approval gate:
 
@@ -263,12 +263,12 @@ At any point during Socratic questioning, type **`skip`** to stop questions and 
 
 | Sub-phase | Output |
 |-----------|--------|
-| **Discover** | Socratic Q&A + external context (web, Figma, Notion, OneDrive) + visual companion |
+| **Discover** | Socratic Q&A + external context (web, Figma, Notion, OneDrive) + optional visual companion |
 | **Define** | `docs/pdlc/prds/PRD_[feature]_[date].md` — BDD user stories, requirements, acceptance criteria |
 | **Design** | `docs/pdlc/design/[feature]/` — ARCHITECTURE.md, data-model.md, api-contracts.md |
 | **Plan** | Beads tasks created with epic/story labels and blocking dependencies |
 
-### Phase 2 — Construction (`/pdlc build`)
+### Phase 2 — Construction (`/build`)
 
 Three sub-phases run per task from the Beads ready queue:
 
@@ -278,7 +278,7 @@ Three sub-phases run per task from the Beads ready queue:
 | **Review** | Always-on team (Neo, Echo, Phantom, Jarvis) + builder produce `docs/pdlc/reviews/REVIEW_[task-id]_[date].md` |
 | **Test** | 6 layers: Unit → Integration → E2E (real Chromium) → Performance → Accessibility → Visual Regression |
 
-### Phase 3 — Operation (`/pdlc ship`)
+### Phase 3 — Operation (`/ship`)
 
 | Sub-phase | What happens |
 |-----------|-------------|
@@ -317,16 +317,28 @@ PDLC assigns a named specialist agent to each area of concern.
 
 ## Skills
 
-PDLC ships six built-in skill files that govern its core behaviours:
+PDLC is built entirely from skills. Phase skills are user-invocable via slash command. Supporting skills are referenced internally by the phases.
+
+### Phase skills (user-invocable)
+
+| Skill | Invoke with | What it does |
+|-------|-------------|--------------|
+| **Init** | `/init` | Initialize PDLC for this project (run once) |
+| **Brainstorm** | `/brainstorm <feature>` | Run the Inception phase: Discover → Define → Design → Plan |
+| **Build** | `/build` | Run the Construction phase: Build (TDD) → Review → Test |
+| **Ship** | `/ship` | Run the Operation phase: Ship → Verify → Reflect |
+
+### Supporting skills (referenced internally)
 
 | Skill | File | What it governs |
 |-------|------|-----------------|
-| **TDD** | `skills/tdd.md` | Red → Green → Refactor cycle; test-first enforcement; 3-attempt auto-fix cap |
-| **Review** | `skills/review.md` | Multi-agent review protocol; reviewer responsibilities; soft-warning severity |
-| **Test** | `skills/test.md` | Six test layer execution order; Constitution gate checking; results → episode file |
-| **Ship** | `skills/ship.md` | Merge commit sequence; semver determination; CI/CD detection; git tag convention |
-| **Reflect** | `skills/reflect.md` | Retro format; per-agent contributions; shipping streaks; metrics snapshot |
-| **Safety Guardrails** | `skills/safety-guardrails.md` | Tier 1/2/3 definitions; double-RED override protocol; Tier 2→3 downgrade via Constitution |
+| **TDD** | `skills/tdd/SKILL.md` | Red → Green → Refactor cycle; test-first enforcement; 3-attempt auto-fix cap |
+| **Review** | `skills/review/SKILL.md` | Multi-agent review protocol; reviewer responsibilities; soft-warning severity |
+| **Test** | `skills/test/SKILL.md` | Six test layer execution order; Constitution gate checking; results → episode file |
+| **Reflect** | `skills/reflect/SKILL.md` | Retro format; per-agent contributions; shipping streaks; metrics snapshot |
+| **Safety Guardrails** | `skills/safety-guardrails/SKILL.md` | Tier 1/2/3 definitions; double-RED override protocol; Tier 2→3 downgrade via Constitution |
+| **Repo Scan** | `skills/repo-scan/SKILL.md` | Brownfield deep-scan; pre-populates memory files from existing codebase |
+| **Visual Companion** | `skills/brainstorming/visual-companion.md` | Browser-based mockup and diagram loop during Inception |
 
 ---
 
@@ -431,13 +443,21 @@ A background hook fires after every tool call and injects a context warning at �
 
 ## Visual Companion
 
-During the Inception phase (`/pdlc brainstorm`), PDLC starts a local Node.js + WebSocket server and gives you a `localhost` URL to open in your browser.
+During the Inception phase (`/brainstorm`), PDLC can optionally run a local Node.js + WebSocket server and give you a `localhost` URL to open in your browser.
 
-As Claude works through the Socratic discovery conversation, it writes live HTML fragments to the server — Mermaid flowcharts, entity diagrams, data models, UX mockups, user journeys, and decision cards. The browser auto-refreshes without a page reload.
+**Consent-based:** At the start of Discover, if the feature is likely to involve visual questions (layouts, wireframes, architecture diagrams), Claude will ask — in a standalone message — whether you want to use the visual companion. You can decline and work entirely in the terminal.
 
-You can click any `data-choice` element in the browser to send your selection back to Claude, guiding the brainstorm interactively.
+**Per-question, not per-session:** Even after accepting, Claude decides on each question whether to use the browser or the terminal. The rule: use the browser only when the content itself is visual (mockups, layout comparisons, Mermaid diagrams). Use the terminal for requirements questions, conceptual choices, and tradeoff discussions.
 
-The server shuts down automatically when Inception ends or after 30 minutes of inactivity.
+**What appears in the browser:**
+- UI wireframes and layout comparisons (click to select your preference)
+- Mermaid architecture diagrams and data flow charts
+- Side-by-side design options with pros/cons
+- The Beads task dependency graph at the end of Plan
+
+**How interaction works:** Click any option card in the browser to record your selection. Claude reads your clicks from the session's event log on its next turn, alongside your terminal message.
+
+**Cleanup:** A "Continuing in terminal..." waiting screen is pushed whenever the conversation moves to a non-visual question, so the browser doesn't show stale content. The server shuts down automatically when Inception ends or after 30 minutes of inactivity. Mockup files persist in `.pdlc/brainstorm/` for later reference.
 
 ---
 

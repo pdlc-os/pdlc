@@ -1,9 +1,10 @@
 ---
-description: Run the Inception phase for a feature (Discover → Define → Design → Plan)
+name: brainstorm
+description: "Run the Inception phase for a feature (Discover → Define → Design → Plan)"
 argument-hint: <feature-name>
 ---
 
-You are running the Inception phase for a feature. The argument passed to this command is: `$ARGUMENTS`
+You are running the Inception phase for a feature. The argument passed to this skill is: `$ARGUMENTS`
 
 If `$ARGUMENTS` is empty, ask the user: "What feature would you like to brainstorm? (Provide a short slug, e.g. `user-auth` or `billing-integration`)"
 
@@ -22,7 +23,7 @@ Before anything else, read these two files completely:
 
 If either file is missing, stop and tell the user:
 
-> "PDLC memory files not found. Please run `/pdlc init` first to set up this project."
+> "PDLC memory files not found. Please run `/init` first to set up this project."
 
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Phase**: `Inception`
@@ -372,7 +373,7 @@ bash scripts/stop-server.sh
 Mockup files created during Inception persist in `.pdlc/brainstorm/` for reference.
 
 **Update `docs/pdlc/memory/STATE.md`**:
-- **Current Phase**: `Inception Complete — Ready for /pdlc build`
+- **Current Phase**: `Inception Complete — Ready for /build`
 - **Current Sub-phase**: `none`
 - **Last Checkpoint**: `Inception / Plan / [now ISO 8601]`
 
@@ -395,14 +396,14 @@ Then immediately ask:
 > "Would you like to move to Construction and start building `[feature-name]` now?
 >
 > - Say **yes** to begin immediately
-> - Or type `/pdlc build` at any time to start manually"
+> - Or type `/build` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
-→ Immediately begin executing the `/pdlc build` flow without waiting for the user to type the command.
+→ Immediately begin executing the `/build` flow without waiting for the user to type the command.
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. When you're ready, run `/pdlc build` to begin Construction."
+> "No problem. When you're ready, run `/build` to begin Construction."
 
 ---
 

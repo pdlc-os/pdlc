@@ -1,5 +1,6 @@
 ---
-description: Initialize PDLC for this project (run once)
+name: init
+description: "Initialize PDLC for this project (run once)"
 ---
 
 You are initializing the PDLC (Product Development Lifecycle) plugin for this project. Follow every step below in order. Do not skip steps.
@@ -18,7 +19,7 @@ If the command is not found, stop and tell the user:
 > - npm: `npm install -g @beads/bd`
 > - Homebrew: `brew install beads`
 >
-> Once installed, re-run `/pdlc init`."
+> Once installed, re-run `/init`."
 
 Do not proceed until `bd --version` succeeds.
 
@@ -28,7 +29,7 @@ Run: `git status`
 
 If the command returns a "not a git repository" error, stop and tell the user:
 
-> "No git repository found. Please run `git init` (and make at least one commit) before running `/pdlc init`."
+> "No git repository found. Please run `git init` (and make at least one commit) before running `/init`."
 
 Do not proceed until `git status` succeeds.
 
@@ -95,8 +96,6 @@ Confirm each directory was created. Tell the user which directories were created
 
 > **Skip this step if the user accepted the brownfield repo scan in Step 2.** The scan already generated the memory files. Jump to Step 6.
 
-
-
 Before asking the first question, print this notice in blue text using ANSI escape codes:
 
 ```
@@ -123,9 +122,9 @@ Store all answers. You will use them to fill in the memory files below.
 
 ## Step 5 — Generate memory files
 
-Using the answers from Step 3, create all 7 memory files. Use today's date (ISO format: YYYY-MM-DD) wherever a date is required.
+Using the answers from Step 4, create all 7 memory files. Use today's date (ISO format: YYYY-MM-DD) wherever a date is required.
 
-### 4a. `docs/pdlc/memory/CONSTITUTION.md`
+### 5a. `docs/pdlc/memory/CONSTITUTION.md`
 
 Create this file based on the `templates/CONSTITUTION.md` structure. Fill in the following from the user's answers:
 
@@ -138,7 +137,7 @@ Create this file based on the `templates/CONSTITUTION.md` structure. Fill in the
 
 Leave all other sections with their default placeholder text — do not remove comments or examples.
 
-### 4b. `docs/pdlc/memory/INTENT.md`
+### 5b. `docs/pdlc/memory/INTENT.md`
 
 Create this file based on the `templates/INTENT.md` structure. Fill in:
 
@@ -150,7 +149,7 @@ Create this file based on the `templates/INTENT.md` structure. Fill in:
 
 Leave the success metrics table and out-of-scope / constraints sections with placeholder text.
 
-### 4c. `docs/pdlc/memory/STATE.md`
+### 5c. `docs/pdlc/memory/STATE.md`
 
 Create this file based on the `templates/STATE.md` structure. Set:
 
@@ -162,7 +161,7 @@ Create this file based on the `templates/STATE.md` structure. Set:
 - **Phase History table**: one row — today's timestamp, event `init`, Phase `Initialization`, Sub-phase `—`, Feature `none`
 - **Last updated**: today's date and time (ISO 8601)
 
-### 4d. `docs/pdlc/memory/ROADMAP.md`
+### 5d. `docs/pdlc/memory/ROADMAP.md`
 
 Create this file with stub content:
 
@@ -176,13 +175,13 @@ Create this file with stub content:
 
 ## Current Focus
 
-<!-- Populated after first /pdlc brainstorm session. -->
+<!-- Populated after first /brainstorm session. -->
 
 ---
 
 ## Planned Features
 
-<!-- Add features here as they are defined via /pdlc brainstorm. -->
+<!-- Add features here as they are defined via /brainstorm. -->
 
 | # | Feature | Status | Target |
 |---|---------|--------|--------|
@@ -197,7 +196,7 @@ Create this file with stub content:
 <!-- None yet. -->
 ```
 
-### 4e. `docs/pdlc/memory/DECISIONS.md`
+### 5e. `docs/pdlc/memory/DECISIONS.md`
 
 Create this file with stub content:
 
@@ -214,10 +213,10 @@ Create this file with stub content:
 
 ---
 
-<!-- No decisions recorded yet. The first entries will appear after /pdlc brainstorm. -->
+<!-- No decisions recorded yet. The first entries will appear after /brainstorm. -->
 ```
 
-### 4f. `docs/pdlc/memory/CHANGELOG.md`
+### 5f. `docs/pdlc/memory/CHANGELOG.md`
 
 Create this file with stub content:
 
@@ -246,7 +245,7 @@ Create this file with stub content:
 <!-- No releases yet. -->
 ```
 
-### 4g. `docs/pdlc/memory/OVERVIEW.md`
+### 5g. `docs/pdlc/memory/OVERVIEW.md`
 
 Create this file based on the `templates/OVERVIEW.md` structure. Fill in:
 
@@ -297,7 +296,7 @@ If `bd init` succeeds, continue.
 
 Update `docs/pdlc/memory/STATE.md`:
 
-- **Current Phase**: `Initialization Complete — Ready for /pdlc brainstorm`
+- **Current Phase**: `Initialization Complete — Ready for /brainstorm`
 - **Last Checkpoint**: `Initialization / Complete / [today's datetime ISO 8601]`
 - **Last updated**: now
 
@@ -335,7 +334,7 @@ Directories created:
 
 Beads initialized: .beads/ created in project root.
 
-Next step: run /pdlc brainstorm [feature-name] to start your first feature.
+Next step: run /brainstorm <feature-name> to start your first feature.
 ```
 
 **For brownfield projects (repo scan ran):**
@@ -356,9 +355,9 @@ Memory bank pre-populated from existing codebase:
 Beads initialized: .beads/ created in project root.
 
   ⚠  Inferred content is marked "(inferred — please verify)" throughout.
-     Review INTENT.md and OVERVIEW.md before your first /pdlc brainstorm session.
+     Review INTENT.md and OVERVIEW.md before your first /brainstorm session.
 
-Next step: run /pdlc brainstorm [feature-name] to start your first feature.
+Next step: run /brainstorm <feature-name> to start your first feature.
 ```
 
 Replace counts (e.g. `[N] decisions`) with actual numbers from the scan.
@@ -372,17 +371,17 @@ After printing the initialization summary, ask the user:
 > "Would you like to start Inception now and brainstorm your first feature?
 >
 > - Say **yes** (or provide a feature name) to begin immediately
-> - Or type `/pdlc brainstorm <feature-name>` at any time to start manually"
+> - Or type `/brainstorm <feature-name>` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative** (with or without a feature name):
-→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/pdlc brainstorm` flow.
+→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/brainstorm` flow.
 
 **If the user provides a feature name directly** (e.g. "yes, user-auth" or just "user-auth"):
-→ Immediately begin executing `/pdlc brainstorm user-auth` without any further prompting.
+→ Immediately begin executing `/brainstorm user-auth` without any further prompting.
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. When you're ready, run `/pdlc brainstorm <feature-name>` to start Inception."
+> "No problem. When you're ready, run `/brainstorm <feature-name>` to start Inception."
 
 ---
 

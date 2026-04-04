@@ -1,5 +1,6 @@
 ---
-description: Run the Construction phase (Build → Review → Test) for the current feature
+name: build
+description: "Run the Construction phase (Build → Review → Test) for the current feature"
 ---
 
 You are running the Construction phase. Follow every step in order. Do not skip steps.
@@ -14,11 +15,11 @@ Read `docs/pdlc/memory/STATE.md` completely.
 
 Extract:
 - **Current Feature**: the `[feature-name]` slug
-- **Current Phase**: must be `Inception Complete — Ready for /pdlc build` or `Construction`
+- **Current Phase**: must be `Inception Complete — Ready for /build` or `Construction`
 
 If **Current Feature** is `none` or the phase is not set to a Construction-ready state, stop and tell the user:
 
-> "No active feature found. Please run `/pdlc brainstorm [feature-name]` first to complete the Inception phase before building."
+> "No active feature found. Please run `/brainstorm <feature-name>` first to complete the Inception phase before building."
 
 If STATE.md indicates Construction is already in progress (phase is `Construction`), resume from the last checkpoint. Read the **Last Checkpoint** field and continue from the appropriate step below.
 
@@ -344,14 +345,14 @@ Fill in every section:
 - **Known Tradeoffs & Tech Debt**: from accepted/deferred findings in the review and test steps
 - **Agent Team**: list which agents were active
 
-Leave **Reflect Notes** blank — that section is filled during the Reflect sub-phase in `/pdlc ship`.
+Leave **Reflect Notes** blank — that section is filled during the Reflect sub-phase in `/ship`.
 
 Set **Status**: `Draft`.
 
 ### Step 19 — Update STATE.md
 
 Update `docs/pdlc/memory/STATE.md`:
-- **Current Phase**: `Construction Complete — Ready for /pdlc ship`
+- **Current Phase**: `Construction Complete — Ready for /ship`
 - **Current Sub-phase**: `none`
 - **Active Beads Task**: `none`
 - **Last Checkpoint**: `Construction / Complete / [now ISO 8601]`
@@ -374,14 +375,14 @@ Then immediately ask:
 > "Would you like to move to Operation and ship `[feature-name]` now?
 >
 > - Say **yes** to begin immediately
-> - Or type `/pdlc ship` at any time to start manually"
+> - Or type `/ship` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
-→ Immediately begin executing the `/pdlc ship` flow without waiting for the user to type the command.
+→ Immediately begin executing the `/ship` flow without waiting for the user to type the command.
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. The episode draft is ready for your review. Run `/pdlc ship` when you're ready to deploy."
+> "No problem. The episode draft is ready for your review. Run `/ship` when you're ready to deploy."
 
 ---
 
@@ -391,5 +392,5 @@ Then immediately ask:
 - The auto-fix loop cap is 3 attempts per failing test. Never exceed this without human input.
 - All review findings are soft warnings. Human decides: fix, accept, or defer. No finding auto-blocks the build.
 - Human must approve the review file before PR comments are pushed. Never push automatically.
-- Never merge to main during Construction. The feature branch is merged during `/pdlc ship`.
+- Never merge to main during Construction. The feature branch is merged during `/ship`.
 - If context is running low (≤35% remaining), update STATE.md immediately and wrap up the current task cleanly before context compacts.
