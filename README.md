@@ -35,14 +35,36 @@ PDLC combines the best of three Claude Code workflows:
 npx @pdlc-os/pdlc install
 ```
 
-### Option B — global install
+### Option B — global npm install
 
 ```bash
 npm install -g @pdlc-os/pdlc
 pdlc install
 ```
 
-Both commands register PDLC's hooks and status bar in `~/.claude/settings.json`. Start a new Claude Code session to activate.
+### Option C — directly from GitHub (always latest)
+
+```bash
+npm install -g pdlc-os/pdlc
+pdlc install
+```
+
+Pin to a specific release tag:
+
+```bash
+npm install -g pdlc-os/pdlc#v0.1.0
+pdlc install
+```
+
+### Option D — clone and install
+
+```bash
+git clone https://github.com/pdlc-os/pdlc.git
+cd pdlc
+node bin/pdlc.js install
+```
+
+All options register PDLC's hooks and status bar in `~/.claude/settings.json`. Start a new Claude Code session to activate.
 
 ### Verify installation
 
@@ -59,7 +81,11 @@ npx @pdlc-os/pdlc uninstall
 ### Keep up to date
 
 ```bash
+# From npm
 npx @pdlc-os/pdlc@latest install
+
+# From GitHub (latest main)
+npm install -g pdlc-os/pdlc && pdlc install
 ```
 
 Re-running `install` is idempotent — it strips old hook paths and re-registers with the current version.
