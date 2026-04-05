@@ -57,7 +57,7 @@ Output a **Sub-phase Transition Header** for "WRAP-UP".
 
 Read `skills/build/steps/05-wrap-up.md` and execute it completely.
 
-Construction is complete when STATE.md shows `Construction Complete — Ready for /ship`.
+Construction is complete when STATE.md shows `Construction Complete — Ready for /pdlc ship`.
 
 ---
 

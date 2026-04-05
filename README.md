@@ -137,25 +137,25 @@ Re-running `install` is also idempotent — it strips old hook paths and re-regi
 Once installed, open any project in Claude Code:
 
 ```
-/init
+/pdlc init
 ```
 
 PDLC asks 7 questions about your project (tech stack, constraints, test gates) and scaffolds the full memory bank. Then start your first feature:
 
 ```
-/brainstorm user-authentication
+/pdlc brainstorm user-authentication
 ```
 
 Work through Inception (discovery, PRD, design, plan), then:
 
 ```
-/build
+/pdlc build
 ```
 
 Build, review, and test the feature with TDD and multi-agent review. When ready:
 
 ```
-/ship
+/pdlc ship
 ```
 
 Merge, deploy, reflect, and commit the episode record.
@@ -175,7 +175,7 @@ flowchart TD
     PHASE_CHECK -->|Operation| OPERATION
 
     %% ── PHASE 0: INIT ──────────────────────────────────────────────
-    INIT["/init"] --> PREREQ[Check prereqs\nbd + git]
+    INIT["/pdlc init"] --> PREREQ[Check prereqs\nbd + git]
     PREREQ --> FIELD{Existing code?}
     FIELD -->|Brownfield| SCAN[Offer repo scan\nskills/repo-scan]
     SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings for approval]
@@ -189,7 +189,7 @@ flowchart TD
     INITPROMPT -->|No| IDLE1([Idle])
 
     %% ── PHASE 1: INCEPTION ─────────────────────────────────────────
-    INCEPTION["/brainstorm feature-name"] --> DIVG{Divergent\nideation?}
+    INCEPTION["/pdlc brainstorm feature-name"] --> DIVG{Divergent\nideation?}
     DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation every 10\nCluster → Standouts]
     DIVG -->|No| SOCRATIC
     IDEAS --> SOCRATIC[DISCOVER\n4-round Socratic interview\nActive + Challenging posture]
@@ -212,7 +212,7 @@ flowchart TD
     INCPROMPT -->|No| IDLE2([Idle])
 
     %% ── PHASE 2: CONSTRUCTION ──────────────────────────────────────
-    CONSTRUCTION["/build"] --> BPRE[Load state + Create feature branch]
+    CONSTRUCTION["/pdlc build"] --> BPRE[Load state + Create feature branch]
     BPRE --> READY{bd ready\nreturns tasks?}
     READY -->|No| REVIEW
     READY -->|Yes — 2+ tasks| WAVE[Wave Kickoff Standup\nNeo + domain agents\nSurface hidden deps]
@@ -248,7 +248,7 @@ flowchart TD
     BUILDPROMPT -->|No| IDLE3([Idle])
 
     %% ── PHASE 3: OPERATION ─────────────────────────────────────────
-    OPERATION["/ship"] --> SGATE{Confirm merge?}
+    OPERATION["/pdlc ship"] --> SGATE{Confirm merge?}
     SGATE -->|Yes| MERGE[Merge commit to main\nCHANGELOG · semver tag · push]
     MERGE --> CICD[Trigger CI/CD]
     CICD --> SMOKE[VERIFY\nSmoke tests · Human sign-off]
@@ -319,7 +319,7 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 | Feature | What it does |
 |---------|-------------|
 | **Safety Guardrails** | 3-tier system: Tier 1 hard blocks, Tier 2 pause-and-confirm, Tier 3 logged warnings. Configurable via Constitution. |
-| **Brownfield Repo Scan** | Deep-scans existing codebases during `/init` to pre-populate memory files from real code. |
+| **Brownfield Repo Scan** | Deep-scans existing codebases during `/pdlc init` to pre-populate memory files from real code. |
 | **Auto-Resume** | Every session reads STATE.md and resumes from the exact last checkpoint. No work is lost. |
 | **MOM Files** | Meeting minutes for all party sessions, capturing who said what, conclusions, and next steps. |
 | **Episode Memory** | Permanent delivery records indexed in `episodes/index.md`. Searchable history of every feature shipped. |
@@ -328,7 +328,7 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 
 ## Phases in Detail
 
-### Phase 0 — Initialization (`/init`)
+### Phase 0 — Initialization (`/pdlc init`)
 
 Run once per project. PDLC detects whether you're starting fresh or bringing in an existing codebase.
 
@@ -345,7 +345,7 @@ Run once per project. PDLC detects whether you're starting fresh or bringing in 
 - `docs/pdlc/memory/episodes/index.md` — searchable episode history
 - `.beads/` — Beads task database (via `bd init`)
 
-### Phase 1 — Inception (`/brainstorm <feature>`)
+### Phase 1 — Inception (`/pdlc brainstorm <feature>`)
 
 Six sub-phases with human approval gates between Define, Design, and Plan:
 
@@ -357,7 +357,7 @@ Six sub-phases with human approval gates between Define, Design, and Plan:
 | **Design** | Architecture, data model, API contracts | `docs/pdlc/design/[feature]/` |
 | **Plan** | Beads tasks with dependencies | Plan file + dependency graph |
 
-### Phase 2 — Construction (`/build`)
+### Phase 2 — Construction (`/pdlc build`)
 
 | Sub-phase | What happens |
 |-----------|-------------|
@@ -365,7 +365,7 @@ Six sub-phases with human approval gates between Define, Design, and Plan:
 | **Review** | Party Review: Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. |
 | **Test** | 6 layers. Constitution gates determine which are required. Human decides on failures. |
 
-### Phase 3 — Operation (`/ship`)
+### Phase 3 — Operation (`/pdlc ship`)
 
 | Sub-phase | What happens |
 |-----------|-------------|
@@ -450,10 +450,10 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 
 | Skill | Command | What it does |
 |-------|---------|-------------|
-| **Init** | `/init` | Initialize PDLC for this project (run once) |
-| **Brainstorm** | `/brainstorm <feature>` | Run Inception: Discover -> Define -> Design -> Plan |
-| **Build** | `/build` | Run Construction: Build (TDD) -> Review -> Test |
-| **Ship** | `/ship` | Run Operation: Ship -> Verify -> Reflect |
+| **Init** | `/pdlc init` | Initialize PDLC for this project (run once) |
+| **Brainstorm** | `/pdlc brainstorm <feature>` | Run Inception: Discover -> Define -> Design -> Plan |
+| **Build** | `/pdlc build` | Run Construction: Build (TDD) -> Review -> Test |
+| **Ship** | `/pdlc ship` | Run Operation: Ship -> Verify -> Reflect |
 
 ### Supporting skills (referenced internally)
 
@@ -616,7 +616,7 @@ A background hook fires after every tool call and injects context warnings at >=
 
 ## Visual Companion
 
-During Inception (`/brainstorm`), PDLC can optionally run a local Node.js + WebSocket server and give you a `localhost` URL to open in your browser.
+During Inception (`/pdlc brainstorm`), PDLC can optionally run a local Node.js + WebSocket server and give you a `localhost` URL to open in your browser.
 
 **Consent-based:** Claude asks in a standalone message whether you want visual support. You can decline and work entirely in the terminal.
 

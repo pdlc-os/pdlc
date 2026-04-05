@@ -147,10 +147,10 @@ quadrantChart
 ```mermaid
 flowchart TD
     subgraph PDLC_LAYER ["PDLC — Methodology & Memory"]
-        INIT[/init\nScaffold memory bank]
-        BRAINSTORM[/brainstorm\nInception phase]
-        BUILD[/build\nConstruction phase]
-        SHIP[/ship\nOperation phase]
+        INIT[/pdlc init\nScaffold memory bank]
+        BRAINSTORM[/pdlc brainstorm\nInception phase]
+        BUILD[/pdlc build\nConstruction phase]
+        SHIP[/pdlc ship\nOperation phase]
     end
 
     subgraph HL_LAYER ["HumanLayer — Safety & Routing"]

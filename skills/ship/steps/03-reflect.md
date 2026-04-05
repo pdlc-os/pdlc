@@ -87,7 +87,7 @@ git push origin main
 ### Step 17 — Final STATE.md update
 
 Update `docs/pdlc/memory/STATE.md`:
-- **Current Phase**: `Idle — Ready for next /brainstorm`
+- **Current Phase**: `Idle — Ready for next /pdlc brainstorm`
 - **Current Feature**: `none`
 - **Active Beads Task**: `none`
 - **Current Sub-phase**: `none`

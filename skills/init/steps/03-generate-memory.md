@@ -58,13 +58,13 @@ Create this file with stub content:
 
 ## Current Focus
 
-<!-- Populated after first /brainstorm session. -->
+<!-- Populated after first /pdlc brainstorm session. -->
 
 ---
 
 ## Planned Features
 
-<!-- Add features here as they are defined via /brainstorm. -->
+<!-- Add features here as they are defined via /pdlc brainstorm. -->
 
 | # | Feature | Status | Target |
 |---|---------|--------|--------|
@@ -96,7 +96,7 @@ Create this file with stub content:
 
 ---
 
-<!-- No decisions recorded yet. The first entries will appear after /brainstorm. -->
+<!-- No decisions recorded yet. The first entries will appear after /pdlc brainstorm. -->
 ```
 
 ### 5f. `docs/pdlc/memory/CHANGELOG.md`

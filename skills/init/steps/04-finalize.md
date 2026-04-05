@@ -21,7 +21,7 @@ If `bd init` succeeds, continue.
 
 Update `docs/pdlc/memory/STATE.md`:
 
-- **Current Phase**: `Initialization Complete — Ready for /brainstorm`
+- **Current Phase**: `Initialization Complete — Ready for /pdlc brainstorm`
 - **Last Checkpoint**: `Initialization / Complete / [today's datetime ISO 8601]`
 - **Last updated**: now
 

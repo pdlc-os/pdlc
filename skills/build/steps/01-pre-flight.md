@@ -6,7 +6,7 @@ Read `docs/pdlc/memory/STATE.md` completely.
 
 Extract:
 - **Current Feature**: the `[feature-name]` slug
-- **Current Phase**: must be `Inception Complete — Ready for /build` or `Construction`
+- **Current Phase**: must be `Inception Complete — Ready for /pdlc build` or `Construction`
 
 If **Current Feature** is `none` or the phase is not set to a Construction-ready state, stop and tell the user:
 

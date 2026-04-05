@@ -137,7 +137,7 @@ last-updated: [ISO 8601 timestamp]
 ```
 
 **Update `docs/pdlc/memory/STATE.md`**:
-- **Current Phase**: `Inception Complete — Ready for /build`
+- **Current Phase**: `Inception Complete — Ready for /pdlc build`
 - **Current Sub-phase**: `none`
 - **Last Checkpoint**: `Inception / Plan / [now ISO 8601]`
 

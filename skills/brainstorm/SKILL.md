@@ -143,7 +143,7 @@ Output a **Sub-phase Transition Header** for "PLAN".
 
 Read `skills/brainstorm/steps/04-plan.md` and execute every step completely (Steps 13–19).
 
-Inception is complete when STATE.md shows `Inception Complete — Ready for /build`.
+Inception is complete when STATE.md shows `Inception Complete — Ready for /pdlc build`.
 
 ---
 

@@ -245,7 +245,7 @@ async function promptInstallBeads(local) {
   const scope = local ? 'locally (devDependency)' : 'globally';
   const installCmd = local ? 'npm install --save-dev @beads/bd' : 'npm install -g @beads/bd';
 
-  log(`\n  Beads (bd) is required by PDLC for task management during /init and /build.`);
+  log(`\n  Beads (bd) is required by PDLC for task management during /pdlc init and /pdlc build.`);
 
   if (!process.stdin.isTTY) {
     log(`  Install it ${scope} before running /pdlc init:`);
@@ -696,10 +696,10 @@ Global install:
   npm install -g @pdlc-os/pdlc           Installs hooks for all projects
 
 Slash commands (inside a Claude Code session after install):
-  /init        Phase 0 \u2014 Initialization: Constitution \xb7 Intent \xb7 Memory Bank \xb7 Beads
-  /brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
-  /build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
-  /ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
+  /pdlc init        Phase 0 \u2014 Initialization: Constitution \xb7 Intent \xb7 Memory Bank \xb7 Beads
+  /pdlc brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
+  /pdlc build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
+  /pdlc ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
 
 Marketplace: https://github.com/pdlc-os
 `);

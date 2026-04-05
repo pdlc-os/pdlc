@@ -25,7 +25,7 @@ Set **Status**: `Draft`.
 ### Step 19 — Update STATE.md
 
 Update `docs/pdlc/memory/STATE.md`:
-- **Current Phase**: `Construction Complete — Ready for /ship`
+- **Current Phase**: `Construction Complete — Ready for /pdlc ship`
 - **Current Sub-phase**: `none`
 - **Active Beads Task**: `none`
 - **Last Checkpoint**: `Construction / Complete / [now ISO 8601]`

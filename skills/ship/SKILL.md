@@ -14,11 +14,11 @@ You are running the Operation phase. Follow every step in order. Do not skip ste
 Read `docs/pdlc/memory/STATE.md` completely.
 
 Extract:
-- **Current Phase**: must be `Construction Complete — Ready for /ship`
+- **Current Phase**: must be `Construction Complete — Ready for /pdlc ship`
 - **Current Feature**: the `[feature-name]` slug
 - **Episode file path**: look in `docs/pdlc/memory/episodes/` for a draft file matching `[NNN]_[feature-name]_[YYYY-MM-DD].md`
 
-If the phase is not `Construction Complete — Ready for /ship`, warn the user:
+If the phase is not `Construction Complete — Ready for /pdlc ship`, warn the user:
 
 > "STATE.md shows the current phase is `[phase]`, not `Construction Complete`. Running `/pdlc ship` before the build is complete may cause issues.
 >
@@ -100,7 +100,7 @@ Output a **Sub-phase Transition Header** for "REFLECT".
 
 Read `skills/ship/steps/03-reflect.md` and execute every step completely (Steps 13–18).
 
-Operation is complete when STATE.md shows `Idle — Ready for next /brainstorm`.
+Operation is complete when STATE.md shows `Idle — Ready for next /pdlc brainstorm`.
 
 ---
 
