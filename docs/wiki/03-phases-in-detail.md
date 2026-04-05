@@ -151,4 +151,4 @@ Together, `/pdlc decision` and `/pdlc whatif` give you a full **pivot and scenar
 
 ---
 
-← [Back to README](../../README.md)
+← [Back to README](../../README.md) | [Next: The Agent Team →](04-agent-team.md)

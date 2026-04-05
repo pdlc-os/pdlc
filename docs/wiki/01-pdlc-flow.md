@@ -154,4 +154,4 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 
 ---
 
-← [Back to README](../../README.md)
+← [Back to README](../../README.md) | [Next: Feature Highlights →](02-feature-highlights.md)

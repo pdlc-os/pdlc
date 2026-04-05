@@ -40,4 +40,4 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 ---
 
-← [Back to README](../../README.md)
+← [Back to README](../../README.md) | [Next: Party Mode →](05-party-mode.md)
