@@ -79,7 +79,6 @@ Software projects change direction. A mid-build decision to switch databases, re
 ### Scenario planning via `/pdlc whatif`
 
 Before committing to a change, you want to know the cost. "What if we switched to GraphQL?" is a question with implications for architecture, frontend, tests, docs, deployment, and timeline -- but asking it shouldn't force you to commit. What-If analysis lets the full team assess a hypothetical in a read-only meeting, producing a MOM with feasibility, effort, risks, and trade-offs. If the analysis is promising, convert it to a decision (reusing the existing MOM -- no duplicate meeting). If not, discard it and resume where you were. This separates exploration from commitment.
-
 ---
 
 ← [Back to README](../../README.md)
