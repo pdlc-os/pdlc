@@ -202,6 +202,56 @@ function getRepoRoot() {
   return process.env.INIT_CWD || process.cwd();
 }
 
+// ─── Slash command registration ──────────────────────────────────────────────
+
+const PLUGIN_COMMANDS_DIR = path.join(PLUGIN_ROOT, '.claude', 'commands');
+
+/**
+ * Copy slash command files from the plugin into the target .claude/commands/ dir.
+ * Claude Code only discovers commands in project-level or user-level .claude/commands/,
+ * not from node_modules, so we must copy them.
+ */
+function installCommands(targetRoot) {
+  const sourceDir = PLUGIN_COMMANDS_DIR;
+  const destDir = path.join(targetRoot, '.claude', 'commands');
+
+  if (!fs.existsSync(sourceDir)) return;
+
+  fs.mkdirSync(destDir, { recursive: true });
+
+  const pluginRootForward = PLUGIN_ROOT.replace(/\\/g, '/');
+
+  for (const file of fs.readdirSync(sourceDir)) {
+    const src = path.join(sourceDir, file);
+    let content = fs.readFileSync(src, 'utf8');
+    // Resolve plugin root placeholder so skill paths are absolute
+    content = content.replace(/\$\{PDLC_PLUGIN_ROOT\}/g, pluginRootForward);
+    const dest = path.join(destDir, file);
+    fs.writeFileSync(dest, content, 'utf8');
+  }
+}
+
+/**
+ * Remove PDLC-installed slash command files from the target .claude/commands/ dir.
+ */
+function removeCommands(targetRoot) {
+  const sourceDir = PLUGIN_COMMANDS_DIR;
+  const destDir = path.join(targetRoot, '.claude', 'commands');
+
+  if (!fs.existsSync(sourceDir) || !fs.existsSync(destDir)) return;
+
+  for (const file of fs.readdirSync(sourceDir)) {
+    const dest = path.join(destDir, file);
+    try { fs.unlinkSync(dest); } catch {}
+  }
+
+  // Clean up empty commands dir
+  try {
+    const remaining = fs.readdirSync(destDir);
+    if (remaining.length === 0) fs.rmdirSync(destDir);
+  } catch {}
+}
+
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
 async function install(opts = {}) {
@@ -229,15 +279,20 @@ async function install(opts = {}) {
       console.log(`\nPDLC v${VERSION} installed locally.`);
     }
 
+    // Copy slash commands into the project's .claude/commands/
+    installCommands(repoRoot);
+
     // Also strip from global settings if present, to avoid double-hooking
     const global = readJson(GLOBAL_SETTINGS_PATH);
     if (global && isPdlcInstalled(global)) {
       writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
+      removeCommands(os.homedir());
       console.log(`  Removed previous global PDLC hooks from ~/.claude/settings.json`);
     }
 
     console.log(`  Plugin root : ${PLUGIN_ROOT}`);
     console.log(`  Settings    : ${localSettingsPath}`);
+    console.log(`  Commands    : ${path.join(repoRoot, '.claude', 'commands')}`);
     console.log(`  Scope       : this repo only`);
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
@@ -251,8 +306,12 @@ async function install(opts = {}) {
       console.log(`\nPDLC v${VERSION} installed successfully.`);
     }
 
+    // Copy slash commands into ~/.claude/commands/
+    installCommands(os.homedir());
+
     console.log(`  Plugin root : ${PLUGIN_ROOT}`);
     console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
+    console.log(`  Commands    : ${path.join(os.homedir(), '.claude', 'commands')}`);
     console.log(`  Scope       : all projects (global)`);
   }
 
@@ -286,11 +345,13 @@ function uninstall(opts = {}) {
     const stripped = stripPdlc(existing);
     if (Object.keys(stripped).length === 0) {
       fs.unlinkSync(localSettingsPath);
-      console.log('\nPDLC uninstalled. Removed .claude/settings.local.json (was empty).\n');
+      console.log('\nPDLC uninstalled. Removed .claude/settings.local.json (was empty).');
     } else {
       writeJson(localSettingsPath, stripped);
-      console.log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.\n');
+      console.log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.');
     }
+    removeCommands(repoRoot);
+    console.log('  Slash commands removed from .claude/commands/\n');
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH);
     if (!global) {
@@ -302,7 +363,9 @@ function uninstall(opts = {}) {
       return;
     }
     writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
-    console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.\n');
+    removeCommands(os.homedir());
+    console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
+    console.log('  Slash commands removed from ~/.claude/commands/\n');
   }
 }
 
