@@ -101,6 +101,51 @@ function isPdlcInstalled(settings) {
   );
 }
 
+// ─── Dolt helpers ────────────────────────────────────────────────────────────
+
+function isDoltInstalled() {
+  try {
+    execSync('dolt version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function doltVersion() {
+  try {
+    const raw = execSync('dolt version', { stdio: 'pipe' }).toString().trim().split('\n')[0];
+    // "dolt version 1.85.0" → "1.85.0"
+    return raw.replace(/^dolt version\s*/i, '');
+  } catch {
+    return null;
+  }
+}
+
+function isHomebrewInstalled() {
+  try {
+    execSync('brew --version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function getDoltInstallCmd() {
+  if (process.platform === 'darwin' || isHomebrewInstalled()) {
+    return 'brew install dolt';
+  }
+  // Linux fallback: official install script
+  return 'sudo bash -c \'curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash\'';
+}
+
+function getDoltUninstallCmd() {
+  if (process.platform === 'darwin' || isHomebrewInstalled()) {
+    return 'brew uninstall dolt';
+  }
+  return 'sudo rm -f /usr/local/bin/dolt';
+}
+
 // ─── Beads helpers ───────────────────────────────────────────────────────────
 
 function isBeadsInstalled() {
@@ -114,13 +159,23 @@ function isBeadsInstalled() {
 
 function beadsVersion() {
   try {
-    return execSync('bd --version', { stdio: 'pipe' }).toString().trim();
+    const raw = execSync('bd --version', { stdio: 'pipe' }).toString().trim();
+    // "bd version 0.63.3 (884cc117)" → "0.63.3"
+    const match = raw.match(/(\d+\.\d+\.\d+)/);
+    return match ? match[1] : raw;
   } catch {
     return null;
   }
 }
 
 function printBeadsStatus() {
+  if (isDoltInstalled()) {
+    console.log(`  Dolt        : \u2713 installed (${doltVersion()})`);
+  } else {
+    console.log(`  Dolt        : \u2717 not found`);
+    console.log(`                Required by Beads for task storage.`);
+    console.log(`                Install: ${getDoltInstallCmd()}`);
+  }
   if (isBeadsInstalled()) {
     console.log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
   } else {
@@ -140,36 +195,83 @@ function prompt(question) {
   });
 }
 
+async function promptInstallDolt() {
+  if (isDoltInstalled()) {
+    log(`\n  Dolt        : \u2713 already installed (${doltVersion()}) \u2014 skipping`);
+    return true;
+  }
+
+  const installCmd = getDoltInstallCmd();
+
+  log(`\n  Dolt is a SQL database required by Beads for task storage.`);
+
+  if (!process.stdin.isTTY) {
+    log(`  Install it before running /pdlc init:`);
+    log(`  ${installCmd}`);
+    return false;
+  }
+
+  const answer = await prompt('  Install Dolt now? (Y/n) ');
+  if (answer === '' || answer === 'y' || answer === 'yes') {
+    log(`\n  Installing Dolt...`);
+    try {
+      execSync(installCmd, { stdio: 'inherit' });
+      if (isDoltInstalled()) {
+        log(`\n  Dolt        : \u2713 installed (${doltVersion()})`);
+        return true;
+      }
+    } catch (err) {
+      log('\n  Dolt installation failed. Install it manually before running /pdlc init:');
+      log(`  ${installCmd}`);
+      return false;
+    }
+  } else {
+    log('\n  Dolt is required by Beads. Install it manually:');
+    log(`  ${installCmd}`);
+    return false;
+  }
+  return false;
+}
+
 async function promptInstallBeads(local) {
+  // Dolt must be installed first — it's the database Beads depends on
+  await promptInstallDolt();
+
   if (isBeadsInstalled()) {
-    console.log(`\n  Beads (bd)  : \u2713 already installed (${beadsVersion()}) — skipping`);
+    log(`\n  Beads (bd)  : \u2713 already installed (${beadsVersion()}) \u2014 skipping`);
     return;
   }
-  if (!process.stdin.isTTY) return;
 
   const scope = local ? 'locally (devDependency)' : 'globally';
   const installCmd = local ? 'npm install --save-dev @beads/bd' : 'npm install -g @beads/bd';
 
-  console.log(`\n  Beads (bd) is required by PDLC for task management during /init and /build.`);
-  console.log(`  It will be installed ${scope} to match your PDLC install.`);
+  log(`\n  Beads (bd) is required by PDLC for task management during /init and /build.`);
+
+  if (!process.stdin.isTTY) {
+    log(`  Install it ${scope} before running /pdlc init:`);
+    log(`  ${installCmd}`);
+    return;
+  }
+
+  log(`  It will be installed ${scope} to match your PDLC install.`);
 
   const answer = await prompt('  Install Beads now? (Y/n) ');
   if (answer === '' || answer === 'y' || answer === 'yes') {
-    console.log(`\n  Installing Beads ${scope}...`);
+    log(`\n  Installing Beads ${scope}...`);
     try {
       execSync(installCmd, { stdio: 'inherit' });
       if (isBeadsInstalled()) {
-        console.log(`\n  Beads (bd)  : \u2713 installed ${scope} (${beadsVersion()})`);
+        log(`\n  Beads (bd)  : \u2713 installed ${scope} (${beadsVersion()})`);
       } else {
-        console.log(`\n  Beads (bd)  : \u2713 installed ${scope}`);
+        log(`\n  Beads (bd)  : \u2713 installed ${scope}`);
       }
     } catch (err) {
-      console.error('\n  Beads installation failed. Install it manually before running /pdlc init:');
-      console.error(`  ${installCmd}`);
+      log('\n  Beads installation failed. Install it manually before running /pdlc init:');
+      log(`  ${installCmd}`);
     }
   } else {
-    console.log('\n  Beads is required before you can run /pdlc init. Install it manually:');
-    console.log(`  ${installCmd}`);
+    log('\n  Beads is required before you can run /pdlc init. Install it manually:');
+    log(`  ${installCmd}`);
   }
 }
 
@@ -205,7 +307,16 @@ function getRepoRoot() {
   return process.env.INIT_CWD || process.cwd();
 }
 
-// ─── Banner ──────────────────────────────────────────────────────────────────
+// ─── Output helpers ──────────────────────────────────────────────────────────
+
+/**
+ * npm suppresses stdout from postinstall scripts. Use stderr for all output
+ * so the user always sees it. `log()` replaces `console.log` in install/
+ * uninstall/upgrade paths.
+ */
+function log(msg = '') {
+  process.stderr.write(msg + '\n');
+}
 
 function banner(action, version) {
   const tag = `${action} v${version}`;
@@ -224,7 +335,7 @@ function banner(action, version) {
 \u2502                                            \u2502
 \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
 `;
-  console.log(art);
+  log(art);
 }
 
 // ─── Slash command registration ──────────────────────────────────────────────
@@ -299,10 +410,10 @@ async function install(opts = {}) {
     if (isPdlcInstalled(existing)) {
       const stripped = stripPdlc(existing);
       writeJson(localSettingsPath, deepMerge(stripped, resolved));
-      console.log(`\nPDLC updated to v${VERSION} (local).`);
+      log(`\nPDLC updated to v${VERSION} (local).`);
     } else {
       writeJson(localSettingsPath, deepMerge(existing, resolved));
-      console.log(`\nPDLC v${VERSION} installed locally.`);
+      log(`\nPDLC v${VERSION} installed locally.`);
     }
 
     // Copy slash commands into the project's .claude/commands/
@@ -313,42 +424,66 @@ async function install(opts = {}) {
     if (global && isPdlcInstalled(global)) {
       writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
       removeCommands(os.homedir());
-      console.log(`  Removed previous global PDLC hooks from ~/.claude/settings.json`);
+      log(`  Removed previous global PDLC hooks from ~/.claude/settings.json`);
     }
 
-    console.log(`  Plugin root : ${PLUGIN_ROOT}`);
-    console.log(`  Settings    : ${localSettingsPath}`);
-    console.log(`  Commands    : ${path.join(repoRoot, '.claude', 'commands')}`);
-    console.log(`  Scope       : this repo only`);
+    log(`  Plugin root : ${PLUGIN_ROOT}`);
+    log(`  Settings    : ${localSettingsPath}`);
+    log(`  Commands    : ${path.join(repoRoot, '.claude', 'commands')}`);
+    log(`  Scope       : this repo only`);
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
 
     if (isPdlcInstalled(global)) {
       const stripped = stripPdlc(global);
       writeJson(GLOBAL_SETTINGS_PATH, deepMerge(stripped, resolved));
-      console.log(`\nPDLC updated to v${VERSION}.`);
+      log(`\nPDLC updated to v${VERSION}.`);
     } else {
       writeJson(GLOBAL_SETTINGS_PATH, deepMerge(global, resolved));
-      console.log(`\nPDLC v${VERSION} installed successfully.`);
+      log(`\nPDLC v${VERSION} installed successfully.`);
     }
 
     // Copy slash commands into ~/.claude/commands/
     installCommands(os.homedir());
 
-    console.log(`  Plugin root : ${PLUGIN_ROOT}`);
-    console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
-    console.log(`  Commands    : ${path.join(os.homedir(), '.claude', 'commands')}`);
-    console.log(`  Scope       : all projects (global)`);
+    log(`  Plugin root : ${PLUGIN_ROOT}`);
+    log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
+    log(`  Commands    : ${path.join(os.homedir(), '.claude', 'commands')}`);
+    log(`  Scope       : all projects (global)`);
   }
 
   await promptInstallBeads(local);
 
   if (isBeadsInstalled()) {
-    console.log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
+    log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
   }
 
-  console.log('\nStart a new Claude Code session to activate.');
-  console.log('Next step  : open a project and run /pdlc init\n');
+  log('\nStart a new Claude Code session to activate.');
+  log('Next step  : open a project and run /pdlc init\n');
+}
+
+async function promptUninstallDolt() {
+  if (!isDoltInstalled()) return;
+  if (!process.stdin.isTTY) return;
+
+  const uninstallCmd = getDoltUninstallCmd();
+
+  log('\n  Dolt is still installed.');
+  log('  \u26a0\ufe0f  Warning: Other tools on this system may depend on Dolt.');
+
+  const answer = await prompt('  Uninstall Dolt as well? (y/N) ');
+  if (answer === 'y' || answer === 'yes') {
+    log('\n  Uninstalling Dolt...');
+    try {
+      execSync(uninstallCmd, { stdio: 'inherit' });
+      log('  Dolt        : \u2713 uninstalled');
+    } catch (err) {
+      log('  Dolt uninstall failed. You can remove it manually:');
+      log(`  ${uninstallCmd}`);
+    }
+  } else {
+    log('  Keeping Dolt installed.');
+  }
 }
 
 async function promptUninstallBeads(local) {
@@ -358,23 +493,26 @@ async function promptUninstallBeads(local) {
   const scope = local ? 'locally' : 'globally';
   const uninstallCmd = local ? 'npm uninstall @beads/bd' : 'npm uninstall -g @beads/bd';
 
-  console.log('\n  Beads (bd) is still installed.');
-  console.log('  \u26a0\ufe0f  Warning: If this repo is already tracking tasks in Beads (.beads/ directory),');
-  console.log('  uninstalling Beads will remove the CLI but your task data in .beads/ will remain.');
-  console.log('  However, you will not be able to query or manage those tasks without Beads.');
+  log('\n  Beads (bd) is still installed.');
+  log('  \u26a0\ufe0f  Warning: If this repo is already tracking tasks in Beads (.beads/ directory),');
+  log('  uninstalling Beads will remove the CLI but your task data in .beads/ will remain.');
+  log('  However, you will not be able to query or manage those tasks without Beads.');
 
   const answer = await prompt(`  Uninstall Beads ${scope} as well? (y/N) `);
   if (answer === 'y' || answer === 'yes') {
-    console.log(`\n  Uninstalling Beads ${scope}...`);
+    log(`\n  Uninstalling Beads ${scope}...`);
     try {
       execSync(uninstallCmd, { stdio: 'inherit' });
-      console.log(`  Beads (bd)  : \u2713 uninstalled ${scope}`);
+      log(`  Beads (bd)  : \u2713 uninstalled ${scope}`);
     } catch (err) {
-      console.error('  Beads uninstall failed. You can remove it manually:');
-      console.error(`  ${uninstallCmd}`);
+      log('  Beads uninstall failed. You can remove it manually:');
+      log(`  ${uninstallCmd}`);
     }
+
+    // If Beads is removed, offer to remove Dolt too
+    await promptUninstallDolt();
   } else {
-    console.log('  Keeping Beads installed.');
+    log('  Keeping Beads installed.');
   }
 }
 
@@ -388,44 +526,44 @@ async function uninstall(opts = {}) {
     const existing = readJson(localSettingsPath);
 
     if (!existing) {
-      console.log('\nNo local Claude settings found — nothing to uninstall.\n');
+      log('\nNo local Claude settings found \u2014 nothing to uninstall.\n');
       return;
     }
     if (!isPdlcInstalled(existing)) {
-      console.log('\nPDLC is not installed locally in .claude/settings.local.json.\n');
+      log('\nPDLC is not installed locally in .claude/settings.local.json.\n');
       return;
     }
 
     const stripped = stripPdlc(existing);
     if (Object.keys(stripped).length === 0) {
       fs.unlinkSync(localSettingsPath);
-      console.log('\nPDLC uninstalled. Removed .claude/settings.local.json (was empty).');
+      log('\nPDLC uninstalled. Removed .claude/settings.local.json (was empty).');
     } else {
       writeJson(localSettingsPath, stripped);
-      console.log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.');
+      log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.');
     }
     removeCommands(repoRoot);
-    console.log('  Slash commands removed from .claude/commands/');
+    log('  Slash commands removed from .claude/commands/');
 
     await promptUninstallBeads(true);
-    console.log('');
+    log('');
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH);
     if (!global) {
-      console.log('\nNo Claude settings found — nothing to uninstall.\n');
+      log('\nNo Claude settings found \u2014 nothing to uninstall.\n');
       return;
     }
     if (!isPdlcInstalled(global)) {
-      console.log('\nPDLC is not currently installed in ~/.claude/settings.json.\n');
+      log('\nPDLC is not currently installed in ~/.claude/settings.json.\n');
       return;
     }
     writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
     removeCommands(os.homedir());
-    console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
-    console.log('  Slash commands removed from ~/.claude/commands/');
+    log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
+    log('  Slash commands removed from ~/.claude/commands/');
 
     await promptUninstallBeads(false);
-    console.log('');
+    log('');
   }
 }
 
@@ -483,7 +621,7 @@ async function upgrade(opts = {}) {
   const scope = local ? 'locally' : 'globally';
   banner('Upgrading', VERSION);
 
-  console.log(`  Upgrading PDLC ${scope}...`);
+  log(`  Upgrading PDLC ${scope}...`);
 
   // Upgrade PDLC
   const pdlcCmd = local
@@ -493,7 +631,7 @@ async function upgrade(opts = {}) {
   try {
     execSync(pdlcCmd, { stdio: 'inherit' });
   } catch (err) {
-    console.error(`\n  PDLC upgrade failed. You can upgrade manually:\n  ${pdlcCmd}`);
+    log(`\n  PDLC upgrade failed. You can upgrade manually:\n  ${pdlcCmd}`);
     return;
   }
 
@@ -505,7 +643,7 @@ async function upgrade(opts = {}) {
   } catch {
     newVersion = 'unknown';
   }
-  console.log(`  PDLC        : \u2713 upgraded to v${newVersion}`);
+  log(`  PDLC        : \u2713 upgraded to v${newVersion}`);
 
   // Re-run install to refresh hooks and commands
   await install({ local, repoRoot: opts.repoRoot, _skipBanner: true });
@@ -518,22 +656,22 @@ async function upgrade(opts = {}) {
       ? 'npm update @beads/bd'
       : 'npm install -g @beads/bd@latest';
 
-    console.log(`\n  Beads (bd) is currently installed (${beadsVersion()}).`);
+    log(`\n  Beads (bd) is currently installed (${beadsVersion()}).`);
     const answer = await prompt(`  Upgrade Beads ${scope} as well? (Y/n) `);
     if (answer === '' || answer === 'y' || answer === 'yes') {
-      console.log(`\n  Upgrading Beads ${scope}...`);
+      log(`\n  Upgrading Beads ${scope}...`);
       try {
         execSync(beadsCmd, { stdio: 'inherit' });
-        console.log(`  Beads (bd)  : \u2713 upgraded (${beadsVersion()})`);
+        log(`  Beads (bd)  : \u2713 upgraded (${beadsVersion()})`);
       } catch (err) {
-        console.error(`  Beads upgrade failed. You can upgrade manually:\n  ${beadsCmd}`);
+        log(`  Beads upgrade failed. You can upgrade manually:\n  ${beadsCmd}`);
       }
     } else {
-      console.log('  Keeping current Beads version.');
+      log('  Keeping current Beads version.');
     }
   }
 
-  console.log('');
+  log('');
 }
 
 function printUsage() {

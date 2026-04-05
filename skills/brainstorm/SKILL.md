@@ -23,7 +23,7 @@ Before anything else, read these two files completely:
 
 If either file is missing, stop and tell the user:
 
-> "PDLC memory files not found. Please run `/init` first to set up this project."
+> "PDLC memory files not found. Please run `/pdlc init` first to set up this project."
 
 ### Brainstorm log — create or resume
 
@@ -95,9 +95,9 @@ Inception has two lead agents with a handoff at the Define→Design boundary:
 
 Read the lead agent's full persona from `agents/oracle.md` or `agents/neo.md` and embody their perspective throughout their sub-phases.
 
-Before the first user-facing message in the Inception phase, announce:
+Before the first user-facing message, read `skills/formatting.md` for the visual patterns, then output a **Phase Transition Banner** for "BRAINSTORM" (with the feature name) followed by:
 
-> "**Oracle (Product Manager)** is leading Discover and Define. I'll guide the brainstorm, shape the problem, and draft the PRD."
+> **Oracle (Product Manager):** "Oracle here again! Time to brainstorm `[feature-name]`. I'll be leading Discover and Define — we're going to dig into the problem, talk to the right people (that's you!), and shape this into a solid PRD. Let's figure out what we're really building."
 
 ---
 
@@ -107,11 +107,15 @@ The Inception phase runs four sub-phases in strict sequence. Each sub-phase is d
 
 ### Sub-phase 1 — DISCOVER (Lead: Oracle)
 
+Before starting, output a **Sub-phase Transition Header** (per `skills/formatting.md`) for "DISCOVER".
+
 Read `skills/brainstorm/steps/01-discover.md` and execute every step completely (Steps 0–6, where Step 0 is optional divergent ideation and Step 4 is edge case analysis).
 
 Return here when the discovery summary is confirmed and STATE.md shows `Define`.
 
 ### Sub-phase 2 — DEFINE (Lead: Oracle)
+
+Output a **Sub-phase Transition Header** for "DEFINE".
 
 Read `skills/brainstorm/steps/02-define.md` and execute every step completely (Steps 7–8).
 
@@ -119,17 +123,23 @@ Return here when the PRD is approved and STATE.md shows `Design`.
 
 ### — HANDOFF: Oracle → Neo —
 
-After the PRD is approved and before starting Design, announce:
+After the PRD is approved and before starting Design, output an **Agent Handoff** block (per `skills/formatting.md`) with:
 
-> "**Handoff: Oracle → Neo.** The PRD is locked. **Neo (Architect)** is now leading Design and Plan. I'll translate the requirements into architecture, data models, API contracts, and an implementation plan."
+> **Oracle (Product Manager):** "The PRD is locked and approved — great work getting the requirements nailed down! I had a blast shaping this with you. I'm handing you over to Neo now — there's nobody better to turn these requirements into a rock-solid architecture. You're in excellent hands."
+>
+> **Neo (Architect):** "Thanks, Oracle. Hey — Neo here, your Architect. I've read the PRD and I'm excited to get my hands on this. Time to translate all those requirements into architecture, data models, and API contracts. Let's design something we'll be proud to build."
 
 ### Sub-phase 3 — DESIGN (Lead: Neo)
+
+Output a **Sub-phase Transition Header** for "DESIGN".
 
 Read `skills/brainstorm/steps/03-design.md` and execute every step completely (Steps 9–12).
 
 Return here when the design docs are approved and STATE.md shows `Plan`.
 
 ### Sub-phase 4 — PLAN (Lead: Neo)
+
+Output a **Sub-phase Transition Header** for "PLAN".
 
 Read `skills/brainstorm/steps/04-plan.md` and execute every step completely (Steps 13–19).
 

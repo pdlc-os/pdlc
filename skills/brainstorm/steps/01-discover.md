@@ -68,7 +68,7 @@ When using the browser, follow the loop in `skills/brainstorm/visual-companion.m
 
 1. **Assess scope before asking detailed questions.** If the request describes multiple independent subsystems (e.g. "build a platform with chat, file storage, billing, and analytics"), flag this immediately — do not spend questions refining details of a project that needs decomposition first.
 
-2. **Decompose large projects before proceeding.** If the feature is too large for a single PRD, help the user break it into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then run the full `/brainstorm → /build → /ship` cycle for the first sub-project only. Each sub-project gets its own inception.
+2. **Decompose large projects before proceeding.** If the feature is too large for a single PRD, help the user break it into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then run the full `/pdlc brainstorm → /pdlc build → /pdlc ship` cycle for the first sub-project only. Each sub-project gets its own inception.
 
 3. **Prefer multiple-choice questions.** When a question has a natural set of options, present them as choices (A / B / C) rather than asking open-ended. Open-ended is fine when the space of answers is genuinely unconstrained.
 

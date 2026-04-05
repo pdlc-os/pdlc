@@ -10,7 +10,7 @@ Extract:
 
 If **Current Feature** is `none` or the phase is not set to a Construction-ready state, stop and tell the user:
 
-> "No active feature found. Please run `/brainstorm <feature-name>` first to complete the Inception phase before building."
+> "No active feature found. Please run `/pdlc brainstorm <feature-name>` first to complete the Inception phase before building."
 
 If STATE.md indicates Construction is already in progress (phase is `Construction`), resume from the last checkpoint. Read the **Last Checkpoint** field and continue from the appropriate step below.
 

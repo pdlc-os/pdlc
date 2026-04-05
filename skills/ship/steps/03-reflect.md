@@ -107,7 +107,7 @@ Append to Phase History:
 > - CHANGELOG updated: docs/pdlc/memory/CHANGELOG.md
 > - OVERVIEW updated: docs/pdlc/memory/OVERVIEW.md
 >
-> Ready for the next feature — run `/brainstorm <next-feature>` to start."
+> Ready for the next feature — run `/pdlc brainstorm <next-feature>` to start."
 
 ---
 

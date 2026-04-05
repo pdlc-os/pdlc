@@ -18,7 +18,7 @@ Fill in every section:
 - **Known Tradeoffs & Tech Debt**: from accepted/deferred findings in the review and test steps
 - **Agent Team**: list which agents were active
 
-Leave **Reflect Notes** blank — that section is filled during the Reflect sub-phase in `/ship`.
+Leave **Reflect Notes** blank — that section is filled during the Reflect sub-phase in `/pdlc ship`.
 
 Set **Status**: `Draft`.
 
@@ -43,23 +43,25 @@ Append to Phase History:
 > - Review approved: `docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md`
 > - Episode draft ready: `docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md`"
 
-Then announce the handoff:
+Then output an **Agent Handoff** block (per `skills/formatting.md`) with:
 
-> "**Handoff: Neo → Pulse.** Construction is complete. When Operation begins, **Pulse (DevOps)** will take the lead for Ship and Verify."
+> **Neo (Architect):** "Build complete — every task done, every test green, review approved. It's been a pleasure building this with you. I'm handing the reins to Pulse now for deployment. Trust me, your code is in safe hands for the final stretch."
+>
+> **Pulse (DevOps):** "Pulse here! I've been watching the build come together and I'm pumped to get this out the door. I'll handle the merge, tagging, CI/CD, and smoke tests. Let's ship it."
 
 Then immediately ask:
 
 > "Would you like to move to Operation and ship `[feature-name]` now?
 >
 > - Say **yes** to begin immediately
-> - Or type `/ship` at any time to start manually"
+> - Or type `/pdlc ship` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
-→ Immediately begin executing the `/ship` flow without waiting for the user to type the command.
+→ Immediately begin executing the `/pdlc ship` flow without waiting for the user to type the command.
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. The episode draft is ready for your review. Run `/ship` when you're ready to deploy."
+> "No problem. The episode draft is ready for your review. Run `/pdlc ship` when you're ready to deploy."
 
 ---
 

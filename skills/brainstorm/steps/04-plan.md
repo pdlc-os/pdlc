@@ -160,18 +160,18 @@ Then immediately ask:
 > "Would you like to move to Construction and start building `[feature-name]` now?
 >
 > - Say **yes** to begin immediately
-> - Or type `/build` at any time to start manually"
+> - Or type `/pdlc build` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
 → Update `docs/pdlc/memory/STATE.md` **before** starting the build flow:
   - **Current Phase**: `Construction`
   - **Current Sub-phase**: `Build`
   - **Last Checkpoint**: `Construction / Build / [now ISO 8601]`
-→ Then immediately begin executing the `/build` flow (the build SKILL will resume cleanly from STATE.md if context compacts mid-transition).
+→ Then immediately begin executing the `/pdlc build` flow (the build SKILL will resume cleanly from STATE.md if context compacts mid-transition).
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. When you're ready, run `/build` to begin Construction."
+> "No problem. When you're ready, run `/pdlc build` to begin Construction."
 
 ---
 

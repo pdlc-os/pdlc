@@ -59,7 +59,7 @@ Directories created:
 
 Beads initialized: .beads/ created in project root.
 
-Next step: run /brainstorm <feature-name> to start your first feature.
+Next step: run /pdlc brainstorm <feature-name> to start your first feature.
 ```
 
 **For brownfield projects (repo scan ran):**
@@ -80,9 +80,9 @@ Memory bank pre-populated from existing codebase:
 Beads initialized: .beads/ created in project root.
 
   ⚠  Inferred content is marked "(inferred — please verify)" throughout.
-     Review INTENT.md and OVERVIEW.md before your first /brainstorm session.
+     Review INTENT.md and OVERVIEW.md before your first /pdlc brainstorm session.
 
-Next step: run /brainstorm <feature-name> to start your first feature.
+Next step: run /pdlc brainstorm <feature-name> to start your first feature.
 ```
 
 Replace counts (e.g. `[N] decisions`) with actual numbers from the scan.

@@ -100,6 +100,8 @@ npx @pdlc-os/pdlc uninstall
 Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.claude/commands/`. You'll be prompted to uninstall Beads globally too.
 
 > **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
+>
+> **Note on Dolt:** If you uninstall Beads, you'll also be prompted to uninstall Dolt (the SQL database Beads uses). Dolt is a system-level binary — other tools may depend on it, so the uninstaller defaults to keeping it.
 
 ### Upgrade
 
@@ -124,7 +126,8 @@ Re-running `install` is also idempotent — it strips old hook paths and re-regi
 |-----------|---------|-------|
 | Node.js >= 18 | [nodejs.org](https://nodejs.org) | |
 | Claude Code | [claude.ai/code](https://claude.ai/code) | |
-| [Beads (bd)](https://github.com/gastownhall/beads) | Installed automatically with PDLC | Prompted during install; same scope as PDLC |
+| [Dolt](https://github.com/dolthub/dolt) | Prompted during PDLC install | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
+| [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install | Task manager; same scope (local/global) as PDLC |
 | Git | Built into macOS/Linux | |
 
 ---

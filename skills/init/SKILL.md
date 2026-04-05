@@ -9,9 +9,9 @@ You are initializing the PDLC (Product Development Lifecycle) plugin for this pr
 
 Oracle leads the entire Initialization phase. Embody Oracle's product-minded perspective — clear problem framing, explicit success criteria, and sharp prioritization — throughout all Init steps, especially the Socratic questions in Step 4. Read `agents/oracle.md` for Oracle's full persona.
 
-Before the first user-facing message, announce:
+Before the first user-facing message, read `skills/formatting.md` for the visual patterns, then output a **Phase Transition Banner** for "INIT" followed by:
 
-> "**Oracle (Product Manager)** is leading Initialization. I'll help set up your project's foundation — problem statement, target user, tech stack, and team standards."
+> **Oracle (Product Manager):** "Hey there! Oracle here — your Product Manager. I'll be leading the setup for your project. We're going to nail down the problem statement, define your target user, choose the right tech stack, and set the team standards. Let's build a solid foundation together."
 
 ---
 
@@ -28,7 +28,7 @@ If the command is not found, tell the user:
 > **Install it now?**
 > Run: `npm install -g @beads/bd`
 >
-> Once that completes, re-run `/init` and we'll continue from here."
+> Once that completes, re-run `/pdlc init` and we'll continue from here."
 
 Then run `npm install -g @beads/bd` if the user confirms, or wait for them to install it manually. Re-run `bd --version` to confirm success before proceeding. Do not continue until `bd --version` succeeds.
 
@@ -38,7 +38,7 @@ Run: `git status`
 
 If the command returns a "not a git repository" error, stop and tell the user:
 
-> "No git repository found. Please run `git init` (and make at least one commit) before running `/init`."
+> "No git repository found. Please run `git init` (and make at least one commit) before running `/pdlc init`."
 
 Do not proceed until `git status` succeeds.
 
@@ -81,17 +81,17 @@ After printing the initialization summary, ask the user:
 > "Would you like to start Inception now and brainstorm your first feature?
 >
 > - Say **yes** (or provide a feature name) to begin immediately
-> - Or type `/brainstorm <feature-name>` at any time to start manually"
+> - Or type `/pdlc brainstorm <feature-name>` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative** (with or without a feature name):
-→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/brainstorm` flow.
+→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/pdlc brainstorm` flow.
 
 **If the user provides a feature name directly** (e.g. "yes, user-auth" or just "user-auth"):
-→ Immediately begin executing `/brainstorm user-auth` without any further prompting.
+→ Immediately begin executing `/pdlc brainstorm user-auth` without any further prompting.
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
-> "No problem. When you're ready, run `/brainstorm <feature-name>` to start Inception."
+> "No problem. When you're ready, run `/pdlc brainstorm <feature-name>` to start Inception."
 
 ---
 

@@ -13,7 +13,7 @@ Tell the user:
 
 Wait for explicit `yes`. Do not merge without it.
 
-If the user says `no`: stop and tell them to resolve whatever is blocking before re-running `/ship`.
+If the user says `no`: stop and tell them to resolve whatever is blocking before re-running `/pdlc ship`.
 
 ### Step 4 — Merge to main
 
@@ -25,7 +25,7 @@ git merge --no-ff feature/[feature-name] -m "feat([feature-name]): [one-line fea
 
 **TIER 1 HARD BLOCK**: Do not force-push to main under any circumstances. If a merge conflict arises, stop and tell the user:
 
-> "Merge conflict detected. Please resolve the conflicts manually, then re-run `/ship`."
+> "Merge conflict detected. Please resolve the conflicts manually, then re-run `/pdlc ship`."
 
 ### Step 5 — Generate release notes and CHANGELOG entry
 
@@ -93,7 +93,7 @@ git push origin v[X.Y.Z]
 
 > "Push rejected — main has diverged. Please pull and resolve manually:
 > `git pull --rebase origin main`
-> Then re-run `/ship`."
+> Then re-run `/pdlc ship`."
 
 Do not attempt to force-push.
 

@@ -20,7 +20,7 @@ Extract:
 
 If the phase is not `Construction Complete — Ready for /ship`, warn the user:
 
-> "STATE.md shows the current phase is `[phase]`, not `Construction Complete`. Running `/ship` before the build is complete may cause issues.
+> "STATE.md shows the current phase is `[phase]`, not `Construction Complete`. Running `/pdlc ship` before the build is complete may cause issues.
 >
 > Continue anyway? (yes/no)"
 
@@ -60,9 +60,9 @@ Operation has two lead agents with a handoff at the Verify→Reflect boundary:
 
 Read the lead agent's full persona from `agents/pulse.md` or `agents/jarvis.md` and embody their perspective throughout their sub-phases.
 
-Before the first user-facing message in the ship phase, announce:
+Before the first user-facing message, read `skills/formatting.md` for the visual patterns, then output a **Phase Transition Banner** for "SHIP" (with the feature name) followed by:
 
-> "**Pulse (DevOps)** is leading Ship and Verify. I'll handle the merge, versioning, CI/CD trigger, deployment verification, and smoke tests."
+> **Pulse (DevOps):** "Pulse here — let's get this feature into production! I'll handle the merge to main, version tagging, CI/CD pipeline, deployment verification, and smoke tests. Almost at the finish line."
 
 ---
 
@@ -72,11 +72,15 @@ The Operation phase runs three sub-phases in strict sequence. Each sub-phase is 
 
 ### Sub-phase 1 — SHIP (Lead: Pulse)
 
+Output a **Sub-phase Transition Header** (per `skills/formatting.md`) for "SHIP".
+
 Read `skills/ship/steps/01-ship.md` and execute every step completely (Steps 3–9).
 
 Return here when CI/CD is triggered and STATE.md shows `Verify`.
 
 ### Sub-phase 2 — VERIFY (Lead: Pulse)
+
+Output a **Sub-phase Transition Header** for "VERIFY".
 
 Read `skills/ship/steps/02-verify.md` and execute every step completely (Steps 10–12).
 
@@ -84,11 +88,15 @@ Return here when smoke tests are approved and STATE.md shows `Reflect`.
 
 ### — HANDOFF: Pulse → Jarvis —
 
-After smoke tests are approved and before starting Reflect, announce:
+After smoke tests are approved and before starting Reflect, output an **Agent Handoff** block (per `skills/formatting.md`) with:
 
-> "**Handoff: Pulse → Jarvis.** Deployment is verified. **Jarvis (Tech Writer)** is now leading the retrospective. I'll generate the retro, finalize the episode file, update the documentation, and commit the delivery record."
+> **Pulse (DevOps):** "Deployment verified, smoke tests passing — we're live! It's been a smooth ride getting this deployed. I'm handing off to Jarvis now for the retrospective. Great working with you on this one."
+>
+> **Jarvis (Tech Writer):** "Jarvis here — nice to finally step into the spotlight! The feature is shipped and verified, which means it's time to look back and capture what we learned. I'll generate the retrospective, finalize the episode file, and update the delivery record. Let's wrap this up properly."
 
 ### Sub-phase 3 — REFLECT (Lead: Jarvis)
+
+Output a **Sub-phase Transition Header** for "REFLECT".
 
 Read `skills/ship/steps/03-reflect.md` and execute every step completely (Steps 13–18).
 
