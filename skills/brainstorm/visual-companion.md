@@ -248,6 +248,12 @@ The frame template loads Mermaid from CDN. Write diagrams directly in content fr
 - `.section` — content block with bottom margin
 - `.label` — small uppercase label text
 - `.badge-inception`, `.badge-design`, `.badge-build`, `.badge-review` — phase status badges
+- `.elevation-1` through `.elevation-8` — Material Design shadow levels
+- `.ripple` — add to any interactive element for Material ripple effect on click
+
+### Theme toggle
+
+The frame includes a light/dark toggle button in the header. The user's preference is persisted in `localStorage`. The default theme is dark. Do not write theme-specific CSS in content fragments — use the `var(--md-*)` CSS variables and the theme system handles both modes automatically.
 
 ---
 

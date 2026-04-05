@@ -1,312 +1,483 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
 <head>
   <meta charset="utf-8">
   <title>PDLC Visual Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
     /*
-     * PDLC VISUAL COMPANION FRAME TEMPLATE
+     * PDLC VISUAL COMPANION — Material Design Frame
      *
-     * This template provides a consistent frame with:
-     * - Dark navy/blue PDLC-branded theming
-     * - Fixed header and selection indicator bar
-     * - Scrollable main content area
-     * - CSS helpers for common UI patterns
+     * Material Design 2 inspired styling with:
+     * - Roboto font family + Material Icons
+     * - MD elevation system (dp shadows)
+     * - MD color palette with light/dark themes
+     * - Ripple effects on interactive elements
+     * - Light/dark toggle with smooth transitions
      *
-     * Content is injected via placeholder comment in #claude-content.
+     * Structural contracts preserved:
+     * - #claude-content: content fragment injection point
+     * - .indicator-bar: selection feedback
+     * - .option/.card with toggleSelect() and .selected state
+     * - data-choice attributes for event recording
      */
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
 
-    /* ===== THEME VARIABLES ===== */
+    /* ===== MATERIAL DESIGN THEME VARIABLES ===== */
     :root {
-      /* PDLC dark navy/blue palette */
-      --bg-primary: #0d1b2a;
-      --bg-secondary: #132337;
-      --bg-tertiary: #1e3550;
-      --border: #2a4a6b;
-      --text-primary: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --text-tertiary: #64748b;
-      --accent: #3b82f6;
-      --accent-hover: #60a5fa;
-      --accent-dim: rgba(59, 130, 246, 0.15);
-      --success: #22c55e;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --selected-bg: rgba(59, 130, 246, 0.18);
-      --selected-border: #3b82f6;
-      /* Header gradient strip */
-      --header-bg: #0a1628;
-      --header-accent: #1d4ed8;
+      /* Transitions for theme switching */
+      --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Light mode override — still respects OS preference */
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg-primary: #f0f4f8;
-        --bg-secondary: #ffffff;
-        --bg-tertiary: #dde6f0;
-        --border: #b8cee3;
-        --text-primary: #0f2040;
-        --text-secondary: #4a6080;
-        --text-tertiary: #7a95b0;
-        --accent: #1d4ed8;
-        --accent-hover: #2563eb;
-        --accent-dim: rgba(29, 78, 216, 0.1);
-        --selected-bg: rgba(29, 78, 216, 0.1);
-        --selected-border: #1d4ed8;
-        --header-bg: #0a1628;
-        --header-accent: #1d4ed8;
-      }
+    /* --- Dark Theme (default) --- */
+    [data-theme="dark"] {
+      --md-surface: #121212;
+      --md-surface-1: #1e1e1e;   /* dp01 overlay */
+      --md-surface-2: #232323;   /* dp02 */
+      --md-surface-3: #252525;   /* dp03 */
+      --md-surface-4: #272727;   /* dp04 */
+      --md-surface-6: #2c2c2c;   /* dp06 */
+      --md-surface-8: #2e2e2e;   /* dp08 */
+      --md-surface-12: #333333;  /* dp12 */
+      --md-on-surface: #e1e1e1;
+      --md-on-surface-medium: #a0a0a0;
+      --md-on-surface-disabled: #6c6c6c;
+      --md-primary: #bb86fc;
+      --md-primary-variant: #3700b3;
+      --md-on-primary: #000000;
+      --md-secondary: #03dac6;
+      --md-secondary-variant: #018786;
+      --md-on-secondary: #000000;
+      --md-error: #cf6679;
+      --md-on-error: #000000;
+      --md-success: #66bb6a;
+      --md-warning: #ffa726;
+      --md-outline: #444444;
+      --md-divider: rgba(255, 255, 255, 0.12);
+      --md-hover: rgba(255, 255, 255, 0.04);
+      --md-selected: rgba(187, 134, 252, 0.12);
+      --md-selected-border: var(--md-primary);
+      --md-ripple: rgba(255, 255, 255, 0.1);
+      --md-header-bg: #0e0e0e;
+      --md-elevation-1: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.48);
+      --md-elevation-2: 0 3px 6px rgba(0,0,0,0.32), 0 3px 6px rgba(0,0,0,0.46);
+      --md-elevation-4: 0 6px 10px rgba(0,0,0,0.28), 0 3px 10px rgba(0,0,0,0.42);
+      --md-elevation-8: 0 8px 16px rgba(0,0,0,0.24), 0 6px 16px rgba(0,0,0,0.38);
     }
 
+    /* --- Light Theme --- */
+    [data-theme="light"] {
+      --md-surface: #fafafa;
+      --md-surface-1: #ffffff;
+      --md-surface-2: #ffffff;
+      --md-surface-3: #f5f5f5;
+      --md-surface-4: #f5f5f5;
+      --md-surface-6: #eeeeee;
+      --md-surface-8: #eeeeee;
+      --md-surface-12: #e0e0e0;
+      --md-on-surface: #1c1c1c;
+      --md-on-surface-medium: #666666;
+      --md-on-surface-disabled: #9e9e9e;
+      --md-primary: #6200ee;
+      --md-primary-variant: #3700b3;
+      --md-on-primary: #ffffff;
+      --md-secondary: #03dac6;
+      --md-secondary-variant: #018786;
+      --md-on-secondary: #000000;
+      --md-error: #b00020;
+      --md-on-error: #ffffff;
+      --md-success: #2e7d32;
+      --md-warning: #e65100;
+      --md-outline: #d0d0d0;
+      --md-divider: rgba(0, 0, 0, 0.12);
+      --md-hover: rgba(0, 0, 0, 0.04);
+      --md-selected: rgba(98, 0, 238, 0.08);
+      --md-selected-border: var(--md-primary);
+      --md-ripple: rgba(0, 0, 0, 0.08);
+      --md-header-bg: #ffffff;
+      --md-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+      --md-elevation-2: 0 3px 6px rgba(0,0,0,0.10), 0 3px 6px rgba(0,0,0,0.15);
+      --md-elevation-4: 0 6px 10px rgba(0,0,0,0.08), 0 3px 10px rgba(0,0,0,0.12);
+      --md-elevation-8: 0 8px 16px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.10);
+    }
+
+    /* ===== BASE ===== */
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+      background: var(--md-surface);
+      color: var(--md-on-surface);
       display: flex;
       flex-direction: column;
-      line-height: 1.5;
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+      transition: var(--theme-transition);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== FRAME STRUCTURE ===== */
+    /* ===== MATERIAL ELEVATION HELPERS ===== */
+    .elevation-1 { box-shadow: var(--md-elevation-1); }
+    .elevation-2 { box-shadow: var(--md-elevation-2); }
+    .elevation-4 { box-shadow: var(--md-elevation-4); }
+    .elevation-8 { box-shadow: var(--md-elevation-8); }
+
+    /* ===== RIPPLE EFFECT ===== */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      border-radius: 50%;
+      background: var(--md-ripple);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+    .ripple:active::after {
+      width: 300px; height: 300px;
+      opacity: 1;
+      transition: width 0s, height 0s, opacity 0s;
+    }
+    .ripple:not(:active)::after {
+      transition: width 0.4s ease, height 0.4s ease, opacity 0.6s ease;
+    }
+
+    /* ===== HEADER (App Bar) ===== */
     .header {
-      background: var(--header-bg);
-      padding: 0 1.5rem;
-      height: 2.75rem;
+      background: var(--md-header-bg);
+      padding: 0 1rem 0 1.25rem;
+      height: 3.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--header-accent);
+      box-shadow: var(--md-elevation-2);
       flex-shrink: 0;
+      z-index: 10;
+      transition: var(--theme-transition);
     }
     .header-left { display: flex; align-items: center; gap: 0.75rem; }
     .header-logo {
-      width: 20px; height: 20px;
-      background: var(--accent);
-      border-radius: 4px;
+      width: 2rem; height: 2rem;
+      background: var(--md-primary);
+      border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 800; color: white; letter-spacing: -0.05em;
+      font-size: 0.75rem; font-weight: 700; color: var(--md-on-primary);
+      letter-spacing: -0.02em;
       flex-shrink: 0;
     }
     .header h1 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #cbd5e1;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--md-on-surface);
+      letter-spacing: 0.01em;
     }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
     .header .status {
-      font-size: 0.7rem;
-      color: var(--success);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--md-success);
       display: flex;
       align-items: center;
       gap: 0.4rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
     }
     .header .status::before {
       content: '';
-      width: 6px; height: 6px;
-      background: var(--success);
+      width: 8px; height: 8px;
+      background: var(--md-success);
       border-radius: 50%;
       animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      50% { opacity: 0.3; }
     }
 
-    .main { flex: 1; overflow-y: auto; }
-    #claude-content { padding: 2rem; min-height: 100%; }
+    /* Theme toggle button */
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--md-on-surface-medium);
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 1.25rem;
+    }
+    .theme-toggle:hover {
+      background: var(--md-hover);
+      color: var(--md-on-surface);
+    }
+    .theme-toggle .material-icons-round { font-size: 1.25rem; }
 
+    /* ===== MAIN CONTENT ===== */
+    .main { flex: 1; overflow-y: auto; background: var(--md-surface); }
+    #claude-content { padding: 1.5rem 2rem 2rem; min-height: 100%; max-width: 960px; margin: 0 auto; }
+
+    /* ===== INDICATOR BAR ===== */
     .indicator-bar {
-      background: var(--header-bg);
-      border-top: 1px solid var(--border);
-      padding: 0.5rem 1.5rem;
+      background: var(--md-surface-1);
+      border-top: 1px solid var(--md-divider);
+      padding: 0.625rem 1.5rem;
       flex-shrink: 0;
       text-align: center;
+      transition: var(--theme-transition);
     }
     .indicator-bar span {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--md-on-surface-medium);
+      letter-spacing: 0.01em;
     }
     .indicator-bar .selected-text {
-      color: var(--accent-hover);
-      font-weight: 600;
+      color: var(--md-primary);
+      font-weight: 500;
     }
 
-    /* ===== TYPOGRAPHY ===== */
-    h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
-    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; }
+    /* ===== TYPOGRAPHY (Material type scale) ===== */
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0em;
+      margin-bottom: 0.5rem;
+      color: var(--md-on-surface);
+    }
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      letter-spacing: 0.0075em;
+      margin-bottom: 0.25rem;
+      color: var(--md-on-surface);
+    }
+    .subtitle {
+      color: var(--md-on-surface-medium);
+      font-size: 0.875rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      margin-bottom: 1.5rem;
+    }
     .section { margin-bottom: 2rem; }
     .label {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
+      font-size: 0.6875rem;
+      color: var(--md-on-surface-medium);
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.1em;
       margin-bottom: 0.5rem;
-      font-weight: 600;
+      font-weight: 500;
     }
 
-    /* ===== OPTIONS (for A/B/C choices) ===== */
+    /* ===== OPTIONS (Material cards for A/B/C choices) ===== */
     .options { display: flex; flex-direction: column; gap: 0.75rem; }
     .option {
-      background: var(--bg-secondary);
-      border: 2px solid var(--border);
-      border-radius: 10px;
+      background: var(--md-surface-1);
+      border: 1.5px solid var(--md-outline);
+      border-radius: 12px;
       padding: 1rem 1.25rem;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: flex-start;
       gap: 1rem;
+      position: relative;
+      overflow: hidden;
     }
-    .option:hover { border-color: var(--accent); background: var(--bg-tertiary); }
-    .option.selected { background: var(--selected-bg); border-color: var(--selected-border); }
+    .option:hover {
+      background: var(--md-hover);
+      box-shadow: var(--md-elevation-1);
+    }
+    .option.selected {
+      background: var(--md-selected);
+      border-color: var(--md-selected-border);
+      box-shadow: var(--md-elevation-2);
+    }
     .option .letter {
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      width: 1.75rem; height: 1.75rem;
-      border-radius: 6px;
+      background: var(--md-surface-6);
+      color: var(--md-on-surface-medium);
+      width: 2rem; height: 2rem;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
-      border: 1px solid var(--border);
+      font-weight: 500; font-size: 0.875rem; flex-shrink: 0;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .option.selected .letter { background: var(--accent); color: white; border-color: var(--accent); }
+    .option.selected .letter {
+      background: var(--md-primary);
+      color: var(--md-on-primary);
+    }
     .option .content { flex: 1; }
-    .option .content h3 { font-size: 0.95rem; margin-bottom: 0.15rem; }
-    .option .content p { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+    .option .content h3 { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.125rem; }
+    .option .content p { color: var(--md-on-surface-medium); font-size: 0.8125rem; margin: 0; line-height: 1.5; }
 
-    /* ===== CARDS (for showing designs/mockups) ===== */
+    /* ===== CARDS (Material cards for designs/mockups) ===== */
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
     .card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--md-surface-1);
+      border: 1px solid var(--md-outline);
+      border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .card:hover {
-      border-color: var(--accent);
+      box-shadow: var(--md-elevation-4);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
     }
-    .card.selected { border-color: var(--selected-border); border-width: 2px; }
+    .card.selected {
+      border-color: var(--md-selected-border);
+      border-width: 2px;
+      box-shadow: var(--md-elevation-4);
+    }
     .card-image {
-      background: var(--bg-tertiary);
+      background: var(--md-surface-4);
       aspect-ratio: 16/10;
       display: flex; align-items: center; justify-content: center;
     }
-    .card-body { padding: 1rem; }
-    .card-body h3 { margin-bottom: 0.25rem; }
-    .card-body p { color: var(--text-secondary); font-size: 0.85rem; }
+    .card-body { padding: 1rem 1.25rem; }
+    .card-body h3 { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.25rem; }
+    .card-body p { color: var(--md-on-surface-medium); font-size: 0.8125rem; }
 
     /* ===== MOCKUP CONTAINER ===== */
     .mockup {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--md-surface-1);
+      border: 1px solid var(--md-outline);
+      border-radius: 12px;
       overflow: hidden;
       margin-bottom: 1.5rem;
+      box-shadow: var(--md-elevation-1);
+      transition: var(--theme-transition);
     }
     .mockup-header {
-      background: var(--bg-tertiary);
-      padding: 0.5rem 1rem;
+      background: var(--md-surface-4);
+      padding: 0.625rem 1rem;
       font-size: 0.75rem;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border);
       font-weight: 500;
-      letter-spacing: 0.02em;
+      color: var(--md-on-surface-medium);
+      border-bottom: 1px solid var(--md-divider);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
     .mockup-body { padding: 1.5rem; }
 
-    /* ===== SPLIT VIEW (side-by-side comparison) ===== */
+    /* ===== SPLIT VIEW ===== */
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
 
-    /* ===== PROS/CONS ===== */
+    /* ===== PROS/CONS (Material outlined cards) ===== */
     .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
-    .pros, .cons { background: var(--bg-secondary); border-radius: 8px; padding: 1rem; }
-    .pros { border-left: 3px solid var(--success); }
-    .cons { border-left: 3px solid var(--error); }
-    .pros h4 { color: var(--success); font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .cons h4 { color: var(--error); font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .pros ul, .cons ul { margin-left: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); }
-    .pros li, .cons li { margin-bottom: 0.25rem; }
+    @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } }
+    .pros, .cons {
+      background: var(--md-surface-1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid var(--md-outline);
+      transition: var(--theme-transition);
+    }
+    .pros { border-left: 4px solid var(--md-success); }
+    .cons { border-left: 4px solid var(--md-error); }
+    .pros h4 { color: var(--md-success); font-size: 0.8125rem; font-weight: 500; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .cons h4 { color: var(--md-error); font-size: 0.8125rem; font-weight: 500; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .pros ul, .cons ul { margin-left: 1.25rem; font-size: 0.8125rem; color: var(--md-on-surface-medium); }
+    .pros li, .cons li { margin-bottom: 0.35rem; }
 
-    /* ===== PLACEHOLDER (for mockup areas) ===== */
+    /* ===== PLACEHOLDER ===== */
     .placeholder {
-      background: var(--bg-tertiary);
-      border: 2px dashed var(--border);
-      border-radius: 8px;
+      background: var(--md-surface-3);
+      border: 2px dashed var(--md-outline);
+      border-radius: 12px;
       padding: 2rem;
       text-align: center;
-      color: var(--text-tertiary);
-      font-size: 0.85rem;
+      color: var(--md-on-surface-disabled);
+      font-size: 0.875rem;
     }
 
-    /* ===== INLINE MOCKUP ELEMENTS ===== */
+    /* ===== MOCK UI ELEMENTS ===== */
     .mock-nav {
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.75rem 1rem;
+      background: var(--md-surface-2);
+      border-bottom: 1px solid var(--md-divider);
+      color: var(--md-on-surface);
+      padding: 0.875rem 1rem;
       display: flex;
       gap: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 500;
       align-items: center;
+      box-shadow: var(--md-elevation-1);
     }
-    .mock-nav a, .mock-nav span { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; }
-    .mock-nav a.active, .mock-nav span.active { color: var(--accent-hover); font-weight: 500; }
+    .mock-nav a, .mock-nav span { color: var(--md-on-surface-medium); text-decoration: none; font-size: 0.8125rem; font-weight: 500; }
+    .mock-nav a.active, .mock-nav span.active { color: var(--md-primary); }
     .mock-sidebar {
-      background: var(--bg-tertiary);
+      background: var(--md-surface-1);
       padding: 1rem;
-      min-width: 180px;
-      border-right: 1px solid var(--border);
+      min-width: 200px;
+      border-right: 1px solid var(--md-divider);
     }
     .mock-content { padding: 1.5rem; flex: 1; }
     .mock-button {
-      background: var(--accent);
-      color: white;
+      background: var(--md-primary);
+      color: var(--md-on-primary);
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
+      padding: 0.625rem 1.5rem;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.875rem;
       font-weight: 500;
-      transition: background 0.15s;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+      box-shadow: var(--md-elevation-1);
     }
-    .mock-button:hover { background: var(--accent-hover); }
+    .mock-button:hover { box-shadow: var(--md-elevation-4); }
+    .mock-button:active { box-shadow: var(--md-elevation-8); }
     .mock-input {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
+      background: var(--md-surface);
+      border: 1.5px solid var(--md-outline);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
       width: 100%;
-      color: var(--text-primary);
-      font-size: 0.9rem;
+      color: var(--md-on-surface);
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
     }
-    .mock-input:focus { outline: none; border-color: var(--accent); }
+    .mock-input:focus { outline: none; border-color: var(--md-primary); border-width: 2px; }
 
-    /* ===== PHASE / STATUS BADGES ===== */
+    /* ===== PHASE BADGES (Material chips) ===== */
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      padding: 0.2rem 0.6rem;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
+      font-size: 0.6875rem;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
-    .badge-inception { background: rgba(59,130,246,0.2); color: #60a5fa; }
-    .badge-design { background: rgba(168,85,247,0.2); color: #c084fc; }
-    .badge-build { background: rgba(34,197,94,0.2); color: #4ade80; }
-    .badge-review { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .badge-inception { background: rgba(187,134,252,0.15); color: var(--md-primary); }
+    .badge-design { background: rgba(3,218,198,0.15); color: var(--md-secondary); }
+    .badge-build { background: rgba(102,187,106,0.15); color: var(--md-success); }
+    .badge-review { background: rgba(255,167,38,0.15); color: var(--md-warning); }
+
+    /* ===== MERMAID DIAGRAM OVERRIDES ===== */
+    .mermaid { background: transparent !important; }
+
+    /* ===== SCROLLBAR (subtle Material-style) ===== */
+    .main::-webkit-scrollbar { width: 8px; }
+    .main::-webkit-scrollbar-track { background: transparent; }
+    .main::-webkit-scrollbar-thumb {
+      background: var(--md-outline);
+      border-radius: 4px;
+    }
+    .main::-webkit-scrollbar-thumb:hover { background: var(--md-on-surface-disabled); }
   </style>
 </head>
 <body>
@@ -315,7 +486,12 @@
       <div class="header-logo">P</div>
       <h1>PDLC Visual Companion</h1>
     </div>
-    <div class="status">Connected</div>
+    <div class="header-right">
+      <div class="status">Connected</div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+        <span class="material-icons-round" id="theme-icon">light_mode</span>
+      </button>
+    </div>
   </div>
 
   <div class="main">
@@ -328,5 +504,30 @@
     <span id="indicator-text">Click an option above, then return to the terminal</span>
   </div>
 
+  <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.dataset.theme === 'dark') {
+        html.dataset.theme = 'light';
+        icon.textContent = 'dark_mode';
+        localStorage.setItem('pdlc-theme', 'light');
+      } else {
+        html.dataset.theme = 'dark';
+        icon.textContent = 'light_mode';
+        localStorage.setItem('pdlc-theme', 'dark');
+      }
+    }
+    // Restore saved theme
+    (function() {
+      var saved = localStorage.getItem('pdlc-theme');
+      if (saved === 'light') {
+        document.documentElement.dataset.theme = 'light';
+        var icon = document.getElementById('theme-icon');
+        if (icon) icon.textContent = 'dark_mode';
+      }
+    })();
+  </script>
 </body>
 </html>
