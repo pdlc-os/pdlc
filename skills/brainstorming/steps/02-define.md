@@ -12,12 +12,13 @@ Auto-generate a complete PRD draft from the brainstorm log. Use `templates/PRD.m
 - **Overview**: 2–4 sentences connecting the feature to a goal in INTENT.md
 - **Problem Statement**: concrete, feature-specific problem from the discovery
 - **Target User**: from the discovery answer, cross-referencing INTENT.md personas
-- **Requirements**: numbered list using MUST/SHOULD/MAY (RFC 2119). Derive from the discovery answers. Minimum 4 requirements.
+- **Requirements**: numbered list using MUST/SHOULD/MAY (RFC 2119). Derive from the discovery answers. Include any edge cases triaged as "in scope" from the Edge Case Analysis. Minimum 4 requirements.
 - **Assumptions**: surfaced from the discovery session. Minimum 3.
-- **Acceptance Criteria**: numbered, binary pass/fail conditions. Map 1:1 or 1:many with requirements. Minimum 4.
+- **Acceptance Criteria**: numbered, binary pass/fail conditions. Map 1:1 or 1:many with requirements. Include a criterion for each in-scope edge case. Minimum 4.
 - **User Stories**: BDD Given/When/Then format. Label as US-001, US-002, etc. One story per major acceptance criterion group. Cross-reference AC numbers.
 - **Non-Functional Requirements**: performance, security, accessibility derived from constraints and CONSTITUTION.md
-- **Out of Scope**: from the discovery answer
+- **Known Risks**: include any edge cases triaged as "known risk" from the Edge Case Analysis, with deferral reasoning
+- **Out of Scope**: from the discovery answer, plus any edge cases triaged as "out of scope" — include a brief note on why each is excluded
 - **Design Docs**: leave as template placeholder — will be filled in after Design sub-phase
 - **Approval**: leave blank — to be filled by human
 
