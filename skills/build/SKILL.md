@@ -78,6 +78,8 @@ READY QUEUE ([N] tasks unblocked)
 ...
 ```
 
+**Wave Kickoff Standup:** If this is the start of a new wave (first run of the loop, or previous `bd ready` returned empty and now returns tasks), AND the queue has 2+ tasks, read `skills/build/party/orchestrator.md` then `skills/build/party/01-wave-kickoff.md` and execute the standup before proceeding to Step 5. Apply any Beads dependency updates the standup surfaces.
+
 ### Step 5 — Select the next task
 
 Pick the highest-priority unblocked task. Priority order:
@@ -102,6 +104,12 @@ bd update [task-id] --claim
 Update `docs/pdlc/memory/STATE.md`:
 - **Active Beads Task**: `[task-id] — [task title]`
 - **Last Checkpoint**: `Construction / Build / [now ISO 8601]`
+
+### Step 6b — Design Roundtable (conditional)
+
+After claiming the task, check whether a design roundtable should be offered before building. Read `skills/build/party/02-design-roundtable.md` — follow its "When to Trigger" logic exactly. If auto-suggest fires, offer the roundtable to the user. If the user says yes, read `skills/build/party/orchestrator.md` and run the roundtable. Carry the Implementation Decision into Step 9 as context.
+
+If the task does not meet the auto-suggest criteria, proceed silently to Step 7.
 
 ### Step 7 — Choose execution mode
 
@@ -158,14 +166,7 @@ Follow the TDD protocol from `skills/tdd/SKILL.md` exactly. The key steps:
 **9c. Auto-fix loop:**
 - If a test fails after implementation: attempt to fix.
 - Maximum **3 automatic fix attempts** per failing test.
-- After 3 failed attempts, stop immediately and present the human with:
-  - The test name and full test code
-  - The current implementation
-  - The exact error output from all 3 attempts
-  - Your hypothesis for why it is failing
-  - Two proposed approaches to resolve it
-  - Ask: "(A) Continue automatically with approach 1, (B) Continue automatically with approach 2, or (C) Take the wheel — I'll guide you."
-  - Wait for the human's choice before continuing.
+- After 3 failed attempts, stop immediately and run the Strike Panel: read `skills/build/party/orchestrator.md` then `skills/build/party/04-strike-panel.md`. The panel diagnoses the root cause and produces 3 ranked approaches. Present the panel output to the human and ask: "(A) Implement approach 1, (B) Implement approach 2, or (C) Take the wheel — I'll guide you." Wait for the human's choice before continuing. The 3-strike counter resets after a human-approved direction change.
 
 **9d. Tier 1 hard blocks — stop and double-confirm (highlighted) before proceeding:**
 - Force-pushing to `main`
@@ -213,34 +214,16 @@ Return to **Step 4**. Continue until `bd ready` returns an empty list.
 
 Once `bd ready` is empty (all tasks complete):
 
-### Step 12 — Run the review protocol
+### Step 12 — Run the Party Review
 
-Follow `skills/review/SKILL.md` exactly.
+Read `skills/build/party/orchestrator.md` then `skills/build/party/03-party-review.md` and execute the full party review protocol.
 
-**Context to load:**
-- The full list of tasks completed (from Phase History in STATE.md)
-- All commits on the feature branch since it diverged from main: `git log main..feature/[feature-name]`
-- The full diff: `git diff main..feature/[feature-name]`
-- `docs/pdlc/memory/CONSTITUTION.md`
-- `docs/pdlc/memory/DECISIONS.md`
-- `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
-- All files in `docs/pdlc/design/[feature-name]/`
+The party review replaces the sequential four-pass review. All four agents (Neo, Echo, Phantom, Jarvis) run in parallel with cross-talk, producing a unified review file where interconnected findings are explicitly linked.
 
-**Run all four reviewer passes:**
-
-- **Neo** (Architecture & PRD conformance): check design adherence, architectural constraints, cross-cutting concerns, ADR compliance
-- **Phantom** (Security): OWASP Top 10, auth, input validation, secrets, access control
-- **Echo** (Test coverage & quality): AC coverage, Given/When/Then traceability, edge cases, regression risk
-- **Jarvis** (Documentation & API contracts): inline comments, API docs, CHANGELOG draft, README updates, PRD accuracy
-
-Note: for this feature-level review, the "task ID" in the review filename should use the feature name: `REVIEW_[feature-name]_[YYYY-MM-DD].md`
-
-Write the review file to:
+The review file is written to:
 ```
 docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md
 ```
-
-Follow the structure in `templates/review.md`.
 
 ### Step 13 — Review approval gate
 
