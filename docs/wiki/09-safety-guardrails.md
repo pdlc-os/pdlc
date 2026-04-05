@@ -33,4 +33,4 @@ PDLC proceeds and records the decision in `STATE.md`.
 
 ---
 
-← [Back to README](../../README.md) | [Next: Status Bar →](10-status-bar.md)
+[← Previous: Memory Bank](08-memory-bank.md) | [Back to README](../../README.md) | [Next: Status Bar →](10-status-bar.md)

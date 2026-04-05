@@ -39,4 +39,4 @@ Every time a feature is delivered, Claude drafts an episode file capturing what 
 
 ---
 
-← [Back to README](../../README.md) | [Next: Safety Guardrails →](09-safety-guardrails.md)
+[← Previous: Skills Architecture](07-skills-architecture.md) | [Back to README](../../README.md) | [Next: Safety Guardrails →](09-safety-guardrails.md)

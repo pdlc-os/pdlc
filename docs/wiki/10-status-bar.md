@@ -16,4 +16,4 @@ A background hook fires after every tool call and injects context warnings at >=
 
 ---
 
-← [Back to README](../../README.md) | [Next: Visual Companion →](11-visual-companion.md)
+[← Previous: Safety Guardrails](09-safety-guardrails.md) | [Back to README](../../README.md) | [Next: Visual Companion →](11-visual-companion.md)

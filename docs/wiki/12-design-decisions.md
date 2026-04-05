@@ -82,4 +82,4 @@ Before committing to a change, you want to know the cost. "What if we switched t
 
 ---
 
-← [Back to README](../../README.md)
+[← Previous: Visual Companion](11-visual-companion.md) | [Back to README](../../README.md)

@@ -13,4 +13,4 @@ When multiple agents or tasks work in parallel, they can get stuck. PDLC detects
 
 ---
 
-← [Back to README](../../README.md) | [Next: Skills Architecture →](07-skills-architecture.md)
+[← Previous: Party Mode](05-party-mode.md) | [Back to README](../../README.md) | [Next: Skills Architecture →](07-skills-architecture.md)

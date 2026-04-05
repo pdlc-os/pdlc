@@ -61,4 +61,4 @@ Every party meeting writes a `.pending-party.json` checkpoint file before spawni
 
 ---
 
-← [Back to README](../../README.md) | [Next: Deadlock Detection →](06-deadlock-detection.md)
+[← Previous: The Agent Team](04-agent-team.md) | [Back to README](../../README.md) | [Next: Deadlock Detection →](06-deadlock-detection.md)

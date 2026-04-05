@@ -7,6 +7,7 @@ PDLC combines the best of four Claude Code workflows:
 - **[gstack](https://github.com/garrytan/gstack)** — specialist agent roles, sprint workflow, real browser automation
 - **[get-shit-done-cc](https://github.com/gsd-build/get-shit-done)** — context-rot prevention, spec-driven execution, file-based persistent memory
 - **[bmad-method](https://github.com/bmadcode/bmad-method)** — adversarial review, edge case analysis, divergent ideation, multi-agent party mode
+- plus additional features missing from these workflows including what-if analysis, roadmap pivots, etc.
 
 ---
 

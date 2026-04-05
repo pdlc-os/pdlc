@@ -90,4 +90,4 @@ skills/
 
 ---
 
-← [Back to README](../../README.md) | [Next: Memory Bank →](08-memory-bank.md)
+[← Previous: Deadlock Detection](06-deadlock-detection.md) | [Back to README](../../README.md) | [Next: Memory Bank →](08-memory-bank.md)
