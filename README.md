@@ -377,6 +377,16 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 | **Phase-Aware Reconciliation** | Updates Beads tasks, PRDs, design docs, episode drafts, test flags, and announces decision context to the team on resume. |
 | **Durable Checkpoints** | Decision and meeting progress saved to disk. Survives network failures, usage limits, and accidental exits. Session-start hook detects interrupted work and offers recovery. |
 
+### What-If Analysis (`/pdlc whatif`)
+
+| Feature | What it does |
+|---------|-------------|
+| **Read-Only Exploration** | Explore "what if" scenarios without modifying any project files. Only a MOM is created. |
+| **Full Team Analysis** | All 9 agents assess the hypothetical scenario: architecture, code, tests, security, UX, docs, ops, roadmap, product impact. |
+| **Iterative Deepening** | Explore further by drilling into specific aspects — each round produces a versioned MOM. |
+| **Convert to Decision** | Accept the analysis as a formal decision — reuses the existing MOM (no duplicate meetings), then runs the decision workflow for reconciliation. |
+| **Safe to Discard** | File the analysis for reference and resume where you left off. MOM files are kept permanently. |
+
 ### Cross-Cutting
 
 | Feature | What it does |
@@ -474,22 +484,24 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 ### Always-on (every task, every review)
 
-| Name | Role | Focus | Style |
-|------|------|-------|-------|
-| **Neo** | Architect | High-level design, cross-cutting concerns, tech debt radar | Decisive, big-picture, challenges scope creep |
-| **Echo** | QA Engineer | Test strategy, edge cases, regression coverage | Methodical, pessimistic about happy-path assumptions |
-| **Phantom** | Security Reviewer | Auth, input validation, OWASP Top 10, secrets | Paranoid, precise, never lets "we'll fix it later" slide |
-| **Jarvis** | Tech Writer | Docs, API contracts, CHANGELOG, README | Clear, audience-aware, flags ambiguous naming |
+| Name | Role | Model | Focus | Style |
+|------|------|-------|-------|-------|
+| **Neo** | Architect | Opus | High-level design, cross-cutting concerns, tech debt radar | Decisive, big-picture, challenges scope creep |
+| **Echo** | QA Engineer | Sonnet | Test strategy, edge cases, regression coverage | Methodical, pessimistic about happy-path assumptions |
+| **Phantom** | Security Reviewer | Sonnet | Auth, input validation, OWASP Top 10, secrets | Paranoid, precise, never lets "we'll fix it later" slide |
+| **Jarvis** | Tech Writer | Sonnet | Docs, API contracts, CHANGELOG, README | Clear, audience-aware, flags ambiguous naming |
 
 ### Auto-selected (based on task labels)
 
-| Name | Role | Focus | Style |
-|------|------|-------|-------|
-| **Bolt** | Backend Engineer | APIs, services, DB, business logic | Pragmatic, performance-aware, opinionated about data models |
-| **Friday** | Frontend Engineer | UI components, state, UX implementation | Detail-oriented, accessibility-conscious |
-| **Muse** | UX Designer | User flows, interaction design, mental models | Empathetic, non-technical framing, pushes back on dev-centric thinking |
-| **Oracle** | PM | Requirements clarity, scope, acceptance criteria | Scope guardian, pushes for testable definitions |
-| **Pulse** | DevOps | CI/CD, infra, deployment, environment config | Ops-first, questions anything that doesn't deploy cleanly |
+| Name | Role | Model | Focus | Style |
+|------|------|-------|-------|-------|
+| **Bolt** | Backend Engineer | Opus | APIs, services, DB, business logic | Pragmatic, performance-aware, opinionated about data models |
+| **Friday** | Frontend Engineer | Opus | UI components, state, UX implementation | Detail-oriented, accessibility-conscious |
+| **Muse** | UX Designer | Sonnet | User flows, interaction design, mental models | Empathetic, non-technical framing, pushes back on dev-centric thinking |
+| **Oracle** | PM | Opus | Requirements clarity, scope, acceptance criteria | Scope guardian, pushes for testable definitions |
+| **Pulse** | DevOps | Opus | CI/CD, infra, deployment, environment config | Ops-first, questions anything that doesn't deploy cleanly |
+
+> **Model strategy:** Opus (5 agents) handles complex reasoning — architecture, product decisions, backend/frontend engineering, deployment. Sonnet (4 agents) handles focused specialized work — testing, security review, documentation, UX design.
 
 ---
 
@@ -521,6 +533,7 @@ Party mode brings multiple agents together for structured discussions. Five meet
 | **Party Review** | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
 | **Strike Panel** | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
 | **Decision Review** | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
+| **What-If Analysis** | `/pdlc whatif` | All 9 agents | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
 
 ### Spawn modes
 
@@ -572,6 +585,7 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 | **Build** | `/pdlc build` | Run Construction: Build (TDD) -> Review -> Test |
 | **Ship** | `/pdlc ship` | Run Operation: Ship -> Verify -> Reflect -> Next Feature |
 | **Decision** | `/pdlc decision <text>` | Record a decision with full team impact assessment (any phase) |
+| **What-If** | `/pdlc whatif <scenario>` | Read-only team analysis of a hypothetical scenario (any phase) |
 
 ### Supporting skills (referenced internally)
 
@@ -582,6 +596,7 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 | **Test** | Six test layer execution order; Constitution gate checking |
 | **Reflect** | Retro format; per-agent contributions; shipping streaks; metrics |
 | **Decision** | Decision Review Party; 9-agent impact assessment; MOM generation; phase-aware reconciliation |
+| **What-If** | Read-only scenario exploration; team analysis meeting; option to convert to formal decision |
 | **Safety Guardrails** | Tier 1/2/3 definitions; double-RED override protocol |
 | **Repo Scan** | Brownfield deep-scan; pre-populates memory files from existing codebase |
 | **Visual Companion** | Browser-based mockup and diagram loop during Inception |
@@ -640,6 +655,9 @@ skills/
 
   decision/
     SKILL.md                          <- decision review party + reconciliation
+
+  whatif/
+    SKILL.md                          <- read-only scenario analysis
 ```
 
 ---

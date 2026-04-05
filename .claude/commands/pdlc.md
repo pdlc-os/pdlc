@@ -8,19 +8,20 @@ Route to the correct PDLC skill based on the first word in `$ARGUMENTS`.
 
 Parse `$ARGUMENTS` as: `<command> [remaining-args]`
 
-**Plugin root:** `/Users/nishant/Documents/Projects/ClaudeCode/pdlc`
+**Plugin root:** `${PDLC_PLUGIN_ROOT}`
 
 All skill file paths below are relative to the plugin root above.
 
 | Command       | Action                                                         |
 |---------------|----------------------------------------------------------------|
-| `init`        | Read `/Users/nishant/Documents/Projects/ClaudeCode/pdlc/skills/init/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `brainstorm`  | Read `/Users/nishant/Documents/Projects/ClaudeCode/pdlc/skills/brainstorm/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `build`       | Read `/Users/nishant/Documents/Projects/ClaudeCode/pdlc/skills/build/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `ship`        | Read `/Users/nishant/Documents/Projects/ClaudeCode/pdlc/skills/ship/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `decision`    | Read `/Users/nishant/Documents/Projects/ClaudeCode/pdlc/skills/decision/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `init`        | Read `${PDLC_PLUGIN_ROOT}/skills/init/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `brainstorm`  | Read `${PDLC_PLUGIN_ROOT}/skills/brainstorm/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `build`       | Read `${PDLC_PLUGIN_ROOT}/skills/build/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `ship`        | Read `${PDLC_PLUGIN_ROOT}/skills/ship/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `decision`    | Read `${PDLC_PLUGIN_ROOT}/skills/decision/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `whatif`      | Read `${PDLC_PLUGIN_ROOT}/skills/whatif/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
-| *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`." |
+| *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`." |
 
 When executing a skill, follow every instruction in its `SKILL.md` completely — treat the skill file as your primary prompt for that phase.
 
