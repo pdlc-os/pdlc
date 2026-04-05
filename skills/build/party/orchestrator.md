@@ -94,14 +94,14 @@ These are estimates — actual time depends on complexity and spawn mode (solo i
 Determine spawn mode using this priority order:
 
 1. **STATE.md `Party Mode` field** — if set, use it. This is the session-level preference established at the first Wave Kickoff standup.
-2. **Step 7 execution mode** — if no `Party Mode` in STATE.md and a task execution mode has been chosen, map it: Agent Teams → Neo mode, Sub-Agent → Subagent mode.
-3. **Default** — Subagent mode.
+2. **Step 7 execution mode** — if no `Party Mode` in STATE.md and a task execution mode has been chosen, use it.
+3. **Default** — Agent Teams mode.
 
 | Party Mode value | Behaviour |
 |-----------------|-----------|
-| `agent-teams` | **Neo mode**: main Claude embodies Neo throughout; all other personas spawned as real subagents via the Agent tool |
-| `subagents` | **Subagent mode**: all personas including Neo spawned via Agent tool; main Claude is pure orchestrator |
-| `solo` | **Solo mode**: single LLM roleplays all agents; announce solo mode before starting |
+| `agent-teams` | **Agent Teams mode** (default): Each agent is a separate agent with its own context window. Agents can talk to each other and the user can talk to any agent directly. Best for complex multi-perspective discussions. |
+| `subagents` | **Subagent mode**: Primary agent spawns sub-agents via the Agent tool. Sub-agents report back to the primary agent only — they cannot talk to each other. Primary agent synthesizes. Faster but less interactive. |
+| `solo` | **Solo mode**: Single LLM roleplays all agents in one response. Fastest, but lowest fidelity. Emergency fallback or when spawning fails. |
 
 The user can override for any single meeting by saying "run this one as solo" or similar.
 
@@ -137,24 +137,33 @@ Retry once with a stripped-down prompt before applying the tiers above. Never re
 
 ## Spawn Protocol
 
-### Neo mode (Agent Teams)
+### Agent Teams mode (default)
 
-Main Claude speaks as Neo. For each other participant, spawn a subagent via the Agent tool using the persona prompt below. Spawn all non-Neo participants **in parallel** (single message, multiple Agent tool calls).
+Each agent is created as a separate agent with its own context window. All agents can communicate with each other directly and the user can interact with any agent.
 
-Neo's role:
+The lead agent (whoever called the meeting):
 - Opens each round with a framing statement
-- Receives all subagent responses
-- Drives cross-talk by routing specific responses to specific agents for reaction
+- Facilitates cross-talk — agents respond to each other directly
 - Closes the discussion with a synthesis and conclusion
 - Writes the MOM file
 
+This is the highest fidelity mode — agents maintain independent reasoning and can challenge each other in real time.
+
 ### Subagent mode
 
-Spawn **all** participants including Neo via the Agent tool in parallel. Main Claude is pure orchestrator — no persona, no opinions. Collect all responses, present them verbatim, then run one cross-talk round if responses diverge. Synthesize conclusion as orchestrator.
+The primary agent spawns sub-agents via the Agent tool. Sub-agents can only report back to the primary agent — they cannot talk to each other. The primary agent:
+- Spawns all participants in parallel
+- Collects all responses
+- Routes relevant responses between agents manually for cross-talk (one round max)
+- Synthesizes conclusion
+
+Faster than Agent Teams but cross-talk is mediated rather than direct.
 
 ### Solo mode
 
 Generate all agent responses yourself in a single message. Clearly separate each with `**[Name] ([Role]):**`. Stay faithful to each persona's focus and style. Do not let them all agree — if expertise warrants disagreement, write it. Conclude as orchestrator.
+
+Fastest but lowest fidelity — risk of false consensus since one LLM is maintaining all personas.
 
 ---
 

@@ -26,7 +26,7 @@
 | Feature | What it does |
 |---------|-------------|
 | **TDD Enforcement** | No implementation code without a failing test first. Red -> Green -> Refactor per acceptance criterion. |
-| **Party Mode** | 5 multi-agent meeting types: Wave Kickoff, Design Roundtable, Party Review, Strike Panel, Decision Review. 3 spawn modes (agent-teams, subagents, solo). |
+| **Party Mode** | 7 multi-agent meeting types. 3 spawn modes: Agent Teams (default — own context windows, direct cross-talk), Subagents (mediated), Solo (single LLM fallback). |
 | **Meeting Announcements** | Before every party meeting: who called it, participants, purpose, and estimated duration. Progress updates if it runs long. |
 | **3-Strike Loop Breaker** | After 3 failed auto-fix attempts, convenes a Strike Panel (Neo + Echo + domain agent) to diagnose root cause and produce 3 ranked approaches for the human. |
 | **Deadlock Detection** | 6 types of deadlock detection with auto-resolution and human escalation paths. |

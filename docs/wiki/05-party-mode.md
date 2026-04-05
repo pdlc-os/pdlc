@@ -41,12 +41,12 @@ Any phase ──────────── What-If Analysis (/pdlc whatif)
 
 ### Spawn modes
 
-Set once at the first Wave Kickoff, applies for the session:
+Set once at the first Wave Kickoff, applies for the session. Default is Agent Teams.
 
 | Mode | How it works | Best for |
 |------|-------------|----------|
-| **Agent Teams** | Main Claude embodies Neo; others are real subagents spawned in parallel | Complex tasks with multiple concerns |
-| **Subagents** | All agents including Neo spawned independently; main Claude is pure orchestrator | Zero-bias multi-perspective review |
+| **Agent Teams** (default) | Each agent has its own context window. Agents talk to each other directly and the user can interact with any agent. | Complex multi-perspective discussions, highest fidelity |
+| **Subagents** | Primary agent spawns sub-agents via Agent tool. Sub-agents report back to primary only — they cannot talk to each other. | Faster execution, mediated cross-talk |
 | **Solo** | Single LLM roleplays all agents in one response | Fast iteration, fallback when spawning fails |
 
 All meetings produce MOM (minutes of meeting) files at `docs/pdlc/mom/`.

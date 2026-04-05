@@ -18,9 +18,9 @@ Small startup teams cannot afford untested features. The cost of a production bu
 
 Each mode trades off independence, speed, and fidelity:
 
-- **Agent Teams**: highest fidelity (each agent independently reasoned), medium speed. Best when architectural decisions matter.
-- **Subagents**: highest fidelity with zero orchestrator bias, slowest. Best for unbiased multi-perspective review.
-- **Solo**: medium fidelity (single LLM maintaining personas risks false consensus), fastest. Emergency fallback or when spawning fails.
+- **Agent Teams** (default): Highest fidelity. Each agent has its own context window with independent reasoning. Agents talk to each other directly and the user can interact with any agent. Best for complex discussions where cross-agent debate matters.
+- **Subagents**: Medium fidelity, faster. Primary agent spawns sub-agents that report back individually — they cannot talk to each other. Cross-talk is mediated by the primary agent. Best when speed matters more than direct debate.
+- **Solo**: Lowest fidelity, fastest. Single LLM roleplays all personas in one response — risks false consensus since one model maintains all viewpoints. Emergency fallback or when spawning fails.
 
 Users pick once per session. The choice is stored in STATE.md and never asked again.
 
