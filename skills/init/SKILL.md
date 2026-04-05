@@ -15,28 +15,15 @@ Before the first user-facing message, read `skills/formatting.md` for the visual
 
 ---
 
-## Step 1 — Check prerequisites
+## Step 1 — Check prerequisites and install tooling
 
-**1a. Verify Beads is installed.**
+> **Model override:** Steps 1a–1e (all installation and setup tasks) use the **Haiku** model for speed and cost efficiency. These are straightforward CLI operations that don't require complex reasoning. After Step 1e completes, revert to the lead agent's assigned model (Oracle = Opus) for the rest of initialization.
 
-Run: `bd --version`
-
-If the command is not found, tell the user:
-
-> "Beads (`bd`) is not installed — it's required for PDLC's task management.
->
-> **Install it now?**
-> Run: `npm install -g @beads/bd`
->
-> Once that completes, re-run `/pdlc init` and we'll continue from here."
-
-Then run `npm install -g @beads/bd` if the user confirms, or wait for them to install it manually. Re-run `bd --version` to confirm success before proceeding. Do not continue until `bd --version` succeeds.
-
-**1b. Verify a git repository exists.**
+**1a. Verify a git repository exists.**
 
 Run: `git status`
 
-If the command succeeds, skip to Step 1c.
+If the command succeeds, skip to Step 1b.
 
 If the command returns a "not a git repository" error, offer to initialize:
 
@@ -66,7 +53,7 @@ If the command returns a "not a git repository" error, offer to initialize:
 
 Do not proceed until `git status` succeeds.
 
-**1c. Verify GitHub remote and connectivity.**
+**1b. Verify GitHub remote and connectivity.**
 
 Run: `git remote -v`
 
@@ -110,11 +97,9 @@ If yes, walk through the relevant fix based on the error.
 **If the user chooses GitHub.com or GitHub Enterprise:**
 
 1. Check `gh` CLI is installed: `gh --version`. If not found:
-   > "The GitHub CLI (`gh`) is required. Install it?
-   > - macOS: `brew install gh`
-   > - Linux: see https://cli.github.com"
+   > "The GitHub CLI (`gh`) is required. I'll install it after checking for Homebrew."
    
-   Offer to install via brew if available, otherwise provide the link.
+   Note that `gh` needs installing and proceed to Step 1c — Homebrew will be verified first, then `gh` installed via brew.
 
 2. Check `gh` is authenticated: `gh auth status`. If not:
    > "GitHub CLI is not authenticated. Let's log in."
@@ -151,6 +136,79 @@ If yes, walk through the relevant fix based on the error.
 > "Skipping GitHub setup. You can configure it later — run `gh repo create` or add a remote manually. Note: PR creation during `/pdlc ship` requires a GitHub remote."
 
 Proceed to the next step regardless — GitHub is recommended but not strictly required for init.
+
+**1c. Verify Homebrew is installed.**
+
+Run: `brew --version`
+
+**If Homebrew is found:**
+> "Homebrew: ✓ installed"
+
+**If Homebrew is not found:**
+
+> "Homebrew is not installed. It's used to install Dolt, Beads dependencies, and the GitHub CLI on macOS.
+>
+> Install Homebrew now? (Y/n)"
+
+**If the user accepts:**
+
+Tell the user to run the official installer (it requires interactive input):
+> "Please run this command:
+> `! /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"`
+>
+> Follow the prompts. I'll continue once it's done."
+
+Wait for the user to confirm, then verify with `brew --version`.
+
+**If the user declines:**
+> "Skipping Homebrew. You'll need to install Dolt and other dependencies manually."
+
+**If on Linux:** Homebrew is optional. Check if it's available; if not, note that Dolt and gh will be installed via their official install scripts instead. Do not prompt to install Homebrew on Linux unless the user asks.
+
+After Homebrew is verified (or skipped), install any tools noted as needed from earlier steps:
+- If `gh` was flagged as missing in Step 1b: `brew install gh` (or provide the Linux install script)
+- Verify: `gh --version`
+
+**1d. Verify Dolt is installed.**
+
+Run: `dolt version`
+
+**If Dolt is found:**
+> "Dolt: ✓ installed"
+
+**If Dolt is not found:**
+
+> "Dolt is a SQL database required by Beads for task storage. Install it now? (Y/n)"
+
+**If the user accepts:**
+- macOS (Homebrew available): `brew install dolt`
+- Linux: `sudo bash -c 'curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash'`
+
+Verify: `dolt version`
+
+**If the user declines:**
+> "Dolt is required by Beads. Install it manually before running `/pdlc init`."
+
+**1e. Verify Beads is installed.**
+
+Run: `bd --version`
+
+**If Beads is found:**
+> "Beads (bd): ✓ installed"
+
+**If Beads is not found:**
+
+> "Beads (`bd`) is required for PDLC's task management. Install it now? (Y/n)"
+
+**If the user accepts:** `npm install -g @beads/bd` (or `npm install --save-dev @beads/bd` for local installs)
+
+Verify: `bd --version`. Do not proceed until `bd --version` succeeds.
+
+**If the user declines:**
+> "Beads is required. Install it manually before running `/pdlc init`:
+> `npm install -g @beads/bd`"
+
+> **End of model override.** Steps 1a–1e are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
 
 ---
 

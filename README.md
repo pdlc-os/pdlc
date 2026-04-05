@@ -16,7 +16,7 @@ PDLC combines the best of four Claude Code workflows:
 1. [Installation](#installation)
 2. [Quick Start](#quick-start)
 3. [Documentation](#documentation)
-4. [pdlc-os Marketplace](#pdlc-os-marketplace)
+4. [PDLC-OS Marketplace](#pdlc-os-marketplace)
 5. [Prerequisites](#prerequisites)
 6. [License](#license)
 
@@ -226,7 +226,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 
 ---
 
-## pdlc-os Marketplace
+## PDLC-OS Marketplace
 
 | Resource | URL |
 |----------|-----|
