@@ -227,13 +227,25 @@ docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md
 
 ### Step 13 — Review approval gate
 
-Tell the user:
+First check the review file for any **Critical** findings (labeled `[Critical]` by any agent). If any Critical findings exist:
+
+> "Review complete, but **[N] Critical finding(s)** require resolution before proceeding:
+>
+> [list each Critical finding — agent, summary, file/location]
+>
+> Critical findings must be fixed. Please choose:
+> - **Fix** — I address the Critical issues, regenerate the review, then re-present
+> - **Override** — I acknowledge this is a Tier 1 override; I accept full responsibility (requires typing **OVERRIDE CRITICAL** to confirm)"
+
+Do not present the Approve/Accept/Defer options until all Critical findings are resolved or explicitly overridden. Log any Critical override as a Tier 1 event in STATE.md.
+
+If no Critical findings, present the standard gate:
 
 > "Review complete. Please read `docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md` and decide:
 >
 > - **Approve** — ship as-is; post PR comments (if GitHub integration active)
 > - **Fix** — I address the listed issues, regenerate the review, then re-present
-> - **Accept warning** — ship despite warnings (Tier 3 logged events)
+> - **Accept warning** — ship despite Important/Advisory warnings (Tier 3 logged)
 > - **Defer** — move items to tech debt log
 >
 > What is your decision?"

@@ -46,6 +46,9 @@ feature: [feature-name]
 date: [YYYY-MM-DD]
 status: in-progress
 last-updated: [now ISO 8601]
+approved-by:
+approved-date:
+prd:
 ---
 
 # Brainstorm Log: [Feature Name]

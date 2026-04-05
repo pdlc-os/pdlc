@@ -87,6 +87,8 @@ mkdir -p docs/pdlc/memory/episodes
 mkdir -p docs/pdlc/prds/plans
 mkdir -p docs/pdlc/design
 mkdir -p docs/pdlc/reviews
+mkdir -p docs/pdlc/brainstorm
+mkdir -p docs/pdlc/mom
 ```
 
 Confirm each directory was created. Tell the user which directories were created.
@@ -115,7 +117,15 @@ Ask each question exactly as written:
 4. "What tech stack are you using? (e.g. Next.js + PostgreSQL + Vercel, or Rails + React + Heroku)"
 5. "What are your non-negotiable architectural constraints, if any? (e.g. 'all business logic in service layer', 'no raw SQL in controllers', or 'none' if you have no constraints yet)"
 6. "Which test layers do you want to enforce as required gates — meaning Construction cannot move to Operation unless these pass? Choose from: Unit, Integration, E2E, Performance, Accessibility, Visual Regression. (Default: Unit + Integration. You can change this later in CONSTITUTION.md.)"
-7. "Are there any Tier 2 safety actions you want to auto-approve for your team? Tier 2 actions normally pause and wait for confirmation. Examples you might downgrade: 'running DB migrations in production' or 'external API calls that post/send'. List them or say 'none'."
+7. "Are there any Tier 2 safety actions you want to auto-approve for your team? These normally pause and wait for explicit confirmation before proceeding. The full list of Tier 2 actions is:
+   - `rm -rf` or bulk deletes
+   - `git reset --hard`
+   - Running DB migrations in production
+   - Changing CONSTITUTION.md
+   - Closing all open Beads tasks at once
+   - External API calls that write/post/send (Slack, email, webhooks)
+   
+   List which of these (if any) you want to downgrade to Tier 3 (logged warning, no pause), or say 'none'."
 
 Store all answers. You will use them to fill in the memory files below.
 

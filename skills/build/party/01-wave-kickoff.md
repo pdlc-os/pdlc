@@ -16,6 +16,24 @@ If only a single task is in the ready queue, skip the standup — there is nothi
 
 ---
 
+## Spawn Mode for Wave Kickoff
+
+Wave Kickoff fires at Step 4, before any task execution mode (Step 7) has been chosen. Determine spawn mode as follows:
+
+1. Check STATE.md for `Party Mode` preference — if a project-level preference was previously set, use it.
+2. If no preference is recorded, ask the user once, upfront, as a **standalone message**:
+
+> "How should I run the Wave Kickoff standup?
+> **A) Agent Teams** — I act as Neo; other agents are real subagents (more independent, slightly slower)
+> **B) Subagents** — all agents including Neo are spawned independently (pure BMAD-style)
+> **C) Solo** — I roleplay all agents myself (fastest)
+>
+> This will also be the default for Design Roundtables and Party Reviews unless you change it."
+
+Store the answer in STATE.md as `Party Mode: agent-teams | subagents | solo`. Do not ask again this session.
+
+3. If the user is mid-session and already answered (STATE.md has `Party Mode`), use that — no prompt needed.
+
 ## Participants
 
 - **Neo** (always — leads the standup)

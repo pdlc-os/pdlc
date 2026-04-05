@@ -31,7 +31,7 @@ Provide every agent with:
 - The current implementation: the relevant file(s) and function(s)
 - The full error output from all 3 attempts (verbatim — do not summarize)
 - The acceptance criterion this test maps to (from the PRD)
-- The implementation decision from the Design Roundtable MOM, if one was run for this task
+- **Design Roundtable context (if available):** check `docs/pdlc/mom/` for a `[feature-name]_design-roundtable_mom_*.md` file for this task. If found, include the Implementation Decision from it. If not found, include the relevant section of `docs/pdlc/design/[feature-name]/ARCHITECTURE.md` instead, and note "No design roundtable was run for this task."
 
 ---
 

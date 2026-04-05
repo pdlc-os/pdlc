@@ -92,6 +92,8 @@ Before asking the first question, print this notice in blue text using ANSI esca
 \x1b[34mTip: You can type 'skip' at any time to stop the questions and proceed with whatever information has been collected so far.\x1b[0m
 ```
 
+**If divergent ideation was run (Step 0):** before asking the first question, review `[divergent-standouts]` from the brainstorm log. Use the standouts to sharpen the Socratic questions — reference specific standout ideas when asking about success metrics ("One idea that surfaced was X — does that direction change what success looks like?"), constraints ("Standout idea Y touched [area] — what constraints apply there?"), and risks ("Several ideas pointed toward Z — what assumptions are we making if we go that direction?"). Do not recite the standouts back verbatim; weave them into the questions naturally.
+
 Ask the user probing questions **one at a time**. Wait for each answer before asking the next. Minimum 6 questions. Use the answers to build a rich understanding of the feature before generating any output.
 
 After each answer, check: **if the user's response is exactly `skip` (case-insensitive), stop asking questions immediately and proceed to Step 3 (adversarial review) using whatever answers have been collected so far.** Mark unanswered questions as `TBD — skipped during discovery` in the PRD draft.
@@ -353,6 +355,8 @@ Iterate until the user confirms.
 ```
 status: discover-complete
 last-updated: [ISO 8601 timestamp]
+approved-by: [user name or initials if known, else "user"]
+approved-date: [ISO 8601 timestamp]
 ```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Define`.

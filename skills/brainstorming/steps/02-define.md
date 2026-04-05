@@ -46,6 +46,8 @@ Update `[brainstorm-log]` frontmatter:
 ```
 status: prd-approved
 last-updated: [ISO 8601 timestamp]
+approved-by: [approver name/initials from PRD Approval section]
+approved-date: [ISO 8601 timestamp]
 prd: docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md
 ```
 

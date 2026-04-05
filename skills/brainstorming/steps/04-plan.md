@@ -157,7 +157,11 @@ Then immediately ask:
 > - Or type `/build` at any time to start manually"
 
 **If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative**:
-→ Immediately begin executing the `/build` flow without waiting for the user to type the command.
+→ Update `docs/pdlc/memory/STATE.md` **before** starting the build flow:
+  - **Current Phase**: `Construction`
+  - **Current Sub-phase**: `Build`
+  - **Last Checkpoint**: `Construction / Build / [now ISO 8601]`
+→ Then immediately begin executing the `/build` flow (the build SKILL will resume cleanly from STATE.md if context compacts mid-transition).
 
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:

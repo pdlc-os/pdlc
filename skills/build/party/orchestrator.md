@@ -7,17 +7,19 @@ Read this file once at the start of any party session before loading the specifi
 
 ## Spawn Mode
 
-Determine the spawn mode from the execution mode chosen in Step 7 of the current build session:
+Determine spawn mode using this priority order:
 
-| Build mode | Party spawn mode |
-|------------|-----------------|
-| **A — Agent Teams** | **Neo mode**: main Claude embodies Neo throughout; all other personas spawned as real subagents via the Agent tool |
-| **B — Sub-Agent** | **Subagent mode**: all personas including Neo spawned via Agent tool; main Claude is pure orchestrator with no persona |
-| *(unavailable / fallback)* | **Solo mode**: single LLM roleplays all agents; announce solo mode before starting |
+1. **STATE.md `Party Mode` field** — if set, use it. This is the session-level preference established at the first Wave Kickoff standup.
+2. **Step 7 execution mode** — if no `Party Mode` in STATE.md and a task execution mode has been chosen, map it: Agent Teams → Neo mode, Sub-Agent → Subagent mode.
+3. **Default** — Subagent mode.
 
-If the mode is ambiguous (e.g. Wave Kickoff before any task Step 7 has run), default to **Subagent mode**.
+| Party Mode value | Behaviour |
+|-----------------|-----------|
+| `agent-teams` | **Neo mode**: main Claude embodies Neo throughout; all other personas spawned as real subagents via the Agent tool |
+| `subagents` | **Subagent mode**: all personas including Neo spawned via Agent tool; main Claude is pure orchestrator |
+| `solo` | **Solo mode**: single LLM roleplays all agents; announce solo mode before starting |
 
-The user can override at any time by saying "run this as solo" or "switch to agent teams."
+The user can override for any single meeting by saying "run this one as solo" or similar.
 
 ---
 
@@ -197,6 +199,13 @@ state it explicitly: "Neo and Phantom disagree on X — escalated to human."]
 |---|--------|-------|-------|
 | 1 | [action] | [Neo / Echo / Human / etc.] | [context] |
 [repeat]
+
+---
+
+## CHANGELOG Draft
+*(include only for Party Review meetings; omit for all other meeting types)*
+
+[Paste Jarvis's draft CHANGELOG entry here verbatim]
 
 ---
 
