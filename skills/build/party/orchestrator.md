@@ -64,16 +64,14 @@ If the `meetingType` does NOT match (e.g., a decision review was pending but we'
 
 ## Meeting Announcement
 
-Before spawning any agents, announce the meeting to the user. This sets expectations about what's happening, who's involved, and how long it will take. Read `skills/formatting.md` and output a **Sub-phase Transition Header** for the meeting name, then:
+Before spawning any agents, announce the meeting to the user. This sets expectations about what's happening, who's involved, and how long it will take. Read `skills/formatting.md` and output a **Meeting Announcement Block** (magenta borders with the meeting details):
 
-> "**Convening: [Meeting Display Name]**
->
-> **Called by:** [Lead Agent Name] ([Role])
-> **Participants:** [Name (Role), Name (Role), ...] — [N] agents
-> **Purpose:** [one sentence — what this meeting will decide or produce]
-> **Estimated time:** [estimate based on meeting type]
->
-> The team is discussing now. I'll present the results when they're done."
+- **Called by**: the lead agent who convened the meeting
+- **Participants**: names and roles, with total count
+- **Purpose**: one sentence — what this meeting will decide or produce
+- **Estimated time**: from the table below
+
+Follow the exact visual pattern defined in the "Meeting Announcement Block" section of `skills/formatting.md` — magenta dotted borders, labeled fields, yellow estimated time.
 
 ### Time estimates by meeting type
 

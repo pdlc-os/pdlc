@@ -56,14 +56,81 @@ emit_json() {
 # ── Main logic ────────────────────────────────────────────────────────────────
 if [[ ! -f "$state_file" ]]; then
   # PDLC not yet initialized for this project
-  emit_json "PDLC is installed but not initialized for this project. Run /pdlc init to set up PDLC for this project."
+  emit_json "📦 PDLC is installed but not initialized for this project.
+
+Run \`/pdlc init\` to set up PDLC — Oracle will walk you through project setup, scaffolding, and roadmap planning."
   exit 0
 fi
 
 # STATE.md exists — read it and inject into the session
 state_content="$(cat "$state_file")"
 
-# Check for interrupted work
+# ── Read ROADMAP.md for progress overview ────────────────────────────────────
+roadmap_file="${project_dir}/docs/pdlc/memory/ROADMAP.md"
+roadmap_summary=""
+if [[ -f "$roadmap_file" ]]; then
+  # Extract the Feature Backlog table (lines between "## Feature Backlog" and the next "---" or "## ")
+  # Show features sorted by priority so the user sees where they are
+  roadmap_table=""
+  if command -v python3 &>/dev/null; then
+    roadmap_table="$(python3 -c '
+import sys, re
+
+content = open(sys.argv[1]).read()
+
+# Find the table section
+match = re.search(r"\| ID.*\|.*\n\|[-| ]+\n((?:\|.*\n)*)", content)
+if not match:
+    sys.exit(0)
+
+rows = match.group(1).strip().split("\n")
+features = []
+shipped = 0
+in_progress = 0
+planned = 0
+
+for row in rows:
+    cols = [c.strip() for c in row.split("|")[1:-1]]
+    if len(cols) < 5 or cols[0] == "—":
+        continue
+    fid, name, desc, pri, status = cols[0], cols[1], cols[2], cols[3], cols[4]
+    features.append((int(pri) if pri.isdigit() else 999, fid, name, status))
+    if "Shipped" in status:
+        shipped += 1
+    elif "In Progress" in status:
+        in_progress += 1
+    elif "Planned" in status:
+        planned += 1
+
+features.sort()
+total = len(features)
+
+lines = []
+lines.append(f"## Roadmap Progress ({shipped}/{total} shipped)\n")
+for pri, fid, name, status in features:
+    if "Shipped" in status:
+        lines.append(f"  ✓ {fid}  {name:<24} Shipped")
+    elif "In Progress" in status:
+        lines.append(f"  ▶ {fid}  {name:<24} In Progress  ◀ current")
+    elif "Deferred" in status:
+        lines.append(f"  ◌ {fid}  {name:<24} Deferred")
+    elif "Dropped" in status:
+        lines.append(f"  ✗ {fid}  {name:<24} Dropped")
+    else:
+        lines.append(f"  ○ {fid}  {name:<24} Planned")
+
+print("\n".join(lines))
+' "$roadmap_file" 2>/dev/null)" || true
+  fi
+
+  if [[ -n "$roadmap_table" ]]; then
+    roadmap_summary="
+
+${roadmap_table}"
+  fi
+fi
+
+# ── Check for interrupted work ───────────────────────────────────────────────
 pending_notice=""
 
 pending_decision="${project_dir}/docs/pdlc/memory/.pending-decision.json"
@@ -84,12 +151,16 @@ if [[ -f "$pending_party" ]]; then
 ⚠️ **Interrupted party meeting detected** (${meeting_type:-unknown}). Resume the active workflow to recover — the meeting will be picked up automatically."
 fi
 
-message="$(printf '%s\n\n%s\n\n%s%s' \
+# ── Build the session message ────────────────────────────────────────────────
+message="$(printf '%s\n\n%s\n\n%s%s%s' \
   "📋 PDLC Active — resuming from STATE.md" \
   "## Current State
 ${state_content}" \
-  "See CLAUDE.md for the full PDLC flow." \
-  "${pending_notice}")"
+  "${roadmap_summary}" \
+  "${pending_notice}" \
+  "
+
+See CLAUDE.md for the full PDLC flow.")"
 
 emit_json "$message"
 exit 0

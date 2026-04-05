@@ -36,11 +36,121 @@ Then run `npm install -g @beads/bd` if the user confirms, or wait for them to in
 
 Run: `git status`
 
-If the command returns a "not a git repository" error, stop and tell the user:
+If the command succeeds, skip to Step 1c.
 
-> "No git repository found. Please run `git init` (and make at least one commit) before running `/pdlc init`."
+If the command returns a "not a git repository" error, offer to initialize:
+
+> "No git repository found in this directory. Want me to set one up? (Y/n)"
+
+**If the user accepts:**
+
+1. Run `git init`
+2. Create a `.gitignore` file (or append to existing) with at minimum:
+   ```
+   node_modules/
+   .claude/
+   .env
+   .env.*
+   .DS_Store
+   *.log
+   ```
+   Ask the user: "Any additional paths to exclude from git? (Enter paths separated by commas, or press Enter to skip)"
+   Append any user-provided paths.
+3. Stage and commit:
+   ```bash
+   git add .gitignore
+   git commit -m "chore: initial commit with .gitignore"
+   ```
+
+**If the user declines:** stop and tell them to set up git manually before re-running `/pdlc init`.
 
 Do not proceed until `git status` succeeds.
+
+**1c. Verify GitHub remote and connectivity.**
+
+Run: `git remote -v`
+
+**If a remote named `origin` exists:**
+
+Test connectivity:
+```bash
+gh auth status
+```
+
+If `gh` is authenticated, run a quick push test:
+```bash
+git push --dry-run origin HEAD 2>&1
+```
+
+If the dry-run succeeds:
+> "GitHub remote verified: `[remote URL]` ✓"
+
+If the dry-run fails (permissions, SSH keys, etc.), inform the user and offer to troubleshoot:
+> "GitHub remote exists (`[remote URL]`) but push failed:
+> `[error message]`
+>
+> Common causes:
+> - SSH key not added to GitHub → run `ssh -T git@github.com` to test
+> - Token expired → run `gh auth login` to re-authenticate
+> - Repository doesn't exist on GitHub yet → see below to create it
+>
+> Want me to help troubleshoot? (yes/no)"
+
+If yes, walk through the relevant fix based on the error.
+
+**If no remote exists:**
+
+> "No GitHub remote configured. Would you like to set one up? This ensures your code can be pushed and PRs can be created during `/pdlc ship`.
+>
+> Options:
+> - **GitHub.com** — I'll create a repo and configure the remote
+> - **GitHub Enterprise** — provide your GHE hostname and I'll configure it
+> - **Skip** — set up GitHub later (some PDLC features like PR creation won't work until configured)"
+
+**If the user chooses GitHub.com or GitHub Enterprise:**
+
+1. Check `gh` CLI is installed: `gh --version`. If not found:
+   > "The GitHub CLI (`gh`) is required. Install it?
+   > - macOS: `brew install gh`
+   > - Linux: see https://cli.github.com"
+   
+   Offer to install via brew if available, otherwise provide the link.
+
+2. Check `gh` is authenticated: `gh auth status`. If not:
+   > "GitHub CLI is not authenticated. Let's log in."
+   
+   Tell the user to run the interactive login themselves:
+   > "Please run this command (it requires interactive input):
+   > `! gh auth login`
+   >
+   > Follow the prompts to authenticate. I'll continue once you're done."
+   
+   Wait for the user to confirm, then verify with `gh auth status`.
+   
+   For GitHub Enterprise, tell the user:
+   > "Please run: `! gh auth login --hostname [their-ghe-hostname]`"
+
+3. Create the repository:
+   Ask: "What should the GitHub repo be named? (default: `[current directory name]`)"
+   Ask: "Public or private? (default: private)"
+   
+   ```bash
+   gh repo create [repo-name] --[public|private] --source=. --remote=origin --push
+   ```
+
+4. Verify:
+   ```bash
+   git remote -v
+   git push --dry-run origin HEAD
+   ```
+   
+   > "GitHub configured and verified: `[remote URL]` ✓"
+
+**If the user chooses Skip:**
+
+> "Skipping GitHub setup. You can configure it later — run `gh repo create` or add a remote manually. Note: PR creation during `/pdlc ship` requires a GitHub remote."
+
+Proceed to the next step regardless — GitHub is recommended but not strictly required for init.
 
 ---
 
@@ -80,24 +190,34 @@ Return here when the initialization summary has been printed.
 
 ---
 
-## Step 10 — Prompt for next phase
+## Step 10 — Launch first feature or prompt
 
-After printing the initialization summary, ask the user:
+**If the user already chose a feature in Step 6d** (during roadmap ideation):
+→ The feature is already selected and ROADMAP.md is updated. Immediately begin executing `/pdlc brainstorm [chosen-feature]`. Do not prompt again.
 
-> "Would you like to start Inception now and brainstorm your first feature?
+**If the user deferred in Step 6d** (did not choose a feature yet):
+
+Read `docs/pdlc/memory/ROADMAP.md` and find the priority-1 feature. Ask:
+
+> "Ready to start your first feature?
 >
-> - Say **yes** (or provide a feature name) to begin immediately
-> - Or type `/pdlc brainstorm <feature-name>` at any time to start manually"
+> The top priority on your roadmap is **[F-001]: [feature-slug]** — [description].
+>
+> - Say **yes** to start brainstorming it now
+> - Name a **different feature** from the roadmap to start with that instead
+> - Say **later** to pause — run `/pdlc brainstorm <feature-name>` when you're ready"
 
-**If the user responds with "yes", "y", "sure", "go ahead", or any clear affirmative** (with or without a feature name):
-→ Ask "What feature would you like to start with?" if no feature name was given, then immediately begin executing the `/pdlc brainstorm` flow.
+**If the user confirms** (yes, y, sure, go ahead):
+→ Update ROADMAP.md: set the feature's status to `In Progress`.
+→ Immediately begin executing `/pdlc brainstorm [feature-slug]`.
 
-**If the user provides a feature name directly** (e.g. "yes, user-auth" or just "user-auth"):
-→ Immediately begin executing `/pdlc brainstorm user-auth` without any further prompting.
+**If the user names a different feature:**
+→ If it's on the roadmap: update that feature's status to `In Progress` and begin `/pdlc brainstorm [that-feature]`.
+→ If it's NOT on the roadmap: add it with the next `F-NNN` ID, set status to `In Progress`, and begin brainstorm.
 
-**If the user responds with "no", "not yet", "later", or any deferral**:
-→ Acknowledge and stop:
-> "No problem. When you're ready, run `/pdlc brainstorm <feature-name>` to start Inception."
+**If the user defers** (no, not yet, later):
+→ Acknowledge:
+> "No problem. Your roadmap is ready with [N] features. Run `/pdlc brainstorm [feature-slug]` whenever you want to start."
 
 ---
 

@@ -120,6 +120,38 @@ The `upgrade` command:
 
 Re-running `install` is also idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
 
+### Team onboarding (new team member pulls the repo)
+
+When another developer clones or pulls a repo that already has PDLC initialized, they need to install PDLC locally to activate the hooks and slash commands. The project's `docs/pdlc/` memory files are already in git — they just need the tooling.
+
+**Step 1 — Install PDLC and dependencies:**
+
+```bash
+npm install
+```
+
+If `@pdlc-os/pdlc` is in `devDependencies`, this installs it and runs the postinstall hook automatically — registering PDLC hooks in `.claude/settings.local.json` and copying slash commands to `.claude/commands/`. You'll be prompted to install Dolt and Beads if they're not already on your machine.
+
+**Step 2 — Verify:**
+
+```bash
+npx @pdlc-os/pdlc status
+```
+
+You should see:
+```
+Install mode : local (this repo)
+Dolt         : ✓ installed
+Beads (bd)   : ✓ installed
+Hooks registered: statusLine, PostToolUse, PreToolUse, SessionStart
+```
+
+**Step 3 — Start a Claude Code session:**
+
+PDLC reads `docs/pdlc/memory/STATE.md` on session start and resumes from wherever the project left off. You'll see the current phase, active feature, and any pending work. The full memory bank (Constitution, Intent, Roadmap, Decisions, etc.) is already in the repo — no need to re-run `/pdlc init`.
+
+> **Note:** Each developer's `.claude/settings.local.json` is local to their machine (not committed to git). The hooks point to the PDLC package in their `node_modules/`, so each developer needs their own `npm install`. The project's `docs/pdlc/` files are shared via git — this is the team's shared memory.
+
 ### Prerequisites
 
 | Dependency | Install | Notes |
@@ -129,6 +161,7 @@ Re-running `install` is also idempotent — it strips old hook paths and re-regi
 | [Dolt](https://github.com/dolthub/dolt) | Prompted during PDLC install | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
 | [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install | Task manager; same scope (local/global) as PDLC |
 | Git | Built into macOS/Linux | |
+| [GitHub CLI (gh)](https://cli.github.com) | Prompted during `/pdlc init` if needed | Required for PR creation during `/pdlc ship`; setup guided during init |
 
 ---
 
@@ -302,18 +335,27 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 | **Brainstorm Log** | Progressive content record at `docs/pdlc/brainstorm/`. Captures all ideation context for mid-session resume and PRD generation. Separate from STATE.md. |
 | **Visual Companion** | Optional browser-based UI for mockups, wireframes, and architecture diagrams during Inception. Consent-based, per-question. |
 
+### Initialization — Foundation
+
+| Feature | What it does |
+|---------|-------------|
+| **Git & GitHub Setup** | Auto-detects missing git repo, offers to initialize with `.gitignore`. Verifies GitHub connectivity, walks through `gh` CLI auth and repo creation if needed. |
+| **Roadmap Ideation** | Oracle brainstorms 5–15 features with you, assigns permanent `F-NNN` IDs, and collaboratively prioritizes by dependencies, user value, and technical risk. |
+| **Brownfield Repo Scan** | Deep-scans existing codebases to pre-populate memory files from real code. All inferred content is marked for verification. |
+
 ### Construction — TDD + Multi-Agent Build
 
 | Feature | What it does |
 |---------|-------------|
 | **TDD Enforcement** | No implementation code without a failing test first. Red -> Green -> Refactor per acceptance criterion. |
-| **Party Mode** | 4 multi-agent meeting types: Wave Kickoff, Design Roundtable, Party Review, Strike Panel. 3 spawn modes (agent-teams, subagents, solo). |
+| **Party Mode** | 5 multi-agent meeting types: Wave Kickoff, Design Roundtable, Party Review, Strike Panel, Decision Review. 3 spawn modes (agent-teams, subagents, solo). |
+| **Meeting Announcements** | Before every party meeting: who called it, participants, purpose, and estimated duration. Progress updates if it runs long. |
 | **3-Strike Loop Breaker** | After 3 failed auto-fix attempts, convenes a Strike Panel (Neo + Echo + domain agent) to diagnose root cause and produce 3 ranked approaches for the human. |
 | **Deadlock Detection** | 6 types of deadlock detection with auto-resolution and human escalation paths. |
 | **Critical Finding Gate** | Critical review findings must be fixed or explicitly overridden (Tier 1 event) before approval options appear. |
 | **6-Layer Testing** | Unit, Integration, E2E (real Chromium), Performance, Accessibility, Visual Regression. Constitution configures which are required gates. |
 
-### Operation — Ship + Reflect
+### Operation — Ship + Reflect + Next Feature
 
 | Feature | What it does |
 |---------|-------------|
@@ -321,14 +363,30 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 | **CHANGELOG Generation** | Jarvis drafts Conventional Changelog entries from commit history during Ship. |
 | **Smoke Test Verification** | Runs against deployed environment with human sign-off gate. |
 | **Retrospective** | Per-agent contributions, what went well / broke / to improve, metrics snapshot. Episode file committed to permanent record. |
+| **Roadmap Tracking** | Jarvis marks shipped features in ROADMAP.md with date and episode reference. Ad-hoc features retroactively added. |
+| **Feature Loop** | After shipping, Oracle presents the next roadmap feature. Continue, pause, or switch to a different feature — the cycle repeats automatically. |
+
+### Decision Registry (`/pdlc decision`)
+
+| Feature | What it does |
+|---------|-------------|
+| **Any-Phase Decisions** | Record decisions at any point during Inception or Construction. The current phase lead runs the flow. |
+| **Decision Review Party** | All 9 agents assess impacts on their owned artifacts — code, tests, architecture, PRD, roadmap, UX flows, environment config, documentation. |
+| **Cross-Cutting Impact** | Identifies chain reactions (e.g., backend change → frontend update → test modification → roadmap resequencing). |
+| **MOM with Recommendations** | Minutes of meeting with per-agent assessments, risk consensus, recommended changes table, and roadmap resequencing proposal. |
+| **Phase-Aware Reconciliation** | Updates Beads tasks, PRDs, design docs, episode drafts, test flags, and announces decision context to the team on resume. |
+| **Durable Checkpoints** | Decision and meeting progress saved to disk. Survives network failures, usage limits, and accidental exits. Session-start hook detects interrupted work and offers recovery. |
 
 ### Cross-Cutting
 
 | Feature | What it does |
 |---------|-------------|
 | **Safety Guardrails** | 3-tier system: Tier 1 hard blocks, Tier 2 pause-and-confirm, Tier 3 logged warnings. Configurable via Constitution. |
-| **Brownfield Repo Scan** | Deep-scans existing codebases during `/pdlc init` to pre-populate memory files from real code. |
+| **Colored Transitions** | Phase transitions (cyan), sub-phase transitions (yellow), and agent handoffs (magenta) with ANSI color codes. |
+| **Humanized Handoffs** | Agent transitions include warm farewells and enthusiastic welcomes — feels like a real team. |
+| **Material Design Visual Companion** | Browser-based UI with MD2 styling, Roboto font, elevation system, light/dark toggle. Click-to-select with dual input (browser + terminal). |
 | **Auto-Resume** | Every session reads STATE.md and resumes from the exact last checkpoint. No work is lost. |
+| **Durable Party Checkpoints** | All party meetings write progress to `.pending-party.json`. Interrupted meetings are detected on next session start and can be resumed. |
 | **MOM Files** | Meeting minutes for all party sessions, capturing who said what, conclusions, and next steps. |
 | **Episode Memory** | Permanent delivery records indexed in `episodes/index.md`. Searchable history of every feature shipped. |
 
@@ -338,7 +396,9 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 
 ### Phase 0 — Initialization (`/pdlc init`)
 
-Run once per project. Oracle leads. PDLC detects whether you're starting fresh or bringing in an existing codebase.
+Run once per project. Oracle leads. PDLC checks prerequisites, then detects whether you're starting fresh or bringing in an existing codebase.
+
+**Git & GitHub setup**: If no git repo exists, PDLC offers to initialize one with a `.gitignore` (node_modules, .claude, .env, etc.). Then verifies GitHub connectivity — if no remote is configured, walks you through creating a repo (GitHub.com or GitHub Enterprise) and authenticating with the `gh` CLI. This ensures `/pdlc ship` can create PRs without issues later.
 
 **Greenfield** (empty repo): PDLC asks 7 Socratic questions and scaffolds memory files from your answers.
 

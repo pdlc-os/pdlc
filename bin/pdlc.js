@@ -320,22 +320,73 @@ function log(msg = '') {
 
 function banner(action, version) {
   const tag = `${action} v${version}`;
-  const pad = 40 - tag.length;
-  const art = `
-\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                                            \u2502
-\u2502   \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588  \u2502
-\u2502   \u2588\u2588   \u2588\u2588 \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
-\u2502   \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
-\u2502   \u2588\u2588      \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
-\u2502   \u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2502
-\u2502                                            \u2502
-\u2502   ${tag}${' '.repeat(pad > 0 ? pad : 0)}\u2502
-\u2502   Product Development Lifecycle            \u2502
-\u2502                                            \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-`;
-  log(art);
+  const W = 46; // inner width between the two ║ chars
+
+  // Detect 256-color support: COLORTERM=truecolor/24bit, or TERM contains '256color'
+  const has256 = process.env.COLORTERM === 'truecolor'
+    || process.env.COLORTERM === '24bit'
+    || (process.env.TERM || '').includes('256color');
+
+  // ANSI color codes
+  const C  = '\x1b[1;36m';    // bold cyan — border
+  const Wh = '\x1b[1;37m';    // bold white — action tag
+  const S  = '\x1b[1;31m';    // bold red — subtitle
+  const R  = '\x1b[0m';       // reset
+
+  // Gradient rows: blue → cyan → teal → green (top to bottom)
+  // 256-color primary, 16-color fallback
+  const G = has256 ? [
+    '\x1b[38;5;27m',   // row 1 — bright blue
+    '\x1b[38;5;33m',   // row 2 — dodger blue
+    '\x1b[38;5;39m',   // row 3 — deep sky blue
+    '\x1b[38;5;44m',   // row 4 — dark turquoise
+    '\x1b[38;5;49m',   // row 5 — medium spring green
+  ] : [
+    '\x1b[1;34m',      // row 1 — bold blue
+    '\x1b[1;34m',      // row 2 — bold blue
+    '\x1b[1;36m',      // row 3 — bold cyan
+    '\x1b[1;36m',      // row 4 — bold cyan
+    '\x1b[1;32m',      // row 5 — bold green
+  ];
+
+  // PDLC letter rows — each row is the same width (padded to the widest row)
+  // so the block stays readable when centered as a unit
+  const letterWidth = 30; // widest row is 30 chars
+  const lpad = (s, w) => s + ' '.repeat(Math.max(0, w - s.length));
+  const letters = [
+    '\u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588',
+    '\u2588\u2588   \u2588\u2588 \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588     ',
+    '\u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588     ',
+    '\u2588\u2588      \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588     ',
+    '\u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588',
+  ].map(l => lpad(l, letterWidth));
+
+  // Center a string within width w
+  const center = (s, w) => {
+    const gap = Math.max(0, w - s.length);
+    const left = Math.floor(gap / 2);
+    const right = gap - left;
+    return ' '.repeat(left) + s + ' '.repeat(right);
+  };
+  const row = (content, color) => `${C}\u2551${R}${color}${content}${R}${C}\u2551${R}`;
+  const empty = row(' '.repeat(W), '');
+  const border = (l, m, r) => `${C}${l}${m.repeat(W)}${r}${R}`;
+
+  const subLine = 'Product Development Lifecycle';
+
+  const lines = [
+    '',
+    border('\u2554', '\u2550', '\u2557'),
+    empty,
+    ...letters.map((l, i) => row(center(l, W), G[i])),
+    empty,
+    row(center(tag, W), Wh),
+    row(center(subLine, W), S),
+    empty,
+    border('\u255a', '\u2550', '\u255d'),
+    '',
+  ];
+  log(lines.join('\n'));
 }
 
 // ─── Slash command registration ──────────────────────────────────────────────
