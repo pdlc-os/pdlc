@@ -5,7 +5,9 @@
 
 ### Step 6 — Generate the PRD draft
 
-Auto-generate a complete PRD draft from the discovery conversation. Use `templates/PRD.md` as the exact structure. Fill in every section:
+Read `[brainstorm-log]` completely before writing anything. Use it as the authoritative record of everything discussed — divergent standouts, Socratic Q&A, adversarial findings and follow-up answers, ingested external context, and the confirmed discovery summary. The PRD must reflect the full evolved understanding captured there, not just the last few messages in context.
+
+Auto-generate a complete PRD draft from the brainstorm log. Use `templates/PRD.md` as the exact structure. Fill in every section:
 
 - **Overview**: 2–4 sentences connecting the feature to a goal in INTENT.md
 - **Problem Statement**: concrete, feature-specific problem from the discovery
@@ -38,5 +40,12 @@ Wait for explicit approval. Do not proceed to Design until the user approves.
 If the user provides feedback: revise the PRD, save the updated file, and re-present for approval. Repeat until approved.
 
 When approved: update the PRD's **Status** field to `Approved` and record the approver's name/initials and date in the Approval section.
+
+Update `[brainstorm-log]` frontmatter:
+```
+status: prd-approved
+last-updated: [ISO 8601 timestamp]
+prd: docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md
+```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Design`.

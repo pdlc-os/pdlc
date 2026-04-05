@@ -25,6 +25,54 @@ If either file is missing, stop and tell the user:
 
 > "PDLC memory files not found. Please run `/init` first to set up this project."
 
+### Brainstorm log — create or resume
+
+Store the brainstorm log path as `[brainstorm-log]` = `docs/pdlc/brainstorm/brainstorm_[feature-name]_[YYYY-MM-DD].md`
+
+Check whether `[brainstorm-log]` already exists:
+
+**If it exists:** Read it completely. Reconstruct the full context of what has been covered — which divergent ideas were generated, which Socratic questions were asked and answered, whether the adversarial review was run, what external context was ingested. Then tell the user:
+
+> "Found an existing brainstorm log for `[feature-name]`. Resuming from where we left off.
+> Last recorded section: [name the last populated section in the file]"
+
+Skip any steps whose output is already captured in the log and resume from the first incomplete step.
+
+**If it does not exist:** Create it now with this structure:
+
+```markdown
+---
+feature: [feature-name]
+date: [YYYY-MM-DD]
+status: in-progress
+last-updated: [now ISO 8601]
+---
+
+# Brainstorm Log: [Feature Name]
+
+## Divergent Ideation
+_Not run._
+
+## Socratic Discovery
+_In progress._
+
+## Adversarial Review
+_Not run._
+
+## External Context
+_None ingested._
+
+## Discovery Summary
+_Pending._
+```
+
+Run:
+```bash
+mkdir -p docs/pdlc/brainstorm
+```
+
+Save the file to `[brainstorm-log]`.
+
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Phase**: `Inception`
 - **Current Feature**: `[feature-name]`

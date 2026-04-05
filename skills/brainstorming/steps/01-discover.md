@@ -118,6 +118,39 @@ Ask follow-up questions as needed based on the answers. Good follow-ups probe:
 
 Continue until you have a clear, concrete picture of the feature. Stop when you are confident you can write a complete PRD.
 
+**After the final answer** (or after `skip`), append to `[brainstorm-log]` by replacing the `## Socratic Discovery` section with:
+
+````markdown
+## Socratic Discovery
+
+**Completed:** [ISO 8601 timestamp]
+
+### Q1: What problem does this specific feature solve?
+**A:** [answer]
+
+### Q2: Who specifically will use this feature?
+**A:** [answer]
+
+### Q3: What does success look like?
+**A:** [answer]
+
+### Q4: What are the technical constraints or dependencies?
+**A:** [answer]
+
+### Q5: What is explicitly out of scope?
+**A:** [answer]
+
+### Q6: What are the key risks or assumptions?
+**A:** [answer]
+
+### Follow-up Q&A
+**Q:** [question]
+**A:** [answer]
+[repeat for each follow-up asked]
+````
+
+Update `last-updated` in the frontmatter to now.
+
 ---
 
 ### Step 3 — Adversarial review and targeted follow-ups
@@ -164,6 +197,26 @@ After each answer, update your internal model of the feature — if the answer r
 
 Continue until the top findings are addressed or the user types `skip`.
 
+**When the adversarial review is complete**, replace the `## Adversarial Review` section in `[brainstorm-log]` with:
+
+````markdown
+## Adversarial Review
+
+**Completed:** [ISO 8601 timestamp]
+
+### Findings
+1. [finding]
+2. [finding]
+...
+
+### Follow-up Q&A
+**Q:** [question]
+**A:** [answer]
+[repeat for each follow-up asked; omit section if user skipped]
+````
+
+Update `last-updated` in the frontmatter to now.
+
 ---
 
 ### Step 4 — Ingest external context (if applicable)
@@ -175,6 +228,21 @@ If during the conversation the user mentions:
 - "a Word doc" or shared document → ask them to paste the relevant content directly if you cannot retrieve it
 
 Summarize any external content you retrieve and confirm with the user what you have extracted as relevant requirements.
+
+**If any external context was ingested**, replace the `## External Context` section in `[brainstorm-log]` with:
+
+````markdown
+## External Context
+
+### [Source title or URL]
+**Ingested:** [ISO 8601 timestamp]
+**Extracted as relevant:**
+[bullet list of requirements or decisions extracted from this source]
+
+[repeat block for each source]
+````
+
+Update `last-updated` in the frontmatter to now.
 
 ---
 
@@ -197,5 +265,12 @@ Key risks / assumptions: [bullet list]
 Ask: "Does this capture what you have in mind? Confirm to continue to Define, or tell me what to adjust."
 
 Iterate until the user confirms.
+
+**When the summary is confirmed**, replace the `## Discovery Summary` section in `[brainstorm-log]` with the confirmed summary verbatim, and update the frontmatter:
+
+```
+status: discover-complete
+last-updated: [ISO 8601 timestamp]
+```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Define`.

@@ -139,6 +139,31 @@ When the user types `done` or the count reaches 100+:
 
 5. Store the standouts in working context as `[divergent-standouts]`. These inform the Socratic questions in Step 2 — reference them when probing success metrics, scope, and risks.
 
+6. **Write results to the brainstorm log.**
+
+   Replace the `## Divergent Ideation` section in `[brainstorm-log]` with:
+
+   ````markdown
+   ## Divergent Ideation
+
+   **Technique:** [technique name / mode used]
+   **Total ideas generated:** [N]
+   **Completed:** [ISO 8601 timestamp]
+
+   ### Raw Ideas
+   [full numbered list]
+
+   ### Clusters
+   [theme group name]: ideas #N, #N, ...
+   [repeat for each cluster]
+
+   ### Standouts
+   1. [idea] — [why it's worth pursuing]
+   [repeat for each standout]
+   ````
+
+   Update the `last-updated` field in the file's frontmatter to now.
+
 ---
 
 When this phase is complete, return to `01-discover.md` and proceed with **Step 1** (Visual Companion offer).
