@@ -17,7 +17,7 @@ Send the following as a **standalone message with no other content**. Wait for t
 
 **If the user says yes:**
 
-Read `skills/brainstorming/steps/00-divergent-ideation.md` and execute it completely.
+Read `skills/brainstorm/steps/00-divergent-ideation.md` and execute it completely.
 Return here and continue with Step 1 when it is done.
 
 **If the user says no or skip:**
@@ -41,7 +41,7 @@ Run:
 bash scripts/start-server.sh --project-dir $(pwd) --feature [feature-name]
 ```
 
-Capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorming/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
+Capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorm/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
 
 **If the user declines, or this is a non-visual feature:**
 
@@ -62,7 +62,7 @@ For each question, decide whether to use the browser or the terminal:
 
 A question *about* a UI topic is not automatically a visual question. "What navigation structure do you want?" is conceptual — use the terminal. "Which of these navigation layouts feels right?" is visual — use the browser.
 
-When using the browser, follow the loop in `skills/brainstorming/visual-companion.md` (write fragment to `screen_dir`, remind user of URL, read `state_dir/events` on next turn, push waiting screen when returning to terminal).
+When using the browser, follow the loop in `skills/brainstorm/visual-companion.md` (write fragment to `screen_dir`, remind user of URL, read `state_dir/events` on next turn, push waiting screen when returning to terminal).
 
 **Discover guidelines:**
 
@@ -90,24 +90,24 @@ Read each file completely and execute every step in it before moving to the next
 
 ### Step 2 — Socratic discovery
 
-Read `skills/brainstorming/steps/discover/socratic-discovery.md` and execute it completely.
+Read `skills/brainstorm/steps/discover/01-socratic-discovery.md` and execute it completely.
 
 Return here when the brainstorm log's `## Socratic Discovery` section is populated.
 
 ### Step 3 — Adversarial review
 
-Read `skills/brainstorming/steps/discover/adversarial-review.md` and execute it completely.
+Read `skills/brainstorm/steps/discover/02-adversarial-review.md` and execute it completely.
 
 Return here when the brainstorm log's `## Adversarial Review` section is populated.
 
 ### Step 4 — Edge case analysis
 
-Read `skills/brainstorming/steps/discover/edge-case-analysis.md` and execute it completely.
+Read `skills/brainstorm/steps/discover/03-edge-case-analysis.md` and execute it completely.
 
 Return here when the brainstorm log's `## Edge Case Analysis` section is populated.
 
 ### Steps 5–6 — External context and discovery summary
 
-Read `skills/brainstorming/steps/discover/synthesis.md` and execute it completely.
+Read `skills/brainstorm/steps/discover/04-synthesis.md` and execute it completely.
 
 Discover is complete when the brainstorm log shows `status: discover-complete` and STATE.md shows `Define`.

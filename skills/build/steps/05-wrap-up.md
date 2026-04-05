@@ -43,6 +43,10 @@ Append to Phase History:
 > - Review approved: `docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md`
 > - Episode draft ready: `docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md`"
 
+Then announce the handoff:
+
+> "**Handoff: Neo → Pulse.** Construction is complete. When Operation begins, **Pulse (DevOps)** will take the lead for Ship and Verify."
+
 Then immediately ask:
 
 > "Would you like to move to Operation and ship `[feature-name]` now?

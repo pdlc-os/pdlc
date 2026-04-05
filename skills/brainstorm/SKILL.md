@@ -84,31 +84,54 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ---
 
+## Lead Agent Assignments
+
+Inception has two lead agents with a handoff at the Define→Design boundary:
+
+| Sub-phases | Lead Agent | Why |
+|------------|-----------|-----|
+| Discover + Define (Steps 0–8) | **Oracle** (Product Manager) | Problem framing, user discovery, requirements, PRD writing |
+| Design + Plan (Steps 9–19) | **Neo** (Architect) | Architecture, data model, API contracts, task decomposition |
+
+Read the lead agent's full persona from `agents/oracle.md` or `agents/neo.md` and embody their perspective throughout their sub-phases.
+
+Before the first user-facing message in the Inception phase, announce:
+
+> "**Oracle (Product Manager)** is leading Discover and Define. I'll guide the brainstorm, shape the problem, and draft the PRD."
+
+---
+
 ## Inception Flow
 
-The Inception phase runs four sub-phases in strict sequence. Each sub-phase is defined in its own file under `skills/brainstorming/steps/`. Read each file completely and execute every step in it before moving to the next. Do not skip a sub-phase. Do not move forward past an approval gate without explicit human confirmation.
+The Inception phase runs four sub-phases in strict sequence. Each sub-phase is defined in its own file under `skills/brainstorm/steps/`. Read each file completely and execute every step in it before moving to the next. Do not skip a sub-phase. Do not move forward past an approval gate without explicit human confirmation.
 
-### Sub-phase 1 — DISCOVER
+### Sub-phase 1 — DISCOVER (Lead: Oracle)
 
-Read `skills/brainstorming/steps/01-discover.md` and execute every step completely (Steps 0–6, where Step 0 is optional divergent ideation and Step 4 is edge case analysis).
+Read `skills/brainstorm/steps/01-discover.md` and execute every step completely (Steps 0–6, where Step 0 is optional divergent ideation and Step 4 is edge case analysis).
 
 Return here when the discovery summary is confirmed and STATE.md shows `Define`.
 
-### Sub-phase 2 — DEFINE
+### Sub-phase 2 — DEFINE (Lead: Oracle)
 
-Read `skills/brainstorming/steps/02-define.md` and execute every step completely (Steps 7–8).
+Read `skills/brainstorm/steps/02-define.md` and execute every step completely (Steps 7–8).
 
 Return here when the PRD is approved and STATE.md shows `Design`.
 
-### Sub-phase 3 — DESIGN
+### — HANDOFF: Oracle → Neo —
 
-Read `skills/brainstorming/steps/03-design.md` and execute every step completely (Steps 9–12).
+After the PRD is approved and before starting Design, announce:
+
+> "**Handoff: Oracle → Neo.** The PRD is locked. **Neo (Architect)** is now leading Design and Plan. I'll translate the requirements into architecture, data models, API contracts, and an implementation plan."
+
+### Sub-phase 3 — DESIGN (Lead: Neo)
+
+Read `skills/brainstorm/steps/03-design.md` and execute every step completely (Steps 9–12).
 
 Return here when the design docs are approved and STATE.md shows `Plan`.
 
-### Sub-phase 4 — PLAN
+### Sub-phase 4 — PLAN (Lead: Neo)
 
-Read `skills/brainstorming/steps/04-plan.md` and execute every step completely (Steps 13–19).
+Read `skills/brainstorm/steps/04-plan.md` and execute every step completely (Steps 13–19).
 
 Inception is complete when STATE.md shows `Inception Complete — Ready for /build`.
 

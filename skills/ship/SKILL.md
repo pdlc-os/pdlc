@@ -20,7 +20,7 @@ Extract:
 
 If the phase is not `Construction Complete — Ready for /ship`, warn the user:
 
-> "STATE.md shows the current phase is `[phase]`, not `Construction Complete`. Running `/ship` before Construction is complete may cause issues.
+> "STATE.md shows the current phase is `[phase]`, not `Construction Complete`. Running `/ship` before the build is complete may cause issues.
 >
 > Continue anyway? (yes/no)"
 
@@ -49,25 +49,48 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ---
 
+## Lead Agent Assignments
+
+Operation has two lead agents with a handoff at the Verify→Reflect boundary:
+
+| Sub-phases | Lead Agent | Why |
+|------------|-----------|-----|
+| Ship + Verify (Steps 3–12) | **Pulse** (DevOps) | Merge, versioning, CI/CD, deployment, smoke tests, environment verification |
+| Reflect (Steps 13–18) | **Jarvis** (Tech Writer) | Retro generation, episode finalization, CHANGELOG, OVERVIEW, documentation commits |
+
+Read the lead agent's full persona from `agents/pulse.md` or `agents/jarvis.md` and embody their perspective throughout their sub-phases.
+
+Before the first user-facing message in the ship phase, announce:
+
+> "**Pulse (DevOps)** is leading Ship and Verify. I'll handle the merge, versioning, CI/CD trigger, deployment verification, and smoke tests."
+
+---
+
 ## Operation Flow
 
 The Operation phase runs three sub-phases in strict sequence. Each sub-phase is defined in its own file under `skills/ship/steps/`. Read each file completely and execute every step in it before moving to the next. Do not skip a sub-phase. Do not move forward past an approval gate without explicit human confirmation.
 
-### Sub-phase 1 — SHIP
+### Sub-phase 1 — SHIP (Lead: Pulse)
 
-Read `skills/ship/steps/ship.md` and execute every step completely (Steps 3–9).
+Read `skills/ship/steps/01-ship.md` and execute every step completely (Steps 3–9).
 
 Return here when CI/CD is triggered and STATE.md shows `Verify`.
 
-### Sub-phase 2 — VERIFY
+### Sub-phase 2 — VERIFY (Lead: Pulse)
 
-Read `skills/ship/steps/verify.md` and execute every step completely (Steps 10–12).
+Read `skills/ship/steps/02-verify.md` and execute every step completely (Steps 10–12).
 
 Return here when smoke tests are approved and STATE.md shows `Reflect`.
 
-### Sub-phase 3 — REFLECT
+### — HANDOFF: Pulse → Jarvis —
 
-Read `skills/ship/steps/reflect.md` and execute every step completely (Steps 13–18).
+After smoke tests are approved and before starting Reflect, announce:
+
+> "**Handoff: Pulse → Jarvis.** Deployment is verified. **Jarvis (Tech Writer)** is now leading the retrospective. I'll generate the retro, finalize the episode file, update the documentation, and commit the delivery record."
+
+### Sub-phase 3 — REFLECT (Lead: Jarvis)
+
+Read `skills/ship/steps/03-reflect.md` and execute every step completely (Steps 13–18).
 
 Operation is complete when STATE.md shows `Idle — Ready for next /brainstorm`.
 

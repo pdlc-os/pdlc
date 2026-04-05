@@ -449,22 +449,22 @@ skills/
   init/
     SKILL.md                          <- orchestrator
     steps/
-      setup.md                        <- brownfield detection + directories
-      socratic-init.md                <- 7 Socratic questions
-      generate-memory.md              <- create all memory files
-      finalize.md                     <- Beads init + summary
+      01-setup.md                     <- brownfield detection + directories
+      02-socratic-init.md             <- 7 Socratic questions
+      03-generate-memory.md           <- create all memory files
+      04-finalize.md                  <- Beads init + summary
 
-  brainstorming/
+  brainstorm/
     SKILL.md                          <- orchestrator
     visual-companion.md               <- browser server protocol
     steps/
       00-divergent-ideation.md        <- optional: 100+ ideas
       01-discover.md                  <- orchestrator for discovery
         discover/
-          socratic-discovery.md       <- 4-round interview
-          adversarial-review.md       <- 10+ findings, top 5 follow-ups
-          edge-case-analysis.md       <- 9-category path tracing
-          synthesis.md                <- external context + summary
+          01-socratic-discovery.md    <- 4-round interview
+          02-adversarial-review.md    <- 10+ findings, top 5 follow-ups
+          03-edge-case-analysis.md    <- 9-category path tracing
+          04-synthesis.md             <- external context + summary
       02-define.md                    <- PRD generation + approval
       03-design.md                    <- architecture, data model, API contracts
       04-plan.md                      <- Beads tasks + dependencies
@@ -472,11 +472,11 @@ skills/
   build/
     SKILL.md                          <- orchestrator
     steps/
-      pre-flight.md                   <- load state, create branch
-      build-loop.md                   <- Steps 4-11: the core TDD loop
-      review.md                       <- party review + approval gate
-      test.md                         <- 6 test layers + constitution gates
-      wrap-up.md                      <- episode draft + completion
+      01-pre-flight.md                <- load state, create branch
+      02-build-loop.md                <- Steps 4-11: the core TDD loop
+      03-review.md                    <- party review + approval gate
+      04-test.md                      <- 6 test layers + constitution gates
+      05-wrap-up.md                   <- episode draft + completion
     party/
       orchestrator.md                 <- shared spawn protocol + MOM format
       01-wave-kickoff.md              <- standup for multi-task waves
@@ -488,9 +488,9 @@ skills/
   ship/
     SKILL.md                          <- orchestrator
     steps/
-      ship.md                         <- merge, changelog, semver, CI/CD
-      verify.md                       <- smoke tests + sign-off
-      reflect.md                      <- retro + episode finalization
+      01-ship.md                      <- merge, changelog, semver, CI/CD
+      02-verify.md                    <- smoke tests + sign-off
+      03-reflect.md                   <- retro + episode finalization
 ```
 
 ---

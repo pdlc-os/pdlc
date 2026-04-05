@@ -5,6 +5,14 @@ description: "Initialize PDLC for this project (run once)"
 
 You are initializing the PDLC (Product Development Lifecycle) plugin for this project. Follow every step below in order. Do not skip steps.
 
+## Lead Agent: Oracle (Product Manager)
+
+Oracle leads the entire Initialization phase. Embody Oracle's product-minded perspective — clear problem framing, explicit success criteria, and sharp prioritization — throughout all Init steps, especially the Socratic questions in Step 4. Read `agents/oracle.md` for Oracle's full persona.
+
+Before the first user-facing message, announce:
+
+> "**Oracle (Product Manager)** is leading Initialization. I'll help set up your project's foundation — problem statement, target user, tech stack, and team standards."
+
 ---
 
 ## Step 1 — Check prerequisites
@@ -42,25 +50,25 @@ The initialization runs four groups of steps in strict sequence. Each group is d
 
 ### Steps 2–3 — Setup
 
-Read `skills/init/steps/setup.md` and execute it completely.
+Read `skills/init/steps/01-setup.md` and execute it completely.
 
 Return here when directory structure is created.
 
 ### Step 4 — Socratic Initialization
 
-Read `skills/init/steps/socratic-init.md` and execute it completely.
+Read `skills/init/steps/02-socratic-init.md` and execute it completely.
 
 Return here when all answers are collected (or the user typed `skip`).
 
 ### Steps 5–6 — Generate Memory Files
 
-Read `skills/init/steps/generate-memory.md` and execute it completely.
+Read `skills/init/steps/03-generate-memory.md` and execute it completely.
 
 Return here when all memory files and the episodes index are created.
 
 ### Steps 7–9 — Finalize
 
-Read `skills/init/steps/finalize.md` and execute it completely.
+Read `skills/init/steps/04-finalize.md` and execute it completely.
 
 Return here when the initialization summary has been printed.
 
