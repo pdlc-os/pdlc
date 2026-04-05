@@ -34,42 +34,44 @@ PDLC combines the best of four Claude Code workflows:
 
 ## Installation
 
-### Option A — npx (no global install)
+PDLC can be installed **locally** (per-repo, recommended for teams) or **globally** (all projects on your machine). Both Beads (the task manager) and PDLC itself are installed with the same scope — you'll be prompted to approve Beads installation automatically.
+
+### Local install (recommended)
+
+Installs PDLC and Beads as devDependencies inside your repo. Hooks are written to `.claude/settings.local.json` so they only apply to this project.
+
+```bash
+cd your-repo
+npm install --save-dev @pdlc-os/pdlc
+```
+
+The postinstall script auto-detects local context, registers hooks in `.claude/settings.local.json`, and prompts you to install Beads locally too.
+
+Or install explicitly with the `--local` flag:
+
+```bash
+npx @pdlc-os/pdlc install --local
+```
+
+### Global install
+
+Registers hooks in `~/.claude/settings.json` so PDLC is available across all projects. Beads is installed globally too.
+
+```bash
+npm install -g @pdlc-os/pdlc
+```
+
+Or without a global install:
 
 ```bash
 npx @pdlc-os/pdlc install
 ```
 
-### Option B — global npm install
-
-```bash
-npm install -g @pdlc-os/pdlc
-pdlc install
-```
-
-### Option C — directly from GitHub (always latest)
+Or directly from GitHub (always latest):
 
 ```bash
 npm install -g pdlc-os/pdlc
-pdlc install
 ```
-
-Pin to a specific release tag:
-
-```bash
-npm install -g pdlc-os/pdlc#v0.1.0
-pdlc install
-```
-
-### Option D — clone and install
-
-```bash
-git clone https://github.com/pdlc-os/pdlc.git
-cd pdlc
-node bin/pdlc.js install
-```
-
-All options register PDLC's hooks and status bar in `~/.claude/settings.json`. Start a new Claude Code session to activate.
 
 ### Verify installation
 
@@ -77,32 +79,41 @@ All options register PDLC's hooks and status bar in `~/.claude/settings.json`. S
 npx @pdlc-os/pdlc status
 ```
 
+Shows install mode (local/global), plugin root path, hook registration, and Beads status.
+
 ### Uninstall
 
 ```bash
+# Remove local hooks
+npx @pdlc-os/pdlc uninstall --local
+
+# Remove global hooks
 npx @pdlc-os/pdlc uninstall
 ```
 
 ### Keep up to date
 
 ```bash
-# From npm
+# Local — update the devDependency
+npm update @pdlc-os/pdlc
+
+# Global — from npm
 npx @pdlc-os/pdlc@latest install
 
-# From GitHub (latest main)
-npm install -g pdlc-os/pdlc && pdlc install
+# Global — from GitHub (latest main)
+npm install -g pdlc-os/pdlc
 ```
 
-Re-running `install` is idempotent — it strips old hook paths and re-registers with the current version.
+Re-running `install` is idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
 
 ### Prerequisites
 
-| Dependency | Install |
-|-----------|---------|
-| Node.js >= 18 | [nodejs.org](https://nodejs.org) |
-| Claude Code | [claude.ai/code](https://claude.ai/code) |
-| [Beads (bd)](https://github.com/gastownhall/beads) | `npm install -g @beads/bd` |
-| Git | Built into macOS/Linux |
+| Dependency | Install | Notes |
+|-----------|---------|-------|
+| Node.js >= 18 | [nodejs.org](https://nodejs.org) | |
+| Claude Code | [claude.ai/code](https://claude.ai/code) | |
+| [Beads (bd)](https://github.com/gastownhall/beads) | Installed automatically with PDLC | Prompted during install; same scope as PDLC |
+| Git | Built into macOS/Linux | |
 
 ---
 

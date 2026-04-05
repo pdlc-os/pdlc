@@ -144,38 +144,29 @@ async function promptInstallBeads(local) {
   if (isBeadsInstalled()) return;
   if (!process.stdin.isTTY) return;
 
-  console.log('\n  Beads (bd) is not installed \u2014 it\'s required for /pdlc init and the Construction phase.');
+  const scope = local ? 'locally (devDependency)' : 'globally';
+  const installCmd = local ? 'npm install --save-dev @beads/bd' : 'npm install -g @beads/bd';
 
-  if (local) {
-    const answer = await prompt('  Install Beads locally as a devDependency? (Y/n) ');
-    if (answer === '' || answer === 'y' || answer === 'yes') {
-      console.log('\n  Installing Beads locally...');
-      try {
-        execSync('npm install --save-dev @beads/bd', { stdio: 'inherit' });
-        console.log(`\n  Beads (bd)  : \u2713 installed locally`);
-      } catch (err) {
-        console.error('\n  Beads installation failed. You can install it manually:');
-        console.error('  npm install --save-dev @beads/bd');
+  console.log(`\n  Beads (bd) is required by PDLC for task management during /init and /build.`);
+  console.log(`  It will be installed ${scope} to match your PDLC install.`);
+
+  const answer = await prompt('  Install Beads now? (Y/n) ');
+  if (answer === '' || answer === 'y' || answer === 'yes') {
+    console.log(`\n  Installing Beads ${scope}...`);
+    try {
+      execSync(installCmd, { stdio: 'inherit' });
+      if (isBeadsInstalled()) {
+        console.log(`\n  Beads (bd)  : \u2713 installed ${scope} (${beadsVersion()})`);
+      } else {
+        console.log(`\n  Beads (bd)  : \u2713 installed ${scope}`);
       }
-    } else {
-      console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
-      console.log('  npm install --save-dev @beads/bd');
+    } catch (err) {
+      console.error('\n  Beads installation failed. Install it manually before running /pdlc init:');
+      console.error(`  ${installCmd}`);
     }
   } else {
-    const answer = await prompt('  Install Beads now? (Y/n) ');
-    if (answer === '' || answer === 'y' || answer === 'yes') {
-      console.log('\n  Installing Beads...');
-      try {
-        execSync('npm install -g @beads/bd', { stdio: 'inherit' });
-        console.log(`\n  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
-      } catch (err) {
-        console.error('\n  Beads installation failed. You can install it manually:');
-        console.error('  npm install -g @beads/bd');
-      }
-    } else {
-      console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
-      console.log('  npm install -g @beads/bd');
-    }
+    console.log('\n  Beads is required before you can run /pdlc init. Install it manually:');
+    console.log(`  ${installCmd}`);
   }
 }
 
