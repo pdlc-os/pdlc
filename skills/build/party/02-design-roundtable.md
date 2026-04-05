@@ -105,6 +105,12 @@ and what specific adjustments address Echo's concern?
 
 ---
 
+## Consensus Failure
+
+If after Round 2 Neo cannot converge on a single implementation approach — either because agents' contradictions remain unresolved or no clear synthesis is possible — do not proceed to Step 9. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 3** for the Design Roundtable case. This requires human escalation with the exact disagreement framed as a forced choice before implementation begins.
+
+---
+
 ## Output — Implementation Decision
 
 After discussion, Neo (or orchestrator in subagent/solo) states the agreed implementation approach as a single decision:

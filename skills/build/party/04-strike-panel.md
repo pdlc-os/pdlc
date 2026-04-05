@@ -24,6 +24,22 @@ Three agents. No more — this is a focused diagnosis session, not a broad revie
 
 ---
 
+## Strike Panel History
+
+Maintain `[strike-panel-history]` in working context throughout the build session — one entry per prior panel run for the same test. Before loading context, check whether this is a repeat panel for the same test (same test name + same task ID).
+
+**If this is the 2nd panel trigger for the same test:** include the history block below in every agent's context. Agents must not re-propose approaches already listed.
+
+```
+PREVIOUSLY TRIED APPROACHES (do not re-recommend these):
+- Attempt 1–3 (auto-fix): [what was tried, why it failed]
+- Attempt 4 (Panel round 1, Approach [X]): [what was tried, exact error output after applying it]
+```
+
+**If this is the 3rd panel trigger for the same test:** do not run another panel. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 5** (Strike Panel Cycling — third trigger). Present the human with the redesign/skip/human-control options defined there. Do not auto-proceed.
+
+---
+
 ## Context to Load
 
 Provide every agent with:
@@ -31,6 +47,7 @@ Provide every agent with:
 - The current implementation: the relevant file(s) and function(s)
 - The full error output from all 3 attempts (verbatim — do not summarize)
 - The acceptance criterion this test maps to (from the PRD)
+- **Previously tried approaches** (if `[strike-panel-history]` is non-empty): the full history block above
 - **Design Roundtable context (if available):** check `docs/pdlc/mom/` for a `[feature-name]_design-roundtable_mom_*.md` file for this task. If found, include the Implementation Decision from it. If not found, include the relevant section of `docs/pdlc/design/[feature-name]/ARCHITECTURE.md` instead, and note "No design roundtable was run for this task."
 
 ---
@@ -144,8 +161,14 @@ Write the MOM file per `orchestrator.md`.
 
 ## Proceed
 
-After human chooses A or B: implement the selected approach, then resume the TDD loop (attempt 4+, now reset with a fresh approach — the 3-strike cap resets after a human-approved direction change).
+After human chooses A or B: append an entry to `[strike-panel-history]` recording the chosen approach name and what was attempted. Then implement the selected approach and resume the TDD loop (attempt 4+, now reset with a fresh approach — the 3-strike cap resets after a human-approved direction change).
 
-After human chooses C: human provides guidance; resume TDD with that guidance as context.
+After human chooses C: human provides guidance; append to `[strike-panel-history]` noting "human took control"; resume TDD with that guidance as context.
+
+Also add the consensus failure topic slug to the MOM file topic table if relevant:
+
+| Meeting | Topic slug |
+|---------|-----------|
+| Strike Panel | `strike-panel` |
 
 Return to **Step 9** (TDD: Build the task) in `skills/build/SKILL.md`.

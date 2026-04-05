@@ -39,6 +39,18 @@ The user can override for any single meeting by saying "run this one as solo" or
 
 ---
 
+## Agent Spawn Failures
+
+If any Agent tool call returns empty content, an error, or only "I have nothing to add", a spawn failure has occurred. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 2** (Agent Spawn Failure). In summary:
+
+- **1 of N agents fails** — continue the round without them; note the absence in the MOM
+- **Majority fail** — switch to Solo mode for this meeting only
+- **All fail** — abort the party round entirely; write a minimal MOM noting the failure; do not block build progress
+
+Retry once with a stripped-down prompt before applying the tiers above. Never retry more than once per agent per round.
+
+---
+
 ## Spawn Protocol
 
 ### Neo mode (Agent Teams)
@@ -137,6 +149,7 @@ Write the meeting minutes file immediately after the conclusion.
 | Design Roundtable | `design-roundtable` |
 | Party Review | `party-review` |
 | Strike Panel | `strike-panel` |
+| Deadlock event | `deadlock` |
 
 If a MOM file for this feature+topic+date already exists (same session, second occurrence), append a numeric suffix: `_2`, `_3`, etc.
 

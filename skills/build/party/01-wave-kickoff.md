@@ -118,7 +118,7 @@ After discussion, produce:
    ```bash
    bd dep add [task-b-id] --blocks [task-a-id]
    ```
-   Run this for each new dependency before proceeding.
+   Run this for each new dependency before proceeding. If any `bd dep add` command fails or if `bd ready --json` returns empty after the updates (but open tasks remain), a circular dependency may have been introduced. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 1** (Beads Circular Dependency) before continuing.
 
 Tell the user:
 > "Wave [N] standup complete. [N] tasks confirmed parallel / [N] tasks resequenced.

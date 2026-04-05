@@ -61,12 +61,23 @@ Repeat Steps 4–12 until `bd ready` returns an empty list.
 
 ### Step 4 — Get the ready queue
 
+**State variables** — maintain these in working context throughout the build session:
+- `[prev-ready-queue]`: the task ID list from the previous `bd ready` call (empty on first run)
+- `[loop-count]`: number of times Step 4 has executed (increment after each `bd ready` call, starting at 0)
+- `[review-fix-cycles]`: number of Critical-finding fix-regenerate cycles completed (starts at 0; used in Step 13)
+
 Run:
 ```bash
 bd ready --json
 ```
 
-Parse the JSON output to get the list of unblocked tasks.
+Parse the JSON output to get the list of unblocked tasks. Increment `[loop-count]`.
+
+**Stagnation detection:** If the returned task ID list is identical to `[prev-ready-queue]` AND `[loop-count]` > 1, a stagnation deadlock may exist. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 6** (BUILD LOOP Stagnation) before proceeding.
+
+**Hard cap:** If `[loop-count]` exceeds the total number of tasks in the feature (all tasks should complete in at most N iterations), read `skills/build/party/deadlock-protocol.md` and apply the hard cap resolution in **Deadlock Type 6**.
+
+Update `[prev-ready-queue]` to the current task ID list.
 
 If the list is empty: the build loop is complete. Skip to the REVIEW section below.
 
@@ -252,7 +263,7 @@ If no Critical findings, present the standard gate:
 
 Wait for explicit human decision. Do not proceed to Test without approval.
 
-If the user requests fixes: address them, recommit to the feature branch, regenerate the review file, and re-present.
+If the user requests fixes: increment `[review-fix-cycles]`, address the issues, recommit to the feature branch, regenerate the review file, and re-present. If `[review-fix-cycles]` reaches 3 without resolving all Critical findings, read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 4** (Unbounded Fix-Regenerate Loop) instead of attempting another fix cycle.
 
 ### Step 14 — Post-approval actions
 
