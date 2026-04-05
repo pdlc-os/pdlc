@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { execSync } = require('child_process');
 
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
 const VERSION = require(path.join(PLUGIN_ROOT, 'package.json')).version;
@@ -93,6 +94,35 @@ function isPdlcInstalled(settings) {
   );
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function isBeadsInstalled() {
+  try {
+    execSync('bd --version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function beadsVersion() {
+  try {
+    return execSync('bd --version', { stdio: 'pipe' }).toString().trim();
+  } catch {
+    return null;
+  }
+}
+
+function printBeadsStatus() {
+  if (isBeadsInstalled()) {
+    console.log(`  Beads (bd)  : ✓ installed (${beadsVersion()})`);
+  } else {
+    console.log(`  Beads (bd)  : ✗ not found`);
+    console.log(`                Required for /init and the Construction phase.`);
+    console.log(`                Install: npm install -g @beads/bd`);
+  }
+}
+
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
 function install() {
@@ -117,8 +147,12 @@ function install() {
 
   console.log(`  Plugin root : ${PLUGIN_ROOT}`);
   console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
+  printBeadsStatus();
   console.log('\nStart a new Claude Code session to activate.');
-  console.log('Next step  : open a project and run /pdlc init\n');
+  if (!isBeadsInstalled()) {
+    console.log('Before running /init, install Beads: npm install -g @beads/bd');
+  }
+  console.log('Next step  : open a project and run /init\n');
 }
 
 function uninstall() {
@@ -142,7 +176,8 @@ function status() {
   console.log(`\npdlc v${VERSION}`);
   console.log(`Plugin root  : ${PLUGIN_ROOT}`);
   console.log(`Global hooks : ${GLOBAL_SETTINGS_PATH}`);
-  console.log(`Status       : ${installed ? '✓ installed' : '✗ not installed'}`);
+  console.log(`PDLC         : ${installed ? '✓ installed' : '✗ not installed'}`);
+  printBeadsStatus();
 
   if (installed) {
     console.log('\nHooks registered:');
@@ -183,10 +218,10 @@ Usage:
   npx @pdlc-os/pdlc --version   Print version
 
 Slash commands (inside a Claude Code session after install):
-  /pdlc init        Phase 0 — Initialization: Constitution · Intent · Memory Bank · Beads
-  /pdlc brainstorm  Phase 1 — Inception: Discover → Define → Design → Plan
-  /pdlc build       Phase 2 — Construction: Build → Review → Test
-  /pdlc ship        Phase 3 — Operation: Ship → Verify → Reflect
+  /init        Phase 0 — Initialization: Constitution · Intent · Memory Bank · Beads
+  /brainstorm  Phase 1 — Inception: Discover → Define → Design → Plan
+  /build       Phase 2 — Construction: Build → Review → Test
+  /ship        Phase 3 — Operation: Ship → Verify → Reflect
 
 Marketplace: https://github.com/pdlc-os
 `);

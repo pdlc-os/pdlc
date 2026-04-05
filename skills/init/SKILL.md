@@ -13,15 +13,16 @@ You are initializing the PDLC (Product Development Lifecycle) plugin for this pr
 
 Run: `bd --version`
 
-If the command is not found, stop and tell the user:
+If the command is not found, tell the user:
 
-> "Beads (`bd`) is not installed. Please install it first:
-> - npm: `npm install -g @beads/bd`
-> - Homebrew: `brew install beads`
+> "Beads (`bd`) is not installed — it's required for PDLC's task management.
 >
-> Once installed, re-run `/init`."
+> **Install it now?**
+> Run: `npm install -g @beads/bd`
+>
+> Once that completes, re-run `/init` and we'll continue from here."
 
-Do not proceed until `bd --version` succeeds.
+Then run `npm install -g @beads/bd` if the user confirms, or wait for them to install it manually. Re-run `bd --version` to confirm success before proceeding. Do not continue until `bd --version` succeeds.
 
 **1b. Verify a git repository exists.**
 
