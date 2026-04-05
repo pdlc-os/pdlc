@@ -63,7 +63,7 @@ function main() {
   let input = {};
 
   try {
-    const raw = fs.readFileSync('/dev/stdin', 'utf8').trim();
+    const raw = fs.readFileSync(0, 'utf8').trim();
     if (raw) input = JSON.parse(raw);
   } catch (_) {
     // Unreadable stdin — proceed normally

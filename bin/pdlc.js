@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const readline = require('readline');
 const { execSync } = require('child_process');
 
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
@@ -54,13 +55,17 @@ function resolvePlaceholders(obj) {
   );
 }
 
-/** Remove all PDLC-injected entries from a settings object (by plugin root path). */
+/** Remove all PDLC-injected entries from a settings object.
+ *  Matches any hook whose command references a known PDLC script name,
+ *  so stale entries from different install paths are also cleaned up. */
 function stripPdlc(settings) {
-  const rootStr = PLUGIN_ROOT.replace(/\\/g, '/');
+  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js'];
+  const isPdlcCommand = (cmd) => PDLC_SCRIPTS.some(s => cmd?.includes(s));
+
   const cleaned = JSON.parse(JSON.stringify(settings));
 
   // Remove statusLine if it points to PDLC
-  if (cleaned.statusLine?.command?.includes(rootStr)) {
+  if (isPdlcCommand(cleaned.statusLine?.command)) {
     delete cleaned.statusLine;
   }
 
@@ -70,7 +75,7 @@ function stripPdlc(settings) {
     cleaned.hooks[event] = cleaned.hooks[event]
       .map(group => {
         if (!Array.isArray(group.hooks)) return group;
-        const filtered = group.hooks.filter(h => !h.command?.includes(rootStr));
+        const filtered = group.hooks.filter(h => !isPdlcCommand(h.command));
         return filtered.length ? { ...group, hooks: filtered } : null;
       })
       .filter(Boolean);
@@ -83,12 +88,14 @@ function stripPdlc(settings) {
 }
 
 function isPdlcInstalled(settings) {
-  const rootStr = PLUGIN_ROOT.replace(/\\/g, '/');
+  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js'];
+  const isPdlcCommand = (cmd) => PDLC_SCRIPTS.some(s => cmd?.includes(s));
+
   return (
-    settings?.statusLine?.command?.includes(rootStr) ||
+    isPdlcCommand(settings?.statusLine?.command) ||
     Object.values(settings?.hooks || {}).some(arr =>
       arr.some(group =>
-        group.hooks?.some(h => h.command?.includes(rootStr))
+        group.hooks?.some(h => isPdlcCommand(h.command))
       )
     )
   );
@@ -118,14 +125,46 @@ function printBeadsStatus() {
     console.log(`  Beads (bd)  : ✓ installed (${beadsVersion()})`);
   } else {
     console.log(`  Beads (bd)  : ✗ not found`);
-    console.log(`                Required for /init and the Construction phase.`);
+    console.log(`                Required for /pdlc init and the Construction phase.`);
     console.log(`                Install: npm install -g @beads/bd`);
+  }
+}
+
+function prompt(question) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase());
+    });
+  });
+}
+
+async function promptInstallBeads() {
+  if (isBeadsInstalled()) return;
+  if (!process.stdin.isTTY) return;
+
+  console.log('\n  Beads (bd) is not installed — it\'s required for /pdlc init and the Construction phase.');
+  const answer = await prompt('  Install Beads now? (Y/n) ');
+
+  if (answer === '' || answer === 'y' || answer === 'yes') {
+    console.log('\n  Installing Beads...');
+    try {
+      execSync('npm install -g @beads/bd', { stdio: 'inherit' });
+      console.log(`\n  Beads (bd)  : ✓ installed (${beadsVersion()})`);
+    } catch (err) {
+      console.error('\n  Beads installation failed. You can install it manually:');
+      console.error('  npm install -g @beads/bd');
+    }
+  } else {
+    console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
+    console.log('  npm install -g @beads/bd');
   }
 }
 
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
-function install() {
+async function install() {
   const pluginSettings = readJson(PLUGIN_SETTINGS_PATH);
   if (!pluginSettings) {
     console.error(`Error: Plugin settings not found at ${PLUGIN_SETTINGS_PATH}`);
@@ -147,12 +186,15 @@ function install() {
 
   console.log(`  Plugin root : ${PLUGIN_ROOT}`);
   console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
-  printBeadsStatus();
-  console.log('\nStart a new Claude Code session to activate.');
-  if (!isBeadsInstalled()) {
-    console.log('Before running /init, install Beads: npm install -g @beads/bd');
+
+  await promptInstallBeads();
+
+  if (isBeadsInstalled()) {
+    console.log(`  Beads (bd)  : ✓ installed (${beadsVersion()})`);
   }
-  console.log('Next step  : open a project and run /init\n');
+
+  console.log('\nStart a new Claude Code session to activate.');
+  console.log('Next step  : open a project and run /pdlc init\n');
 }
 
 function uninstall() {
@@ -194,7 +236,7 @@ function status() {
  * (when the package's own node_modules are being installed) to avoid
  * the hook running in unexpected contexts.
  */
-function postinstall() {
+async function postinstall() {
   // INIT_CWD is set by npm to the directory where `npm install` was run.
   // If it equals the plugin root, the developer is installing the plugin's
   // own deps — skip auto-install.
@@ -204,7 +246,7 @@ function postinstall() {
   // Also skip in CI environments unless explicitly opted in.
   if (process.env.CI && !process.env.PDLC_INSTALL_IN_CI) return;
 
-  install();
+  await install();
 }
 
 function printUsage() {
@@ -231,26 +273,33 @@ Marketplace: https://github.com/pdlc-os
 
 const [,, command, ...rest] = process.argv;
 
-switch (command) {
-  case 'install':
-    install();
-    break;
-  case 'uninstall':
-    uninstall();
-    break;
-  case 'status':
-    status();
-    break;
-  case 'postinstall':
-    postinstall();
-    break;
-  case '--version':
-  case '-v':
-    console.log(VERSION);
-    break;
-  case '--help':
-  case '-h':
-  default:
-    printUsage();
-    break;
+async function main() {
+  switch (command) {
+    case 'install':
+      await install();
+      break;
+    case 'uninstall':
+      uninstall();
+      break;
+    case 'status':
+      status();
+      break;
+    case 'postinstall':
+      await postinstall();
+      break;
+    case '--version':
+    case '-v':
+      console.log(VERSION);
+      break;
+    case '--help':
+    case '-h':
+    default:
+      printUsage();
+      break;
+  }
 }
+
+main().catch((err) => {
+  console.error(err.message);
+  process.exit(1);
+});
