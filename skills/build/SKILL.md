@@ -57,7 +57,7 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ## BUILD LOOP
 
-Repeat Steps 4–12 until `bd ready` returns an empty list.
+Repeat Steps 4–11 until `bd ready` returns an empty list.
 
 ### Step 4 — Get the ready queue
 

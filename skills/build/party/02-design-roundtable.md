@@ -27,7 +27,7 @@
 > - **Yes** — run roundtable, then build
 > - **No** — start building now"
 
-Wait for the user's answer. If no, proceed to Step 9.
+Wait for the user's answer. If no, proceed to Step 7.
 
 ---
 
@@ -134,4 +134,4 @@ Write the MOM file per `orchestrator.md`.
 
 ## Proceed
 
-After the roundtable, return to **Step 9** (TDD: Build the task) in `skills/build/SKILL.md`, carrying the Implementation Decision as context.
+After the roundtable, return to **Step 7** (Choose execution mode) in `skills/build/SKILL.md`, carrying the Implementation Decision as context for Step 9.

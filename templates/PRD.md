@@ -178,6 +178,24 @@ Then <!-- expected outcome -->
 
 ---
 
+## Known Risks
+
+<!-- Risks and deferred items identified during Discover.
+     Includes edge cases triaged as "known risk" during the Edge Case Analysis.
+     For each: state the risk, its potential impact, and why it is being deferred.
+     Example:
+       - GitHub OAuth token refresh may fail silently if the user revokes access
+         (impact: user gets logged out unexpectedly; deferred because incidence is <1%
+         and standard re-auth flow handles it)
+       - Rate limiting on GitHub's OAuth API could block logins during traffic spikes
+         (impact: users cannot log in via GitHub; deferred to post-launch monitoring) -->
+
+-
+-
+-
+
+---
+
 ## Design Docs
 
 <!-- Links to design documents produced during the Design sub-phase.

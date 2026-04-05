@@ -96,19 +96,19 @@ Return here when the discovery summary is confirmed and STATE.md shows `Define`.
 
 ### Sub-phase 2 — DEFINE
 
-Read `skills/brainstorming/steps/02-define.md` and execute every step completely (Steps 6–7).
+Read `skills/brainstorming/steps/02-define.md` and execute every step completely (Steps 7–8).
 
 Return here when the PRD is approved and STATE.md shows `Design`.
 
 ### Sub-phase 3 — DESIGN
 
-Read `skills/brainstorming/steps/03-design.md` and execute every step completely (Steps 8–11).
+Read `skills/brainstorming/steps/03-design.md` and execute every step completely (Steps 9–12).
 
 Return here when the design docs are approved and STATE.md shows `Plan`.
 
 ### Sub-phase 4 — PLAN
 
-Read `skills/brainstorming/steps/04-plan.md` and execute every step completely (Steps 12–18).
+Read `skills/brainstorming/steps/04-plan.md` and execute every step completely (Steps 13–19).
 
 Inception is complete when STATE.md shows `Inception Complete — Ready for /build`.
 

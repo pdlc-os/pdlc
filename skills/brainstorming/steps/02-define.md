@@ -1,9 +1,9 @@
 # Sub-phase 2: DEFINE
-## Steps 6–7
+## Steps 7–8
 
 ---
 
-### Step 6 — Generate the PRD draft
+### Step 7 — Generate the PRD draft
 
 Read `[brainstorm-log]` completely before writing anything. Use it as the authoritative record of everything discussed — divergent standouts, Socratic Q&A, adversarial findings and follow-up answers, ingested external context, and the confirmed discovery summary. The PRD must reflect the full evolved understanding captured there, not just the last few messages in context.
 
@@ -28,7 +28,7 @@ Save the file to: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
 
 ---
 
-### Step 7 — PRD approval gate
+### Step 8 — PRD approval gate
 
 Tell the user:
 

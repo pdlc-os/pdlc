@@ -1,9 +1,9 @@
 # Sub-phase 4: PLAN
-## Steps 12–18
+## Steps 13–19
 
 ---
 
-### Step 12 — Break the feature into tasks
+### Step 13 — Break the feature into tasks
 
 Analyze the approved PRD and design documents. Break the feature into discrete, implementable tasks. Follow these rules:
 
@@ -15,7 +15,7 @@ Analyze the approved PRD and design documents. Break the feature into discrete, 
 
 ---
 
-### Step 13 — Create tasks in Beads
+### Step 14 — Create tasks in Beads
 
 For each task, run:
 ```bash
@@ -29,18 +29,18 @@ Capture the Beads task ID returned for each task (format: `bd-XXXX`).
 
 ---
 
-### Step 14 — Set up task dependencies
+### Step 15 — Set up task dependencies
 
 For each dependency relationship (task B cannot start before task A completes), run:
 ```bash
-bd dep add [task-b-id] --blocks [task-a-id]
+bd dep add [task-a-id] --blocks [task-b-id]
 ```
 
 Set up all dependency relationships before generating the tree.
 
 ---
 
-### Step 15 — Generate the dependency tree
+### Step 16 — Generate the dependency tree
 
 Run:
 ```bash
@@ -69,7 +69,7 @@ Remind the user of the URL and tell them: "The dependency graph is now showing i
 
 ---
 
-### Step 16 — Save the plan file
+### Step 17 — Save the plan file
 
 Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this content:
 
@@ -103,7 +103,7 @@ Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this cont
 
 ---
 
-### Step 17 — Plan approval gate
+### Step 18 — Plan approval gate
 
 Tell the user:
 
@@ -119,7 +119,7 @@ If the user requests changes (add/remove/split tasks): make the changes in Beads
 
 ---
 
-### Step 18 — Wrap up Inception
+### Step 19 — Wrap up Inception
 
 After plan approval:
 
@@ -129,6 +129,12 @@ bash scripts/stop-server.sh
 ```
 
 Mockup files created during Inception persist in `.pdlc/brainstorm/` for reference.
+
+**Update `[brainstorm-log]` frontmatter:**
+```
+status: inception-complete
+last-updated: [ISO 8601 timestamp]
+```
 
 **Update `docs/pdlc/memory/STATE.md`**:
 - **Current Phase**: `Inception Complete — Ready for /build`

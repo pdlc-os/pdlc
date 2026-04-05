@@ -62,6 +62,17 @@ Initialization / — / <!-- timestamp -->
 
 ---
 
+## Party Mode
+
+<!-- Spawn mode for multi-agent party meetings during Construction.
+     Valid values: agent-teams | subagents | solo | none
+     Set once at the first Wave Kickoff standup during /build.
+     "none" means no preference has been set yet. -->
+
+none
+
+---
+
 ## Active Blockers
 
 <!-- List anything currently preventing forward progress.

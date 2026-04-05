@@ -1,9 +1,9 @@
 # Sub-phase 3: DESIGN
-## Steps 8–11
+## Steps 9–12
 
 ---
 
-### Step 8 — Create the design directory
+### Step 9 — Create the design directory
 
 Run:
 ```bash
@@ -12,7 +12,7 @@ mkdir -p docs/pdlc/design/[feature-name]
 
 ---
 
-### Step 9 — Generate design documents
+### Step 10 — Generate design documents
 
 Generate three design documents based on the approved PRD and the tech stack from `CONSTITUTION.md`:
 
@@ -56,13 +56,13 @@ If this feature requires no new API endpoints, write: "No new API endpoints. Thi
 
 ---
 
-### Step 10 — Update PRD design doc links
+### Step 11 — Update PRD design doc links
 
 Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to the three files just created.
 
 ---
 
-### Step 11 — Design approval gate
+### Step 12 — Design approval gate
 
 Tell the user:
 
@@ -76,5 +76,11 @@ Tell the user:
 Wait for explicit approval. Do not proceed to Plan until the user approves.
 
 If the user provides feedback: revise the relevant design doc(s), save the updated files, and re-present for approval. Repeat until approved.
+
+Update `[brainstorm-log]` frontmatter:
+```
+status: design-approved
+last-updated: [ISO 8601 timestamp]
+```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Plan`.

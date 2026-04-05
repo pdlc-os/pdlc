@@ -43,10 +43,10 @@ Scan the output for a cycle: any node that appears on both sides of a blocking a
 
 ### Auto-resolution (orchestrator decides)
 
-1. Identify the dependency added most recently by scanning the Wave Kickoff MOM file (`docs/pdlc/mom/[feature]_wave-kickoff_mom_*.md`) for "Dependency updates" — those are the newest additions and most likely candidates.
+1. Identify the dependency added most recently by scanning the Wave Kickoff MOM file (`docs/pdlc/mom/[feature-name]_wave-kickoff_mom_*.md`) for "Dependency updates" — those are the newest additions and most likely candidates.
 2. Remove the most recently added dep:
    ```bash
-   bd dep remove [task-b-id] --blocks [task-a-id]
+   bd dep remove [task-a-id] --blocks [task-b-id]
    ```
 3. Re-run `bd ready --json`. If tasks are now unblocked, log the decision and continue.
 4. Record in STATE.md as a Tier 3 event:
@@ -229,19 +229,22 @@ On hard cap:
 ## General Escalation Rules
 
 **Auto-resolve without asking human:**
-- Single agent spawn failure (Type 2, 1 of N)
-- Stagnation resolved by re-running `bd done` on finished tasks
-- Beads cycle where the newest dep is clearly the wrong one (no ambiguity)
+- Type 1: Beads cycle where the newest dep is clearly the wrong one (no ambiguity)
+- Type 2: Single agent spawn failure (1 of N — continue without that agent)
+- Type 6: Stagnation resolved by re-running `bd done` on finished tasks
 
 **Ask human before proceeding:**
-- Design Roundtable consensus failure (always — architectural decision)
-- Multiple Beads cycles or ambiguous dep removal
-- All agents fail in a spawn round
-- Third Strike Panel trigger on same test
+- Type 1: Multiple overlapping Beads cycles or ambiguous dep removal
+- Type 2: All agents fail in a spawn round
+- Type 3: Design Roundtable consensus failure (always — architectural decision)
+- Type 4: 3rd fix-regenerate cycle exhausted — human chooses Continue/Override/Abandon
+- Type 5: Third Strike Panel trigger on same test — human chooses Redesign/Skip/Control
+- Type 6: Hard cap reached (loop-count exceeds total tasks) — present state for reconciliation
 
 **Hard stop — do not auto-proceed under any circumstances:**
-- `ACCEPT ALL CRITICALS` override in review loop
-- Feature abandonment after exhausted Strike Panel
+- Type 4: `ACCEPT ALL CRITICALS` override in review loop (Tier 1 logged event)
+- Type 4: Feature abandonment after exhausted fix cycles
+- Type 5: Feature abandonment after exhausted Strike Panel
 - Beads state is unrecoverable (bd commands returning errors consistently)
 
 ---
@@ -253,4 +256,4 @@ Every deadlock event must be recorded in STATE.md Phase History:
 | [now] | deadlock_[type] | [resolution: auto/human] | [brief description] | [feature-name] |
 ```
 
-Every resolved or escalated deadlock writes a MOM entry to `docs/pdlc/mom/[feature]_deadlock_mom_[YYYY]_[MM]_[DD].md` using the standard MOM format with topic slug `deadlock`.
+Every resolved or escalated deadlock writes a MOM entry to `docs/pdlc/mom/[feature-name]_deadlock_mom_[YYYY]_[MM]_[DD].md` using the standard MOM format with topic slug `deadlock`.
