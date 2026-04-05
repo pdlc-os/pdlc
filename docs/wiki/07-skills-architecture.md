@@ -86,6 +86,9 @@ skills/
 
   whatif/
     SKILL.md                          <- read-only scenario analysis
+
+  state-reconciliation.md             <- conflict resolution between state files
+  formatting.md                       <- ANSI color scheme + visual patterns
 ```
 
 ---

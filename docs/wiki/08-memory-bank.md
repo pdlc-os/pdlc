@@ -33,6 +33,26 @@ docs/pdlc/
     MOM_decision_[ADR-NNN]_[YYYY-MM-DD].md
 ```
 
+### Temporary state files
+
+In addition to the permanent memory files, PDLC uses temporary files for crash recovery:
+
+| File | Purpose | Lifetime |
+|------|---------|----------|
+| `docs/pdlc/memory/.pending-party.json` | In-progress meeting state | Created before meeting, deleted on completion |
+| `docs/pdlc/memory/.pending-decision.json` | In-progress decision state | Created before decision flow, deleted on completion |
+
+These files are detected on session start. If multiple pending files exist, they're resolved innermost-first (meeting → decision → phase). Files older than 24 hours are treated as stale and cleaned up. See `skills/state-reconciliation.md` for the full protocol.
+
+### State authority hierarchy
+
+When state files disagree (e.g., after a crash mid-operation):
+
+1. **STATE.md** is the single source of truth for where the workflow is
+2. **ROADMAP.md** is reconciled to match STATE.md's active feature
+3. **Beads** task status is reconciled to match STATE.md's active task
+4. **Pending files** indicate interrupted sub-operations within the current phase
+
 ### Episodic memory
 
 Every time a feature is delivered, Claude drafts an episode file capturing what was built, key decisions, test results, tech debt, and the agent team's retro. Human approves before it's committed to permanent record.

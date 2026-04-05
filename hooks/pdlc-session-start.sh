@@ -130,18 +130,42 @@ ${roadmap_table}"
   fi
 fi
 
-# ── Check for interrupted work ───────────────────────────────────────────────
+# ── Check for interrupted work and state conflicts ──────────────────────────
 pending_notice=""
+conflict_count=0
 
+# Count pending files
 pending_decision="${project_dir}/docs/pdlc/memory/.pending-decision.json"
-if [[ -f "$pending_decision" ]]; then
-  pending_notice="${pending_notice}
+pending_party="${project_dir}/docs/pdlc/memory/.pending-party.json"
+has_pending_decision=false
+has_pending_party=false
 
-⚠️ **Interrupted decision detected.** Run \`/pdlc decision\` to resume or discard the pending decision."
+if [[ -f "$pending_decision" ]]; then
+  has_pending_decision=true
+  conflict_count=$((conflict_count + 1))
 fi
 
-pending_party="${project_dir}/docs/pdlc/memory/.pending-party.json"
 if [[ -f "$pending_party" ]]; then
+  has_pending_party=true
+  conflict_count=$((conflict_count + 1))
+fi
+
+# Build pending notices (innermost first: party → decision → phase)
+if $has_pending_party && $has_pending_decision; then
+  meeting_type=""
+  if command -v jq &>/dev/null; then
+    meeting_type="$(jq -r '.meetingType // "unknown"' "$pending_party" 2>/dev/null)"
+  fi
+  pending_notice="${pending_notice}
+
+⚠️ **Multiple interrupted operations detected:**
+  1. Interrupted party meeting (${meeting_type:-unknown})
+  2. Interrupted decision
+
+These will be resolved in order (meeting first, then decision). Run \`/pdlc decision\` to start recovery, or resume the active workflow.
+
+Read \`skills/state-reconciliation.md\` for the full reconciliation protocol."
+elif $has_pending_party; then
   meeting_type=""
   if command -v jq &>/dev/null; then
     meeting_type="$(jq -r '.meetingType // "unknown"' "$pending_party" 2>/dev/null)"
@@ -149,6 +173,47 @@ if [[ -f "$pending_party" ]]; then
   pending_notice="${pending_notice}
 
 ⚠️ **Interrupted party meeting detected** (${meeting_type:-unknown}). Resume the active workflow to recover — the meeting will be picked up automatically."
+elif $has_pending_decision; then
+  pending_notice="${pending_notice}
+
+⚠️ **Interrupted decision detected.** Run \`/pdlc decision\` to resume or discard the pending decision."
+fi
+
+# Check for ROADMAP.md inconsistency with STATE.md
+if [[ -f "$roadmap_file" ]] && command -v python3 &>/dev/null; then
+  roadmap_conflict="$(python3 -c '
+import sys, re
+
+state = open(sys.argv[1]).read()
+roadmap = open(sys.argv[2]).read()
+
+# Extract active feature from STATE.md
+feat_match = re.search(r"\*\*Current Feature\*\*:\s*`?([^`\n]+)`?", state)
+active_feature = feat_match.group(1).strip() if feat_match else "none"
+
+# Extract phase from STATE.md
+phase_match = re.search(r"\*\*Current Phase\*\*:\s*`?([^`\n]+)`?", state)
+phase = phase_match.group(1).strip() if phase_match else ""
+
+# Find features marked In Progress in ROADMAP
+in_progress = re.findall(r"\|\s*(F-\d+)\s*\|\s*(\S+)\s*\|[^|]+\|\s*\d+\s*\|\s*In Progress", roadmap)
+
+if not in_progress:
+    sys.exit(0)
+
+for fid, fname in in_progress:
+    if "Idle" in phase and active_feature == "none":
+        print(f"ROADMAP shows {fid} ({fname}) as In Progress but STATE.md is Idle")
+    elif active_feature != "none" and fname != active_feature:
+        print(f"ROADMAP shows {fid} ({fname}) as In Progress but STATE.md active feature is {active_feature}")
+' "$state_file" "$roadmap_file" 2>/dev/null)" || true
+
+  if [[ -n "$roadmap_conflict" ]]; then
+    conflict_count=$((conflict_count + 1))
+    pending_notice="${pending_notice}
+
+⚠️ **State conflict:** ${roadmap_conflict}. This will be reconciled when the workflow resumes."
+  fi
 fi
 
 # ── Build the session message ────────────────────────────────────────────────
