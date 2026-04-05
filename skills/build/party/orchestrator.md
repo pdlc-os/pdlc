@@ -198,7 +198,8 @@ or "React to what Phantom flagged about the auth surface."]
 - If you agree with another agent, build on their specific point — don't just say "I agree."
 - Keep your response under 300 words unless the complexity demands more.
 - If you have nothing substantive to add, say so in one sentence rather than padding.
-- Do NOT use tools. Respond with your perspective only.
+- **Agent Teams mode:** You have your own context window. You may use tools (Read, Grep, Bash, etc.) to verify claims — e.g., read source code to confirm an architectural concern, check test files to validate coverage claims. Collaborate directly with other agents.
+- **Subagent mode:** Do NOT use tools. Respond with your perspective only. You report back to the primary agent.
 ```
 
 ---
