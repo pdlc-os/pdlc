@@ -34,13 +34,13 @@ flowchart TD
 
     %% ── PHASE 0: INIT ──────────────────────────────────────────────
     INIT["/pdlc init"] --> GITCHECK{Git repo exists?}
-    GITCHECK -->|No| GITINIT[git init + .gitignore\n+ GitHub setup]
+    GITCHECK -->|No| GITINIT[git init + .gitignore]
     GITCHECK -->|Yes| GHCHECK{GitHub remote?}
     GITINIT --> GHCHECK
     GHCHECK -->|No| GHSETUP[gh CLI auth\n+ repo creation]
     GHCHECK -->|Yes| PREREQ
     GHSETUP --> PREREQ
-    PREREQ[Check prereqs\nDolt + Beads] --> FIELD{Existing code?}
+    PREREQ[Homebrew + Dolt + Beads\nHaiku model] --> FIELD{Existing code?}
     FIELD -->|Brownfield| SCAN[Offer repo scan]
     SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings]
     SCANRUN --> MEM

@@ -4,15 +4,30 @@
 
 ```mermaid
 flowchart LR
-    GIT[Git + GitHub\nsetup] --> QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BEADS[bd init] --> START{Start\nfirst feature?}
+    subgraph SETUP["Prerequisites (Haiku model)"]
+        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> DOLT[Dolt] --> BEADS[Beads]
+    end
+    subgraph CORE["Project Setup (Opus model)"]
+        QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BDINIT[bd init]
+    end
+    SETUP --> CORE --> START{Start\nfirst feature?}
     START -->|Yes| BRAINSTORM([to /pdlc brainstorm])
     START -->|No| IDLE([Idle])
+    style SETUP fill:#2d2d2d,color:#fff
+    style CORE fill:#1e3a5f,color:#fff
     style BRAINSTORM fill:#1e3a5f,color:#fff
 ```
 
-Run once per project. **Oracle** leads. PDLC checks prerequisites, then detects whether you're starting fresh or bringing in an existing codebase.
+Run once per project. **Oracle** leads.
 
-**Git & GitHub setup**: If no git repo exists, PDLC offers to initialize one with a `.gitignore` (node_modules, .claude, .env, etc.). Then verifies GitHub connectivity — if no remote is configured, walks you through creating a repo (GitHub.com or GitHub Enterprise) and authenticating with the `gh` CLI. This ensures `/pdlc ship` can create PRs without issues later.
+**Prerequisites (Steps 1a-1e, Haiku model):** These use the Haiku model for speed — they're straightforward CLI operations. The install chain follows dependency order:
+1. **Git** — init repo + `.gitignore` if needed
+2. **GitHub** — remote + connectivity + `gh` CLI (flagged for install if missing)
+3. **Homebrew** — install if missing on macOS (needed for Dolt, gh); optional on Linux
+4. **Dolt** — SQL database for Beads (`brew install dolt` or official script)
+5. **Beads** — task manager (`npm install -g @beads/bd`)
+
+After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
 **Greenfield** (empty repo): PDLC asks 7 Socratic questions and scaffolds memory files from your answers.
 
