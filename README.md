@@ -101,20 +101,22 @@ Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.cl
 
 > **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
 
-### Keep up to date
+### Upgrade
 
 ```bash
-# Local — update the devDependency
-npm update @pdlc-os/pdlc
+# Local
+npx @pdlc-os/pdlc upgrade --local
 
-# Global — from npm
-npx @pdlc-os/pdlc@latest install
-
-# Global — from GitHub (latest main)
-npm install -g pdlc-os/pdlc
+# Global
+npx @pdlc-os/pdlc upgrade
 ```
 
-Re-running `install` is idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
+The `upgrade` command:
+1. Upgrades PDLC to the latest version (matching your install scope)
+2. Re-registers hooks and slash commands with updated paths
+3. Prompts to upgrade Beads as well (defaults to yes)
+
+Re-running `install` is also idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
 
 ### Prerequisites
 

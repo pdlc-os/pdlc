@@ -141,7 +141,10 @@ function prompt(question) {
 }
 
 async function promptInstallBeads(local) {
-  if (isBeadsInstalled()) return;
+  if (isBeadsInstalled()) {
+    console.log(`\n  Beads (bd)  : \u2713 already installed (${beadsVersion()}) — skipping`);
+    return;
+  }
   if (!process.stdin.isTTY) return;
 
   const scope = local ? 'locally (devDependency)' : 'globally';
@@ -202,6 +205,28 @@ function getRepoRoot() {
   return process.env.INIT_CWD || process.cwd();
 }
 
+// ─── Banner ──────────────────────────────────────────────────────────────────
+
+function banner(action, version) {
+  const tag = `${action} v${version}`;
+  const pad = 40 - tag.length;
+  const art = `
+\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
+\u2502                                            \u2502
+\u2502   \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588  \u2502
+\u2502   \u2588\u2588   \u2588\u2588 \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
+\u2502   \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
+\u2502   \u2588\u2588      \u2588\u2588   \u2588\u2588 \u2588\u2588     \u2588\u2588       \u2502
+\u2502   \u2588\u2588      \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588\u2588\u2588  \u2502
+\u2502                                            \u2502
+\u2502   ${tag}${' '.repeat(pad > 0 ? pad : 0)}\u2502
+\u2502   Product Development Lifecycle            \u2502
+\u2502                                            \u2502
+\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+`;
+  console.log(art);
+}
+
 // ─── Slash command registration ──────────────────────────────────────────────
 
 const PLUGIN_COMMANDS_DIR = path.join(PLUGIN_ROOT, '.claude', 'commands');
@@ -256,6 +281,7 @@ function removeCommands(targetRoot) {
 
 async function install(opts = {}) {
   const local = opts.local || false;
+  if (!opts._skipBanner) banner('Installing', VERSION);
 
   const pluginSettings = readJson(PLUGIN_SETTINGS_PATH);
   if (!pluginSettings) {
@@ -354,6 +380,7 @@ async function promptUninstallBeads(local) {
 
 async function uninstall(opts = {}) {
   const local = opts.local || false;
+  banner('Uninstalling', VERSION);
 
   if (local) {
     const repoRoot = opts.repoRoot || process.cwd();
@@ -451,6 +478,64 @@ async function postinstall() {
   }
 }
 
+async function upgrade(opts = {}) {
+  const local = opts.local || false;
+  const scope = local ? 'locally' : 'globally';
+  banner('Upgrading', VERSION);
+
+  console.log(`  Upgrading PDLC ${scope}...`);
+
+  // Upgrade PDLC
+  const pdlcCmd = local
+    ? 'npm update @pdlc-os/pdlc'
+    : 'npm install -g @pdlc-os/pdlc@latest';
+
+  try {
+    execSync(pdlcCmd, { stdio: 'inherit' });
+  } catch (err) {
+    console.error(`\n  PDLC upgrade failed. You can upgrade manually:\n  ${pdlcCmd}`);
+    return;
+  }
+
+  // Re-read version after upgrade (the binary on disk may have changed,
+  // but we're still running the old one — read the new version from package.json)
+  let newVersion;
+  try {
+    newVersion = require(path.join(PLUGIN_ROOT, 'package.json')).version;
+  } catch {
+    newVersion = 'unknown';
+  }
+  console.log(`  PDLC        : \u2713 upgraded to v${newVersion}`);
+
+  // Re-run install to refresh hooks and commands
+  await install({ local, repoRoot: opts.repoRoot, _skipBanner: true });
+
+  // Prompt to upgrade Beads
+  if (isBeadsInstalled()) {
+    if (!process.stdin.isTTY) return;
+
+    const beadsCmd = local
+      ? 'npm update @beads/bd'
+      : 'npm install -g @beads/bd@latest';
+
+    console.log(`\n  Beads (bd) is currently installed (${beadsVersion()}).`);
+    const answer = await prompt(`  Upgrade Beads ${scope} as well? (Y/n) `);
+    if (answer === '' || answer === 'y' || answer === 'yes') {
+      console.log(`\n  Upgrading Beads ${scope}...`);
+      try {
+        execSync(beadsCmd, { stdio: 'inherit' });
+        console.log(`  Beads (bd)  : \u2713 upgraded (${beadsVersion()})`);
+      } catch (err) {
+        console.error(`  Beads upgrade failed. You can upgrade manually:\n  ${beadsCmd}`);
+      }
+    } else {
+      console.log('  Keeping current Beads version.');
+    }
+  }
+
+  console.log('');
+}
+
 function printUsage() {
   console.log(`
 pdlc v${VERSION} \u2014 Product Development Lifecycle plugin for Claude Code
@@ -460,6 +545,8 @@ Usage:
   npx @pdlc-os/pdlc install --local     Register PDLC hooks locally (.claude/settings.local.json)
   npx @pdlc-os/pdlc uninstall           Remove global PDLC hooks
   npx @pdlc-os/pdlc uninstall --local   Remove local PDLC hooks
+  npx @pdlc-os/pdlc upgrade             Upgrade PDLC + Beads globally
+  npx @pdlc-os/pdlc upgrade --local     Upgrade PDLC + Beads locally
   npx @pdlc-os/pdlc status              Show install status
   npx @pdlc-os/pdlc --version           Print version
 
@@ -493,6 +580,9 @@ async function main() {
       break;
     case 'uninstall':
       await uninstall({ local: hasLocal });
+      break;
+    case 'upgrade':
+      await upgrade({ local: hasLocal });
       break;
     case 'status':
       status();
