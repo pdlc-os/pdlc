@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     subgraph SETUP["Prerequisites (Haiku model)"]
-        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> DOLT[Dolt] --> BEADS[Beads]
+        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> AT[Agent Teams\ncheck] --> DOLT[Dolt] --> BEADS[Beads]
     end
     subgraph CORE["Project Setup (Opus model)"]
         QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BDINIT[bd init]
@@ -23,6 +23,7 @@ Run once per project. **Oracle** leads.
 **Prerequisites (Steps 1a-1e, Haiku model):** These use the Haiku model for speed — they're straightforward CLI operations. The install chain follows dependency order:
 1. **Git** — init repo + `.gitignore` if needed
 2. **GitHub** — remote + connectivity + `gh` CLI (flagged for install if missing)
+2b. **Agent Teams** — check if enabled in Claude Code settings; offer to enable; fallback to Subagent mode if declined
 3. **Homebrew** — install if missing on macOS (needed for Dolt, gh); optional on Linux
 4. **Dolt** — SQL database for Beads (`brew install dolt` or official script)
 5. **Beads** — task manager (`npm install -g @beads/bd`)

@@ -169,6 +169,31 @@ After Homebrew is verified (or skipped), install any tools noted as needed from 
 - If `gh` was flagged as missing in Step 1b: `brew install gh` (or provide the Linux install script)
 - Verify: `gh --version`
 
+**1c-ii. Verify Agent Teams mode is enabled.**
+
+PDLC uses Claude Code's Agent Teams feature by default for multi-agent meetings. Check if it's enabled in the Claude Code settings.
+
+Read `~/.claude/settings.json` (global) or `.claude/settings.local.json` (local). Check if `enableAgentTeams` (or the equivalent Agent Teams configuration) is present and set to `true`.
+
+**If Agent Teams is enabled:**
+> "Agent Teams: ✓ enabled"
+
+**If Agent Teams is not enabled or the setting is missing:**
+
+> "PDLC uses Agent Teams mode for multi-agent meetings — this gives each agent its own context window so they can collaborate directly and use tools to verify their analysis.
+>
+> Enable Agent Teams now? (Y/n)"
+
+**If the user accepts:**
+Update the appropriate settings file (`.claude/settings.local.json` for local installs, `~/.claude/settings.json` for global) to enable Agent Teams.
+
+> "Agent Teams: ✓ enabled"
+
+**If the user declines:**
+> "Agent Teams not enabled. PDLC will fall back to Subagent mode for all multi-agent meetings — agents will report to a primary agent instead of collaborating directly. You can enable Agent Teams later in your Claude Code settings."
+
+Record the user's choice: if declined, set `Party Mode` to `subagents` in STATE.md once it's created (Step 5c). This ensures the orchestrator uses Subagent mode throughout.
+
 **1d. Verify Dolt is installed.**
 
 Run: `dolt version`

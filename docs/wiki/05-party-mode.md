@@ -62,12 +62,12 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 
 ### Spawn modes
 
-Set once at the first Wave Kickoff, applies for the session. Default is Agent Teams.
+Default is Agent Teams. If Agent Teams is not enabled in Claude Code settings, PDLC falls back to Subagent mode and informs the user. The mode is checked during init (Step 1c-ii) and again at runtime before each meeting.
 
 | Mode | How it works | Best for |
 |------|-------------|----------|
-| **Agent Teams** (default) | Each agent has its own context window. Agents talk to each other directly and the user can interact with any agent. | Complex multi-perspective discussions, highest fidelity |
-| **Subagents** | Primary agent spawns sub-agents via Agent tool. Sub-agents report back to primary only — they cannot talk to each other. | Faster execution, mediated cross-talk |
+| **Agent Teams** (default) | Each agent has its own context window. Agents talk to each other directly and the user can interact with any agent. Agents can use tools. | Complex multi-perspective discussions, highest fidelity |
+| **Subagents** (fallback) | Primary agent spawns sub-agents via Agent tool. Sub-agents report back to primary only — they cannot talk to each other. No tool access. | Faster execution, or when Agent Teams is not enabled |
 | **Solo** | Single LLM roleplays all agents in one response | Fast iteration, fallback when spawning fails |
 
 All meetings produce MOM (minutes of meeting) files at `docs/pdlc/mom/`.

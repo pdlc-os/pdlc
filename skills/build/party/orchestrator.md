@@ -91,11 +91,28 @@ These are estimates — actual time depends on complexity and spawn mode (solo i
 
 ## Spawn Mode
 
+### Runtime Agent Teams check
+
+Before determining spawn mode, verify that Agent Teams is actually available:
+
+1. Check Claude Code settings (`~/.claude/settings.json` or `.claude/settings.local.json`) for Agent Teams being enabled.
+2. Check `STATE.md` `Party Mode` field — if it's already set to `subagents` (user declined Agent Teams during init), skip the check.
+
+**If Agent Teams is not enabled and STATE.md doesn't already say `subagents`:**
+
+> "Agent Teams is not enabled in your Claude Code settings. PDLC works best with Agent Teams — agents get their own context windows and can collaborate directly.
+>
+> Falling back to Subagent mode for this meeting. To enable Agent Teams, update your Claude Code settings or re-run `/pdlc init`."
+
+Set `Party Mode` in STATE.md to `subagents` so this message isn't repeated every meeting.
+
+### Mode selection
+
 Determine spawn mode using this priority order:
 
-1. **STATE.md `Party Mode` field** — if set, use it. This is the session-level preference established at the first Wave Kickoff standup.
+1. **STATE.md `Party Mode` field** — if set, use it. This is the session-level preference established at init or the first Wave Kickoff standup.
 2. **Step 7 execution mode** — if no `Party Mode` in STATE.md and a task execution mode has been chosen, use it.
-3. **Default** — Agent Teams mode.
+3. **Default** — Agent Teams mode (if enabled; otherwise Subagent mode).
 
 | Party Mode value | Behaviour |
 |-----------------|-----------|
