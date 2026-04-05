@@ -71,13 +71,24 @@ Read `docs/pdlc/memory/OVERVIEW.md`. Update:
 - **Known Tech Debt**: append any tech debt items recorded in the episode file
 - **Last updated**: today's date
 
-**16c. Commit everything:**
+**16c. Update ROADMAP.md:**
+
+Read `docs/pdlc/memory/ROADMAP.md`. Find the row in the Feature Backlog table whose feature slug matches `[feature-name]`. Update that row:
+- **Status**: `Planned` or `In Progress` → `Shipped`
+- **Shipped**: `—` → `[today's date YYYY-MM-DD]`
+- **Episode**: `—` → `[NNN]_[feature-name]_[YYYY-MM-DD].md`
+- **Last updated** (file header): today's date
+
+If no matching row exists (the feature was added ad-hoc and never captured in the roadmap), append a new row with the next available `F-NNN` ID, the feature details, `Shipped` status, today's date, and the episode reference.
+
+**16d. Commit everything:**
 
 ```bash
 git add docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md
 git add docs/pdlc/memory/episodes/index.md
 git add docs/pdlc/memory/OVERVIEW.md
 git add docs/pdlc/memory/CHANGELOG.md
+git add docs/pdlc/memory/ROADMAP.md
 git commit -m "docs(pdlc): add episode [NNN] — [feature-name]"
 git push origin main
 ```
@@ -98,16 +109,54 @@ Append to Phase History:
 | [now] | operation_complete | Idle | — | none |
 ```
 
-### Step 18 — Print completion message
+### Step 18 — Handoff: Jarvis → Oracle and next feature prompt
 
-> "[feature-name] shipped. Episode [NNN] committed.
+Output an **Agent Handoff** block (per `skills/formatting.md`) with:
+
+> **Jarvis (Tech Writer):** "That's a wrap on `[feature-name]`! Episode [NNN] is committed, the changelog and roadmap are updated, and everything is documented. It's been great capturing this journey. I'm handing you back to Oracle to figure out what's next."
 >
-> - Version: v[X.Y.Z]
-> - Episode: docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md
-> - CHANGELOG updated: docs/pdlc/memory/CHANGELOG.md
-> - OVERVIEW updated: docs/pdlc/memory/OVERVIEW.md
+> **Oracle (Product Manager):** "Oracle here — welcome back! Let me pull up the roadmap and see where we stand."
+
+Read `docs/pdlc/memory/ROADMAP.md`. Identify the **next unshipped feature** by priority order (lowest priority number with status `Planned`). Call it `[next-feature]` with ID `[next-id]`.
+
+**If there is a next feature on the roadmap:**
+
+> "Here's where we are:
 >
-> Ready for the next feature — run `/pdlc brainstorm <next-feature>` to start."
+> - **Just shipped:** `[feature-name]` ✓
+> - **Next on the roadmap:** `[next-id]: [next-feature]` — [description]
+> - **Remaining:** [N] features planned
+>
+> What would you like to do?
+> - **Continue** — start brainstorming `[next-feature]` now
+> - **Pause** — save your place and pick it up later
+> - **Switch** — work on a different feature instead (I'll update the roadmap)"
+
+**If the roadmap is fully shipped (no `Planned` features remain):**
+
+> "Every feature on the roadmap is shipped! 🎉
+>
+> What would you like to do?
+> - **Add features** — let's ideate on what to build next and update the roadmap
+> - **Pause** — take a break, you've earned it"
+
+**Handle the user's response:**
+
+**Continue** (user says "continue", "yes", "next", "let's go", or any clear affirmative):
+→ Update ROADMAP.md: set `[next-feature]` status to `In Progress`.
+→ Immediately begin executing the `/pdlc brainstorm [next-feature]` flow.
+
+**Pause** (user says "pause", "stop", "later", "not now", or any deferral):
+→ Acknowledge:
+> "No problem — your progress is saved. The roadmap shows `[next-id]: [next-feature]` as next in line. Run `/pdlc brainstorm [next-feature]` whenever you're ready to pick back up."
+
+**Switch** (user names a different feature, says "something else", "actually I want to work on X", or picks a different roadmap item):
+→ If the feature is already on the roadmap (user references an ID or name): update that feature's status to `In Progress` and begin `/pdlc brainstorm [that-feature]`.
+→ If the feature is **not** on the roadmap: ask for a one-sentence description, assign the next available `F-NNN` ID, add it to ROADMAP.md with status `In Progress`, and begin `/pdlc brainstorm [new-feature]`.
+→ In both cases, update ROADMAP.md before starting brainstorm.
+
+**Add features** (when roadmap is fully shipped):
+→ Run an abbreviated version of the roadmap ideation: brainstorm new features with the user, assign IDs, add to ROADMAP.md, prioritize, then offer to start the first one.
 
 ---
 

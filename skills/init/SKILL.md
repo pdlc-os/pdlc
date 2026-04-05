@@ -46,7 +46,7 @@ Do not proceed until `git status` succeeds.
 
 ## Initialization Flow
 
-The initialization runs four groups of steps in strict sequence. Each group is defined in its own file under `skills/init/steps/`. Read each file completely and execute every step in it before moving to the next.
+The initialization runs five groups of steps in strict sequence. Each group is defined in its own file under `skills/init/steps/`. Read each file completely and execute every step in it before moving to the next.
 
 ### Steps 2–3 — Setup
 
@@ -66,9 +66,15 @@ Read `skills/init/steps/03-generate-memory.md` and execute it completely.
 
 Return here when all memory files and the episodes index are created.
 
+### Steps 6a–6c — Roadmap Ideation
+
+Read `skills/init/steps/04-roadmap.md` and execute it completely.
+
+Return here when the prioritized feature roadmap is captured in ROADMAP.md.
+
 ### Steps 7–9 — Finalize
 
-Read `skills/init/steps/04-finalize.md` and execute it completely.
+Read `skills/init/steps/05-finalize.md` and execute it completely.
 
 Return here when the initialization summary has been printed.
 

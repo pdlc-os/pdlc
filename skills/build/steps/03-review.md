@@ -46,9 +46,19 @@ If the user requests fixes: increment `[review-fix-cycles]`, address the issues,
 
 After approval:
 - If GitHub integration is configured: push non-accepted findings as PR comments
-- For any finding marked "Defer": append an entry to `docs/pdlc/memory/DECISIONS.md` under a Tech Debt section
 - Log accepted Phantom security warnings as Tier 3 events in STATE.md
 - Log accepted Echo coverage gaps as Tier 3 events in STATE.md
+
+**Record deferred findings as decisions:**
+
+For each finding marked "Defer" or "Accept warning", record it in the Decision Registry using the protocol in `skills/decision/SKILL.md`. For each entry, set:
+- **Source**: `PDLC flow`
+- **Phase**: `Construction`
+- **Sub-phase**: `Review`
+- **Agent**: the agent who raised the finding (Neo, Echo, Phantom, or Jarvis)
+- **Decision text**: "Deferred: [finding summary]. Rationale: [user's stated reason for deferral]."
+
+Run the **impact assessment** (Step 2 of the decision skill) for each deferred finding. If the assessment identifies cross-cutting impacts, present them to the user before recording. The user may choose to fix instead of defer after seeing the impacts.
 
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Test`

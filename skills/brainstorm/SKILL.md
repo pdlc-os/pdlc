@@ -82,6 +82,8 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Discover`
 - **Last Checkpoint**: `Inception / Discover / [now ISO 8601]`
 
+Update `docs/pdlc/memory/ROADMAP.md`: find the row matching `[feature-name]` and set its **Status** to `In Progress`. If no matching row exists, append a new row with the next available `F-NNN` ID, the feature name, status `In Progress`, and `—` for Shipped/Episode. Update the file's **Last updated** date.
+
 ---
 
 ## Lead Agent Assignments

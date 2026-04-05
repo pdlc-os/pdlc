@@ -700,6 +700,7 @@ Slash commands (inside a Claude Code session after install):
   /pdlc brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
   /pdlc build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
   /pdlc ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
+  /pdlc decision    Record a decision in the Decision Registry (any phase)
 
 Marketplace: https://github.com/pdlc-os
 `);

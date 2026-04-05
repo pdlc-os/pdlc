@@ -98,14 +98,24 @@ Examples of the kind of specificity required:
 - "Pre-populate the CONSTITUTION.md test gates section during Init — it was left blank this cycle, which caused ambiguity during the Test sub-phase"
 - "Establish a baseline visual regression screenshot set before the next frontend task, to make Layer 6 actionable rather than advisory"
 
-### Step 7 — Tech debt log
+### Step 7 — Tech debt log and decision review
 
-Read `docs/pdlc/memory/DECISIONS.md` for any tech debt deferred during this cycle. Also check review files for findings marked "Defer to tech debt."
+Read `docs/pdlc/memory/DECISIONS.md` for any decisions recorded during this cycle (matching the current feature name). Also check review files for findings marked "Defer to tech debt."
 
-For each item:
+**For each tech debt item:**
 - Name the component or module affected
 - Describe the debt (what was cut, why it was deferred)
 - Propose a concrete remediation approach and a suggested future episode to address it
+
+**For any new tech debt discovered during the retrospective** (e.g., patterns noticed during Steps 4–6 that weren't captured during Review):
+Record each as a decision in the Decision Registry using the protocol in `skills/decision/SKILL.md`. Set:
+- **Source**: `PDLC flow`
+- **Phase**: `Operation`
+- **Sub-phase**: `Reflect`
+- **Agent**: `Jarvis`
+- **Decision text**: "Tech debt identified during retrospective: [description]."
+
+Run the **impact assessment** (Step 2 of the decision skill) for each new tech debt decision. Present impacts to the user before recording.
 
 If no tech debt was introduced this cycle, state that explicitly: "No tech debt introduced this cycle."
 

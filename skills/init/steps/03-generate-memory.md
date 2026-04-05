@@ -46,7 +46,7 @@ Create this file based on the `templates/STATE.md` structure. Set:
 
 ### 5d. `docs/pdlc/memory/ROADMAP.md`
 
-Create this file with stub content:
+Create this file with stub content (the full roadmap is populated in the next step during feature ideation):
 
 ```markdown
 # Roadmap
@@ -56,25 +56,23 @@ Create this file with stub content:
 
 ---
 
-## Current Focus
+## Feature Backlog
 
-<!-- Populated after first /pdlc brainstorm session. -->
+<!-- Populated during roadmap ideation (Step 6). -->
 
----
-
-## Planned Features
-
-<!-- Add features here as they are defined via /pdlc brainstorm. -->
-
-| # | Feature | Status | Target |
-|---|---------|--------|--------|
-| — | — | — | — |
+| ID | Feature | Description | Priority | Status | Shipped | Episode |
+|----|---------|-------------|----------|--------|---------|---------|
+| — | — | — | — | — | — | — |
 
 ---
 
-## Completed Features
+## Status Key
 
-<!-- Auto-populated from docs/pdlc/memory/episodes/index.md after each ship. -->
+- **Planned** — Not yet started
+- **In Progress** — Currently in brainstorm, build, or ship
+- **Shipped** — Completed and deployed (date + episode link filled in)
+- **Deferred** — Deprioritized or postponed
+- **Dropped** — Removed from roadmap (reason noted)
 
 <!-- None yet. -->
 ```
@@ -84,19 +82,22 @@ Create this file with stub content:
 Create this file with stub content:
 
 ```markdown
-# Architectural Decision Log
+# Decision Registry
 
 **Project:** [project name from question 1]
 **Last updated:** [today's date]
 
-<!-- Decisions recorded here use a lightweight ADR format.
-     Each entry: what was decided, why, what was considered and rejected.
-     PDLC agents (Neo, Phantom, Jarvis) append entries here during Build and Review.
-     Do not delete entries — mark superseded decisions as [SUPERSEDED by ADR-NNN]. -->
+<!-- PDLC Decision Registry (ADR format).
+     Entries are appended by:
+     - User: via /pdlc decision <text>
+     - Agents: during Construction/Review (Step 14) and Reflect (Step 7)
+     Each entry records: what was decided, who decided, why, what was considered,
+     and what cross-cutting impacts were applied.
+     This file is append-only. Mark superseded decisions as [SUPERSEDED by ADR-NNN]. -->
 
 ---
 
-<!-- No decisions recorded yet. The first entries will appear after /pdlc brainstorm. -->
+<!-- No decisions recorded yet. -->
 ```
 
 ### 5f. `docs/pdlc/memory/CHANGELOG.md`
