@@ -330,9 +330,11 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 |---------|-------------|
 | **Divergent Ideation** | Optional pre-discovery: 100+ raw ideas using structured domain rotation (Technical -> UX -> Business -> Edge Cases), cycling every 10 ideas to prevent semantic drift. Clusters into themes, surfaces 10-15 standouts. |
 | **4-Round Socratic Interview** | Active + Challenging questioning posture across Problem Statement, Future State, Acceptance Criteria, and Current State. Minimum 5 questions per round. |
+| **Progressive Thinking** | Required agent team meeting after Socratic discovery. Oracle facilitates 6 rounds with all agents: Concrete (facts) → Inferential (inferences) → Consequential (implications) → Speculative (unknowns) → Conflicting (disagreements) → Strategic (priorities). User escalation only when agents can't resolve. |
 | **Adversarial Review** | Devil's advocate analysis across 10 dimensions (assumption gaps, scope leaks, metric fragility, technical blindspots, etc.). Minimum 10 findings. Top 5 become targeted follow-ups. |
 | **Edge Case Analysis** | Mechanical path tracing across 9 categories (user flow branches, boundary data, concurrency, integration failures, etc.). User triages each finding: in-scope, out-of-scope, or known risk. |
-| **Brainstorm Log** | Progressive content record at `docs/pdlc/brainstorm/`. Captures all ideation context for mid-session resume and PRD generation. Separate from STATE.md. |
+| **Bloom's Taxonomy Design Questioning** | Neo leads 6 rounds during Design: Remember (facts) → Understand (mechanics) → Apply (stack-specific) → Analyze (trade-offs) → Evaluate (judgments) → Create (synthesis). Produces design discovery log before document generation. |
+| **Brainstorm Log** | Progressive content record at `docs/pdlc/brainstorm/`. Captures all ideation and design discovery context for mid-session resume and document generation. Separate from STATE.md. |
 | **Visual Companion** | Optional browser-based UI for mockups, wireframes, and architecture diagrams during Inception. Consent-based, per-question. |
 
 ### Initialization — Foundation
@@ -436,7 +438,7 @@ Oracle leads Discover + Define, then hands off to Neo for Design + Plan. Six sub
 | **Divergent Ideation** (optional) | Oracle | 100+ ideas, domain rotation, clustering → standouts |
 | **Discover** | Oracle | 4-round interview + adversarial review + edge case analysis → confirmed summary |
 | **Define** | Oracle | Auto-generate PRD from brainstorm log → `PRD_[feature]_[date].md` |
-| **Design** | Neo | Architecture, data model, API contracts → `docs/pdlc/design/[feature]/` |
+| **Design** | Neo | Bloom's Taxonomy questioning (6 rounds) → Architecture, data model, API contracts → `docs/pdlc/design/[feature]/` |
 | **Plan** | Neo | Beads tasks with dependencies → plan file + dependency graph |
 
 The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
@@ -526,14 +528,40 @@ Party mode brings multiple agents together for structured discussions. Five meet
 
 ### Meeting types
 
-| Meeting | Trigger | Participants | Output |
-|---------|---------|-------------|--------|
-| **Wave Kickoff** | Start of a new Beads wave (2+ tasks) | Neo + domain agents + Echo (if 3+ tasks) | Wave execution plan, dependency updates |
-| **Design Roundtable** | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
-| **Party Review** | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
-| **Strike Panel** | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
-| **Decision Review** | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
-| **What-If Analysis** | `/pdlc whatif` | All 9 agents | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
+| Meeting | Phase | Trigger | Participants | Output |
+|---------|-------|---------|-------------|--------|
+| **Progressive Thinking** | Inception / Discover | After Socratic discovery completes (required, cannot skip) | Oracle (facilitates) + all 8 other agents | Refined feature understanding: confirmed facts, inferences, consequences, risks, priorities |
+| **Wave Kickoff** | Construction / Build | Start of a new Beads wave (2+ tasks) | Neo + domain agents + Echo (if 3+ tasks) | Wave execution plan, dependency updates |
+| **Design Roundtable** | Construction / Build | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
+| **Party Review** | Construction / Review | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
+| **Strike Panel** | Construction / Build | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
+| **Decision Review** | Any phase | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
+| **What-If Analysis** | Any phase | `/pdlc whatif` | All 9 agents | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
+
+### Meeting map across phases
+
+```
+Init ──────────────── (no meetings — Oracle works solo with user)
+
+Brainstorm
+  Discover ─────────── Progressive Thinking (required, agents-only)
+  Define ───────────── (no meetings — Oracle generates PRD)
+  Design ───────────── (no meetings — Neo questions user via Bloom's Taxonomy, then generates docs)
+  Plan ─────────────── (no meetings — Neo generates tasks)
+
+Build
+  Build Loop ───────── Wave Kickoff → [Design Roundtable] → Build → [Strike Panel] → ...
+  Review ───────────── Party Review
+  Test ─────────────── (no meetings)
+
+Ship
+  Ship ─────────────── (no meetings — Pulse handles merge/deploy)
+  Verify ───────────── (no meetings — Pulse runs smoke tests)
+  Reflect ──────────── (no meetings — Jarvis writes retro)
+
+Any phase ──────────── Decision Review (/pdlc decision)
+Any phase ──────────── What-If Analysis (/pdlc whatif)
+```
 
 ### Spawn modes
 
@@ -626,6 +654,8 @@ skills/
           02-adversarial-review.md    <- 10+ findings, top 5 follow-ups
           03-edge-case-analysis.md    <- 9-category path tracing
           04-synthesis.md             <- external context + summary
+          05-blooms-taxonomy-design.md <- 6-round design questioning (Neo)
+          06-progressive-thinking.md  <- agent team meeting (Oracle facilitates)
       02-define.md                    <- PRD generation + approval
       03-design.md                    <- architecture, data model, API contracts
       04-plan.md                      <- Beads tasks + dependencies

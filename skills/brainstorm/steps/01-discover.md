@@ -94,6 +94,14 @@ Read `skills/brainstorm/steps/discover/01-socratic-discovery.md` and execute it 
 
 Return here when the brainstorm log's `## Socratic Discovery` section is populated.
 
+### Step 2a — Progressive thinking (agent team meeting)
+
+Read `skills/brainstorm/steps/discover/06-progressive-thinking.md` and execute it completely.
+
+This is a **required** team meeting — it cannot be skipped by the user. Oracle questions all 8 other agents across 6 progressive rounds (Concrete → Inferential → Consequential → Speculative → Conflicting → Strategic) to refine the feature understanding. The user is only pulled in when agents cannot resolve a conflict.
+
+Return here when the brainstorm log's `## Progressive Thinking (Agent Team Meeting)` section is populated.
+
 ### Step 3 — Adversarial review
 
 Read `skills/brainstorm/steps/discover/02-adversarial-review.md` and execute it completely.

@@ -43,6 +43,18 @@ Read `skills/formatting.md` and output a **Sub-phase Transition Header** for "WH
 
 > **[Lead Agent Name] ([Role]):** "Interesting question. Let me gather the team for a read-only analysis — no changes will be made, we're just exploring the implications. I'll present the findings when they're done."
 
+**If a phase is active** (not Idle):
+
+> "Pausing **[phase] / [sub-phase]** at checkpoint `[last checkpoint value]`.
+>
+> If this session is interrupted:
+> - Run `/pdlc whatif` — PDLC will detect the pending analysis and offer to resume
+> - Run `[resume command]` — resumes the [phase] workflow from its last checkpoint"
+
+**If no phase is active:**
+
+> "If this session is interrupted, re-run: `/pdlc whatif [scenario text]`"
+
 Then output a **Meeting Announcement Block** (per `skills/formatting.md`):
 - **Called by:** [Lead Agent Name] ([Role])
 - **Participants:** all 9 agents
@@ -192,9 +204,17 @@ The user wants to convert this exploration into a formal decision. Execute the d
 - **Source:** `User (explicit, via /pdlc whatif)`
 - **Skip Step 2 (Decision Review Party):** The What-If meeting already produced a comprehensive assessment. Do NOT convene another meeting.
 - **Use existing MOM:** In the ADR entry, set `MOM:` to point to the What-If MOM file (or the latest version if multiple rounds were run). The impact summary in the ADR should be derived from the What-If MOM, not from a new assessment.
-- **Start from Step 3 of the decision skill:** Present the What-If MOM findings as the impact assessment, ask the user to approve changes, then proceed through Steps 4 (record ADR), 5 (reconciliation), and 6 (summary and resume) normally.
+- **Delete `.pending-party.json`** before entering the decision skill (the whatif meeting is done).
+- **Run Step 1a of the decision skill** (write `.pending-decision.json`) so the decision has crash recovery. Set `"progress": "mom-written"` since the assessment is already complete.
+- **Skip Step 1b** (checkpoint display — already shown by whatif Step 1).
+- **Run Step 1c** (classify — source: `User (explicit, via /pdlc whatif)`).
+- **Skip Step 2** (Decision Review Party — already done by whatif meeting).
+- **Start execution from Step 3:** Present the What-If MOM findings as the impact assessment, ask the user to approve changes, then proceed through Steps 4 (record ADR), 5 (reconciliation), and 6 (summary and resume) normally.
 
-This ensures no duplicate meetings are held and no duplicate MOM files are generated.
+This ensures:
+- No duplicate meetings or MOM files
+- Crash recovery via `.pending-decision.json` during Steps 3-6
+- Step 6 reads STATE.md, informs the user it's resuming the paused workflow at Checkpoint A, and re-invokes the active phase's skill
 
 ### Discard
 
@@ -204,11 +224,15 @@ The MOM file is kept for future reference (it's read-only analysis, not a commit
 
 Delete `.pending-party.json`.
 
-Read STATE.md and offer to resume:
+**Resume previous workflow:**
 
-> "You were in **[phase] / [sub-phase]**. Shall I resume where you left off?"
+Read STATE.md. If a phase was active:
 
-If yes: re-invoke the active phase's skill. If no: stop.
+> "Resuming **[phase] / [sub-phase]** from checkpoint `[last checkpoint value]`."
+
+Re-invoke the active phase's skill (`/pdlc brainstorm`, `/pdlc build`, or `/pdlc ship`). The skill reads STATE.md and resumes from the last checkpoint.
+
+If no phase was active: stop.
 
 ---
 

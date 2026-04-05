@@ -12,9 +12,19 @@ mkdir -p docs/pdlc/design/[feature-name]
 
 ---
 
+### Step 9a — Bloom's Taxonomy design questioning
+
+Before generating the design documents, Neo conducts a structured questioning round with the user to flesh out the architecture, data model, and API contracts. This uses Bloom's revised taxonomy — 6 rounds progressing from foundational recall to creative synthesis.
+
+Read `skills/brainstorm/steps/discover/05-blooms-taxonomy-design.md` and execute it completely.
+
+Return here when the brainstorm log's `## Design Discovery (Bloom's Taxonomy)` section is populated (or the user typed `skip`).
+
+---
+
 ### Step 10 — Generate design documents
 
-Generate three design documents based on the approved PRD and the tech stack from `CONSTITUTION.md`:
+Using the approved PRD, the tech stack from `CONSTITUTION.md`, **and the design discovery answers from Step 9a**, generate three design documents:
 
 **9a. `docs/pdlc/design/[feature-name]/ARCHITECTURE.md`**
 
