@@ -72,7 +72,9 @@ Once the prioritized list is confirmed, update `docs/pdlc/memory/ROADMAP.md` wit
 - **Dropped** — Removed from roadmap (reason noted)
 ```
 
-Feature IDs use the format `F-NNN` (zero-padded, sequential). Priority is a simple integer (1 = build first).
+Feature IDs use the format `F-NNN` (zero-padded, sequential). IDs are **permanent** — once assigned, a Feature ID never changes, even if the feature is resequenced, deferred, or dropped.
+
+Priority is a **separate integer column** (1 = build first) that can be freely resequenced at any time without affecting Feature IDs. When a decision triggers a roadmap resequencing (via the Decision Review Party in `skills/decision/SKILL.md`), only the Priority numbers change — Feature IDs and ADR numbers remain stable.
 
 Tell the user:
 

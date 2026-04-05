@@ -156,3 +156,4 @@ Inception is complete when STATE.md shows `Inception Complete — Ready for /pdl
 - Do not create the feature branch during Inception — that happens at the start of Construction.
 - If the user wants to change scope mid-Inception (after PRD is approved), update the PRD first and re-obtain approval before updating the design docs.
 - The visual companion server runs only during Inception. It must be stopped before Inception ends (Step 18).
+- The user can issue `/pdlc decision <text>` at any point during Inception to record a decision. This pauses the current flow, runs a full Decision Review Party, and after the decision is recorded, offers to resume Inception from the last STATE.md checkpoint. Any artifacts updated by the decision (PRD, architecture, roadmap) are automatically picked up on resume.

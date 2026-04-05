@@ -1,7 +1,93 @@
 # Party Mode Orchestrator
 
-Shared protocol for all four PDLC party mode meetings.
+Shared protocol for all PDLC party mode meetings (Wave Kickoff, Design Roundtable, Party Review, Strike Panel, Decision Review).
 Read this file once at the start of any party session before loading the specific scenario file.
+
+---
+
+## Durable Checkpoint Protocol
+
+Party meetings involve multi-agent spawning, cross-talk, and MOM generation — any of which can be interrupted by network failures, usage limits, or the user exiting. Every party meeting must use this checkpoint protocol to ensure recovery.
+
+### Before starting: write pending file
+
+At the very start of the meeting (before spawning any agents), write `docs/pdlc/memory/.pending-party.json`:
+
+```json
+{
+  "meetingType": "[wave-kickoff | design-roundtable | party-review | strike-panel | decision-review]",
+  "feature": "[current feature from STATE.md]",
+  "taskId": "[active Beads task ID, or — if not task-specific]",
+  "timestamp": "[now ISO 8601]",
+  "phase": "[current phase]",
+  "subPhase": "[current sub-phase]",
+  "lastCheckpoint": "[Last Checkpoint from STATE.md]",
+  "resumeCommand": "[/pdlc build or /pdlc brainstorm or /pdlc ship]",
+  "progress": "started",
+  "momFile": null
+}
+```
+
+### At milestones: update progress
+
+Update the `progress` field at each key milestone:
+
+| Progress value | Meaning |
+|---------------|---------|
+| `started` | Meeting initiated, agents not yet spawned |
+| `round-1-complete` | First round responses collected |
+| `cross-talk-complete` | Cross-talk round done (or skipped) |
+| `mom-written` | MOM file written to disk |
+| `presented` | Results presented to user, awaiting response |
+
+When the MOM file is written, also set `"momFile": "[path]"`.
+
+### On completion: delete pending file
+
+After the meeting is fully complete (MOM written, results presented, user has responded, and the calling skill has resumed), delete `docs/pdlc/memory/.pending-party.json`.
+
+### On session start: detect interrupted meetings
+
+The session-start hook checks for `.pending-party.json`. If found, it warns the user. The calling skill (build, decision, etc.) is responsible for checking on entry and offering recovery.
+
+### On re-entry: check for interrupted meeting
+
+When any party meeting starts, check if `.pending-party.json` exists AND its `meetingType` matches the current meeting type:
+
+- **If `progress` is `mom-written` or `presented`**: the meeting was nearly done. Read the MOM file, present it to the user, and skip directly to the post-meeting actions. Do not re-run the agents.
+- **If `progress` is `round-1-complete` or `cross-talk-complete`**: partial agent work was done but the MOM wasn't written. Re-run the meeting from scratch — agent responses from a prior session cannot be reliably recovered.
+- **If `progress` is `started`**: nothing was saved. Re-run from scratch.
+
+If the `meetingType` does NOT match (e.g., a decision review was pending but we're now in a wave kickoff), leave the file alone — the decision flow will handle it when it runs.
+
+---
+
+## Meeting Announcement
+
+Before spawning any agents, announce the meeting to the user. This sets expectations about what's happening, who's involved, and how long it will take. Read `skills/formatting.md` and output a **Sub-phase Transition Header** for the meeting name, then:
+
+> "**Convening: [Meeting Display Name]**
+>
+> **Called by:** [Lead Agent Name] ([Role])
+> **Participants:** [Name (Role), Name (Role), ...] — [N] agents
+> **Purpose:** [one sentence — what this meeting will decide or produce]
+> **Estimated time:** [estimate based on meeting type]
+>
+> The team is discussing now. I'll present the results when they're done."
+
+### Time estimates by meeting type
+
+| Meeting | Typical duration | Why |
+|---------|-----------------|-----|
+| Wave Kickoff | ~30 seconds | Quick standup — dependency check and wave plan |
+| Design Roundtable | ~1–2 minutes | Multi-round design debate with cross-talk |
+| Party Review | ~2–3 minutes | Full parallel review with cross-talk and linked findings |
+| Strike Panel | ~1 minute | Focused diagnosis of a specific failure |
+| Decision Review | ~2–4 minutes | All 9 agents assess impacts across all artifacts |
+
+These are estimates — actual time depends on complexity and spawn mode (solo is fastest, subagents is slowest). If the meeting takes noticeably longer than the estimate, output a brief progress update:
+
+> "Still discussing — [what's happening: e.g., 'cross-talk round in progress', 'Neo and Phantom are debating the security implications']..."
 
 ---
 
@@ -228,5 +314,7 @@ state it explicitly: "Neo and Phantom disagree on X — escalated to human."]
 [Any open question or unresolved disagreement that requires human guidance.]
 ```
 
-After writing the file, tell the user:
+After writing the MOM file, update `.pending-party.json`: set `"progress": "mom-written"` and `"momFile": "[path]"`.
+
+Then tell the user:
 > "Meeting minutes saved to `docs/pdlc/mom/[filename]`"

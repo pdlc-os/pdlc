@@ -140,7 +140,7 @@ Once installed, open any project in Claude Code:
 /pdlc init
 ```
 
-PDLC asks 7 questions about your project (tech stack, constraints, test gates) and scaffolds the full memory bank. Then start your first feature:
+PDLC asks 7 questions about your project, scaffolds the memory bank, then **Oracle brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5–15 features in `ROADMAP.md`. Then start your first feature:
 
 ```
 /pdlc brainstorm user-authentication
@@ -158,7 +158,15 @@ Build, review, and test the feature with TDD and multi-agent review. When ready:
 /pdlc ship
 ```
 
-Merge, deploy, reflect, and commit the episode record.
+Merge, deploy, reflect, and commit the episode record. After shipping, **Oracle reviews the roadmap and offers the next feature** — you can continue, pause, or switch to something else. The cycle repeats until the roadmap is complete.
+
+At any point during inception or construction, record a decision:
+
+```
+/pdlc decision We should use PostgreSQL instead of MongoDB
+```
+
+This triggers a **Decision Review Party** where all 9 agents assess cross-cutting impacts, produce minutes of meeting, and reconcile downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
 
 ---
 
@@ -330,48 +338,73 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 
 ### Phase 0 — Initialization (`/pdlc init`)
 
-Run once per project. PDLC detects whether you're starting fresh or bringing in an existing codebase.
+Run once per project. Oracle leads. PDLC detects whether you're starting fresh or bringing in an existing codebase.
 
 **Greenfield** (empty repo): PDLC asks 7 Socratic questions and scaffolds memory files from your answers.
 
 **Brownfield** (existing code): PDLC offers to deep-scan the repository, mapping structure, reading key files, analyzing tests and git history. Scan findings are presented for approval, then used to pre-populate memory files. All inferred content is marked `(inferred -- please verify)`.
 
-**Either way, PDLC scaffolds:**
+**Roadmap Ideation**: After scaffolding, Oracle brainstorms 5–15 candidate features with you, then works through prioritization (dependencies, user value, technical risk). Each feature gets a permanent `F-NNN` ID and a priority rank. The full backlog is captured in `ROADMAP.md`.
+
+**PDLC scaffolds:**
 
 - `docs/pdlc/memory/CONSTITUTION.md` — rules, standards, test gates
 - `docs/pdlc/memory/INTENT.md` — problem statement, target user, value proposition
 - `docs/pdlc/memory/STATE.md` — live phase/task state
-- `docs/pdlc/memory/ROADMAP.md`, `DECISIONS.md`, `CHANGELOG.md`, `OVERVIEW.md`
+- `docs/pdlc/memory/ROADMAP.md` — prioritized feature backlog with `F-NNN` IDs
+- `docs/pdlc/memory/DECISIONS.md` — decision registry (ADR format)
+- `docs/pdlc/memory/CHANGELOG.md`, `OVERVIEW.md`
 - `docs/pdlc/memory/episodes/index.md` — searchable episode history
 - `.beads/` — Beads task database (via `bd init`)
 
 ### Phase 1 — Inception (`/pdlc brainstorm <feature>`)
 
-Six sub-phases with human approval gates between Define, Design, and Plan:
+Oracle leads Discover + Define, then hands off to Neo for Design + Plan. Six sub-phases with human approval gates:
 
-| Sub-phase | Steps | Output |
-|-----------|-------|--------|
-| **Divergent Ideation** (optional) | 100+ ideas, domain rotation, clustering | Standouts fed into Socratic questions |
-| **Discover** | 4-round interview + adversarial review + edge case analysis | Confirmed discovery summary |
-| **Define** | Auto-generate PRD from brainstorm log | `docs/pdlc/prds/PRD_[feature]_[date].md` |
-| **Design** | Architecture, data model, API contracts | `docs/pdlc/design/[feature]/` |
-| **Plan** | Beads tasks with dependencies | Plan file + dependency graph |
+| Sub-phase | Lead | Output |
+|-----------|------|--------|
+| **Divergent Ideation** (optional) | Oracle | 100+ ideas, domain rotation, clustering → standouts |
+| **Discover** | Oracle | 4-round interview + adversarial review + edge case analysis → confirmed summary |
+| **Define** | Oracle | Auto-generate PRD from brainstorm log → `PRD_[feature]_[date].md` |
+| **Design** | Neo | Architecture, data model, API contracts → `docs/pdlc/design/[feature]/` |
+| **Plan** | Neo | Beads tasks with dependencies → plan file + dependency graph |
 
-### Phase 2 — Construction (`/pdlc build`)
+The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
+
+### Phase 2 ��� Construction (`/pdlc build`)
+
+Neo leads the entire phase.
 
 | Sub-phase | What happens |
 |-----------|-------------|
 | **Build** | TDD per task from Beads queue. Wave Kickoff standup for multi-task waves. Optional Design Roundtable for complex tasks. Agent Teams or Sub-Agent mode per task. 3-strike cap with Strike Panel. |
-| **Review** | Party Review: Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. |
+| **Review** | Party Review: Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Deferred findings recorded via Decision Review Party. |
 | **Test** | 6 layers. Constitution gates determine which are required. Human decides on failures. |
 
 ### Phase 3 — Operation (`/pdlc ship`)
 
-| Sub-phase | What happens |
-|-----------|-------------|
-| **Ship** | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger |
-| **Verify** | Smoke tests against deployed environment + human sign-off |
-| **Reflect** | Per-agent retro, metrics, episode file finalization, commit to permanent record |
+Pulse leads Ship + Verify, then Jarvis leads Reflect, then Oracle leads the Next Feature prompt.
+
+| Sub-phase | Lead | What happens |
+|-----------|------|-------------|
+| **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger |
+| **Verify** | Pulse | Smoke tests against deployed environment + human sign-off |
+| **Reflect** | Jarvis | Per-agent retro, metrics, episode file finalization, ROADMAP.md marked `Shipped`, commit to permanent record |
+| **Next Feature** | Oracle | Reviews roadmap, presents next priority feature. User can **continue** (loops to brainstorm), **pause** (pick up later), or **switch** (different feature — roadmap updated) |
+
+### Decision Registry (`/pdlc decision <text>`)
+
+Available at any point during Inception, Construction, or Operation. The lead agent for the current phase/sub-phase runs the flow:
+
+| Step | What happens |
+|------|-------------|
+| **Classify** | Tag source (user explicit vs PDLC flow), phase, sub-phase, agent |
+| **Decision Review Party** | All 9 agents assess impacts on their owned artifacts — code, tests, architecture, PRD, roadmap, design docs, environment config, UX flows, documentation |
+| **MOM** | Minutes of meeting written to `docs/pdlc/mom/` — agent assessments, cross-cutting concerns, risk consensus, roadmap resequencing proposal, disagreements |
+| **User approval** | Recommended changes table presented. User can apply all, apply selectively, modify the decision, or cancel |
+| **Reconciliation** | Phase-aware downstream effects: Beads tasks created/updated/closed, PRD and design docs updated (with re-approval if material), episode draft annotated, test files flagged, roadmap resequenced, lead agent announces decision context to the team on resume |
+
+Feature IDs (`F-NNN`) are permanent and never change. Priority is a separate integer column that can be freely resequenced by any Decision Review without affecting IDs or ADR numbers.
 
 ---
 
@@ -400,9 +433,24 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 ---
 
+### Lead agents by phase
+
+| Phase / Sub-phase | Lead Agent | Also leads `/pdlc decision` |
+|-------------------|-----------|----------------------------|
+| Init | Oracle | Yes |
+| Brainstorm — Discover + Define | Oracle | Yes |
+| Brainstorm — Design + Plan | Neo | Yes |
+| Build (all sub-phases) | Neo | Yes |
+| Ship — Ship + Verify | Pulse | Yes |
+| Ship — Reflect | Jarvis | Yes |
+| Ship — Next Feature | Oracle | Yes |
+| Idle / between phases | — | Oracle |
+
+---
+
 ## Party Mode
 
-Party mode brings multiple agents together for structured discussions. Four meeting types fire at specific points in the build loop.
+Party mode brings multiple agents together for structured discussions. Five meeting types fire at specific points in the workflow.
 
 ### Meeting types
 
@@ -412,6 +460,7 @@ Party mode brings multiple agents together for structured discussions. Four meet
 | **Design Roundtable** | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
 | **Party Review** | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
 | **Strike Panel** | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
+| **Decision Review** | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
 
 ### Spawn modes
 
@@ -424,6 +473,14 @@ Set once at the first Wave Kickoff, applies for the session:
 | **Solo** | Single LLM roleplays all agents in one response | Fast iteration, fallback when spawning fails |
 
 All meetings produce MOM (minutes of meeting) files at `docs/pdlc/mom/`.
+
+### Meeting announcements
+
+Before every meeting, PDLC tells you what's happening: which agents are participating, what they're discussing, and roughly how long it will take (~30s for a standup, ~2–4 min for a full Decision Review). If the meeting runs long, you'll see a progress update about what the team is debating.
+
+### Durable checkpoints
+
+Every party meeting writes a `.pending-party.json` checkpoint file before spawning agents. Progress is tracked at milestones (`started` → `round-1-complete` → `cross-talk-complete` → `mom-written` → `presented`). If a session is interrupted (network, usage limits, accidental exit), the next session detects the pending meeting and offers to resume from the last milestone or restart. The checkpoint file is deleted when the meeting completes normally.
 
 ---
 
@@ -453,7 +510,8 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 | **Init** | `/pdlc init` | Initialize PDLC for this project (run once) |
 | **Brainstorm** | `/pdlc brainstorm <feature>` | Run Inception: Discover -> Define -> Design -> Plan |
 | **Build** | `/pdlc build` | Run Construction: Build (TDD) -> Review -> Test |
-| **Ship** | `/pdlc ship` | Run Operation: Ship -> Verify -> Reflect |
+| **Ship** | `/pdlc ship` | Run Operation: Ship -> Verify -> Reflect -> Next Feature |
+| **Decision** | `/pdlc decision <text>` | Record a decision with full team impact assessment (any phase) |
 
 ### Supporting skills (referenced internally)
 
@@ -463,6 +521,7 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 | **Review** | Multi-agent review protocol; reviewer responsibilities; finding severity levels |
 | **Test** | Six test layer execution order; Constitution gate checking |
 | **Reflect** | Retro format; per-agent contributions; shipping streaks; metrics |
+| **Decision** | Decision Review Party; 9-agent impact assessment; MOM generation; phase-aware reconciliation |
 | **Safety Guardrails** | Tier 1/2/3 definitions; double-RED override protocol |
 | **Repo Scan** | Brownfield deep-scan; pre-populates memory files from existing codebase |
 | **Visual Companion** | Browser-based mockup and diagram loop during Inception |
@@ -478,7 +537,8 @@ skills/
       01-setup.md                     <- brownfield detection + directories
       02-socratic-init.md             <- 7 Socratic questions
       03-generate-memory.md           <- create all memory files
-      04-finalize.md                  <- Beads init + summary
+      04-roadmap.md                   <- feature ideation + prioritization
+      05-finalize.md                  <- Beads init + summary
 
   brainstorm/
     SKILL.md                          <- orchestrator
@@ -516,7 +576,10 @@ skills/
     steps/
       01-ship.md                      <- merge, changelog, semver, CI/CD
       02-verify.md                    <- smoke tests + sign-off
-      03-reflect.md                   <- retro + episode finalization
+      03-reflect.md                   <- retro + episode + roadmap + next feature
+
+  decision/
+    SKILL.md                          <- decision review party + reconciliation
 ```
 
 ---
@@ -531,8 +594,8 @@ docs/pdlc/
     CONSTITUTION.md        <- rules, standards, test gates, guardrail overrides
     INTENT.md              <- problem statement, target user, value proposition
     STATE.md               <- current phase, active task, party mode, phase history
-    ROADMAP.md             <- feature backlog
-    DECISIONS.md           <- architectural decision log (ADR-style)
+    ROADMAP.md             <- prioritized feature backlog (F-NNN IDs, separate priority column)
+    DECISIONS.md           <- decision registry (ADR format, links to MOM files)
     CHANGELOG.md           <- what shipped and when
     OVERVIEW.md            <- aggregated delivery state
     episodes/
@@ -553,6 +616,7 @@ docs/pdlc/
     brainstorm_[feature]_[date].md
   mom/
     [feature]_[topic]_mom_[YYYY]_[MM]_[DD].md
+    MOM_decision_[ADR-NNN]_[YYYY-MM-DD].md
 ```
 
 ### Episodic memory

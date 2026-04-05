@@ -63,11 +63,33 @@ fi
 # STATE.md exists — read it and inject into the session
 state_content="$(cat "$state_file")"
 
-message="$(printf '%s\n\n%s\n\n%s' \
+# Check for interrupted work
+pending_notice=""
+
+pending_decision="${project_dir}/docs/pdlc/memory/.pending-decision.json"
+if [[ -f "$pending_decision" ]]; then
+  pending_notice="${pending_notice}
+
+⚠️ **Interrupted decision detected.** Run \`/pdlc decision\` to resume or discard the pending decision."
+fi
+
+pending_party="${project_dir}/docs/pdlc/memory/.pending-party.json"
+if [[ -f "$pending_party" ]]; then
+  meeting_type=""
+  if command -v jq &>/dev/null; then
+    meeting_type="$(jq -r '.meetingType // "unknown"' "$pending_party" 2>/dev/null)"
+  fi
+  pending_notice="${pending_notice}
+
+⚠️ **Interrupted party meeting detected** (${meeting_type:-unknown}). Resume the active workflow to recover — the meeting will be picked up automatically."
+fi
+
+message="$(printf '%s\n\n%s\n\n%s%s' \
   "📋 PDLC Active — resuming from STATE.md" \
   "## Current State
 ${state_content}" \
-  "See CLAUDE.md for the full PDLC flow.")"
+  "See CLAUDE.md for the full PDLC flow." \
+  "${pending_notice}")"
 
 emit_json "$message"
 exit 0

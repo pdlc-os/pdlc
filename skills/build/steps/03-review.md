@@ -51,14 +51,16 @@ After approval:
 
 **Record deferred findings as decisions:**
 
-For each finding marked "Defer" or "Accept warning", record it in the Decision Registry using the protocol in `skills/decision/SKILL.md`. For each entry, set:
+For each finding marked "Defer" or "Accept warning", record it in the Decision Registry using the full protocol in `skills/decision/SKILL.md`. For each entry, set:
 - **Source**: `PDLC flow`
 - **Phase**: `Construction`
 - **Sub-phase**: `Review`
 - **Agent**: the agent who raised the finding (Neo, Echo, Phantom, or Jarvis)
 - **Decision text**: "Deferred: [finding summary]. Rationale: [user's stated reason for deferral]."
 
-Run the **impact assessment** (Step 2 of the decision skill) for each deferred finding. If the assessment identifies cross-cutting impacts, present them to the user before recording. The user may choose to fix instead of defer after seeing the impacts.
+This triggers a **Decision Review Party** (Step 2 of the decision skill) where all agents assess cross-cutting impacts on their owned artifacts — code, tests, architecture, roadmap, documentation. The team produces a MOM, and the user reviews the impacts before the decision is recorded. The user may choose to fix instead of defer after seeing the full impact.
+
+If multiple findings are deferred in the same review, batch them: run one Decision Review Party covering all deferrals together rather than one per finding.
 
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Test`

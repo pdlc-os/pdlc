@@ -108,14 +108,16 @@ Read `docs/pdlc/memory/DECISIONS.md` for any decisions recorded during this cycl
 - Propose a concrete remediation approach and a suggested future episode to address it
 
 **For any new tech debt discovered during the retrospective** (e.g., patterns noticed during Steps 4–6 that weren't captured during Review):
-Record each as a decision in the Decision Registry using the protocol in `skills/decision/SKILL.md`. Set:
+Record each as a decision in the Decision Registry using the full protocol in `skills/decision/SKILL.md`. Set:
 - **Source**: `PDLC flow`
 - **Phase**: `Operation`
 - **Sub-phase**: `Reflect`
 - **Agent**: `Jarvis`
 - **Decision text**: "Tech debt identified during retrospective: [description]."
 
-Run the **impact assessment** (Step 2 of the decision skill) for each new tech debt decision. Present impacts to the user before recording.
+This triggers a **Decision Review Party** (Step 2 of the decision skill) where all agents assess cross-cutting impacts — including whether the tech debt affects roadmap sequencing, requires additional tests, or changes the architecture. The user reviews the MOM and approves changes before recording.
+
+If multiple tech debt items are discovered, batch them into a single Decision Review Party.
 
 If no tech debt was introduced this cycle, state that explicitly: "No tech debt introduced this cycle."
 
