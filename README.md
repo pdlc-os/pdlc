@@ -83,13 +83,23 @@ Shows install mode (local/global), plugin root path, hook registration, and Bead
 
 ### Uninstall
 
-```bash
-# Remove local hooks
-npx @pdlc-os/pdlc uninstall --local
+**Local** (from inside the repo):
 
-# Remove global hooks
+```bash
+npx @pdlc-os/pdlc uninstall --local
+```
+
+Removes PDLC hooks from `.claude/settings.local.json` and slash commands from `.claude/commands/`. You'll be prompted to uninstall Beads as well.
+
+**Global:**
+
+```bash
 npx @pdlc-os/pdlc uninstall
 ```
+
+Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.claude/commands/`. You'll be prompted to uninstall Beads globally too.
+
+> **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
 
 ### Keep up to date
 

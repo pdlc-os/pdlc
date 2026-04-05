@@ -325,7 +325,34 @@ async function install(opts = {}) {
   console.log('Next step  : open a project and run /pdlc init\n');
 }
 
-function uninstall(opts = {}) {
+async function promptUninstallBeads(local) {
+  if (!isBeadsInstalled()) return;
+  if (!process.stdin.isTTY) return;
+
+  const scope = local ? 'locally' : 'globally';
+  const uninstallCmd = local ? 'npm uninstall @beads/bd' : 'npm uninstall -g @beads/bd';
+
+  console.log('\n  Beads (bd) is still installed.');
+  console.log('  \u26a0\ufe0f  Warning: If this repo is already tracking tasks in Beads (.beads/ directory),');
+  console.log('  uninstalling Beads will remove the CLI but your task data in .beads/ will remain.');
+  console.log('  However, you will not be able to query or manage those tasks without Beads.');
+
+  const answer = await prompt(`  Uninstall Beads ${scope} as well? (y/N) `);
+  if (answer === 'y' || answer === 'yes') {
+    console.log(`\n  Uninstalling Beads ${scope}...`);
+    try {
+      execSync(uninstallCmd, { stdio: 'inherit' });
+      console.log(`  Beads (bd)  : \u2713 uninstalled ${scope}`);
+    } catch (err) {
+      console.error('  Beads uninstall failed. You can remove it manually:');
+      console.error(`  ${uninstallCmd}`);
+    }
+  } else {
+    console.log('  Keeping Beads installed.');
+  }
+}
+
+async function uninstall(opts = {}) {
   const local = opts.local || false;
 
   if (local) {
@@ -351,7 +378,10 @@ function uninstall(opts = {}) {
       console.log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.');
     }
     removeCommands(repoRoot);
-    console.log('  Slash commands removed from .claude/commands/\n');
+    console.log('  Slash commands removed from .claude/commands/');
+
+    await promptUninstallBeads(true);
+    console.log('');
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH);
     if (!global) {
@@ -365,7 +395,10 @@ function uninstall(opts = {}) {
     writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
     removeCommands(os.homedir());
     console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
-    console.log('  Slash commands removed from ~/.claude/commands/\n');
+    console.log('  Slash commands removed from ~/.claude/commands/');
+
+    await promptUninstallBeads(false);
+    console.log('');
   }
 }
 
@@ -459,7 +492,7 @@ async function main() {
       await install({ local: hasLocal });
       break;
     case 'uninstall':
-      uninstall({ local: hasLocal });
+      await uninstall({ local: hasLocal });
       break;
     case 'status':
       status();
