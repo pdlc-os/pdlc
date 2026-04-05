@@ -52,3 +52,7 @@ prd: docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md
 ```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Design`.
+
+---
+
+Return to `SKILL.md` and proceed to Sub-phase 3 — DESIGN.

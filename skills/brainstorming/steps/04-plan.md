@@ -172,3 +172,7 @@ Then immediately ask:
 **If the user responds with "no", "not yet", "later", or any deferral**:
 → Acknowledge and stop:
 > "No problem. When you're ready, run `/build` to begin Construction."
+
+---
+
+Return to `SKILL.md`. Inception is complete.

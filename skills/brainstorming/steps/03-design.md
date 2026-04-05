@@ -84,3 +84,7 @@ last-updated: [ISO 8601 timestamp]
 ```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Plan`.
+
+---
+
+Return to `SKILL.md` and proceed to Sub-phase 4 — PLAN.
