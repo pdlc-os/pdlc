@@ -193,7 +193,7 @@ Build, review, and test the feature with TDD and multi-agent review. When ready:
 
 Merge, deploy, reflect, and commit the episode record. After shipping, **Oracle reviews the roadmap and offers the next feature** — you can continue, pause, or switch to something else. The cycle repeats until the roadmap is complete.
 
-At any point during inception or construction, record a decision:
+At any point during inception or construction, record a decision or explore a scenario:
 
 ```
 /pdlc decision We should use PostgreSQL instead of MongoDB
@@ -201,51 +201,88 @@ At any point during inception or construction, record a decision:
 
 This triggers a **Decision Review Party** where all 9 agents assess cross-cutting impacts, produce minutes of meeting, and reconcile downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
 
+```
+/pdlc whatif What if we switched from REST to GraphQL?
+```
+
+This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
+
 ---
 
 ## The PDLC Flow
+
+### Summary
+
+```mermaid
+flowchart LR
+    INIT["/pdlc init\n🟦 Oracle"] --> BRAINSTORM["/pdlc brainstorm\n🟦 Oracle → 🟩 Neo"]
+    BRAINSTORM --> BUILD["/pdlc build\n🟩 Neo"]
+    BUILD --> SHIP["/pdlc ship\n🟪 Pulse → 🟧 Jarvis → 🟦 Oracle"]
+    SHIP -->|Next feature| BRAINSTORM
+
+    DECISION["/pdlc decision\n⚡ Any phase"] -.->|impacts| BRAINSTORM & BUILD & SHIP
+    WHATIF["/pdlc whatif\n🔍 Read-only"] -.->|may become| DECISION
+
+    style INIT fill:#1e3a5f,color:#fff
+    style BRAINSTORM fill:#1e3a5f,color:#fff
+    style BUILD fill:#1e3a5f,color:#fff
+    style SHIP fill:#1e3a5f,color:#fff
+    style DECISION fill:#5c2d91,color:#fff
+    style WHATIF fill:#2d5f2d,color:#fff
+```
+
+### Detailed flow
 
 ```mermaid
 flowchart TD
     START([Session Start]) --> RESUME{STATE.md exists?}
     RESUME -->|No| INIT
-    RESUME -->|Yes| AUTOLOAD[Auto-resume from last checkpoint]
+    RESUME -->|Yes| AUTOLOAD[Auto-resume from\nlast checkpoint\n+ show roadmap progress]
     AUTOLOAD --> PHASE_CHECK{Current phase?}
     PHASE_CHECK -->|Inception| INCEPTION
     PHASE_CHECK -->|Construction| CONSTRUCTION
     PHASE_CHECK -->|Operation| OPERATION
 
     %% ── PHASE 0: INIT ──────────────────────────────────────────────
-    INIT["/pdlc init"] --> PREREQ[Check prereqs\nbd + git]
-    PREREQ --> FIELD{Existing code?}
-    FIELD -->|Brownfield| SCAN[Offer repo scan\nskills/repo-scan]
-    SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings for approval]
+    INIT["/pdlc init"] --> GITCHECK{Git repo exists?}
+    GITCHECK -->|No| GITINIT[git init + .gitignore\n+ GitHub setup]
+    GITCHECK -->|Yes| GHCHECK{GitHub remote?}
+    GITINIT --> GHCHECK
+    GHCHECK -->|No| GHSETUP[gh CLI auth\n+ repo creation]
+    GHCHECK -->|Yes| PREREQ
+    GHSETUP --> PREREQ
+    PREREQ[Check prereqs\nDolt + Beads] --> FIELD{Existing code?}
+    FIELD -->|Brownfield| SCAN[Offer repo scan]
+    SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings]
     SCANRUN --> MEM
     SCAN -->|Declined| SOC
-    FIELD -->|Greenfield| SOC[7 Socratic questions\nor type skip to proceed early]
-    SOC --> MEM[Generate memory files\nCONSTITUTION · INTENT · STATE\nROADMAP · DECISIONS · CHANGELOG · OVERVIEW]
-    MEM --> BDI[bd init]
-    BDI --> INITPROMPT{Start brainstorming now?}
+    FIELD -->|Greenfield| SOC[7 Socratic questions]
+    SOC --> MEM[Generate memory files]
+    MEM --> ROADMAP[Roadmap Ideation\nOracle brainstorms features\nPrioritize + validate deps]
+    ROADMAP --> BDI[bd init]
+    BDI --> INITPROMPT{Start first feature?}
     INITPROMPT -->|Yes| INCEPTION
     INITPROMPT -->|No| IDLE1([Idle])
 
     %% ── PHASE 1: INCEPTION ─────────────────────────────────────────
     INCEPTION["/pdlc brainstorm feature-name"] --> DIVG{Divergent\nideation?}
-    DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation every 10\nCluster → Standouts]
+    DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation\nCluster → Standouts]
     DIVG -->|No| SOCRATIC
-    IDEAS --> SOCRATIC[DISCOVER\n4-round Socratic interview\nActive + Challenging posture]
-    SOCRATIC --> ADVERSARIAL[Adversarial Review\n10+ findings across 10 dimensions\nTop 5 → targeted follow-ups]
-    ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · mechanical path tracing\nTriage: in-scope / out / risk]
+    IDEAS --> SOCRATIC[DISCOVER\n4-round Socratic interview]
+    SOCRATIC --> PROGRESSIVE[Progressive Thinking\n🗣 Agent team meeting\n6 rounds · Oracle facilitates]
+    PROGRESSIVE --> ADVERSARIAL[Adversarial Review\n10+ findings · Top 5 follow-ups]
+    ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · path tracing]
     EDGE --> DSUM[Discovery summary]
     DSUM --> DCONF{Human confirms?}
     DCONF -->|Adjust| DSUM
-    DCONF -->|Confirmed| PRD[DEFINE\nAuto-generate PRD from brainstorm log\nBDD stories · AC · NFRs · Known Risks]
+    DCONF -->|Confirmed| PRD[DEFINE\nAuto-generate PRD]
     PRD --> PRDGATE{Approve PRD?}
     PRDGATE -->|Revise| PRD
-    PRDGATE -->|Approved| DESIGN[DESIGN\nARCHITECTURE.md · data-model.md\napi-contracts.md]
-    DESIGN --> DGATE{Approve design?}
-    DGATE -->|Revise| DESIGN
-    DGATE -->|Approved| PLAN[PLAN\nBeads tasks + dependencies\nDependency graph]
+    PRDGATE -->|Approved| BLOOMS[DESIGN\nBloom's Taxonomy questioning\n6 rounds · Neo leads]
+    BLOOMS --> DESIGNDOCS[Generate design docs\nARCHITECTURE · data-model\napi-contracts]
+    DESIGNDOCS --> DGATE{Approve design?}
+    DGATE -->|Revise| DESIGNDOCS
+    DGATE -->|Approved| PLAN[PLAN\nBeads tasks + dependencies]
     PLAN --> PGATE{Approve plan?}
     PGATE -->|Revise| PLAN
     PGATE -->|Approved| INCPROMPT{Start building?}
@@ -253,57 +290,63 @@ flowchart TD
     INCPROMPT -->|No| IDLE2([Idle])
 
     %% ── PHASE 2: CONSTRUCTION ──────────────────────────────────────
-    CONSTRUCTION["/pdlc build"] --> BPRE[Load state + Create feature branch]
-    BPRE --> READY{bd ready\nreturns tasks?}
-    READY -->|No| REVIEW
-    READY -->|Yes — 2+ tasks| WAVE[Wave Kickoff Standup\nNeo + domain agents\nSurface hidden deps]
-    READY -->|Yes — 1 task| PICK
-    WAVE --> PICK[Select highest-priority task]
+    CONSTRUCTION["/pdlc build"] --> BPRE[Load state\nCreate feature branch]
+    BPRE --> READY{bd ready?}
+    READY -->|No tasks| REVIEW
+    READY -->|2+ tasks| WAVE[🗣 Wave Kickoff]
+    READY -->|1 task| PICK
+    WAVE --> PICK[Select task]
     PICK --> CLAIM[Claim task]
-    CLAIM --> ROUNDTABLE{Complex task?}
-    ROUNDTABLE -->|Yes — user accepts| DROUND[Design Roundtable\nNeo + Echo + domain agent\nImplementation Decision]
-    ROUNDTABLE -->|No| MODE
-    DROUND --> MODE{Execution mode?}
-    MODE -->|Agent Teams| TEAM[Neo + Echo + Phantom + Jarvis\n+ domain specialists]
-    MODE -->|Sub-Agent| SINGLE[Single focused agent]
-    TEAM & SINGLE --> TDD[TDD: Red → Green → Refactor\nper acceptance criterion]
+    CLAIM --> ROUNDTABLE{Complex?}
+    ROUNDTABLE -->|Yes| DROUND[🗣 Design Roundtable]
+    ROUNDTABLE -->|No| TDD
+    DROUND --> TDD[TDD: Red → Green → Refactor]
     TDD --> TPASS{Tests pass?}
-    TPASS -->|Fail — attempt 1-2| TDD
-    TPASS -->|Fail — attempt 3| STRIKE[Strike Panel\nNeo + Echo + domain agent\n3 ranked approaches]
-    STRIKE -->|A or B| TDD
-    STRIKE -->|C — human takes wheel| GUIDE[Human guides fix]
-    GUIDE --> TDD
-    TPASS -->|All pass| TASKDONE[bd done · Commit]
+    TPASS -->|Fail 1-2| TDD
+    TPASS -->|Fail 3| STRIKE[🗣 Strike Panel]
+    STRIKE -->|Fix chosen| TDD
+    STRIKE -->|Human takes wheel| GUIDE[Human guides] --> TDD
+    TPASS -->|Pass| TASKDONE[bd done · Commit]
     TASKDONE --> READY
 
-    REVIEW[Party Review\nNeo · Echo · Phantom · Jarvis\nParallel + cross-talk] --> RFILE[REVIEW file with linked findings]
-    RFILE --> RGATE{Approve review?}
+    REVIEW[🗣 Party Review] --> RFILE[REVIEW file]
+    RFILE --> RGATE{Approve?}
     RGATE -->|Fix| REVIEW
-    RGATE -->|Approve / Accept warnings| TEST
-    TEST[TEST\nUnit · Integration · E2E\nPerf · A11y · Visual Regression] --> TGATE{Gates pass?}
-    TGATE -->|Failure| TFAIL{Human decides}
-    TFAIL -->|Fix / Accept / Defer| TGATE
-    TGATE -->|Pass| EPIDRAFT[Draft episode file]
+    RGATE -->|Approve| TEST[TEST\n6 layers]
+    TEST --> TGATE{Gates pass?}
+    TGATE -->|Fail| TFAIL{Human decides}
+    TFAIL --> TGATE
+    TGATE -->|Pass| EPIDRAFT[Draft episode]
     EPIDRAFT --> BUILDPROMPT{Ship now?}
     BUILDPROMPT -->|Yes| OPERATION
     BUILDPROMPT -->|No| IDLE3([Idle])
 
     %% ── PHASE 3: OPERATION ─────────────────────────────────────────
     OPERATION["/pdlc ship"] --> SGATE{Confirm merge?}
-    SGATE -->|Yes| MERGE[Merge commit to main\nCHANGELOG · semver tag · push]
-    MERGE --> CICD[Trigger CI/CD]
-    CICD --> SMOKE[VERIFY\nSmoke tests · Human sign-off]
-    SMOKE --> RETRO[REFLECT\nPer-agent retro · Metrics\nEpisode finalization]
-    RETRO --> DONE([Feature delivered])
+    SGATE -->|Yes| MERGE[Merge to main\nCHANGELOG · semver tag]
+    MERGE --> CICD[CI/CD trigger]
+    CICD --> SMOKE[VERIFY\nSmoke tests + sign-off]
+    SMOKE --> RETRO[REFLECT\nRetro · Episode · ROADMAP update]
+    RETRO --> NEXTFEAT{Next feature?}
+    NEXTFEAT -->|Continue| INCEPTION
+    NEXTFEAT -->|Pause| IDLE4([Idle])
+    NEXTFEAT -->|Switch| INCEPTION
 
     %% ── STYLE ──────────────────────────────────────────────────────
     style STRIKE fill:#ff4444,color:#fff
+    style PROGRESSIVE fill:#5c2d91,color:#fff
+    style WAVE fill:#5c2d91,color:#fff
+    style DROUND fill:#5c2d91,color:#fff
+    style REVIEW fill:#5c2d91,color:#fff
     style SGATE fill:#f0a500,color:#fff
     style PRDGATE fill:#f0a500,color:#fff
     style DGATE fill:#f0a500,color:#fff
     style PGATE fill:#f0a500,color:#fff
     style RGATE fill:#f0a500,color:#fff
+    style NEXTFEAT fill:#f0a500,color:#fff
 ```
+
+Legend: 🗣 = team meeting (purple) · ⚠ = approval gate (amber) · 🔴 = escalation (red)
 
 ### Approval gates
 
@@ -406,9 +449,17 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 
 ## Phases in Detail
 
-### Phase 0 — Initialization (`/pdlc init`)
+### Phase 0 -- Initialization (`/pdlc init`)
 
-Run once per project. Oracle leads. PDLC checks prerequisites, then detects whether you're starting fresh or bringing in an existing codebase.
+```mermaid
+flowchart LR
+    GIT[Git + GitHub\nsetup] --> QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BEADS[bd init] --> START{Start\nfirst feature?}
+    START -->|Yes| BRAINSTORM([to /pdlc brainstorm])
+    START -->|No| IDLE([Idle])
+    style BRAINSTORM fill:#1e3a5f,color:#fff
+```
+
+Run once per project. **Oracle** leads. PDLC checks prerequisites, then detects whether you're starting fresh or bringing in an existing codebase.
 
 **Git & GitHub setup**: If no git repo exists, PDLC offers to initialize one with a `.gitignore` (node_modules, .claude, .env, etc.). Then verifies GitHub connectivity — if no remote is configured, walks you through creating a repo (GitHub.com or GitHub Enterprise) and authenticating with the `gh` CLI. This ensures `/pdlc ship` can create PRs without issues later.
 
@@ -416,67 +467,136 @@ Run once per project. Oracle leads. PDLC checks prerequisites, then detects whet
 
 **Brownfield** (existing code): PDLC offers to deep-scan the repository, mapping structure, reading key files, analyzing tests and git history. Scan findings are presented for approval, then used to pre-populate memory files. All inferred content is marked `(inferred -- please verify)`.
 
-**Roadmap Ideation**: After scaffolding, Oracle brainstorms 5–15 candidate features with you, then works through prioritization (dependencies, user value, technical risk). Each feature gets a permanent `F-NNN` ID and a priority rank. The full backlog is captured in `ROADMAP.md`.
+**Roadmap Ideation**: Oracle brainstorms 5-15 candidate features, validates priority sequence for dependency conflicts, and captures the backlog in `ROADMAP.md` with permanent `F-NNN` IDs. Auto-launches the first priority feature on confirmation.
 
-**PDLC scaffolds:**
+**PDLC scaffolds:** CONSTITUTION, INTENT, STATE, ROADMAP, DECISIONS, CHANGELOG, OVERVIEW, episodes/index, and `.beads/`.
 
-- `docs/pdlc/memory/CONSTITUTION.md` — rules, standards, test gates
-- `docs/pdlc/memory/INTENT.md` — problem statement, target user, value proposition
-- `docs/pdlc/memory/STATE.md` — live phase/task state
-- `docs/pdlc/memory/ROADMAP.md` — prioritized feature backlog with `F-NNN` IDs
-- `docs/pdlc/memory/DECISIONS.md` — decision registry (ADR format)
-- `docs/pdlc/memory/CHANGELOG.md`, `OVERVIEW.md`
-- `docs/pdlc/memory/episodes/index.md` — searchable episode history
-- `.beads/` — Beads task database (via `bd init`)
+### Phase 1 -- Inception (`/pdlc brainstorm <feature>`)
 
-### Phase 1 — Inception (`/pdlc brainstorm <feature>`)
+```mermaid
+flowchart LR
+    subgraph DISCOVER["Discover - Oracle"]
+        DIV[Divergent\nIdeation] --> SOC[Socratic\n4 rounds] --> PROG["Progressive\nThinking"] --> ADV[Adversarial\nReview] --> EDGE[Edge Case\nAnalysis] --> SUM["Summary"]
+    end
+    subgraph DEFINE["Define - Oracle"]
+        PRD["Generate PRD"]
+    end
+    subgraph DESIGN["Design - Neo"]
+        BLOOM[Bloom Taxonomy\n6 rounds] --> DOCS["Architecture\nData Model\nAPI Contracts"]
+    end
+    subgraph PLAN_PHASE["Plan - Neo"]
+        TASKS["Beads tasks\n+ dependencies"]
+    end
+    FROMINIT(["from /pdlc init"]) --> DISCOVER
+    DISCOVER --> DEFINE --> DESIGN --> PLAN_PHASE
+    PLAN_PHASE --> TOBUILD(["to /pdlc build"])
 
-Oracle leads Discover + Define, then hands off to Neo for Design + Plan. Six sub-phases with human approval gates:
+    style PROG fill:#5c2d91,color:#fff
+    style TOBUILD fill:#1e3a5f,color:#fff
+    style FROMINIT fill:#1e3a5f,color:#fff
+```
 
-| Sub-phase | Lead | Output |
-|-----------|------|--------|
-| **Divergent Ideation** (optional) | Oracle | 100+ ideas, domain rotation, clustering → standouts |
-| **Discover** | Oracle | 4-round interview + adversarial review + edge case analysis → confirmed summary |
-| **Define** | Oracle | Auto-generate PRD from brainstorm log → `PRD_[feature]_[date].md` |
-| **Design** | Neo | Bloom's Taxonomy questioning (6 rounds) → Architecture, data model, API contracts → `docs/pdlc/design/[feature]/` |
-| **Plan** | Neo | Beads tasks with dependencies → plan file + dependency graph |
+Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
 
-The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
+| Sub-phase | Lead | Key activities | Output |
+|-----------|------|---------------|--------|
+| **Discover** | Oracle | Divergent ideation (optional), Socratic interview (4 rounds), **Progressive Thinking** (required agent meeting), Adversarial review, Edge case analysis | Confirmed discovery summary |
+| **Define** | Oracle | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
+| **Design** | Neo | Bloom's Taxonomy questioning (6 rounds), Architecture + data model + API contracts | `docs/pdlc/design/[feature]/` |
+| **Plan** | Neo | Beads tasks with dependencies, dependency graph | Plan file |
 
-### Phase 2 ��� Construction (`/pdlc build`)
+### Phase 2 -- Construction (`/pdlc build`)
 
-Neo leads the entire phase.
+```mermaid
+flowchart TD
+    FROMBRAINSTORM(["from /pdlc brainstorm"]) --> BRANCH[Create feature branch]
+    BRANCH --> READY{Tasks ready?}
+    READY -->|"2+ tasks"| WAVE["Wave Kickoff"] --> PICK
+    READY -->|1 task| PICK[Claim task]
+    PICK --> COMPLEX{Complex?}
+    COMPLEX -->|Yes| ROUND["Design Roundtable"] --> TDD
+    COMPLEX -->|No| TDD["TDD Loop"]
+    TDD --> PASS{Tests pass?}
+    PASS -->|"Fail 1-2"| TDD
+    PASS -->|Fail 3| STRIKE["Strike Panel"] --> TDD
+    PASS -->|Pass| DONE[bd done] --> READY
+    READY -->|All done| REVIEW["Party Review"]
+    REVIEW --> TEST[Test 6 layers]
+    TEST --> EPISODE[Draft episode]
+    EPISODE --> TOSHIP(["to /pdlc ship"])
 
-| Sub-phase | What happens |
-|-----------|-------------|
-| **Build** | TDD per task from Beads queue. Wave Kickoff standup for multi-task waves. Optional Design Roundtable for complex tasks. Agent Teams or Sub-Agent mode per task. 3-strike cap with Strike Panel. |
-| **Review** | Party Review: Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Deferred findings recorded via Decision Review Party. |
-| **Test** | 6 layers. Constitution gates determine which are required. Human decides on failures. |
+    style WAVE fill:#5c2d91,color:#fff
+    style ROUND fill:#5c2d91,color:#fff
+    style STRIKE fill:#ff4444,color:#fff
+    style REVIEW fill:#5c2d91,color:#fff
+    style FROMBRAINSTORM fill:#1e3a5f,color:#fff
+    style TOSHIP fill:#1e3a5f,color:#fff
+```
 
-### Phase 3 — Operation (`/pdlc ship`)
+**Neo** leads the entire phase.
 
-Pulse leads Ship + Verify, then Jarvis leads Reflect, then Oracle leads the Next Feature prompt.
+| Sub-phase | Meetings | What happens |
+|-----------|----------|-------------|
+| **Build** | Wave Kickoff, Design Roundtable, Strike Panel | TDD per task. Wave standup for 2+ tasks. Optional roundtable for complex tasks. 3-strike cap. |
+| **Review** | Party Review | Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Deferred findings via Decision Review. |
+| **Test** | -- | 6 layers. Constitution gates determine required. Human decides on failures. |
+
+### Phase 3 -- Operation (`/pdlc ship`)
+
+```mermaid
+flowchart LR
+    subgraph SHIP["Ship + Verify - Pulse"]
+        MERGE[Merge to main\nCHANGELOG + semver] --> CICD[CI/CD] --> SMOKE["Smoke tests"]
+    end
+    subgraph REFLECT["Reflect - Jarvis"]
+        RETRO[Retrospective\nEpisode + ROADMAP update]
+    end
+    subgraph NEXT["Next Feature - Oracle"]
+        ROADMAP{Next on\nroadmap?}
+    end
+    FROMBUILD(["from /pdlc build"]) --> SHIP --> REFLECT --> NEXT
+    ROADMAP -->|Continue| TOBRAINSTORM(["to /pdlc brainstorm"])
+    ROADMAP -->|Pause| IDLE([Idle])
+    ROADMAP -->|Switch| TOBRAINSTORM
+
+    style FROMBUILD fill:#1e3a5f,color:#fff
+    style TOBRAINSTORM fill:#1e3a5f,color:#fff
+```
 
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
 | **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger |
 | **Verify** | Pulse | Smoke tests against deployed environment + human sign-off |
-| **Reflect** | Jarvis | Per-agent retro, metrics, episode file finalization, ROADMAP.md marked `Shipped`, commit to permanent record |
-| **Next Feature** | Oracle | Reviews roadmap, presents next priority feature. User can **continue** (loops to brainstorm), **pause** (pick up later), or **switch** (different feature — roadmap updated) |
+| **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
+| **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
-### Decision Registry (`/pdlc decision <text>`)
+### Pivoting with `/pdlc decision <text>`
 
-Available at any point during Inception, Construction, or Operation. The lead agent for the current phase/sub-phase runs the flow:
+Use `/pdlc decision` to **pivot** the design mid-flight -- change tech stack, rearchitect a component, alter scope, switch databases, or any other significant change. Available at any point during Inception, Construction, or Operation. The lead agent for the current phase runs the flow:
 
 | Step | What happens |
 |------|-------------|
-| **Classify** | Tag source (user explicit vs PDLC flow), phase, sub-phase, agent |
-| **Decision Review Party** | All 9 agents assess impacts on their owned artifacts — code, tests, architecture, PRD, roadmap, design docs, environment config, UX flows, documentation |
-| **MOM** | Minutes of meeting written to `docs/pdlc/mom/` — agent assessments, cross-cutting concerns, risk consensus, roadmap resequencing proposal, disagreements |
-| **User approval** | Recommended changes table presented. User can apply all, apply selectively, modify the decision, or cancel |
-| **Reconciliation** | Phase-aware downstream effects: Beads tasks created/updated/closed, PRD and design docs updated (with re-approval if material), episode draft annotated, test files flagged, roadmap resequenced, lead agent announces decision context to the team on resume |
+| **Checkpoint** | Pauses current workflow, saves recovery state |
+| **Classify** | Tag source (user vs PDLC flow), phase, sub-phase, agent |
+| **Decision Review Party** | All 9 agents assess impacts on their owned artifacts |
+| **MOM** | Minutes with assessments, cross-cutting concerns, risk consensus, roadmap resequencing proposal |
+| **User approval** | Recommended changes table. Apply all, selectively, modify, or cancel |
+| **Reconciliation** | Beads tasks, PRDs, design docs, episode drafts, test flags, roadmap all updated |
+| **Resume** | Returns to the paused checkpoint with updated context |
 
-Feature IDs (`F-NNN`) are permanent and never change. Priority is a separate integer column that can be freely resequenced by any Decision Review without affecting IDs or ADR numbers.
+Feature IDs (`F-NNN`) are permanent. Priority is a separate column -- resequencing never renumbers IDs or ADRs.
+
+### Scenario planning with `/pdlc whatif <scenario>`
+
+Use `/pdlc whatif` for **scenario planning** -- explore hypothetical changes without committing. The full team analyzes feasibility, effort, risks, and trade-offs in a read-only meeting. No files are modified.
+
+| Outcome | What happens |
+|---------|-------------|
+| **Explore further** | Drill deeper into a specific aspect -- versioned MOM |
+| **Accept as decision** | Converts to formal decision, reuses the What-If MOM (no duplicate meeting), runs decision workflow for reconciliation |
+| **Discard** | Files the MOM for reference, resumes paused workflow |
+
+Together, `/pdlc decision` and `/pdlc whatif` give you a full **pivot and scenario planning toolkit**: explore ideas safely with whatif, then commit to them with decision when ready.
 
 ---
 
@@ -877,6 +997,14 @@ Phantom (security), Echo (QA), and Neo (architecture) findings are soft warnings
 ### STATE.md phase history is append-only
 
 Nothing is deleted, only appended. You can ask "when did we start building feature X?" without re-running git log. If a deadlock happens, the event sequence is visible. Cycle time and throughput metrics can be calculated directly from the log. The state file itself becomes the audit trail.
+
+### Design pivots via `/pdlc decision`
+
+Software projects change direction. A mid-build decision to switch databases, rearchitect a service, or change scope needs to propagate cleanly: update the architecture docs, rewrite affected Beads tasks, flag tests that need changing, resequence the roadmap. Without a structured pivot mechanism, these changes fragment across conversations and files, creating drift between what was designed and what exists. The Decision Review Party ensures every agent assesses the blast radius before anything changes, and the phase-aware reconciliation updates all downstream artifacts in one pass.
+
+### Scenario planning via `/pdlc whatif`
+
+Before committing to a change, you want to know the cost. "What if we switched to GraphQL?" is a question with implications for architecture, frontend, tests, docs, deployment, and timeline -- but asking it shouldn't force you to commit. What-If analysis lets the full team assess a hypothetical in a read-only meeting, producing a MOM with feasibility, effort, risks, and trade-offs. If the analysis is promising, convert it to a decision (reusing the existing MOM -- no duplicate meeting). If not, discard it and resume where you were. This separates exploration from commitment.
 
 ---
 
