@@ -1,6 +1,6 @@
 # PDLC — Product Development Lifecycle Plugin
 
-> A hybrid Claude Code plugin combining the best of obra/superpowers, gstack, and get-shit-done-cc.
+> A hybrid Claude Code plugin combining the best of obra/superpowers, gstack, get-shit-done-cc, and bmad-method.
 
 ## Status: Planning Phase (In Progress)
 
@@ -13,6 +13,7 @@
 | **obra/superpowers** | Methodology discipline: TDD, systematic debugging, subagent reviews, worktrees |
 | **gstack** | Specialist roles, sprint workflow, real browser automation, safety guardrails |
 | **get-shit-done-cc** | Context rot prevention, spec-driven execution, file-based state, multi-agent waves |
+| **bmad-method** | Adversarial review, edge case analysis, divergent ideation, multi-agent party mode |
 
 ---
 

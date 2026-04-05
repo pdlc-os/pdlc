@@ -2,10 +2,11 @@
 
 A Claude Code plugin that guides small startup-style teams (2-5 engineers) through the full arc of feature development — from raw idea to shipped, production feature — using structured phases, a named specialist agent team, persistent memory, and safety guardrails.
 
-PDLC combines the best of three Claude Code workflows:
+PDLC combines the best of four Claude Code workflows:
 - **[obra/superpowers](https://github.com/obra/superpowers)** — TDD discipline, systematic debugging, visual brainstorming companion
 - **[gstack](https://github.com/garrytan/gstack)** — specialist agent roles, sprint workflow, real browser automation
 - **[get-shit-done-cc](https://github.com/gsd-build/get-shit-done)** — context-rot prevention, spec-driven execution, file-based persistent memory
+- **[bmad-method](https://github.com/bmadcode/bmad-method)** — adversarial review, edge case analysis, divergent ideation, multi-agent party mode
 
 ---
 
