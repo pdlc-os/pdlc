@@ -39,6 +39,27 @@ Any phase ──────────── Decision Review (/pdlc decision)
 Any phase ──────────── What-If Analysis (/pdlc whatif)
 ```
 
+### Collaboration patterns
+
+Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclusion) but customizes it:
+
+| Meeting | Leader | Rounds | Cross-talk | How it works |
+|---------|--------|--------|-----------|-------------|
+| **Progressive Thinking** | Oracle | 6 (Concrete → Inferential → Consequential → Speculative → Conflicting → Strategic) | Built into Rounds 5-6 | Oracle questions agents, not the user. Conflict resolution built in. User escalation only when agents disagree and can't resolve. Cannot be skipped. |
+| **Wave Kickoff** | Neo | 1 + optional dependency updates | Only if tasks conflict | Neo frames coordination question, domain agents identify hidden dependencies and shared-state conflicts. Max 4 agents. |
+| **Design Roundtable** | Neo | 2 (positions → reactions) | Always — agents react to each other | Neo frames the design question, agents propose approaches, then react to each other's proposals. Converges to single Implementation Decision. |
+| **Party Review** | Neo | 2 (independent review → cross-linking) | Always — interconnected findings routed between agents | All 4 agents review the same diff with different mandates simultaneously. Cross-talk links related findings to shared root causes. |
+| **Strike Panel** | Neo | 2 (diagnosis → ranked approaches) | Yes — agents react to diagnoses | Focused on a specific test failure. Produces 3 ranked approaches for the human to choose from. |
+| **Decision Review** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | All 9 agents assess owned artifacts. Includes roadmap resequencing discussion. |
+| **What-If Analysis** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Same pattern as Decision Review but read-only — no files modified. |
+
+**Cross-talk cap:** Maximum 1 cross-talk round per meeting (except Progressive Thinking which has conflict resolution built into its structure). If disagreement persists, it's surfaced in the MOM as an open question for the human.
+
+**Tool access by mode:**
+- **Agent Teams** (default): Agents can use tools (Read, Grep, Bash) to verify claims — e.g., read source code, check test files
+- **Subagents**: Agents respond with perspective only, no tool access
+- **Solo**: Single LLM, no tool access
+
 ### Spawn modes
 
 Set once at the first Wave Kickoff, applies for the session. Default is Agent Teams.
