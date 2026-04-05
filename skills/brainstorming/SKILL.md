@@ -39,7 +39,7 @@ The Inception phase runs four sub-phases in strict sequence. Each sub-phase is d
 
 ### Sub-phase 1 — DISCOVER
 
-Read `skills/brainstorming/steps/01-discover.md` and execute every step completely (Steps 1–5).
+Read `skills/brainstorming/steps/01-discover.md` and execute every step completely (Steps 0–5, where Step 0 is an optional divergent ideation phase).
 
 Return here when the discovery summary is confirmed and STATE.md shows `Define`.
 

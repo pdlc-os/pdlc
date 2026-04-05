@@ -1,5 +1,28 @@
 # Sub-phase 1: DISCOVER
-## Steps 1–5
+## Steps 0–5
+
+---
+
+### Step 0 — Offer divergent ideation (optional)
+
+Before narrowing in on a feature direction, the user can open the idea space wide first.
+Send the following as a **standalone message with no other content**. Wait for the response before continuing.
+
+> "Before we start asking focused questions about `[feature-name]`, would you like to do **divergent ideation** first?
+>
+> This means generating 100+ raw ideas using structured domain rotation — Technical → UX → Business → Edge Cases — cycling every 10 ideas to avoid semantic drift. The goal is to surface unexpected angles before we converge on a direction.
+>
+> - **Yes** — run divergent ideation first, then move to Socratic questioning
+> - **No / skip** — go straight to Socratic questioning"
+
+**If the user says yes:**
+
+Read `skills/brainstorming/steps/00-divergent-ideation.md` and execute it completely.
+Return here and continue with Step 1 when it is done.
+
+**If the user says no or skip:**
+
+Proceed directly to Step 1.
 
 ---
 
