@@ -101,7 +101,7 @@ function isPdlcInstalled(settings) {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Beads helpers ───────────────────────────────────────────────────────────
 
 function isBeadsInstalled() {
   try {
@@ -122,9 +122,9 @@ function beadsVersion() {
 
 function printBeadsStatus() {
   if (isBeadsInstalled()) {
-    console.log(`  Beads (bd)  : ✓ installed (${beadsVersion()})`);
+    console.log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
   } else {
-    console.log(`  Beads (bd)  : ✗ not found`);
+    console.log(`  Beads (bd)  : \u2717 not found`);
     console.log(`                Required for /pdlc init and the Construction phase.`);
     console.log(`                Install: npm install -g @beads/bd`);
   }
@@ -140,31 +140,82 @@ function prompt(question) {
   });
 }
 
-async function promptInstallBeads() {
+async function promptInstallBeads(local) {
   if (isBeadsInstalled()) return;
   if (!process.stdin.isTTY) return;
 
-  console.log('\n  Beads (bd) is not installed — it\'s required for /pdlc init and the Construction phase.');
-  const answer = await prompt('  Install Beads now? (Y/n) ');
+  console.log('\n  Beads (bd) is not installed \u2014 it\'s required for /pdlc init and the Construction phase.');
 
-  if (answer === '' || answer === 'y' || answer === 'yes') {
-    console.log('\n  Installing Beads...');
-    try {
-      execSync('npm install -g @beads/bd', { stdio: 'inherit' });
-      console.log(`\n  Beads (bd)  : ✓ installed (${beadsVersion()})`);
-    } catch (err) {
-      console.error('\n  Beads installation failed. You can install it manually:');
-      console.error('  npm install -g @beads/bd');
+  if (local) {
+    const answer = await prompt('  Install Beads locally as a devDependency? (Y/n) ');
+    if (answer === '' || answer === 'y' || answer === 'yes') {
+      console.log('\n  Installing Beads locally...');
+      try {
+        execSync('npm install --save-dev @beads/bd', { stdio: 'inherit' });
+        console.log(`\n  Beads (bd)  : \u2713 installed locally`);
+      } catch (err) {
+        console.error('\n  Beads installation failed. You can install it manually:');
+        console.error('  npm install --save-dev @beads/bd');
+      }
+    } else {
+      console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
+      console.log('  npm install --save-dev @beads/bd');
     }
   } else {
-    console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
-    console.log('  npm install -g @beads/bd');
+    const answer = await prompt('  Install Beads now? (Y/n) ');
+    if (answer === '' || answer === 'y' || answer === 'yes') {
+      console.log('\n  Installing Beads...');
+      try {
+        execSync('npm install -g @beads/bd', { stdio: 'inherit' });
+        console.log(`\n  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
+      } catch (err) {
+        console.error('\n  Beads installation failed. You can install it manually:');
+        console.error('  npm install -g @beads/bd');
+      }
+    } else {
+      console.log('\n  Skipped. Install Beads manually before running /pdlc init:');
+      console.log('  npm install -g @beads/bd');
+    }
   }
+}
+
+// ─── Install mode detection ──────────────────────────────────────────────────
+
+/**
+ * Detect whether this package is installed locally (inside a repo's node_modules)
+ * vs globally. Used by postinstall to auto-select the right mode.
+ */
+function isLocalInstall() {
+  const initCwd = process.env.INIT_CWD;
+  if (!initCwd) return false;
+
+  // Check if PLUGIN_ROOT is inside INIT_CWD/node_modules (direct or symlinked)
+  const expectedLocalPath = path.join(initCwd, 'node_modules', '@pdlc-os', 'pdlc');
+  if (path.resolve(PLUGIN_ROOT) === path.resolve(expectedLocalPath)) return true;
+
+  // npm symlinks local file: installs — resolve the symlink and compare
+  try {
+    const realTarget = fs.realpathSync(expectedLocalPath);
+    return path.resolve(PLUGIN_ROOT) === path.resolve(realTarget);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get the repo root for a local install.
+ * Uses INIT_CWD (set by npm to where `npm install` was run),
+ * falling back to the current working directory.
+ */
+function getRepoRoot() {
+  return process.env.INIT_CWD || process.cwd();
 }
 
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
-async function install() {
+async function install(opts = {}) {
+  const local = opts.local || false;
+
   const pluginSettings = readJson(PLUGIN_SETTINGS_PATH);
   if (!pluginSettings) {
     console.error(`Error: Plugin settings not found at ${PLUGIN_SETTINGS_PATH}`);
@@ -172,98 +223,171 @@ async function install() {
   }
 
   const resolved = resolvePlaceholders(pluginSettings);
-  const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
 
-  if (isPdlcInstalled(global)) {
-    // Re-install: strip old entries first so paths stay current
-    const stripped = stripPdlc(global);
-    writeJson(GLOBAL_SETTINGS_PATH, deepMerge(stripped, resolved));
-    console.log(`\nPDLC updated to v${VERSION}.`);
+  if (local) {
+    const repoRoot = opts.repoRoot || process.cwd();
+    const localSettingsPath = path.join(repoRoot, '.claude', 'settings.local.json');
+    const existing = readJson(localSettingsPath) ?? {};
+
+    if (isPdlcInstalled(existing)) {
+      const stripped = stripPdlc(existing);
+      writeJson(localSettingsPath, deepMerge(stripped, resolved));
+      console.log(`\nPDLC updated to v${VERSION} (local).`);
+    } else {
+      writeJson(localSettingsPath, deepMerge(existing, resolved));
+      console.log(`\nPDLC v${VERSION} installed locally.`);
+    }
+
+    // Also strip from global settings if present, to avoid double-hooking
+    const global = readJson(GLOBAL_SETTINGS_PATH);
+    if (global && isPdlcInstalled(global)) {
+      writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
+      console.log(`  Removed previous global PDLC hooks from ~/.claude/settings.json`);
+    }
+
+    console.log(`  Plugin root : ${PLUGIN_ROOT}`);
+    console.log(`  Settings    : ${localSettingsPath}`);
+    console.log(`  Scope       : this repo only`);
   } else {
-    writeJson(GLOBAL_SETTINGS_PATH, deepMerge(global, resolved));
-    console.log(`\nPDLC v${VERSION} installed successfully.`);
+    const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
+
+    if (isPdlcInstalled(global)) {
+      const stripped = stripPdlc(global);
+      writeJson(GLOBAL_SETTINGS_PATH, deepMerge(stripped, resolved));
+      console.log(`\nPDLC updated to v${VERSION}.`);
+    } else {
+      writeJson(GLOBAL_SETTINGS_PATH, deepMerge(global, resolved));
+      console.log(`\nPDLC v${VERSION} installed successfully.`);
+    }
+
+    console.log(`  Plugin root : ${PLUGIN_ROOT}`);
+    console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
+    console.log(`  Scope       : all projects (global)`);
   }
 
-  console.log(`  Plugin root : ${PLUGIN_ROOT}`);
-  console.log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
-
-  await promptInstallBeads();
+  await promptInstallBeads(local);
 
   if (isBeadsInstalled()) {
-    console.log(`  Beads (bd)  : ✓ installed (${beadsVersion()})`);
+    console.log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
   }
 
   console.log('\nStart a new Claude Code session to activate.');
   console.log('Next step  : open a project and run /pdlc init\n');
 }
 
-function uninstall() {
-  const global = readJson(GLOBAL_SETTINGS_PATH);
-  if (!global) {
-    console.log('\nNo Claude settings found — nothing to uninstall.\n');
-    return;
+function uninstall(opts = {}) {
+  const local = opts.local || false;
+
+  if (local) {
+    const repoRoot = opts.repoRoot || process.cwd();
+    const localSettingsPath = path.join(repoRoot, '.claude', 'settings.local.json');
+    const existing = readJson(localSettingsPath);
+
+    if (!existing) {
+      console.log('\nNo local Claude settings found — nothing to uninstall.\n');
+      return;
+    }
+    if (!isPdlcInstalled(existing)) {
+      console.log('\nPDLC is not installed locally in .claude/settings.local.json.\n');
+      return;
+    }
+
+    const stripped = stripPdlc(existing);
+    if (Object.keys(stripped).length === 0) {
+      fs.unlinkSync(localSettingsPath);
+      console.log('\nPDLC uninstalled. Removed .claude/settings.local.json (was empty).\n');
+    } else {
+      writeJson(localSettingsPath, stripped);
+      console.log('\nPDLC uninstalled locally. Hooks and statusLine removed from .claude/settings.local.json.\n');
+    }
+  } else {
+    const global = readJson(GLOBAL_SETTINGS_PATH);
+    if (!global) {
+      console.log('\nNo Claude settings found — nothing to uninstall.\n');
+      return;
+    }
+    if (!isPdlcInstalled(global)) {
+      console.log('\nPDLC is not currently installed in ~/.claude/settings.json.\n');
+      return;
+    }
+    writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
+    console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.\n');
   }
-  if (!isPdlcInstalled(global)) {
-    console.log('\nPDLC is not currently installed in ~/.claude/settings.json.\n');
-    return;
-  }
-  writeJson(GLOBAL_SETTINGS_PATH, stripPdlc(global));
-  console.log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.\n');
 }
 
 function status() {
   const global = readJson(GLOBAL_SETTINGS_PATH);
-  const installed = global ? isPdlcInstalled(global) : false;
+  const globalInstalled = global ? isPdlcInstalled(global) : false;
+
+  // Check for local install in cwd
+  const localSettingsPath = path.join(process.cwd(), '.claude', 'settings.local.json');
+  const local = readJson(localSettingsPath);
+  const localInstalled = local ? isPdlcInstalled(local) : false;
 
   console.log(`\npdlc v${VERSION}`);
   console.log(`Plugin root  : ${PLUGIN_ROOT}`);
-  console.log(`Global hooks : ${GLOBAL_SETTINGS_PATH}`);
-  console.log(`PDLC         : ${installed ? '✓ installed' : '✗ not installed'}`);
+
+  if (localInstalled) {
+    console.log(`Install mode : local (this repo)`);
+    console.log(`Settings     : ${localSettingsPath}`);
+  } else if (globalInstalled) {
+    console.log(`Install mode : global (all projects)`);
+    console.log(`Settings     : ${GLOBAL_SETTINGS_PATH}`);
+  } else {
+    console.log(`PDLC         : \u2717 not installed`);
+  }
+
   printBeadsStatus();
 
-  if (installed) {
+  if (localInstalled || globalInstalled) {
     console.log('\nHooks registered:');
-    console.log('  statusLine     → pdlc-statusline.js');
-    console.log('  PostToolUse    → pdlc-context-monitor.js');
-    console.log('  PreToolUse     → pdlc-guardrails.js');
-    console.log('  SessionStart   → pdlc-session-start.sh');
+    console.log('  statusLine     \u2192 pdlc-statusline.js');
+    console.log('  PostToolUse    \u2192 pdlc-context-monitor.js');
+    console.log('  PreToolUse     \u2192 pdlc-guardrails.js');
+    console.log('  SessionStart   \u2192 pdlc-session-start.sh');
   }
   console.log('');
 }
 
 /**
- * Called by `npm postinstall`. Skips silently during local development
- * (when the package's own node_modules are being installed) to avoid
- * the hook running in unexpected contexts.
+ * Called by `npm postinstall`. Auto-detects local vs global install.
  */
 async function postinstall() {
-  // INIT_CWD is set by npm to the directory where `npm install` was run.
-  // If it equals the plugin root, the developer is installing the plugin's
-  // own deps — skip auto-install.
   const initCwd = process.env.INIT_CWD || '';
   if (path.resolve(initCwd) === PLUGIN_ROOT) return;
-
-  // Also skip in CI environments unless explicitly opted in.
   if (process.env.CI && !process.env.PDLC_INSTALL_IN_CI) return;
 
-  await install();
+  if (isLocalInstall()) {
+    await install({ local: true, repoRoot: getRepoRoot() });
+  } else {
+    await install({ local: false });
+  }
 }
 
 function printUsage() {
   console.log(`
-pdlc v${VERSION} — Product Development Lifecycle plugin for Claude Code
+pdlc v${VERSION} \u2014 Product Development Lifecycle plugin for Claude Code
 
 Usage:
-  npx @pdlc-os/pdlc install     Register PDLC hooks in ~/.claude/settings.json
-  npx @pdlc-os/pdlc uninstall   Remove PDLC hooks from ~/.claude/settings.json
-  npx @pdlc-os/pdlc status      Show install status
-  npx @pdlc-os/pdlc --version   Print version
+  npx @pdlc-os/pdlc install             Register PDLC hooks globally (~/.claude/settings.json)
+  npx @pdlc-os/pdlc install --local     Register PDLC hooks locally (.claude/settings.local.json)
+  npx @pdlc-os/pdlc uninstall           Remove global PDLC hooks
+  npx @pdlc-os/pdlc uninstall --local   Remove local PDLC hooks
+  npx @pdlc-os/pdlc status              Show install status
+  npx @pdlc-os/pdlc --version           Print version
+
+Local install (recommended for teams):
+  cd your-repo
+  npm install --save-dev @pdlc-os/pdlc   Auto-detects local context and installs to .claude/
+
+Global install:
+  npm install -g @pdlc-os/pdlc           Installs hooks for all projects
 
 Slash commands (inside a Claude Code session after install):
-  /init        Phase 0 — Initialization: Constitution · Intent · Memory Bank · Beads
-  /brainstorm  Phase 1 — Inception: Discover → Define → Design → Plan
-  /build       Phase 2 — Construction: Build → Review → Test
-  /ship        Phase 3 — Operation: Ship → Verify → Reflect
+  /init        Phase 0 \u2014 Initialization: Constitution \xb7 Intent \xb7 Memory Bank \xb7 Beads
+  /brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
+  /build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
+  /ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
 
 Marketplace: https://github.com/pdlc-os
 `);
@@ -274,12 +398,14 @@ Marketplace: https://github.com/pdlc-os
 const [,, command, ...rest] = process.argv;
 
 async function main() {
+  const hasLocal = rest.includes('--local');
+
   switch (command) {
     case 'install':
-      await install();
+      await install({ local: hasLocal });
       break;
     case 'uninstall':
-      uninstall();
+      uninstall({ local: hasLocal });
       break;
     case 'status':
       status();
