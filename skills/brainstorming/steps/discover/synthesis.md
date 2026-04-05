@@ -59,3 +59,7 @@ approved-date: [ISO 8601 timestamp]
 ```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Define`.
+
+---
+
+Return to `01-discover.md`. Discover is complete.

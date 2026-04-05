@@ -61,6 +61,10 @@ Tier 2 actions can be **downgraded to Tier 3** (proceed with logged warning only
 - Trigger: any write, edit, or overwrite of `docs/pdlc/memory/CONSTITUTION.md`.
 - Pause message: "About to modify CONSTITUTION.md. This changes the rules governing this project. Confirm? (yes/no)"
 
+**6. Closing all open Beads tasks at once**
+- Trigger: any command that marks all remaining open Beads tasks as done in a single operation (e.g. `bd done --all`, or a scripted loop closing every task).
+- Pause message: "About to close all [N] open Beads tasks at once. This marks all remaining work as complete. Confirm? (yes/no)"
+
 ---
 
 ## Tier 3 — Logged Warnings

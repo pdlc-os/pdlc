@@ -144,10 +144,11 @@ PDLC pauses and waits for explicit human approval at each of the following check
 
 When Claude enters a bug-fix loop during Construction (build → test → fix → test → fix…):
 
-- Maximum **3 automatic fix attempts** per issue.
-- On the **3rd failed attempt**, PDLC pauses and presents the human with a choice:
-  - **(A) Continue automatically** — let Claude keep trying with a fresh approach.
-  - **(B) Human takes the wheel** — human reviews the error and suggests a course of action; Claude resumes with that guidance.
+- Maximum **3 automatic fix attempts** per failing test.
+- On the **3rd failed attempt**, PDLC convenes a **Strike Panel** (Neo + Echo + domain agent) to diagnose the root cause and produce 3 ranked approaches. The human then chooses:
+  - **(A) Implement approach 1** — the panel's recommended fix.
+  - **(B) Implement approach 2** — an alternative approach.
+  - **(C) Human takes the wheel** — human reviews the error and guides Claude directly.
 
 ---
 
