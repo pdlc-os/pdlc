@@ -20,8 +20,9 @@ All skill file paths below are relative to the plugin root above.
 | `ship`        | Read `${PDLC_PLUGIN_ROOT}/skills/ship/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `decision`    | Read `${PDLC_PLUGIN_ROOT}/skills/decision/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `whatif`      | Read `${PDLC_PLUGIN_ROOT}/skills/whatif/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `doctor`      | Read `${PDLC_PLUGIN_ROOT}/skills/doctor/SKILL.md` and execute it. |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
-| *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`." |
+| *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`." |
 
 When executing a skill, follow every instruction in its `SKILL.md` completely — treat the skill file as your primary prompt for that phase.
 

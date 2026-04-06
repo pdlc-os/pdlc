@@ -753,6 +753,7 @@ Slash commands (inside a Claude Code session after install):
   /pdlc ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
   /pdlc decision    Record a decision in the Decision Registry (any phase)
   /pdlc whatif       Explore a hypothetical scenario with read-only team analysis
+  /pdlc doctor       Run a comprehensive health check on PDLC state and code alignment
 
 Marketplace: https://github.com/pdlc-os
 `);

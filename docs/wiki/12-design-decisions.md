@@ -86,4 +86,4 @@ PDLC state is spread across multiple files: STATE.md (phase/task), ROADMAP.md (f
 
 ---
 
-[← Previous: Visual Companion](11-visual-companion.md) | [Back to README](../../README.md)
+[← Previous: Visual Companion](11-visual-companion.md) | [Back to README](../../README.md) | [Next: Doctor →](13-doctor.md)

@@ -77,6 +77,7 @@
 | **Durable Party Checkpoints** | All party meetings write progress to `.pending-party.json`. Interrupted meetings are detected on next session start and can be resumed. |
 | **MOM Files** | Meeting minutes for all party sessions, capturing who said what, conclusions, and next steps. |
 | **Episode Memory** | Permanent delivery records indexed in `episodes/index.md`. Searchable history of every feature shipped. |
+| **Doctor** | `/pdlc doctor` — 8-check health scan: state consistency, doc/code drift, Beads integrity, rollback detection, multi-user conflicts, Constitution compliance. Read-only with optional fix mode. |
 
 ---
 

@@ -222,6 +222,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 |---|----------|---------------|
 | 10 | [Status Bar](docs/wiki/10-status-bar.md) | Live phase/task/context status bar in Claude Code |
 | 11 | [Visual Companion](docs/wiki/11-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception |
+| 13 | [Doctor](docs/wiki/13-doctor.md) | Comprehensive health check: state consistency, doc/code drift, rollback detection, multi-user conflicts |
 | 12 | [Design Decisions](docs/wiki/12-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
 
 ---
