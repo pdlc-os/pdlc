@@ -43,7 +43,7 @@ bash scripts/start-server.sh --project-dir $(pwd) --feature [feature-name]
 
 If the output contains `"type": "server-started"`: capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorm/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
 
-If the output contains `"error"`: the server failed to start. Retry up to **2 more times** (3 total attempts). On each retry, wait 2 seconds before trying again.
+If the output contains `"error"`: the server failed to start. Retry up to **2 more times** (3 total attempts). On each retry, wait 5 seconds before trying again.
 
 If all 3 attempts fail:
 
