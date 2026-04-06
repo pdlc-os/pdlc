@@ -1,4 +1,5 @@
 # Intent
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- This file defines the core purpose of the product.
      It is set during /pdlc init and should rarely change.
      If the fundamental problem or user changes, update this file and record why in docs/pdlc/memory/DECISIONS.md.

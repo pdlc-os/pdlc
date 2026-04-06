@@ -113,6 +113,16 @@ skills/
 
   sync-check.md                        <- remote sync check protocol (pre-flight)
   state-reconciliation.md             <- conflict resolution between state files
+
+templates/                              <- versioned templates for memory files
+  CONSTITUTION.md                     <- stamped with pdlc-template-version
+  INTENT.md
+  STATE.md
+  OVERVIEW.md
+  METRICS.md
+  PRD.md
+  review.md
+  episode.md
   formatting.md                       <- ANSI color scheme + visual patterns
 ```
 

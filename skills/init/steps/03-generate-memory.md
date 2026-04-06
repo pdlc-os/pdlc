@@ -5,7 +5,9 @@
 
 ## Step 5 — Generate memory files
 
-Using the answers from Step 4, create all 7 memory files. Use today's date (ISO format: YYYY-MM-DD) wherever a date is required.
+Using the answers from Step 4, create all memory files. Use today's date (ISO format: YYYY-MM-DD) wherever a date is required.
+
+**Important:** Every template file in `templates/` contains a `<!-- pdlc-template-version: X.Y.Z -->` comment on the second line. Preserve this comment in every file you create — the upgrade command uses it to detect which template version was used and apply future migrations without destroying user customizations.
 
 ### 5a. `docs/pdlc/memory/CONSTITUTION.md`
 
@@ -131,25 +133,12 @@ Create this file with stub content:
 
 ### 5g. `docs/pdlc/memory/METRICS.md`
 
-Create this file with stub content:
+Create this file based on the `templates/METRICS.md` structure. Fill in:
 
-```markdown
-# Metrics
+- **Project**: from question 1
+- **Last updated**: today's date
 
-**Project:** [project name from question 1]
-**Last updated:** [today's date]
-
-<!-- Append-only. Jarvis adds a row after every shipped feature.
-     Used by Oracle for roadmap planning and by Doctor for trend analysis.
-     Do not delete rows — they form the project's delivery history. -->
-
----
-
-## Delivery Metrics
-
-| Episode | Feature | Type | Cycle Days | Test Pass % | Review Rounds | Strikes | Tier1 Overrides | Security Findings | Tasks | Date Shipped |
-|---------|---------|------|-----------|-------------|---------------|---------|-----------------|-------------------|-------|-------------|
-<!-- No episodes yet. -->
+Preserve the `<!-- pdlc-template-version: X.Y.Z -->` comment from the template — this is used by the upgrade command to detect which version of the template was used.
 
 ---
 

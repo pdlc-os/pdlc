@@ -64,6 +64,10 @@ Destructive actions can happen through Claude's Edit and Write tools, not just B
 
 Large skill files (400+ lines) are broken into sub-files in `steps/` subdirectories. Each sub-file is self-contained, reads cleanly in isolation, and ends with an explicit "Return to SKILL.md" instruction. The main SKILL.md becomes a lightweight orchestrator. This keeps each file within context limits, makes individual steps easier to update, and reduces context usage per step — leaving more room for implementation code.
 
+### Template versioning for non-destructive upgrades
+
+PDLC templates evolve between versions (new sections, new fields). User projects have customized copies of these templates. Rather than requiring users to manually diff and merge after every upgrade, each template has a version stamp (`<!-- pdlc-template-version: X.Y.Z -->`). The upgrade command compares the user's file version against the current template, identifies sections present in the template but missing from the user's file, and appends them — without touching any section the user has customized. This is essentially a schema migration for markdown files: additive only, never destructive. Missing memory files are created from the template. The version stamp is the only line the upgrade modifies in existing content.
+
 ### Merge commits instead of squash
 
 `git merge --no-ff` preserves full branch history. If a bug appears later, `git bisect` can trace it through the feature branch. The development narrative stays intact for future team members. Every merge commit is tagged with version and feature name, making `git log --merges` a readable timeline of shipped features.

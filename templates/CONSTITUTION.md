@@ -1,4 +1,5 @@
 # Constitution
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- This file is the single source of truth for how this project is built.
      PDLC reads it before every phase. Strong defaults are already set.
      Override only what your team explicitly agrees to change.

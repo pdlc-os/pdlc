@@ -142,6 +142,9 @@ The `upgrade` command:
 2. Re-registers hooks and slash commands with updated paths
 3. Prompts to upgrade Beads as well (defaults to yes)
 4. Prompts to upgrade Dolt as well (defaults to yes)
+5. **Migrates project templates** — detects new sections added to CONSTITUTION.md, STATE.md, METRICS.md, etc. and appends them without touching your customizations. Creates missing files (e.g., METRICS.md if upgrading from a version that didn't have it). Ensures archive directories exist.
+
+Template versioning: each template has a `<!-- pdlc-template-version: X.Y.Z -->` comment. The upgrade command compares your file's version against the current template, finds missing sections, and appends them. Your customized content is never overwritten.
 
 Re-running `install` is also idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
 

@@ -1,4 +1,5 @@
 # State
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- This file is the live operational state of the PDLC workflow.
      It is written by PDLC hooks and commands — do not edit manually unless recovering from an error.
      Claude reads this file at the start of every session to auto-resume from the last checkpoint.

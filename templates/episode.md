@@ -1,4 +1,5 @@
 # Episode [ID]: [Feature Name]
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- Replace [ID] with the zero-padded episode number (e.g. 001) and [Feature Name] with the feature title.
      File naming convention: [ID]_[feature-slug]_[YYYY-MM-DD].md
      This file lives at: docs/pdlc/memory/episodes/[ID]_[feature-slug]_[YYYY-MM-DD].md

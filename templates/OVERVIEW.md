@@ -1,4 +1,5 @@
 # Overview
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- This file is the living, aggregated record of everything this product does and has shipped.
      It is updated automatically by PDLC after every successful merge to main (during Reflect sub-phase).
      Use it to orient yourself after time away, onboard a new teammate, or brief Claude in a fresh session.

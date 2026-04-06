@@ -1,4 +1,5 @@
 # PRD: [Feature Name]
+<!-- pdlc-template-version: 2.1.0 -->
 <!-- Replace [Feature Name] with the full name of the feature.
      File naming convention: PRD_[feature-name]_[YYYY-MM-DD].md
      This file lives at: docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md

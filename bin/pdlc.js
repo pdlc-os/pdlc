@@ -745,7 +745,169 @@ async function upgrade(opts = {}) {
     }
   }
 
+  // ── Template migration ───────────────────────────────────────────────────
+  // Check if user's project has docs/pdlc/memory/ and migrate templates
+  const repoRoot = opts.repoRoot || process.cwd();
+  const memoryDir = path.join(repoRoot, 'docs', 'pdlc', 'memory');
+  const templatesDir = path.join(PLUGIN_ROOT, 'templates');
+
+  if (fs.existsSync(memoryDir) && fs.existsSync(templatesDir)) {
+    log('\n  Checking project templates for migrations...');
+    const migrations = migrateTemplates(memoryDir, templatesDir);
+    if (migrations.length > 0) {
+      log(`  Template migrations applied:`);
+      for (const m of migrations) log(`    - ${m}`);
+    } else {
+      log('  Templates: \u2713 up to date');
+    }
+
+    // Ensure directories exist (added in later versions)
+    const ensureDirs = [
+      path.join(repoRoot, 'docs', 'pdlc', 'archive', 'prds'),
+      path.join(repoRoot, 'docs', 'pdlc', 'archive', 'design'),
+      path.join(repoRoot, 'docs', 'pdlc', 'archive', 'reviews'),
+      path.join(repoRoot, 'docs', 'pdlc', 'archive', 'brainstorm'),
+      path.join(repoRoot, 'docs', 'pdlc', 'archive', 'mom'),
+    ];
+    for (const d of ensureDirs) {
+      if (!fs.existsSync(d)) {
+        fs.mkdirSync(d, { recursive: true });
+        log(`    - Created directory: ${path.relative(repoRoot, d)}`);
+      }
+    }
+  }
+
   log('');
+}
+
+/**
+ * Migrate user's memory files to match current templates.
+ * - Creates missing files from templates
+ * - Appends missing sections to existing files (additive only, never destructive)
+ * - Preserves all user customizations
+ */
+function migrateTemplates(memoryDir, templatesDir) {
+  const migrations = [];
+
+  // Map of template files to their memory file counterparts
+  const templateMap = {
+    'CONSTITUTION.md': 'CONSTITUTION.md',
+    'INTENT.md':       'INTENT.md',
+    'STATE.md':        'STATE.md',
+    'OVERVIEW.md':     'OVERVIEW.md',
+    'METRICS.md':      'METRICS.md',
+  };
+
+  for (const [templateName, memoryName] of Object.entries(templateMap)) {
+    const templatePath = path.join(templatesDir, templateName);
+    const memoryPath   = path.join(memoryDir, memoryName);
+
+    if (!fs.existsSync(templatePath)) continue;
+
+    const templateContent = fs.readFileSync(templatePath, 'utf8');
+    const templateVersion = extractTemplateVersion(templateContent);
+
+    // File doesn't exist — create it from template
+    if (!fs.existsSync(memoryPath)) {
+      fs.writeFileSync(memoryPath, templateContent, 'utf8');
+      migrations.push(`Created ${memoryName} (v${templateVersion})`);
+      continue;
+    }
+
+    // File exists — check version and migrate
+    const userContent = fs.readFileSync(memoryPath, 'utf8');
+    const userVersion = extractTemplateVersion(userContent);
+
+    if (userVersion === templateVersion) continue; // up to date
+
+    // Find sections in template that are missing from user's file
+    const templateSections = extractSections(templateContent);
+    const userSections     = extractSections(userContent);
+
+    const missingSections = [];
+    for (const [heading, content] of templateSections) {
+      const userHas = userSections.some(([h]) =>
+        h.replace(/^#+\s*/, '').trim().toLowerCase() ===
+        heading.replace(/^#+\s*/, '').trim().toLowerCase()
+      );
+      if (!userHas) {
+        missingSections.push({ heading, content });
+      }
+    }
+
+    if (missingSections.length > 0) {
+      // Append missing sections before the last line of the file
+      let updated = userContent.trimEnd();
+      for (const { heading, content } of missingSections) {
+        updated += '\n\n---\n\n' + heading + '\n' + content;
+      }
+
+      // Update the version stamp
+      if (userVersion) {
+        updated = updated.replace(
+          /<!--\s*pdlc-template-version:\s*[\d.]+\s*-->/,
+          `<!-- pdlc-template-version: ${templateVersion} -->`
+        );
+      } else {
+        // No version stamp — add one after the first line
+        const lines = updated.split('\n');
+        lines.splice(1, 0, `<!-- pdlc-template-version: ${templateVersion} -->`);
+        updated = lines.join('\n');
+      }
+
+      fs.writeFileSync(memoryPath, updated + '\n', 'utf8');
+      const sectionNames = missingSections.map(s =>
+        s.heading.replace(/^#+\s*/, '').trim()
+      ).join(', ');
+      migrations.push(`${memoryName}: added sections [${sectionNames}] (v${userVersion || 'none'} → v${templateVersion})`);
+    } else if (userVersion !== templateVersion) {
+      // No missing sections but version is different — just update the stamp
+      let updated = userContent;
+      if (userVersion) {
+        updated = updated.replace(
+          /<!--\s*pdlc-template-version:\s*[\d.]+\s*-->/,
+          `<!-- pdlc-template-version: ${templateVersion} -->`
+        );
+      } else {
+        const lines = updated.split('\n');
+        lines.splice(1, 0, `<!-- pdlc-template-version: ${templateVersion} -->`);
+        updated = lines.join('\n');
+      }
+      fs.writeFileSync(memoryPath, updated, 'utf8');
+      migrations.push(`${memoryName}: version stamp updated (v${userVersion || 'none'} → v${templateVersion})`);
+    }
+  }
+
+  return migrations;
+}
+
+function extractTemplateVersion(content) {
+  const match = content.match(/<!--\s*pdlc-template-version:\s*([\d.]+)\s*-->/);
+  return match ? match[1] : null;
+}
+
+function extractSections(content) {
+  // Extract ## and ### headings with their content
+  const sections = [];
+  const lines = content.split('\n');
+  let currentHeading = null;
+  let currentContent = [];
+
+  for (const line of lines) {
+    if (/^#{2,3}\s/.test(line)) {
+      if (currentHeading) {
+        sections.push([currentHeading, currentContent.join('\n').trim()]);
+      }
+      currentHeading = line;
+      currentContent = [];
+    } else if (currentHeading) {
+      currentContent.push(line);
+    }
+  }
+  if (currentHeading) {
+    sections.push([currentHeading, currentContent.join('\n').trim()]);
+  }
+  return sections;
 }
 
 function printUsage() {
