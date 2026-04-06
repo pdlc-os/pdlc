@@ -181,6 +181,35 @@ function isExternalWriteCall(cmd) {
          EXTERNAL_URL_PATTERN.test(cmd);
 }
 
+// ── Protected PDLC files ─────────────────────────────────────────────────────
+const PROTECTED_FILES = {
+  // Tier 2 — pause and confirm
+  tier2: [
+    'CONSTITUTION.md',
+    'STATE.md',
+    'DECISIONS.md',
+  ],
+  // Tier 3 — logged warning
+  tier3: [
+    'ROADMAP.md',
+    'INTENT.md',
+    'OVERVIEW.md',
+    'CHANGELOG.md',
+  ],
+};
+
+function getProtectedFileMatch(filePath) {
+  if (!filePath) return null;
+  const basename = path.basename(filePath);
+  const inMemory = filePath.includes('docs/pdlc/memory/') || filePath.includes('docs\\pdlc\\memory\\');
+
+  if (!inMemory) return null;
+
+  if (PROTECTED_FILES.tier2.includes(basename)) return { file: basename, tier: 2 };
+  if (PROTECTED_FILES.tier3.includes(basename)) return { file: basename, tier: 3 };
+  return null;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 function main() {
   let input = {};
@@ -192,13 +221,46 @@ function main() {
     allow();
   }
 
-  // Only act on Bash tool calls
-  if (input.tool_name !== 'Bash') {
+  const toolName = input.tool_name || '';
+  const cwd      = input.cwd || process.cwd();
+
+  // ── Handle Edit and Write tools ─────────────────────────────────────────────
+  if (toolName === 'Edit' || toolName === 'Write') {
+    const filePath = (input.tool_input && input.tool_input.file_path) || '';
+    const match = getProtectedFileMatch(filePath);
+
+    if (!match) allow();
+
+    const constitution   = readConstitution(cwd);
+    const tier2Overrides = parseTier2Overrides(constitution);
+
+    if (match.tier === 2) {
+      // Check if this specific file has been downgraded to tier 3
+      const label = `changing ${match.file.toLowerCase().replace('.md', '')}`;
+      if (isTier2Downgraded(label, tier2Overrides)) {
+        warn(`⚠️ Tier 3 logged: ${toolName} on protected file ${match.file}`);
+      } else {
+        block(
+          `⚠️  PDLC Tier 2 Confirmation Required\n\n` +
+          `About to ${toolName.toLowerCase()} protected file: ${match.file}\n\n` +
+          `This file is part of PDLC's memory bank and is normally managed by PDLC commands.\n` +
+          `Direct edits may cause state drift that /pdlc doctor will flag.\n\n` +
+          `Type 'yes' to confirm or 'no' to cancel.`
+        );
+      }
+    } else if (match.tier === 3) {
+      warn(`⚠️ Tier 3 logged: ${toolName} on PDLC memory file ${match.file}`);
+    }
+
+    allow();
+  }
+
+  // ── Handle Bash tool ────────────────────────────────────────────────────────
+  if (toolName !== 'Bash') {
     allow();
   }
 
   const command = (input.tool_input && input.tool_input.command) || '';
-  const cwd     = input.cwd || process.cwd();
 
   if (!command) allow();
 

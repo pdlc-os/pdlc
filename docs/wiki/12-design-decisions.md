@@ -56,6 +56,10 @@ Meeting minutes (`docs/pdlc/mom/`) capture what agents said and decided — the 
 
 One file to override all defaults. `CONSTITUTION.md` governs tech stack, architectural constraints, test gates, guardrail overrides, and coding standards. Everything else in PDLC is a default. Different teams have different risk profiles, and different projects have different constraints. Rather than forking PDLC per project, edit Constitution.
 
+### Guardrails cover all write tools, not just Bash
+
+Destructive actions can happen through Claude's Edit and Write tools, not just Bash commands. A `sed` editing CONSTITUTION.md is caught by the Bash guardrail, but a direct Edit tool call would bypass it. So guardrails fire on Bash, Edit, and Write — checking if the target file is a protected PDLC memory file. CONSTITUTION.md, STATE.md, and DECISIONS.md are Tier 2 (pause and confirm); ROADMAP.md, INTENT.md, OVERVIEW.md, and CHANGELOG.md are Tier 3 (logged warning). This prevents state drift from direct edits while not blocking PDLC's own internal writes (which go through the skill files, not through the user).
+
 ### Skills split into sub-files
 
 Large skill files (400+ lines) are broken into sub-files in `steps/` subdirectories. Each sub-file is self-contained, reads cleanly in isolation, and ends with an explicit "Return to SKILL.md" instruction. The main SKILL.md becomes a lightweight orchestrator. This keeps each file within context limits, makes individual steps easier to update, and reduces context usage per step — leaving more room for implementation code.

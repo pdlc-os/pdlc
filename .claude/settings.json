@@ -24,6 +24,24 @@
             "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
+          }
+        ]
       }
     ],
     "SessionStart": [

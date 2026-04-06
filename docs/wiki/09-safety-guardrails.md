@@ -15,13 +15,15 @@ Blocked by default. Requires the **double-RED confirmation protocol** to overrid
 
 ### Tier 2 — Pause and confirm
 
-PDLC stops and asks before proceeding. Individual items can be downgraded to Tier 3 in `CONSTITUTION.md`.
+PDLC stops and asks before proceeding. Individual items can be downgraded to Tier 3 in `CONSTITUTION.md`. Guardrails fire on **Bash, Edit, and Write** tools.
 
 - Any `rm -rf` or bulk delete
 - `git reset --hard`
 - Production database commands
 - Any external API write call (POST/PUT/DELETE to external URLs)
-- Modifying `CONSTITUTION.md`
+- Modifying `CONSTITUTION.md` (via any tool — Bash, Edit, or Write)
+- Modifying `STATE.md` directly (normally managed by PDLC commands)
+- Modifying `DECISIONS.md` directly (append-only registry)
 - Closing all open Beads tasks at once
 
 ### Tier 3 — Logged warning
@@ -32,6 +34,7 @@ PDLC proceeds and records the decision in `STATE.md`.
 - Overriding a Constitution rule
 - Accepting a Phantom security warning without fixing
 - Accepting an Echo test coverage gap
+- Editing `ROADMAP.md`, `INTENT.md`, `OVERVIEW.md`, or `CHANGELOG.md` directly (normally managed by PDLC)
 
 ---
 
