@@ -3,6 +3,7 @@
 A Claude Code plugin that guides small startup-style teams (2-5 engineers) through the full arc of feature development — from raw idea to shipped, production feature — using structured phases, a named specialist agent team, persistent memory, and safety guardrails.
 
 PDLC combines the best of four Claude Code workflows:
+
 - **[obra/superpowers](https://github.com/obra/superpowers)** — TDD discipline, systematic debugging, visual brainstorming companion
 - **[gstack](https://github.com/garrytan/gstack)** — specialist agent roles, sprint workflow, real browser automation
 - **[get-shit-done-cc](https://github.com/gsd-build/get-shit-done)** — context-rot prevention, spec-driven execution, file-based persistent memory
@@ -13,22 +14,28 @@ PDLC combines the best of four Claude Code workflows:
 
 ## Why PDLC?
 
-### Token-smart by design
-PDLC is built to minimize context window consumption. It warns when context usage reaches 50% and auto-checkpoints at 65% so no work is lost. Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
+### Smart-handling of Tokens & Context
+
+PDLC is built to minimize context window consumption. It estimates context usage by tracking tool calls and token accumulation, warning at ~50% estimated usage and auto-checkpointing STATE.md at ~65% so no work is lost (thresholds are configurable in CONSTITUTION.md). Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
 
 ### Multi-developer ready
+
 Multiple developers can work on the same PDLC-enabled repo. Every phase starts with a remote sync check — if local main is behind origin, a 6-agent team meeting assesses the remote changes for conflict risk before you proceed. The doctor command detects multi-user edits, rollbacks, and cross-session drift. Each developer runs their own local PDLC hooks via `npm install` — the shared state lives in `docs/pdlc/` in git.
 
 ### Scenario planning at any stage
+
 Use `/pdlc whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/pdlc decision` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
 
 ### Full decision traceability
+
 Every decision is recorded in the Decision Registry (DECISIONS.md) with who decided, when, why, and what was impacted. Every team meeting produces minutes (MOM files). Every shipped feature has an episode file with metrics, retro notes, and lessons learned. Tier 1 safety overrides are permanently logged. The entire project history is human-readable markdown in git.
 
 ### Visual brainstorming companion
+
 During inception, PDLC can run a local browser-based UI (Material Design, light/dark toggle) for mockups, wireframes, architecture diagrams, and side-by-side comparisons. Users can click to select options in the browser or type feedback in the terminal — both inputs are merged. The server handles port conflicts, crashes gracefully, and falls back to text-only mode if it can't start.
 
 ### Plug-and-play extensibility
+
 Add custom skills (`.pdlc/skills/<name>/SKILL.md`), custom agents (`.pdlc/agents/<name>.md`), and custom test layers (CONSTITUTION.md table) without forking. Templates are provided for both skills and agents. Custom agents are automatically included in team meetings when task labels match.
 
 ---
@@ -113,7 +120,7 @@ npx @pdlc-os/pdlc uninstall
 Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.claude/commands/`. You'll be prompted to uninstall Beads globally too.
 
 > **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
->
+> 
 > **Note on Dolt:** If you uninstall Beads, you'll also be prompted to uninstall Dolt (the SQL database Beads uses). Dolt is a system-level binary — other tools may depend on it, so the uninstaller defaults to keeping it.
 
 ### Upgrade
@@ -127,6 +134,7 @@ npx @pdlc-os/pdlc upgrade
 ```
 
 The `upgrade` command:
+
 1. Upgrades PDLC to the latest version (matching your install scope)
 2. Re-registers hooks and slash commands with updated paths
 3. Prompts to upgrade Beads as well (defaults to yes)
@@ -153,6 +161,7 @@ npx @pdlc-os/pdlc status
 ```
 
 You should see:
+
 ```
 Install mode : local (this repo)
 Dolt         : ✓ installed
@@ -259,75 +268,75 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 
 ### Overview & Flow
 
-| # | Document | What it covers |
-|---|----------|---------------|
-| 01 | [The PDLC Flow](docs/wiki/01-pdlc-flow.md) | Summary and detailed Mermaid flow diagrams, approval gates |
-| 02 | [Feature Highlights](docs/wiki/02-feature-highlights.md) | Capabilities by phase: inception, construction, operation, decisions, what-if, cross-cutting |
-| 03 | [Phases in Detail](docs/wiki/03-phases-in-detail.md) | Per-phase Mermaid diagrams, sub-phase tables, lead agents, pivot and scenario planning |
-| 04 | [Doctor](docs/wiki/04-doctor.md) | Comprehensive health check: state consistency, doc/code drift, rollback detection, multi-user conflicts |
-| 05 | [Pause & Resume](docs/wiki/05-pause-resume.md) | Save and restore feature state, Beads task reclaim, rebase on resume |
-| 06 | [Hotfix](docs/wiki/06-hotfix.md) | Emergency compressed build-ship, auto-pause/resume, impact assessment |
-| 07 | [Rollback](docs/wiki/07-rollback.md) | Revert shipped features, post-mortem party, 3 ranked fix approaches |
-| 08 | [Abandon](docs/wiki/08-abandon.md) | Drop in-progress features, clean up tasks/artifacts, abandonment episode |
+| #   | Document                                                 | What it covers                                                                                          |
+| --- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 01  | [The PDLC Flow](docs/wiki/01-pdlc-flow.md)               | Summary and detailed Mermaid flow diagrams, approval gates                                              |
+| 02  | [Feature Highlights](docs/wiki/02-feature-highlights.md) | Capabilities by phase: inception, construction, operation, decisions, what-if, cross-cutting            |
+| 03  | [Phases in Detail](docs/wiki/03-phases-in-detail.md)     | Per-phase Mermaid diagrams, sub-phase tables, lead agents, pivot and scenario planning                  |
+| 04  | [Doctor](docs/wiki/04-doctor.md)                         | Comprehensive health check: state consistency, doc/code drift, rollback detection, multi-user conflicts |
+| 05  | [Pause & Resume](docs/wiki/05-pause-resume.md)           | Save and restore feature state, Beads task reclaim, rebase on resume                                    |
+| 06  | [Hotfix](docs/wiki/06-hotfix.md)                         | Emergency compressed build-ship, auto-pause/resume, impact assessment                                   |
+| 07  | [Rollback](docs/wiki/07-rollback.md)                     | Revert shipped features, post-mortem party, 3 ranked fix approaches                                     |
+| 08  | [Abandon](docs/wiki/08-abandon.md)                       | Drop in-progress features, clean up tasks/artifacts, abandonment episode                                |
 
 ### Team & Meetings
 
-| # | Document | What it covers |
-|---|----------|---------------|
-| 09 | [The Agent Team](docs/wiki/09-agent-team.md) | 9 specialist agents: roles, models (Opus/Sonnet), focus areas, lead agent assignments |
-| 10 | [Party Mode](docs/wiki/10-party-mode.md) | 8 meeting types, meeting map across phases, spawn modes, announcements, durable checkpoints |
-| 11 | [Deadlock Detection](docs/wiki/11-deadlock-detection.md) | 6 deadlock types with auto-resolution and human escalation paths |
+| #   | Document                                                 | What it covers                                                                              |
+| --- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 09  | [The Agent Team](docs/wiki/09-agent-team.md)             | 9 specialist agents: roles, models (Opus/Sonnet), focus areas, lead agent assignments       |
+| 10  | [Party Mode](docs/wiki/10-party-mode.md)                 | 8 meeting types, meeting map across phases, spawn modes, announcements, durable checkpoints |
+| 11  | [Deadlock Detection](docs/wiki/11-deadlock-detection.md) | 6 deadlock types with auto-resolution and human escalation paths                            |
 
 ### Architecture
 
-| # | Document | What it covers |
-|---|----------|---------------|
-| 12 | [Skills Architecture](docs/wiki/12-skills-architecture.md) | Skill file structure, phase skills, supporting skills, directory layout |
-| 13 | [Memory Bank](docs/wiki/13-memory-bank.md) | All `docs/pdlc/` files: memory, PRDs, design docs, reviews, brainstorm logs, MOMs, metrics, archive |
-| 14 | [Safety Guardrails](docs/wiki/14-safety-guardrails.md) | Tier 1 (hard block), Tier 2 (pause), Tier 3 (logged warning) definitions |
+| #   | Document                                                   | What it covers                                                                                      |
+| --- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 12  | [Skills Architecture](docs/wiki/12-skills-architecture.md) | Skill file structure, phase skills, supporting skills, directory layout                             |
+| 13  | [Memory Bank](docs/wiki/13-memory-bank.md)                 | All `docs/pdlc/` files: memory, PRDs, design docs, reviews, brainstorm logs, MOMs, metrics, archive |
+| 14  | [Safety Guardrails](docs/wiki/14-safety-guardrails.md)     | Tier 1 (hard block), Tier 2 (pause), Tier 3 (logged warning) definitions                            |
 
 ### Features
 
-| # | Document | What it covers |
-|---|----------|---------------|
-| 15 | [Status Bar](docs/wiki/15-status-bar.md) | Live phase/task/context status bar with configurable thresholds |
-| 16 | [Visual Companion](docs/wiki/16-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception |
-| 17 | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
-| 18 | [Extensibility](docs/wiki/18-extensibility.md) | Custom skills, custom agents, custom test layers — extend PDLC without forking |
+| #   | Document                                             | What it covers                                                                             |
+| --- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 15  | [Status Bar](docs/wiki/15-status-bar.md)             | Live phase/task/context status bar with configurable thresholds                            |
+| 16  | [Visual Companion](docs/wiki/16-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception                 |
+| 17  | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
+| 18  | [Extensibility](docs/wiki/18-extensibility.md)       | Custom skills, custom agents, custom test layers — extend PDLC without forking             |
 
 ---
 
 ## PDLC-OS Marketplace
 
-| Resource | URL |
-|----------|-----|
-| GitHub org | https://github.com/pdlc-os |
-| Core package | https://www.npmjs.com/package/@pdlc-os/pdlc |
-| Registry index | https://github.com/pdlc-os/registry |
+| Resource           | URL                                                           |
+| ------------------ | ------------------------------------------------------------- |
+| GitHub org         | https://github.com/pdlc-os                                    |
+| Core package       | https://www.npmjs.com/package/@pdlc-os/pdlc                   |
+| Registry index     | https://github.com/pdlc-os/registry                           |
 | Contribution guide | https://github.com/pdlc-os/registry/blob/main/CONTRIBUTING.md |
 
 The `pdlc-os` GitHub organisation hosts community-contributed extensions:
 
-| Type | Examples |
-|------|---------|
-| **Workflow templates** | `@pdlc-os/workflow-saas-mvp`, `@pdlc-os/workflow-api-service` |
-| **Role packs** | `@pdlc-os/agent-fintech-security`, `@pdlc-os/agent-accessibility-auditor` |
-| **Stack adapters** | `@pdlc-os/stack-nextjs-supabase`, `@pdlc-os/stack-rails-postgres` |
-| **Integration plugins** | `@pdlc-os/integration-linear`, `@pdlc-os/integration-notion` |
-| **Skill packs** | `@pdlc-os/skill-hipaa`, `@pdlc-os/skill-seo-audit` |
+| Type                    | Examples                                                                  |
+| ----------------------- | ------------------------------------------------------------------------- |
+| **Workflow templates**  | `@pdlc-os/workflow-saas-mvp`, `@pdlc-os/workflow-api-service`             |
+| **Role packs**          | `@pdlc-os/agent-fintech-security`, `@pdlc-os/agent-accessibility-auditor` |
+| **Stack adapters**      | `@pdlc-os/stack-nextjs-supabase`, `@pdlc-os/stack-rails-postgres`         |
+| **Integration plugins** | `@pdlc-os/integration-linear`, `@pdlc-os/integration-notion`              |
+| **Skill packs**         | `@pdlc-os/skill-hipaa`, `@pdlc-os/skill-seo-audit`                        |
 
 ---
 
 ## Prerequisites
 
-| Dependency | Install | Notes |
-|-----------|---------|-------|
-| Node.js >= 18 | [nodejs.org](https://nodejs.org) | |
-| Claude Code | [claude.ai/code](https://claude.ai/code) | |
-| [Dolt](https://github.com/dolthub/dolt) | Prompted during PDLC install | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
-| [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install | Task manager; same scope (local/global) as PDLC |
-| Git | Built into macOS/Linux | |
-| [GitHub CLI (gh)](https://cli.github.com) | Prompted during `/pdlc init` if needed | Required for PR creation during `/pdlc ship`; setup guided during init |
+| Dependency                                         | Install                                  | Notes                                                                                     |
+| -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Node.js >= 18                                      | [nodejs.org](https://nodejs.org)         |                                                                                           |
+| Claude Code                                        | [claude.ai/code](https://claude.ai/code) |                                                                                           |
+| [Dolt](https://github.com/dolthub/dolt)            | Prompted during PDLC install             | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
+| [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install             | Task manager; same scope (local/global) as PDLC                                           |
+| Git                                                | Built into macOS/Linux                   |                                                                                           |
+| [GitHub CLI (gh)](https://cli.github.com)          | Prompted during `/pdlc init` if needed   | Required for PR creation during `/pdlc ship`; setup guided during init                    |
 
 ---
 
