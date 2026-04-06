@@ -26,11 +26,14 @@ function warn(systemMessage) {
 
 // ── Tier 1 block message builder ─────────────────────────────────────────────
 function tier1Block(reason, command) {
+  // Escape double quotes in the command for safe embedding
+  const safeCmd = command.replace(/"/g, '\\"');
   const msg =
     `\x1b[41m\x1b[37m ⛔ PDLC HARD BLOCK — TIER 1 SAFETY ⛔ \x1b[0m\n` +
     `\x1b[31mThis action is blocked: ${reason}.\n\n` +
-    `To override, you must confirm TWICE by running:\n` +
-    `  /pdlc override-tier1 "${command}"\x1b[0m`;
+    `To override, run the double-RED confirmation protocol:\n` +
+    `  /pdlc override-tier1 "${safeCmd}"\n\n` +
+    `This requires two explicit confirmations and is permanently logged.\x1b[0m`;
   block(msg);
 }
 

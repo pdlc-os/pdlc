@@ -4,13 +4,13 @@ PDLC enforces a three-tier safety system. Rules can be adjusted in `CONSTITUTION
 
 ### Tier 1 — Hard block
 
-Blocked by default. Requires **double confirmation in red text** to override.
+Blocked by default. Requires the **double-RED confirmation protocol** to override: run `/pdlc override-tier1 "<command>"`, then confirm twice (type `OVERRIDE`, then `I ACCEPT FULL RESPONSIBILITY`). Every override is permanently logged in STATE.md and DECISIONS.md.
 
 - Force-push to `main` or `master`
 - `DROP TABLE` without a prior migration file
 - `rm -rf` outside files created on the current feature branch
 - Deploy with failing Constitution test gates
-- Accepting hardcoded secrets detected by Layer 7 security scan (must be overridden explicitly)
+- Accepting hardcoded secrets detected by Layer 7 security scan
 - Shipping with critical dependency vulnerabilities (from `npm audit`)
 
 ### Tier 2 — Pause and confirm

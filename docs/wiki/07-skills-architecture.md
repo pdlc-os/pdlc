@@ -90,6 +90,9 @@ skills/
   doctor/
     SKILL.md                          <- comprehensive health check (8 checks)
 
+  override-tier1/
+    SKILL.md                          <- double-RED confirmation for Tier 1 overrides
+
   state-reconciliation.md             <- conflict resolution between state files
   formatting.md                       <- ANSI color scheme + visual patterns
 ```
