@@ -199,4 +199,4 @@ your-project/
 
 ---
 
-[← Previous: Doctor](13-doctor.md) | [Back to README](../../README.md)
+[← Previous: Doctor](13-doctor.md) | [Back to README](../../README.md) | [Next: Pause & Resume →](15-pause-resume.md)

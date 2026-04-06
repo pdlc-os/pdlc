@@ -240,13 +240,18 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 01 | [The PDLC Flow](docs/wiki/01-pdlc-flow.md) | Summary and detailed Mermaid flow diagrams, approval gates |
 | 02 | [Feature Highlights](docs/wiki/02-feature-highlights.md) | Capabilities by phase: inception, construction, operation, decisions, what-if, cross-cutting |
 | 03 | [Phases in Detail](docs/wiki/03-phases-in-detail.md) | Per-phase Mermaid diagrams, sub-phase tables, lead agents, pivot and scenario planning |
+| 13 | [Doctor](docs/wiki/13-doctor.md) | Comprehensive health check: state consistency, doc/code drift, rollback detection, multi-user conflicts |
+| 15 | [Pause & Resume](docs/wiki/15-pause-resume.md) | Save and restore feature state, Beads task reclaim, rebase on resume |
+| 16 | [Hotfix](docs/wiki/16-hotfix.md) | Emergency compressed build-ship, auto-pause/resume, impact assessment |
+| 17 | [Rollback](docs/wiki/17-rollback.md) | Revert shipped features, post-mortem party, 3 ranked fix approaches |
+| 18 | [Abandon](docs/wiki/18-abandon.md) | Drop in-progress features, clean up tasks/artifacts, abandonment episode |
 
 ### Team & Meetings
 
 | # | Document | What it covers |
 |---|----------|---------------|
 | 04 | [The Agent Team](docs/wiki/04-agent-team.md) | 9 specialist agents: roles, models (Opus/Sonnet), focus areas, lead agent assignments |
-| 05 | [Party Mode](docs/wiki/05-party-mode.md) | 7 meeting types, meeting map across phases, spawn modes, announcements, durable checkpoints |
+| 05 | [Party Mode](docs/wiki/05-party-mode.md) | 8 meeting types, meeting map across phases, spawn modes, announcements, durable checkpoints |
 | 06 | [Deadlock Detection](docs/wiki/06-deadlock-detection.md) | 6 deadlock types with auto-resolution and human escalation paths |
 
 ### Architecture
@@ -254,18 +259,17 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | # | Document | What it covers |
 |---|----------|---------------|
 | 07 | [Skills Architecture](docs/wiki/07-skills-architecture.md) | Skill file structure, phase skills, supporting skills, directory layout |
-| 08 | [Memory Bank](docs/wiki/08-memory-bank.md) | All `docs/pdlc/` files: memory, PRDs, design docs, reviews, brainstorm logs, MOMs |
+| 08 | [Memory Bank](docs/wiki/08-memory-bank.md) | All `docs/pdlc/` files: memory, PRDs, design docs, reviews, brainstorm logs, MOMs, metrics, archive |
 | 09 | [Safety Guardrails](docs/wiki/09-safety-guardrails.md) | Tier 1 (hard block), Tier 2 (pause), Tier 3 (logged warning) definitions |
 
 ### Features
 
 | # | Document | What it covers |
 |---|----------|---------------|
-| 10 | [Status Bar](docs/wiki/10-status-bar.md) | Live phase/task/context status bar in Claude Code |
+| 10 | [Status Bar](docs/wiki/10-status-bar.md) | Live phase/task/context status bar with configurable thresholds |
 | 11 | [Visual Companion](docs/wiki/11-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception |
-| 13 | [Doctor](docs/wiki/13-doctor.md) | Comprehensive health check: state consistency, doc/code drift, rollback detection, multi-user conflicts |
-| 14 | [Extensibility](docs/wiki/14-extensibility.md) | Custom skills, custom agents, custom test layers — extend PDLC without forking |
 | 12 | [Design Decisions](docs/wiki/12-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
+| 14 | [Extensibility](docs/wiki/14-extensibility.md) | Custom skills, custom agents, custom test layers — extend PDLC without forking |
 
 ---
 
