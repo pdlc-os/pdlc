@@ -186,6 +186,14 @@ This triggers a **Decision Review Party** where all 9 agents assess cross-cuttin
 
 This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
+If something feels off — after pulling a teammate's changes, after a rollback, or after a long break:
+
+```
+/pdlc doctor
+```
+
+This runs a **comprehensive health check** — 8 checks covering state file integrity, ROADMAP/STATE consistency, Beads task graph (including `bd doctor` for internal Beads health), document-vs-code drift, git rollback and multi-user detection, and Constitution compliance. Read-only by default, with optional fix mode.
+
 ---
 
 ## Documentation
