@@ -44,6 +44,7 @@ Every rollback produces:
 - CHANGELOG rollback entry
 - Rollback tag in git
 
+
 ---
 
-[← Previous: Hotfix](16-hotfix.md) | [Back to README](../../README.md) | [Next: Abandon →](18-abandon.md)
+[← Previous: Hotfix](06-hotfix.md) | [Back to README](../../README.md) | [Next: Abandon →](08-abandon.md)

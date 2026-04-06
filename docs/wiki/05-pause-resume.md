@@ -38,6 +38,7 @@ Restores your paused feature with full context awareness:
 
 `/pdlc hotfix` uses the same `.paused-feature.json` mechanism internally. If you manually pause and then run a hotfix, the hotfix detects the existing paused state and warns you.
 
+
 ---
 
-[← Previous: Extensibility](14-extensibility.md) | [Back to README](../../README.md) | [Next: Hotfix →](16-hotfix.md)
+[← Previous: Doctor](04-doctor.md) | [Back to README](../../README.md) | [Next: Hotfix →](06-hotfix.md)

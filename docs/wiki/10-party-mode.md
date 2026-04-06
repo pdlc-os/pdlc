@@ -83,6 +83,7 @@ Before every meeting, PDLC tells you what's happening: which agents are particip
 
 Every party meeting writes a `.pending-party.json` checkpoint file before spawning agents. Progress is tracked at milestones (`started` → `round-1-complete` → `cross-talk-complete` → `mom-written` → `presented`). If a session is interrupted (network, usage limits, accidental exit), the next session detects the pending meeting and offers to resume from the last milestone or restart. The checkpoint file is deleted when the meeting completes normally.
 
+
 ---
 
-[← Previous: The Agent Team](04-agent-team.md) | [Back to README](../../README.md) | [Next: Deadlock Detection →](06-deadlock-detection.md)
+[← Previous: The Agent Team](09-agent-team.md) | [Back to README](../../README.md) | [Next: Deadlock Detection →](11-deadlock-detection.md)

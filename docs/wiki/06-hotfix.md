@@ -40,6 +40,7 @@ After the hotfix ships, PDLC automatically restores the paused feature:
 5. Restores STATE.md, switches to the feature branch
 6. Lead agent announces any impact before continuing
 
+
 ---
 
-[← Previous: Pause & Resume](15-pause-resume.md) | [Back to README](../../README.md) | [Next: Rollback →](17-rollback.md)
+[← Previous: Pause & Resume](05-pause-resume.md) | [Back to README](../../README.md) | [Next: Rollback →](07-rollback.md)

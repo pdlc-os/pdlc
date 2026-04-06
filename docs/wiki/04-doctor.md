@@ -140,6 +140,7 @@ For Beads issues, fix mode runs the `bd` commands that `bd doctor` suggested. Fo
 | 4 (Beads) | **Haiku** | `bd doctor` and task graph are mechanical CLI operations |
 | 5-8 (code, git, compliance) | Opus | Code analysis and pattern matching require complex reasoning |
 
+
 ---
 
-[← Previous: Design Decisions](12-design-decisions.md) | [Back to README](../../README.md) | [Next: Extensibility →](14-extensibility.md)
+[← Previous: Phases in Detail](03-phases-in-detail.md) | [Back to README](../../README.md) | [Next: Pause & Resume →](05-pause-resume.md)

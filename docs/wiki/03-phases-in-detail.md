@@ -232,6 +232,7 @@ Use `/pdlc whatif` for **scenario planning** -- explore hypothetical changes wit
 
 Together, `/pdlc decision` and `/pdlc whatif` give you a full **pivot and scenario planning toolkit**: explore ideas safely with whatif, then commit to them with decision when ready.
 
+
 ---
 
-[← Previous: Feature Highlights](02-feature-highlights.md) | [Back to README](../../README.md) | [Next: The Agent Team →](04-agent-team.md)
+[← Previous: Feature Highlights](02-feature-highlights.md) | [Back to README](../../README.md) | [Next: Doctor →](04-doctor.md)

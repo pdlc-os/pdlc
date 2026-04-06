@@ -197,6 +197,7 @@ your-project/
 - **Custom test layers are additive.** They run after the built-in 7, not instead of them.
 - **Commit `.pdlc/` to git.** Your custom skills and agents should be version-controlled so the whole team benefits.
 
+
 ---
 
-[← Previous: Doctor](13-doctor.md) | [Back to README](../../README.md) | [Next: Pause & Resume →](15-pause-resume.md)
+[← Previous: Design Decisions](17-design-decisions.md) | [Back to README](../../README.md)

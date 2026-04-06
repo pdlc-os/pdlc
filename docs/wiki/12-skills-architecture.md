@@ -115,6 +115,7 @@ skills/
   formatting.md                       <- ANSI color scheme + visual patterns
 ```
 
+
 ---
 
-[← Previous: Deadlock Detection](06-deadlock-detection.md) | [Back to README](../../README.md) | [Next: Memory Bank →](08-memory-bank.md)
+[← Previous: Deadlock Detection](11-deadlock-detection.md) | [Back to README](../../README.md) | [Next: Memory Bank →](13-memory-bank.md)

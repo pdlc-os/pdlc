@@ -47,6 +47,7 @@ Run `/pdlc abandon` to cleanly stop work on a feature that is no longer viable. 
 | **Episode** | Abandonment episode created | No episode |
 | **Reversible?** | No — to revisit, add as a new `F-NNN` | Yes — `/pdlc resume` |
 
+
 ---
 
-[← Previous: Rollback](17-rollback.md) | [Back to README](../../README.md)
+[← Previous: Rollback](07-rollback.md) | [Back to README](../../README.md) | [Next: The Agent Team →](09-agent-team.md)

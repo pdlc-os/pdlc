@@ -59,6 +59,7 @@ If you're on a consumption-based billing plan (Bedrock, API), set a smaller cont
 
 > **Note:** These are estimates, not exact measurements. The actual context window may be more or less full depending on message sizes, system prompts, and compaction. Treat the warnings as a signal to save your progress, not as an exact countdown.
 
+
 ---
 
-[← Previous: Safety Guardrails](09-safety-guardrails.md) | [Back to README](../../README.md) | [Next: Visual Companion →](11-visual-companion.md)
+[← Previous: Safety Guardrails](14-safety-guardrails.md) | [Back to README](../../README.md) | [Next: Visual Companion →](16-visual-companion.md)

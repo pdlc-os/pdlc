@@ -38,6 +38,7 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 | Ship — Next Feature | Oracle | Yes |
 | Idle / between phases | — | Oracle |
 
+
 ---
 
-[← Previous: Phases in Detail](03-phases-in-detail.md) | [Back to README](../../README.md) | [Next: Party Mode →](05-party-mode.md)
+[← Previous: Abandon](08-abandon.md) | [Back to README](../../README.md) | [Next: Party Mode →](10-party-mode.md)

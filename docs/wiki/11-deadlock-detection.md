@@ -11,6 +11,7 @@ When multiple agents or tasks work in parallel, they can get stuck. PDLC detects
 | **Strike Panel Cycling** | Same test fails through 2+ panels | Pass history to prevent re-proposals | 3rd panel: redesign, skip, or human control |
 | **BUILD LOOP Stagnation** | Same task list returned repeatedly | Reconcile `bd done` state | Loop count exceeds total tasks |
 
+
 ---
 
-[← Previous: Party Mode](05-party-mode.md) | [Back to README](../../README.md) | [Next: Skills Architecture →](07-skills-architecture.md)
+[← Previous: Party Mode](10-party-mode.md) | [Back to README](../../README.md) | [Next: Skills Architecture →](12-skills-architecture.md)

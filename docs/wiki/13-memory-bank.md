@@ -65,6 +65,7 @@ When state files disagree (e.g., after a crash mid-operation):
 
 Every time a feature is delivered, Claude drafts an episode file capturing what was built, key decisions, test results, tech debt, and the agent team's retro. Human approves before it's committed to permanent record.
 
+
 ---
 
-[← Previous: Skills Architecture](07-skills-architecture.md) | [Back to README](../../README.md) | [Next: Safety Guardrails →](09-safety-guardrails.md)
+[← Previous: Skills Architecture](12-skills-architecture.md) | [Back to README](../../README.md) | [Next: Safety Guardrails →](14-safety-guardrails.md)

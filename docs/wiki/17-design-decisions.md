@@ -88,6 +88,7 @@ Before committing to a change, you want to know the cost. "What if we switched t
 
 PDLC state is spread across multiple files: STATE.md (phase/task), ROADMAP.md (feature status), Beads (task status), and temporary pending files (meetings/decisions). A crash at any point can leave these files inconsistent. Rather than using distributed locks (which add complexity and their own failure modes), PDLC uses a reconciliation protocol: STATE.md is the single source of truth, other files are reconciled to match on resume. Pending files are resolved innermost-first (meeting → decision → phase) with a 24-hour staleness threshold. Write-order rules (pending file first, cleanup last) minimize the inconsistency window. This approach is simpler, debuggable (all state is human-readable markdown/JSON), and resilient to any crash point.
 
+
 ---
 
-[← Previous: Visual Companion](11-visual-companion.md) | [Back to README](../../README.md) | [Next: Doctor →](13-doctor.md)
+[← Previous: Visual Companion](16-visual-companion.md) | [Back to README](../../README.md) | [Next: Extensibility →](18-extensibility.md)

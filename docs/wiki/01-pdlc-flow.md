@@ -152,6 +152,7 @@ PDLC stops and waits for explicit human approval at eight checkpoints:
 | Smoke tests | Before marking deployment complete |
 | Episode file | Before committing to repo |
 
+
 ---
 
 ← [Back to README](../../README.md) | [Next: Feature Highlights →](02-feature-highlights.md)

@@ -36,6 +36,7 @@ PDLC proceeds and records the decision in `STATE.md`.
 - Accepting an Echo test coverage gap
 - Editing `ROADMAP.md`, `INTENT.md`, `OVERVIEW.md`, or `CHANGELOG.md` directly (normally managed by PDLC)
 
+
 ---
 
-[← Previous: Memory Bank](08-memory-bank.md) | [Back to README](../../README.md) | [Next: Status Bar →](10-status-bar.md)
+[← Previous: Memory Bank](13-memory-bank.md) | [Back to README](../../README.md) | [Next: Status Bar →](15-status-bar.md)
