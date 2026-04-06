@@ -104,9 +104,29 @@ After presenting the full report, you choose:
 |------|-------------|
 | **Fix all** | Address critical and warning items (each fix approved individually before applying) |
 | **Fix critical only** | Address only critical issues |
-| **Review one by one** | Walk through each finding and decide: fix, skip, or defer |
+| **Review one by one** | Walk through each finding and decide: fix, ignore, or dismiss permanently |
 | **Export** | Save the report to `docs/pdlc/doctor-report_[date].md` and fix later |
 | **Dismiss** | Acknowledge and continue without fixing |
+
+### Conflict resolution
+
+When two sources disagree (e.g., CONSTITUTION says PostgreSQL but code uses MongoDB), doctor asks which source is the truth. You pick the winner, and doctor updates the other to match. This applies to:
+- CONSTITUTION vs code (tech stack, constraints)
+- ARCHITECTURE.md vs actual modules
+- API contracts vs route definitions
+- OVERVIEW.md vs current codebase
+
+### Per-finding actions
+
+Each finding offers:
+
+| Action | What happens |
+|--------|-------------|
+| **Fix** | Apply the proposed change (or pick which source wins for conflicts) |
+| **Ignore** | Skip for now — will surface again next time you run doctor. Optionally provide a reason or direction. |
+| **Dismiss permanently** | Suppress this finding in future runs — unless the underlying file changes, in which case it resurfaces. |
+
+Previously ignored findings appear with a note: `(previously ignored: "[your reason]")`. Ignored and dismissed findings are tracked in `docs/pdlc/memory/.doctor-ignored.json`.
 
 For Beads issues, fix mode runs the `bd` commands that `bd doctor` suggested. For state file issues, it shows the exact field change. For doc drift, it flags files for manual review (doctor doesn't rewrite PRDs or architecture docs). All fixes follow the write-order rules from the state reconciliation protocol.
 

@@ -267,14 +267,68 @@ Then ask the user:
 
 ### Fix mode
 
-For each finding the user wants to fix, propose the specific change:
+For each finding the user wants to fix, present the finding and the available actions.
+
+#### Conflict findings (two sources disagree)
+
+When doctor finds a conflict between two artifacts (e.g., CONSTITUTION says PostgreSQL but code uses MongoDB, or ARCHITECTURE.md describes a component that doesn't exist), ask the user which source is the truth:
+
+> "**Conflict:** CONSTITUTION.md says tech stack includes `[X]` but `package.json` uses `[Y]`.
+>
+> Which is correct?
+> - **A — CONSTITUTION is correct** → I'll update the code/config to match
+> - **B — Code is correct** → I'll update CONSTITUTION.md to match
+> - **Ignore** — skip this for now (it will surface again next time you run doctor)
+>   - Optional: provide a reason or direction"
+
+If the user picks A or B, apply the fix to the losing side. If the user picks Ignore, optionally capture their explanation.
+
+#### Non-conflict findings (something is missing or broken)
+
+For straightforward fixes (missing files, orphaned tasks, stale pending files), propose the specific change:
 - State file fixes → show the exact field change
 - ROADMAP fixes → show the row update
 - Beads fixes → show the `bd` command to run
 - Doc drift → flag for manual review (doctor doesn't rewrite PRDs/architecture)
 - Rollback impact → suggest running the reconciliation protocol or re-running the affected phase
 
-After all approved fixes are applied, re-run the relevant checks to confirm they pass.
+Each finding offers three actions:
+
+> - **Fix** — apply the proposed change
+> - **Ignore** — skip this for now (will surface again next run)
+>   - Optional: provide a reason or direction
+> - **Dismiss permanently** — suppress this specific finding in future runs
+
+#### Ignored findings
+
+When the user selects **Ignore** (with or without explanation), append the finding to `docs/pdlc/memory/.doctor-ignored.json`:
+
+```json
+{
+  "ignored": [
+    {
+      "check": 8,
+      "finding": "CONSTITUTION.md says PostgreSQL but package.json uses MongoDB",
+      "severity": "WARNING",
+      "ignoredAt": "2026-04-05T12:00:00Z",
+      "reason": "Migrating next sprint, don't fix now",
+      "permanent": false
+    }
+  ]
+}
+```
+
+On subsequent `/pdlc doctor` runs:
+- **Non-permanent ignores** resurface every time — they appear in the report with a note: `(previously ignored: "[reason]")`
+- **Permanent dismissals** are excluded from the report entirely — unless the underlying state changes (e.g., a dismissed tech stack mismatch resurfaces if CONSTITUTION.md is updated)
+
+When the underlying state changes for a permanently dismissed finding (the file or field it references was modified since the dismissal), remove the dismissal and resurface the check.
+
+#### After fixes
+
+After all approved fixes are applied, re-run the relevant checks to confirm they pass. Report the results:
+
+> "Fixed [N] of [M] findings. [X] ignored. [Y] re-checked and passing."
 
 ---
 
