@@ -139,6 +139,23 @@ flowchart LR
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
+### Emergency hotfix with `/pdlc hotfix <name>`
+
+When production is on fire and can't wait for the normal feature cycle. Pulse leads.
+
+| Step | What happens |
+|------|-------------|
+| **Pause** | Current feature's full state saved to `.paused-feature.json`. Active Beads task unclaimed. Automatic — no confirmation needed. |
+| **Branch** | `hotfix/[name]` created from main |
+| **Describe** | User describes the issue (3 questions: what's broken, suspected cause, severity) |
+| **Build** | TDD enforced (failing test → fix → pass). No Party Review — just Phantom + Echo security check. 3-strike rule applies. |
+| **Ship** | Merge to main, patch version bump, deploy trigger |
+| **Verify** | Expedited: health check + specific reproduction check + user confirmation |
+| **Impact** | Diff the hotfix against the paused feature branch. Rebase if overlap. Neo + Echo assess if design/tests need updating. |
+| **Resume** | Restore STATE.md from snapshot, switch to feature branch, announce context, re-invoke the paused phase skill |
+
+The paused feature's state is captured in `.paused-feature.json` (phase, sub-phase, active task, checkpoint, branch). On resume, the feature branch is rebased on main (which now includes the hotfix) and any impact is reported to the lead agent before continuing.
+
 ### Rolling back with `/pdlc rollback [feature]`
 
 If a shipped feature needs to be reverted (production incident, critical bug, failed smoke tests discovered late):

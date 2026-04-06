@@ -13,6 +13,7 @@ PDLC maintains state across multiple files. Each has a specific scope:
 | `STATE.md` | Project-wide phase/sub-phase/task | **Primary source of truth** for where the workflow is |
 | `.pending-party.json` | Single in-progress meeting | Temporary — deleted when meeting completes |
 | `.pending-decision.json` | Single in-progress decision | Temporary — deleted when decision completes |
+| `.paused-feature.json` | Feature state snapshot during hotfix | Temporary — deleted when feature resumes |
 | `ROADMAP.md` | Feature status (Planned/In Progress/Shipped) | Must agree with STATE.md's active feature |
 | Beads (`.beads/`) | Task status (ready/claimed/done) | Must agree with STATE.md's active task |
 

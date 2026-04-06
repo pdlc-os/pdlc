@@ -93,6 +93,9 @@ skills/
   rollback/
     SKILL.md                          <- revert shipped feature + post-mortem
 
+  hotfix/
+    SKILL.md                          <- emergency compressed build-ship + auto-resume
+
   override-tier1/
     SKILL.md                          <- double-RED confirmation for Tier 1 overrides
 

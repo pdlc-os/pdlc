@@ -179,6 +179,18 @@ elif $has_pending_decision; then
 ⚠️ **Interrupted decision detected.** Run \`/pdlc decision\` to resume or discard the pending decision."
 fi
 
+# Check for paused feature (hotfix in progress)
+paused_feature="${project_dir}/docs/pdlc/memory/.paused-feature.json"
+if [[ -f "$paused_feature" ]]; then
+  paused_name=""
+  if command -v jq &>/dev/null; then
+    paused_name="$(jq -r '.feature // "unknown"' "$paused_feature" 2>/dev/null)"
+  fi
+  pending_notice="${pending_notice}
+
+⏸️ **Feature paused:** \`${paused_name:-unknown}\` was paused for a hotfix. If the hotfix is complete, resume with \`/pdlc hotfix\` or the paused feature's phase command."
+fi
+
 # Check for ROADMAP.md inconsistency with STATE.md
 if [[ -f "$roadmap_file" ]] && command -v python3 &>/dev/null; then
   roadmap_conflict="$(python3 -c '

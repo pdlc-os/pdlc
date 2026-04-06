@@ -186,6 +186,14 @@ This triggers a **Decision Review Party** where all 9 agents assess cross-cuttin
 
 This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
+If production is on fire:
+
+```
+/pdlc hotfix fix-login-crash
+```
+
+This **auto-pauses** your current feature, creates a hotfix branch, runs a compressed TDD build-ship cycle (no brainstorm/design), and after shipping the fix, **auto-resumes** your paused feature with an impact assessment and rebase.
+
 If a shipped feature needs to be reverted:
 
 ```

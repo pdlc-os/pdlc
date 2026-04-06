@@ -41,6 +41,7 @@ In addition to the permanent memory files, PDLC uses temporary files for crash r
 |------|---------|----------|
 | `docs/pdlc/memory/.pending-party.json` | In-progress meeting state | Created before meeting, deleted on completion |
 | `docs/pdlc/memory/.pending-decision.json` | In-progress decision state | Created before decision flow, deleted on completion |
+| `docs/pdlc/memory/.paused-feature.json` | Feature state snapshot during hotfix | Created when hotfix pauses a feature, deleted on resume |
 
 These files are detected on session start. If multiple pending files exist, they're resolved innermost-first (meeting → decision → phase). Files older than 24 hours are treated as stale and cleaned up. See `skills/state-reconciliation.md` for the full protocol.
 
