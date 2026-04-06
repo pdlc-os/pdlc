@@ -10,6 +10,38 @@ If not found, ask the user:
 
 Store as `[deploy-url]`.
 
+### Step 10a — Pre-deploy security check
+
+Before verifying the deployment, run a final security scan against the merged main branch:
+
+**Dependency audit:**
+```bash
+npm audit --json 2>/dev/null || true
+```
+
+If any `critical` vulnerabilities exist:
+> "⚠️ Critical dependency vulnerabilities found on main:
+> [list]
+>
+> These are now in production. **Fix immediately?** (yes/defer)"
+
+If yes: run `npm audit fix`, commit, push, and re-trigger deployment.
+If defer: log as Tier 1 event in STATE.md (critical vulnerability shipped to production).
+
+**Secret scan on main:**
+Quick scan of the full codebase on main for hardcoded secrets (same patterns as init Step 1g and test Layer 7b). If secrets are found that weren't caught earlier:
+> "⚠️ Secrets detected on main branch — these are now in production:
+> [list]
+>
+> Rotate these credentials immediately and move them to environment variables."
+
+**Security headers check (if deploy URL is available):**
+```bash
+curl -sI [deploy-url] | grep -iE "strict-transport|content-security|x-frame|x-content-type"
+```
+
+Report which security headers are present and which are missing. This is INFO-level — not a blocker, but useful for Phantom's awareness.
+
 ### Step 11 — Run smoke tests
 
 Run basic health checks against `[deploy-url]`:

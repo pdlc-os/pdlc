@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     subgraph SETUP["Prerequisites (Haiku model)"]
-        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> AT[Agent Teams\ncheck] --> DOLT[Dolt] --> BEADS[Beads] --> CICD[CI/CD\ndetect]
+        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> AT[Agent Teams\ncheck] --> DOLT[Dolt] --> BEADS[Beads] --> CICD[CI/CD\ndetect] --> SEC[Security\nbaseline]
     end
     subgraph CORE["Project Setup (Opus model)"]
         QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BDINIT[bd init]
@@ -28,6 +28,7 @@ Run once per project. **Oracle** leads.
 4. **Dolt** — SQL database for Beads (`brew install dolt` or official script)
 5. **Beads** — task manager (`npm install -g @beads/bd`)
 6. **CI/CD detection** — checks for GitHub Actions, npm deploy, Makefile, etc. Informational only — if not found, Pulse will help set it up during `/pdlc ship`
+7. **Baseline security scan** — `npm audit` for dependency vulnerabilities + secret scan for hardcoded credentials. Informational — surfaces pre-existing issues before any features are built
 
 After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
@@ -106,8 +107,8 @@ flowchart TD
 | Sub-phase | Meetings | What happens |
 |-----------|----------|-------------|
 | **Build** | Wave Kickoff, Design Roundtable, Strike Panel | TDD per task. Wave standup for 2+ tasks. Optional roundtable for complex tasks. 3-strike cap. |
-| **Review** | Party Review | Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Deferred findings via Decision Review. |
-| **Test** | -- | 6 layers. Constitution gates determine required. Human decides on failures. |
+| **Review** | Party Review | Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Phantom security sign-off. Deferred findings via Decision Review. |
+| **Test** | -- | 7 layers (Unit, Integration, E2E, Perf, A11y, Visual Regression, **Security**). Layer 7 always runs: dependency audit, secret scan on diff, OWASP check. |
 
 ### Phase 3 -- Operation (`/pdlc ship`)
 
@@ -134,7 +135,7 @@ flowchart LR
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
 | **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger. If no pipeline exists, offers to scaffold GitHub Actions or npm deploy script. |
-| **Verify** | Pulse | Smoke tests against deployed environment + human sign-off |
+| **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 

@@ -24,6 +24,31 @@ Run if an accessibility check command exists (e.g. `npm run test:a11y`, `axe`). 
 **Layer 6: Visual regression tests**
 Run if a visual regression test command exists (e.g. `npm run test:visual`, Percy, Chromatic). Skip with a logged Tier 3 warning if no command exists.
 
+**Layer 7: Security scan**
+
+This layer always runs — it is not skippable.
+
+**7a. Dependency audit:**
+```bash
+npm audit --json 2>/dev/null || true
+```
+Flag any `critical` or `high` severity vulnerabilities introduced by this feature branch. Compare against the baseline (main branch): `git stash && npm audit --json > /tmp/main-audit.json && git stash pop` — only report *new* vulnerabilities, not pre-existing ones.
+
+**7b. Secret scan on the diff:**
+Scan only the files changed on this feature branch for hardcoded secrets:
+```bash
+git diff main..HEAD --name-only
+```
+For each changed file, check for:
+- Strings matching secret patterns (API keys, tokens, passwords) in assignment contexts
+- New `.env` files or changes to existing ones
+- AWS keys (`AKIA...`), GitHub tokens (`ghp_...`), Stripe keys (`sk_live_...`), generic long random strings near `secret`/`key`/`token` variables
+
+**7c. OWASP dependency check (if available):**
+If `dependency-check` CLI or `npm audit signatures` is available, run it. Otherwise skip with an INFO note.
+
+Record results. Any new critical/high vulnerability or detected secret is flagged as a **required gate** — the user must fix, accept (Tier 1 override for secrets), or defer.
+
 ### Step 16 — Check Constitution test gates
 
 Compare results against the required gates in CONSTITUTION.md §7.

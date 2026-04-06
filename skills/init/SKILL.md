@@ -250,7 +250,41 @@ Check for an existing CI/CD setup in this order:
 
 This is informational only — no CI/CD is not a blocker for init. The finding is noted so that `/pdlc ship` Step 9 knows to offer scaffolding instead of just saying "deploy manually."
 
-> **End of model override.** Steps 1a–1f are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
+**1g. Baseline security scan.**
+
+Run a baseline security audit to surface existing vulnerabilities before any features are built.
+
+**Dependency audit:**
+```bash
+npm audit --json 2>/dev/null || true
+```
+
+If `npm audit` returns vulnerabilities, summarize them:
+> "Baseline security scan found [N] vulnerabilities ([critical]/[high]/[moderate]/[low]).
+>
+> These are pre-existing in your dependencies — not introduced by PDLC. You can fix them now with `npm audit fix` or address them later."
+
+If clean:
+> "Dependency audit: ✓ no known vulnerabilities"
+
+**Secret scan:**
+Scan the codebase for potential hardcoded secrets. Check for patterns:
+- API keys: strings matching `[A-Za-z0-9]{20,}` in assignment contexts near variables named `key`, `token`, `secret`, `password`, `api_key`
+- `.env` files committed to git: `git ls-files | grep -i '\.env'`
+- Common secret patterns: AWS keys (`AKIA...`), GitHub tokens (`ghp_...`), Stripe keys (`sk_live_...`)
+
+If secrets found:
+> "⚠️ Potential secrets detected in the codebase:
+> [list of files and patterns found]
+>
+> These should be moved to environment variables and added to `.gitignore`."
+
+If clean:
+> "Secret scan: ✓ no hardcoded secrets detected"
+
+This is a baseline — Phantom will do deeper security reviews during Construction, and security scans run again before every ship.
+
+> **End of model override.** Steps 1a–1g are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
 
 ---
 

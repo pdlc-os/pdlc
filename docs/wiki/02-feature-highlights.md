@@ -31,7 +31,8 @@
 | **3-Strike Loop Breaker** | After 3 failed auto-fix attempts, convenes a Strike Panel (Neo + Echo + domain agent) to diagnose root cause and produce 3 ranked approaches for the human. |
 | **Deadlock Detection** | 6 types of deadlock detection with auto-resolution and human escalation paths. |
 | **Critical Finding Gate** | Critical review findings must be fixed or explicitly overridden (Tier 1 event) before approval options appear. |
-| **6-Layer Testing** | Unit, Integration, E2E (real Chromium), Performance, Accessibility, Visual Regression. Constitution configures which are required gates. |
+| **Phantom Security Sign-off** | Phantom's security findings get explicit visibility during review — Critical findings block, Important findings highlighted separately. |
+| **7-Layer Testing** | Unit, Integration, E2E, Performance, Accessibility, Visual Regression, **Security** (dependency audit + secret scan + OWASP). Layer 7 always runs and cannot be skipped. |
 
 ### Operation — Ship + Reflect + Next Feature
 

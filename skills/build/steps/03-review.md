@@ -42,6 +42,22 @@ Wait for explicit human decision. Do not proceed to Test without approval.
 
 If the user requests fixes: increment `[review-fix-cycles]`, address the issues, recommit to the feature branch, regenerate the review file, and re-present. If `[review-fix-cycles]` reaches 3 without resolving all Critical findings, read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 4** (Unbounded Fix-Regenerate Loop) instead of attempting another fix cycle.
 
+### Step 13a — Phantom security sign-off
+
+After the review file is written but before presenting the approval gate, check Phantom's findings specifically:
+
+**If Phantom flagged zero Critical or Important security findings:**
+> "Phantom security sign-off: ✓ No critical or important security issues found."
+
+**If Phantom flagged any Critical security findings:**
+These are surfaced as part of the Critical findings gate in Step 13 — they must be resolved before the review can be approved.
+
+**If Phantom flagged Important security findings but no Critical:**
+These are presented as soft warnings in the standard gate, but add a specific Phantom summary:
+> "Phantom security summary: [N] Important findings. Phantom recommends fixing before ship. These are soft warnings — you may accept them, but they will be logged."
+
+This ensures security findings get explicit visibility rather than being mixed into the general findings list.
+
 ### Step 14 — Post-approval actions
 
 After approval:

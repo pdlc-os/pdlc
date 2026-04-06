@@ -40,7 +40,7 @@ flowchart TD
     GHCHECK -->|No| GHSETUP[gh CLI auth\n+ repo creation]
     GHCHECK -->|Yes| PREREQ
     GHSETUP --> PREREQ
-    PREREQ[Homebrew + Dolt + Beads\n+ CI/CD detect · Haiku model] --> FIELD{Existing code?}
+    PREREQ[Homebrew + Dolt + Beads\n+ CI/CD detect + Security baseline\nHaiku model] --> FIELD{Existing code?}
     FIELD -->|Brownfield| SCAN[Offer repo scan]
     SCAN -->|Accepted| SCANRUN[Deep-scan codebase\nPresent findings]
     SCANRUN --> MEM

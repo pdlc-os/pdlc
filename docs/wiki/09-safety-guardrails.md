@@ -10,6 +10,8 @@ Blocked by default. Requires **double confirmation in red text** to override.
 - `DROP TABLE` without a prior migration file
 - `rm -rf` outside files created on the current feature branch
 - Deploy with failing Constitution test gates
+- Accepting hardcoded secrets detected by Layer 7 security scan (must be overridden explicitly)
+- Shipping with critical dependency vulnerabilities (from `npm audit`)
 
 ### Tier 2 — Pause and confirm
 
