@@ -722,6 +722,29 @@ async function upgrade(opts = {}) {
     }
   }
 
+  // Prompt to upgrade Dolt
+  if (isDoltInstalled()) {
+    if (!process.stdin.isTTY) return;
+
+    const doltCmd = (process.platform === 'darwin' || isHomebrewInstalled())
+      ? 'brew upgrade dolt'
+      : 'sudo bash -c \'curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash\'';
+
+    log(`\n  Dolt is currently installed (${doltVersion()}).`);
+    const answer = await prompt('  Upgrade Dolt as well? (Y/n) ');
+    if (answer === '' || answer === 'y' || answer === 'yes') {
+      log('\n  Upgrading Dolt...');
+      try {
+        execSync(doltCmd, { stdio: 'inherit' });
+        log(`  Dolt        : \u2713 upgraded (${doltVersion()})`);
+      } catch (err) {
+        log(`  Dolt upgrade failed. You can upgrade manually:\n  ${doltCmd}`);
+      }
+    } else {
+      log('  Keeping current Dolt version.');
+    }
+  }
+
   log('');
 }
 

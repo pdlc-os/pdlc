@@ -107,6 +107,7 @@ The `upgrade` command:
 1. Upgrades PDLC to the latest version (matching your install scope)
 2. Re-registers hooks and slash commands with updated paths
 3. Prompts to upgrade Beads as well (defaults to yes)
+4. Prompts to upgrade Dolt as well (defaults to yes)
 
 Re-running `install` is also idempotent — it strips old hook paths and re-registers with the current version. Switching from global to local (or vice versa) automatically cleans up the previous install.
 
