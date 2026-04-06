@@ -186,6 +186,14 @@ This triggers a **Decision Review Party** where all 9 agents assess cross-cuttin
 
 This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
+If a shipped feature needs to be reverted:
+
+```
+/pdlc rollback user-authentication
+```
+
+This reverts the merge commit, runs a **Post-Mortem Party** with all 9 agents to diagnose the root cause, and presents 3 ranked fix approaches. You can fix and re-ship, abandon the feature, or pause.
+
 If something feels off — after pulling a teammate's changes, after a rollback, or after a long break:
 
 ```

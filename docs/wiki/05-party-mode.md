@@ -13,6 +13,7 @@ Party mode brings multiple agents together for structured discussions. Five meet
 | **Strike Panel** | Construction / Build | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
 | **Decision Review** | Any phase | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
 | **What-If Analysis** | Any phase | `/pdlc whatif` | All 9 agents | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
+| **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | All 9 agents (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
 
 ### Meeting map across phases
 
@@ -37,6 +38,7 @@ Ship
 
 Any phase ──────────── Decision Review (/pdlc decision)
 Any phase ──────────── What-If Analysis (/pdlc whatif)
+Post-ship ──────────── Post-Mortem (/pdlc rollback)
 ```
 
 ### Collaboration patterns
@@ -52,6 +54,7 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 | **Strike Panel** | Neo | 2 (diagnosis → ranked approaches) | Yes — agents react to diagnoses | Focused on a specific test failure. Produces 3 ranked approaches for the human to choose from. |
 | **Decision Review** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | All 9 agents assess owned artifacts. Includes roadmap resequencing discussion. |
 | **What-If Analysis** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Same pattern as Decision Review but read-only — no files modified. |
+| **Post-Mortem** | Oracle | 3 (root cause → cross-examination → fix proposals) | Yes — agents cross-examine each other's findings | Oracle facilitates. Each agent diagnoses from their domain. Produces 3 ranked fix approaches. Required — cannot be skipped. |
 
 **Cross-talk cap:** Maximum 1 cross-talk round per meeting (except Progressive Thinking which has conflict resolution built into its structure). If disagreement persists, it's surfaced in the MOM as an open question for the human.
 

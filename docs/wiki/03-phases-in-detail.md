@@ -139,6 +139,19 @@ flowchart LR
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
+### Rolling back with `/pdlc rollback [feature]`
+
+If a shipped feature needs to be reverted (production incident, critical bug, failed smoke tests discovered late):
+
+| Step | What happens |
+|------|-------------|
+| **Revert** | `git revert` of the merge commit, push to origin, rollback tag |
+| **State update** | ROADMAP set to `Rolled Back`, CHANGELOG rollback entry, episode file updated |
+| **Post-Mortem Party** | Oracle leads all 9 agents through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
+| **Options** | **Fix and re-ship** (3 ranked approaches with effort/risk), **Abandon** (drop feature, move to next), or **Pause** |
+
+The post-mortem meeting is required — it cannot be skipped. Every rollback produces an ADR entry and a MOM file.
+
 ### Pivoting with `/pdlc decision <text>`
 
 Use `/pdlc decision` to **pivot** the design mid-flight -- change tech stack, rearchitect a component, alter scope, switch databases, or any other significant change. Available at any point during Inception, Construction, or Operation. The lead agent for the current phase runs the flow:

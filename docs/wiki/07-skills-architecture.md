@@ -90,6 +90,9 @@ skills/
   doctor/
     SKILL.md                          <- comprehensive health check (8 checks)
 
+  rollback/
+    SKILL.md                          <- revert shipped feature + post-mortem
+
   override-tier1/
     SKILL.md                          <- double-RED confirmation for Tier 1 overrides
 

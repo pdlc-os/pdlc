@@ -754,6 +754,7 @@ Slash commands (inside a Claude Code session after install):
   /pdlc decision    Record a decision in the Decision Registry (any phase)
   /pdlc whatif       Explore a hypothetical scenario with read-only team analysis
   /pdlc doctor       Run a comprehensive health check on PDLC state and code alignment
+  /pdlc rollback     Revert a shipped feature with post-mortem and fix options
   /pdlc override-tier1  Override a Tier 1 safety block (double-RED confirmation)
 
 Marketplace: https://github.com/pdlc-os

@@ -44,6 +44,7 @@
 | **Retrospective** | Per-agent contributions, what went well / broke / to improve, metrics snapshot. Episode file committed to permanent record. |
 | **Roadmap Tracking** | Jarvis marks shipped features in ROADMAP.md with date and episode reference. Ad-hoc features retroactively added. |
 | **Feature Loop** | After shipping, Oracle presents the next roadmap feature. Continue, pause, or switch to a different feature — the cycle repeats automatically. |
+| **Rollback** | `/pdlc rollback` — revert a shipped feature with `git revert`, full post-mortem meeting (Oracle leads, all 9 agents), 3 ranked fix approaches. Options: fix and re-ship, abandon, or pause. |
 
 ### Decision Registry (`/pdlc decision`)
 
