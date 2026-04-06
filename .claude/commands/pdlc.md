@@ -27,8 +27,12 @@ All skill file paths below are relative to the plugin root above.
 | `resume`      | Read `${PDLC_PLUGIN_ROOT}/skills/resume/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `override-tier1` | Read `${PDLC_PLUGIN_ROOT}/skills/override-tier1/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
-| *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`." |
+| *(unknown)*   | **Before replying "unknown"**, check for a custom skill: look for `.pdlc/skills/<command>/SKILL.md` in the **project root**. If found, read and execute it. If not found, reply: "Unknown PDLC command: `<command>`. Available built-in commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`, `hotfix`, `pause`, `resume`, `override-tier1`. Check `.pdlc/skills/` for custom skills." |
 
 When executing a skill, follow every instruction in its `SKILL.md` completely — treat the skill file as your primary prompt for that phase.
 
 **Path resolution rule:** All file paths referenced inside PDLC skill files (e.g. `skills/build/steps/01-pre-flight.md`, `agents/neo.md`, `templates/episode.md`) are relative to the **plugin root** above, NOT the project root. Prepend the plugin root when reading these files. Paths that start with `docs/pdlc/` are relative to the **project root** — these are the user's project files, not plugin files.
+
+**Custom skills:** If `.pdlc/skills/` exists in the project root, skills found there are available as `/pdlc <skill-name>`. Custom skills are resolved from the **project root** (`.pdlc/skills/<name>/SKILL.md`), not the plugin root. Built-in PDLC skills take priority on name collisions.
+
+**Custom agents:** If `.pdlc/agents/` exists in the project root, agent files found there are added to the roster. The orchestrator includes custom agents in meetings when task labels match their `auto_select_on_labels` frontmatter. Custom agents are resolved from the **project root** (`.pdlc/agents/<name>.md`).

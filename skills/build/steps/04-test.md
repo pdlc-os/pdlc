@@ -49,9 +49,19 @@ If `dependency-check` CLI or `npm audit signatures` is available, run it. Otherw
 
 Record results. Any new critical/high vulnerability or detected secret is flagged as a **required gate** — the user must fix, accept (Tier 1 override for secrets), or defer.
 
+**Layer 8+: Custom test layers**
+
+Read CONSTITUTION.md §7 "Custom Test Layers" table. For each row in the table:
+- Run the specified command
+- Record: passed, failed, skipped
+- If `Required` is `yes`, treat it as a required gate (same as checked built-in layers)
+- If `Required` is `no`, treat it as optional (reported but doesn't block)
+
+If the custom test layers table is empty or doesn't exist, skip this step.
+
 ### Step 16 — Check Constitution test gates
 
-Compare results against the required gates in CONSTITUTION.md §7.
+Compare results against the required gates in CONSTITUTION.md §7 (both built-in and custom layers).
 
 For each required gate (checkbox is checked in CONSTITUTION.md):
 - If the layer **passed**: continue.

@@ -126,6 +126,8 @@ The user can override for any single meeting by saying "run this one as solo" or
 
 ## Agent Roster
 
+### Built-in agents
+
 | Name | Role | Focus | Style |
 |------|------|-------|-------|
 | **Neo** | Architect | High-level design, cross-cutting concerns, tech debt radar | Decisive, big-picture, challenges scope creep |
@@ -137,6 +139,18 @@ The user can override for any single meeting by saying "run this one as solo" or
 | **Muse** | UX Designer | User flows, interaction design, mental models | Empathetic, non-technical framing, pushes back on dev-centric thinking |
 | **Oracle** | PM | Requirements clarity, scope, acceptance criteria | Scope guardian, pushes for testable definitions |
 | **Pulse** | DevOps | CI/CD, infra, deployment, environment config | Ops-first, questions anything that doesn't deploy cleanly |
+
+### Custom agents
+
+Before spawning agents for any meeting, check if `.pdlc/agents/` exists in the project root. If it does, read each `.md` file in that directory and parse its frontmatter:
+
+- **`name`**: display name for the agent
+- **`role`**: role title
+- **`always_on`**: if `true`, include in every meeting (same as Neo/Echo/Phantom/Jarvis)
+- **`auto_select_on_labels`**: comma-separated labels — include this agent when any task in the current context has a matching label
+- **`model`**: which Claude model to use
+
+Add matching custom agents to the participant list alongside built-in agents. Custom agents use the same spawn prompt template as built-in agents — their `.md` file provides the persona context. Built-in agents take priority on name collisions.
 
 ---
 

@@ -82,6 +82,9 @@
 | **MOM Files** | Meeting minutes for all party sessions, capturing who said what, conclusions, and next steps. |
 | **Episode Memory** | Permanent delivery records indexed in `episodes/index.md`. Searchable history of every feature shipped. |
 | **Doctor** | `/pdlc doctor` — 8-check health scan: state consistency, doc/code drift, Beads integrity, rollback detection, multi-user conflicts, Constitution compliance. Read-only with optional fix mode. |
+| **Custom Skills** | Drop a `SKILL.md` into `.pdlc/skills/<name>/` — automatically available as `/pdlc <name>`. Template provided. |
+| **Custom Agents** | Drop an agent `.md` into `.pdlc/agents/` — automatically included in meetings when task labels match. Template provided. |
+| **Custom Test Layers** | Add rows to CONSTITUTION.md §7 Custom Test Layers table — runs after built-in 7 layers during Test sub-phase. |
 
 ---
 

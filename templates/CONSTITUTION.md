@@ -211,8 +211,28 @@ Examples:
 - [ ] Performance / load tests
 - [ ] Accessibility checks
 - [ ] Visual regression tests
+- [x] Security scan (dependency audit + secret scan — always required, cannot be unchecked)
 
 <!-- Notes on gates: e.g. "E2E gate required for all features touching auth or checkout" -->
+
+### Custom Test Layers
+
+<!-- Add custom test layers for your project. Each layer needs:
+     - Name: display name for the layer
+     - Command: the shell command to run
+     - Required: yes = hard gate (must pass before ship), no = soft (reported but doesn't block)
+     
+     Example:
+     | Name | Command | Required |
+     |------|---------|----------|
+     | Contract tests | npm run test:contracts | yes |
+     | HIPAA compliance | npm run test:hipaa | yes |
+     | Load test (k6) | k6 run tests/load.js | no |
+-->
+
+| Name | Command | Required |
+|------|---------|----------|
+<!-- Add rows here -->
 
 ---
 

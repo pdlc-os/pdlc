@@ -142,4 +142,4 @@ For Beads issues, fix mode runs the `bd` commands that `bd doctor` suggested. Fo
 
 ---
 
-[← Previous: Design Decisions](12-design-decisions.md) | [Back to README](../../README.md)
+[← Previous: Design Decisions](12-design-decisions.md) | [Back to README](../../README.md) | [Next: Extensibility →](14-extensibility.md)

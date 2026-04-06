@@ -105,6 +105,9 @@ skills/
   override-tier1/
     SKILL.md                          <- double-RED confirmation for Tier 1 overrides
 
+  custom-template/
+    SKILL.md                          <- template for creating custom skills
+
   state-reconciliation.md             <- conflict resolution between state files
   formatting.md                       <- ANSI color scheme + visual patterns
 ```
