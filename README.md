@@ -11,14 +11,37 @@ PDLC combines the best of four Claude Code workflows:
 
 ---
 
+## Why PDLC?
+
+### Token-smart by design
+PDLC is built to minimize context window consumption. It warns when context usage reaches 50% and auto-checkpoints at 65% so no work is lost. Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
+
+### Multi-developer ready
+Multiple developers can work on the same PDLC-enabled repo. Every phase starts with a remote sync check — if local main is behind origin, a 6-agent team meeting assesses the remote changes for conflict risk before you proceed. The doctor command detects multi-user edits, rollbacks, and cross-session drift. Each developer runs their own local PDLC hooks via `npm install` — the shared state lives in `docs/pdlc/` in git.
+
+### Scenario planning at any stage
+Use `/pdlc whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/pdlc decision` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
+
+### Full decision traceability
+Every decision is recorded in the Decision Registry (DECISIONS.md) with who decided, when, why, and what was impacted. Every team meeting produces minutes (MOM files). Every shipped feature has an episode file with metrics, retro notes, and lessons learned. Tier 1 safety overrides are permanently logged. The entire project history is human-readable markdown in git.
+
+### Visual brainstorming companion
+During inception, PDLC can run a local browser-based UI (Material Design, light/dark toggle) for mockups, wireframes, architecture diagrams, and side-by-side comparisons. Users can click to select options in the browser or type feedback in the terminal — both inputs are merged. The server handles port conflicts, crashes gracefully, and falls back to text-only mode if it can't start.
+
+### Plug-and-play extensibility
+Add custom skills (`.pdlc/skills/<name>/SKILL.md`), custom agents (`.pdlc/agents/<name>.md`), and custom test layers (CONSTITUTION.md table) without forking. Templates are provided for both skills and agents. Custom agents are automatically included in team meetings when task labels match.
+
+---
+
 ## Table of Contents
 
-1. [Installation](#installation)
-2. [Quick Start](#quick-start)
-3. [Documentation](#documentation)
-4. [PDLC-OS Marketplace](#pdlc-os-marketplace)
-5. [Prerequisites](#prerequisites)
-6. [License](#license)
+1. [Why PDLC?](#why-pdlc)
+2. [Installation](#installation)
+3. [Quick Start](#quick-start)
+4. [Documentation](#documentation)
+5. [PDLC-OS Marketplace](#pdlc-os-marketplace)
+6. [Prerequisites](#prerequisites)
+7. [License](#license)
 
 ---
 
