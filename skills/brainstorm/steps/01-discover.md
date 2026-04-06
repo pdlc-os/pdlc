@@ -41,13 +41,39 @@ Run:
 bash scripts/start-server.sh --project-dir $(pwd) --feature [feature-name]
 ```
 
-Capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorm/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
+If the output contains `"type": "server-started"`: capture `screen_dir` and `state_dir` from the JSON output. Tell the user the URL and ask them to open it. Read `skills/brainstorm/visual-companion.md` for the full visual loop protocol — follow it exactly for every visual question.
+
+If the output contains `"error"`: the server failed to start. Retry up to **2 more times** (3 total attempts). On each retry, wait 2 seconds before trying again.
+
+If all 3 attempts fail:
+
+> "The visual companion server couldn't start after 3 attempts. This won't stop us — I'll describe everything in the terminal instead. Mockups will be described as structured text, and you can ask me to generate Mermaid diagrams inline."
+
+Set the session to **text-only mode** — do not attempt to start the server again for the rest of this brainstorm session. Proceed with the same discovery flow but use terminal descriptions instead of browser visuals:
+- For layout/UI questions: describe options as structured text with ASCII sketches or markdown tables
+- For architecture diagrams: output Mermaid diagram code blocks directly in the terminal
+- For A/B comparisons: present options as numbered lists with pros/cons
+- For design choices: use the same question format but without the "open your browser" instruction
 
 **If the user declines, or this is a non-visual feature:**
 
 Proceed text-only. Do not start the server. Do not mention the visual companion again.
 
 If the scripts directory is missing, skip this step entirely and proceed text-only — do not block the workflow.
+
+**Mid-session server failure:**
+
+If the visual companion server crashes or stops responding during the brainstorm (detected via health check failure or `$STATE_DIR/server-stopped`), attempt one restart:
+
+```bash
+bash scripts/start-server.sh --project-dir $(pwd) --feature [feature-name]
+```
+
+If the restart fails:
+
+> "The visual companion server stopped and couldn't be restarted. Switching to text-only mode for the rest of this session."
+
+Continue in text-only mode. Do not block the brainstorm workflow for a server failure.
 
 ---
 

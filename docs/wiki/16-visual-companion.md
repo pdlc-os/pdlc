@@ -19,6 +19,7 @@ The server shuts down automatically when Inception ends. Mockup files persist in
 - **Health endpoint:** `GET /health` returns server status, uptime, screen count, and connected clients — used by the brainstorm flow to verify the server is alive before each write
 - **Crash recovery:** Uncaught exceptions are caught and written to `$STATE_DIR/server-stopped` with the reason. The brainstorm flow detects this, informs you, and auto-restarts
 - **Startup validation:** The start script verifies the server responds to `/health` after startup, not just that the process is running
+- **Graceful fallback:** If the server fails to start after 3 attempts (or crashes mid-session and can't restart), brainstorm switches to text-only mode — mockups become structured text, diagrams become Mermaid code blocks, and comparisons become numbered lists. The workflow is never blocked by a server failure.
 
 
 ---

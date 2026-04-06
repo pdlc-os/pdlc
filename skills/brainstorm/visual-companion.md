@@ -76,10 +76,19 @@ Before each write, verify the server is running:
    The health endpoint returns `{"status":"ok","uptime":"...","screens":N,"clients":N}`.
 3. If the health check fails or the server has stopped, restart it with `start-server.sh` before continuing. The server auto-exits after 30 minutes of inactivity.
 
-**If the server crashed** (check `$STATE_DIR/server-stopped` for the reason), inform the user:
+**If the server crashed** (check `$STATE_DIR/server-stopped` for the reason), attempt one restart:
 > "The visual companion server stopped unexpectedly: [reason]. Restarting..."
 
-Then restart. The server handles port conflicts automatically — if the original port is now occupied, it retries up to 5 random ports.
+The server handles port conflicts automatically (retries up to 5 ports). If the restart fails, switch to text-only mode for the rest of the session:
+> "Couldn't restart the visual companion. Switching to text-only mode."
+
+**Text-only fallback:** When the server is unavailable, use terminal descriptions instead:
+- Layout/UI questions → structured text with ASCII sketches or markdown tables
+- Architecture diagrams → Mermaid code blocks in the terminal
+- A/B comparisons → numbered lists with pros/cons
+- Design choices → same questions, no "open your browser" instruction
+
+The brainstorm workflow is never blocked by a server failure.
 
 Write your HTML content to a new file in `screen_dir`:
 - Use semantic filenames: `navigation.html`, `dashboard-layout.html`, `data-model.html`
