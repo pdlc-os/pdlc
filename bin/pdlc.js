@@ -756,6 +756,8 @@ Slash commands (inside a Claude Code session after install):
   /pdlc doctor       Run a comprehensive health check on PDLC state and code alignment
   /pdlc rollback     Revert a shipped feature with post-mortem and fix options
   /pdlc hotfix       Emergency compressed build-ship cycle for production issues
+  /pdlc pause        Pause the current feature and save state for later
+  /pdlc resume       Resume a paused feature from its saved checkpoint
   /pdlc override-tier1  Override a Tier 1 safety block (double-RED confirmation)
 
 Marketplace: https://github.com/pdlc-os

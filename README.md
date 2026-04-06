@@ -186,6 +186,15 @@ This triggers a **Decision Review Party** where all 9 agents assess cross-cuttin
 
 This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
+Need to step away or switch context? Pause cleanly and resume later:
+
+```
+/pdlc pause
+/pdlc resume
+```
+
+Pause saves your exact position (phase, sub-phase, active task). Resume rebases on main, reclaims your Beads task, and picks up where you left off.
+
 If production is on fire:
 
 ```

@@ -96,6 +96,12 @@ skills/
   hotfix/
     SKILL.md                          <- emergency compressed build-ship + auto-resume
 
+  pause/
+    SKILL.md                          <- save current feature state for later
+
+  resume/
+    SKILL.md                          <- restore paused feature + rebase + reclaim task
+
   override-tier1/
     SKILL.md                          <- double-RED confirmation for Tier 1 overrides
 

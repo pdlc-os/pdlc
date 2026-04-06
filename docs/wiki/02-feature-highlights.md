@@ -46,6 +46,7 @@
 | **Feature Loop** | After shipping, Oracle presents the next roadmap feature. Continue, pause, or switch to a different feature — the cycle repeats automatically. |
 | **Rollback** | `/pdlc rollback` — revert a shipped feature with `git revert`, full post-mortem meeting (Oracle leads, all 9 agents), 3 ranked fix approaches. Options: fix and re-ship, abandon, or pause. |
 | **Hotfix** | `/pdlc hotfix` — emergency compressed build-ship. Auto-pauses current feature, skips inception, TDD still enforced, Phantom+Echo security check, expedited verify. Auto-resumes paused feature with impact assessment + rebase. |
+| **Pause / Resume** | `/pdlc pause` saves full state, unclaims Beads task. `/pdlc resume` restores state, rebases on main, reclaims Beads task, checks for changes since pause, and picks up exactly where you left off. |
 
 ### Decision Registry (`/pdlc decision`)
 

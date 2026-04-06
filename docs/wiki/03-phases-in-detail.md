@@ -139,6 +139,25 @@ flowchart LR
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
+### Pausing and resuming with `/pdlc pause` and `/pdlc resume`
+
+You can explicitly pause the current feature at any point and resume it later.
+
+**Pause (`/pdlc pause`):**
+- Saves full state to `.paused-feature.json` (phase, sub-phase, active task, checkpoint, branch)
+- Unclaims the active Beads task (returns to ready queue)
+- Sets STATE.md to `Idle — Paused`
+- ROADMAP.md stays `In Progress` (work will resume)
+
+**Resume (`/pdlc resume`):**
+- Checks for changes to main since the pause (teammate commits, hotfixes)
+- Rebases the feature branch on main if needed
+- **Reclaims the Beads task** that was active at pause time (or picks the next ready task if the original was completed)
+- Restores STATE.md from the snapshot
+- Lead agent announces any changes since the pause before continuing
+
+Only one feature can be paused at a time. To switch features: pause one, work on another, then resume the first.
+
 ### Emergency hotfix with `/pdlc hotfix <name>`
 
 When production is on fire and can't wait for the normal feature cycle. Pulse leads.

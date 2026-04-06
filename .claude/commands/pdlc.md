@@ -23,6 +23,8 @@ All skill file paths below are relative to the plugin root above.
 | `doctor`      | Read `${PDLC_PLUGIN_ROOT}/skills/doctor/SKILL.md` and execute it. |
 | `rollback`    | Read `${PDLC_PLUGIN_ROOT}/skills/rollback/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `hotfix`      | Read `${PDLC_PLUGIN_ROOT}/skills/hotfix/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `pause`       | Read `${PDLC_PLUGIN_ROOT}/skills/pause/SKILL.md` and execute it. |
+| `resume`      | Read `${PDLC_PLUGIN_ROOT}/skills/resume/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `override-tier1` | Read `${PDLC_PLUGIN_ROOT}/skills/override-tier1/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
 | *(unknown)*   | Reply: "Unknown PDLC command: `<command>`. Available commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`." |
