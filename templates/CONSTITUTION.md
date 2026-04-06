@@ -259,7 +259,37 @@ Examples:
 
 ---
 
-## 9. Additional Rules
+## 9. Context & Model Configuration
+
+<!-- Configure the context window size and model defaults for your deployment.
+     PDLC's context monitor uses this to estimate when context is running low
+     and trigger warnings/checkpoints.
+     
+     Common values:
+     - Claude Opus 4.6 (Claude Code / Anthropic API): 1000000
+     - Claude Sonnet 4.6: 200000
+     - Claude Haiku 4.5: 200000
+     - Amazon Bedrock (varies by config): check your deployment
+     
+     If you're on a consumption-based billing plan (Bedrock, API), a smaller
+     value triggers earlier warnings — which saves money by encouraging
+     shorter sessions with clean checkpoints. -->
+
+**Context window (tokens):** 1000000
+
+<!-- Warning thresholds (percentage of context window):
+     - WARNING at 50%: "Consider wrapping up" message every 5 tool calls
+     - CRITICAL at 65%: warning every tool call + auto-checkpoint to STATE.md
+     
+     Adjust these if you want earlier or later warnings.
+     Lower values = more frequent saves = higher resilience but more interruptions. -->
+
+**Warning threshold:** 50
+**Critical threshold:** 65
+
+---
+
+## 10. Additional Rules
 
 <!-- Anything that doesn't fit the sections above. Examples:
        - Feature flags must be cleaned up within 2 sprints of full rollout

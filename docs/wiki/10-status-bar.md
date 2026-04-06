@@ -39,6 +39,24 @@ At CRITICAL, the context checkpoint in STATE.md is updated with the session ID, 
 | 50-64% | Yellow | Getting full — consider wrapping up current task |
 | >= 65% | Red | Context is running low — finish current step and save state |
 
+### Configuration
+
+Context window size and thresholds are configurable in `CONSTITUTION.md` §9:
+
+```markdown
+**Context window (tokens):** 1000000
+**Warning threshold:** 50
+**Critical threshold:** 65
+```
+
+Common context window values:
+- Claude Opus 4.6 (Claude Code / Anthropic API): `1000000`
+- Claude Sonnet 4.6: `200000`
+- Claude Haiku 4.5: `200000`
+- Amazon Bedrock: check your deployment configuration
+
+If you're on a consumption-based billing plan (Bedrock, API), set a smaller context window value to trigger earlier warnings — this saves money by encouraging shorter sessions with clean checkpoints.
+
 > **Note:** These are estimates, not exact measurements. The actual context window may be more or less full depending on message sizes, system prompts, and compaction. Treat the warnings as a signal to save your progress, not as an exact countdown.
 
 ---

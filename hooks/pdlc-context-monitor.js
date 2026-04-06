@@ -11,12 +11,29 @@ const path = require('path');
 
 // ── Configuration ────────────────────────────────────────────────────────────
 
-// Claude's context window size in tokens (1M for Opus 4.6)
-const CONTEXT_WINDOW = 1_000_000;
+// Defaults — overridden by CONSTITUTION.md §9 if available
+let CONTEXT_WINDOW     = 1_000_000;  // tokens (1M for Opus 4.6)
+let THRESHOLD_WARNING  = 50;         // warn every 5 tool calls
+let THRESHOLD_CRITICAL = 65;         // warn every tool call + auto-checkpoint
 
-// Warning thresholds (percentage of estimated context usage)
-const THRESHOLD_WARNING  = 50;  // warn every 5 tool calls
-const THRESHOLD_CRITICAL = 65;  // warn every tool call + auto-checkpoint
+// Read overrides from CONSTITUTION.md
+function loadConfigFromConstitution(cwd) {
+  try {
+    const constitutionPath = path.join(cwd, 'docs', 'pdlc', 'memory', 'CONSTITUTION.md');
+    const content = fs.readFileSync(constitutionPath, 'utf8');
+
+    const windowMatch = content.match(/\*\*Context window \(tokens\):\*\*\s*(\d+)/);
+    if (windowMatch) CONTEXT_WINDOW = parseInt(windowMatch[1], 10);
+
+    const warnMatch = content.match(/\*\*Warning threshold:\*\*\s*(\d+)/);
+    if (warnMatch) THRESHOLD_WARNING = parseInt(warnMatch[1], 10);
+
+    const critMatch = content.match(/\*\*Critical threshold:\*\*\s*(\d+)/);
+    if (critMatch) THRESHOLD_CRITICAL = parseInt(critMatch[1], 10);
+  } catch (_) {
+    // CONSTITUTION.md not found or unreadable — use defaults
+  }
+}
 
 // Rough token estimates per tool call type
 const TOKEN_ESTIMATES = {
@@ -124,6 +141,9 @@ function main() {
   const sessionId  = input.session_id || 'unknown';
   const cwd        = input.cwd        || process.cwd();
   const toolName   = input.tool_name  || 'unknown';
+
+  // Load context config from CONSTITUTION.md (overrides defaults)
+  loadConfigFromConstitution(cwd);
   const toolInput  = input.tool_input || {};
   const toolOutput = (input.tool_result && input.tool_result.content) || '';
 
