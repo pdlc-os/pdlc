@@ -84,6 +84,7 @@
 | **Durable Party Checkpoints** | All party meetings write progress to `.pending-party.json`. Interrupted meetings are detected on next session start and can be resumed. |
 | **MOM Files** | Meeting minutes for all party sessions, capturing who said what, conclusions, and next steps. |
 | **Episode Memory** | Permanent delivery records indexed in `episodes/index.md`. Searchable history of every feature shipped. |
+| **Remote Sync Check** | Pre-flight sync check at every phase boundary (brainstorm, build, ship, hotfix, rollback). If local is behind remote, 6-agent Sync Assessment meeting analyzes the diff, assesses conflict risk, and recommends pull/review/proceed. |
 | **Doctor** | `/pdlc doctor` — 8-check health scan: state consistency, doc/code drift, Beads integrity, rollback detection, multi-user conflicts, Constitution compliance. Read-only with optional fix mode. |
 | **Custom Skills** | Drop a `SKILL.md` into `.pdlc/skills/<name>/` — automatically available as `/pdlc <name>`. Template provided. |
 | **Custom Agents** | Drop an agent `.md` into `.pdlc/agents/` — automatically included in meetings when task labels match. Template provided. |

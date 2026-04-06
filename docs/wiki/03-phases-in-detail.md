@@ -56,7 +56,7 @@ flowchart LR
     subgraph PLAN_PHASE["Plan - Neo"]
         TASKS["Beads tasks\n+ dependencies"]
     end
-    FROMINIT(["from /pdlc init"]) --> DISCOVER
+    FROMINIT(["from /pdlc init"]) --> SYNC["Sync Check"] --> DISCOVER
     DISCOVER --> DEFINE --> DESIGN --> PLAN_PHASE
     PLAN_PHASE --> TOBUILD(["to /pdlc build"])
 
@@ -65,7 +65,7 @@ flowchart LR
     style FROMINIT fill:#1e3a5f,color:#fff
 ```
 
-Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
+Starts with a **remote sync check** — if local main is behind origin, a team meeting assesses the remote changes before proceeding. Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
 
 | Sub-phase | Lead | Key activities | Output |
 |-----------|------|---------------|--------|
@@ -78,7 +78,7 @@ Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The fea
 
 ```mermaid
 flowchart TD
-    FROMBRAINSTORM(["from /pdlc brainstorm"]) --> BRANCH[Create feature branch]
+    FROMBRAINSTORM(["from /pdlc brainstorm"]) --> SYNC2["Sync Check"] --> BRANCH[Create feature branch]
     BRANCH --> READY{Tasks ready?}
     READY -->|"2+ tasks"| WAVE["Wave Kickoff"] --> PICK
     READY -->|1 task| PICK[Claim task]
@@ -123,7 +123,7 @@ flowchart LR
     subgraph NEXT["Next Feature - Oracle"]
         ROADMAP{Next on\nroadmap?}
     end
-    FROMBUILD(["from /pdlc build"]) --> SHIP --> REFLECT --> NEXT
+    FROMBUILD(["from /pdlc build"]) --> SYNC3["Sync Check"] --> SHIP --> REFLECT --> NEXT
     ROADMAP -->|Continue| TOBRAINSTORM(["to /pdlc brainstorm"])
     ROADMAP -->|Pause| IDLE([Idle])
     ROADMAP -->|Switch| TOBRAINSTORM
@@ -134,7 +134,7 @@ flowchart LR
 
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
-| **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger. If no pipeline exists, offers to scaffold GitHub Actions or npm deploy script. |
+| **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger. If no pipeline exists, offers to scaffold GitHub Actions or npm deploy script. |
 | **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with trend summary, artifacts archived, Beads compacted |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
@@ -181,7 +181,7 @@ When production is on fire and can't wait for the normal feature cycle. Pulse le
 | Step | What happens |
 |------|-------------|
 | **Pause** | Current feature's full state saved to `.paused-feature.json`. Active Beads task unclaimed. Automatic — no confirmation needed. |
-| **Branch** | `hotfix/[name]` created from main |
+| **Sync + Branch** | Remote sync check, then `hotfix/[name]` created from current main |
 | **Describe** | User describes the issue (3 questions: what's broken, suspected cause, severity) |
 | **Build** | TDD enforced (failing test → fix → pass). No Party Review — just Phantom + Echo security check. 3-strike rule applies. |
 | **Ship** | Merge to main, patch version bump, deploy trigger |
@@ -197,7 +197,7 @@ If a shipped feature needs to be reverted (production incident, critical bug, fa
 
 | Step | What happens |
 |------|-------------|
-| **Revert** | `git revert` of the merge commit, push to origin, rollback tag |
+| **Sync + Revert** | Remote sync check, then `git revert` of the merge commit, push to origin, rollback tag |
 | **State update** | ROADMAP set to `Rolled Back`, CHANGELOG rollback entry, episode file updated |
 | **Post-Mortem Party** | Oracle leads all 9 agents through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
 | **Options** | **Fix and re-ship** (3 ranked approaches with effort/risk), **Abandon** (drop feature, move to next), or **Pause** |

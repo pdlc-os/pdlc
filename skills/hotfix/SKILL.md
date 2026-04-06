@@ -62,7 +62,9 @@ Append to STATE.md Phase History:
 
 ---
 
-## Step 2 — Create hotfix branch
+## Step 2 — Sync check and create hotfix branch
+
+**Remote sync check:** Read `skills/sync-check.md` and execute the sync check protocol. The hotfix must be based on the current state of production (latest main). If behind, pull before branching.
 
 ```bash
 git checkout main

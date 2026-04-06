@@ -14,9 +14,11 @@ Store the feature slug as `[feature-name]`. Use today's date as `[YYYY-MM-DD]` w
 
 ---
 
-## Pre-flight: Load project context
+## Pre-flight: Sync check and load project context
 
-Before anything else, read these two files completely:
+**Remote sync check:** Before starting, read `skills/sync-check.md` and execute the sync check protocol. This verifies local main is current with origin/main. If behind, a team meeting assesses the remote changes and the user decides how to proceed.
+
+Then read these two files completely:
 
 1. `docs/pdlc/memory/CONSTITUTION.md` — for tech stack, architectural constraints, test gates, and coding standards
 2. `docs/pdlc/memory/INTENT.md` — for the core problem, target user, and value proposition

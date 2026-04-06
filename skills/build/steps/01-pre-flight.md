@@ -1,4 +1,8 @@
-## Pre-flight: Load state and context
+## Pre-flight: Sync check, load state and context
+
+### Step 0 — Remote sync check
+
+Read `skills/sync-check.md` and execute the sync check protocol. This verifies local main is current with origin/main before creating or switching to the feature branch. If behind, a team meeting assesses the remote changes and the user decides how to proceed.
 
 ### Step 1 — Read current state
 

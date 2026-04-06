@@ -111,6 +111,7 @@ skills/
   custom-template/
     SKILL.md                          <- template for creating custom skills
 
+  sync-check.md                        <- remote sync check protocol (pre-flight)
   state-reconciliation.md             <- conflict resolution between state files
   formatting.md                       <- ANSI color scheme + visual patterns
 ```

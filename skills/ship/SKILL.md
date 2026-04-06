@@ -7,7 +7,11 @@ You are running the Operation phase. Follow every step in order. Do not skip ste
 
 ---
 
-## Pre-flight: Load state and context
+## Pre-flight: Sync check, load state and context
+
+### Step 0 — Remote sync check
+
+Read `skills/sync-check.md` and execute the sync check protocol. This is critical before ship — if main has diverged, the merge will fail. The team assesses remote changes and the user decides how to proceed before the merge gate.
 
 ### Step 1 — Read STATE.md
 

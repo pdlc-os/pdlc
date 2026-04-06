@@ -43,7 +43,9 @@ Wait for explicit confirmation. If no, stop.
 
 ---
 
-## Step 2 — Execute the revert
+## Step 2 — Sync check and execute the revert
+
+**Remote sync check:** Read `skills/sync-check.md` and execute the sync check protocol. Main must be current before reverting — if someone pushed after the broken feature, the revert must account for those changes.
 
 Find the merge commit for this feature:
 ```bash

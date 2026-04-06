@@ -54,7 +54,7 @@ flowchart TD
     INITPROMPT -->|No| IDLE1([Idle])
 
     %% ── PHASE 1: INCEPTION ─────────────────────────────────────────
-    INCEPTION["/pdlc brainstorm feature-name"] --> DIVG{Divergent\nideation?}
+    INCEPTION["/pdlc brainstorm feature-name"] --> BSYNC{Sync\ncheck} --> DIVG{Divergent\nideation?}
     DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation\nCluster → Standouts]
     DIVG -->|No| SOCRATIC
     IDEAS --> SOCRATIC[DISCOVER\n4-round Socratic interview]
@@ -79,7 +79,7 @@ flowchart TD
     INCPROMPT -->|No| IDLE2([Idle])
 
     %% ── PHASE 2: CONSTRUCTION ──────────────────────────────────────
-    CONSTRUCTION["/pdlc build"] --> BPRE[Load state\nCreate feature branch]
+    CONSTRUCTION["/pdlc build"] --> CSYNC{Sync\ncheck} --> BPRE[Load state\nCreate feature branch]
     BPRE --> READY{bd ready?}
     READY -->|No tasks| REVIEW
     READY -->|2+ tasks| WAVE[🗣 Wave Kickoff]
@@ -111,7 +111,7 @@ flowchart TD
     BUILDPROMPT -->|No| IDLE3([Idle])
 
     %% ── PHASE 3: OPERATION ─────────────────────────────────────────
-    OPERATION["/pdlc ship"] --> SGATE{Confirm merge?}
+    OPERATION["/pdlc ship"] --> SSYNC{Sync\ncheck} --> SGATE{Confirm merge?}
     SGATE -->|Yes| MERGE[Merge to main\nCHANGELOG · semver tag]
     MERGE --> CICD[CI/CD trigger]
     CICD --> SMOKE[VERIFY\nSmoke tests + sign-off]
