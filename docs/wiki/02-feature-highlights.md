@@ -43,6 +43,7 @@
 | **Smoke Test Verification** | Runs against deployed environment with human sign-off gate. |
 | **Retrospective** | Per-agent contributions, what went well / broke / to improve, metrics snapshot. Episode file committed to permanent record. |
 | **Roadmap Tracking** | Jarvis marks shipped features in ROADMAP.md with date and episode reference. Ad-hoc features retroactively added. |
+| **Auto-Archive** | After shipping or abandoning, PRDs, design docs, reviews, brainstorm logs, and MOMs are moved to `docs/pdlc/archive/`. Beads is purged and compacted. Active directories stay clean. |
 | **Feature Loop** | After shipping, Oracle presents the next roadmap feature. Continue, pause, or switch to a different feature — the cycle repeats automatically. |
 | **Rollback** | `/pdlc rollback` — revert a shipped feature with `git revert`, full post-mortem meeting (Oracle leads, all 9 agents), 3 ranked fix approaches. Options: fix and re-ship, abandon, or pause. |
 | **Hotfix** | `/pdlc hotfix` — emergency compressed build-ship. Auto-pauses current feature, skips inception, TDD still enforced, Phantom+Echo security check, expedited verify. Auto-resumes paused feature with impact assessment + rebase. |

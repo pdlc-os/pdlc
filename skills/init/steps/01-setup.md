@@ -56,6 +56,11 @@ mkdir -p docs/pdlc/design
 mkdir -p docs/pdlc/reviews
 mkdir -p docs/pdlc/brainstorm
 mkdir -p docs/pdlc/mom
+mkdir -p docs/pdlc/archive/prds
+mkdir -p docs/pdlc/archive/design
+mkdir -p docs/pdlc/archive/reviews
+mkdir -p docs/pdlc/archive/brainstorm
+mkdir -p docs/pdlc/archive/mom
 ```
 
 Confirm each directory was created. Tell the user which directories were created.

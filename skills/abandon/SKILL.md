@@ -130,11 +130,11 @@ ADR-[NNN]: [link to DECISIONS.md entry]
 Was the feature ill-conceived? Did circumstances change? Was it technically
 infeasible? This helps future roadmap planning.]
 
-## Artifacts
-The following artifacts remain in the repo for reference (not deleted):
-- PRD: [path or "none"]
-- Design docs: [path or "none"]
-- Brainstorm log: [path or "none"]
+## Artifacts (archived)
+The following artifacts were moved to `docs/pdlc/archive/` for reference:
+- PRD: [archive path or "none"]
+- Design docs: [archive path or "none"]
+- Brainstorm log: [archive path or "none"]
 - Feature branch: `feature/[feature-name]` (not merged, not deleted)
 ```
 
@@ -159,10 +159,39 @@ Append to Phase History:
 | [now] | feature_abandoned | [phase] | [sub-phase] | [feature-name] |
 ```
 
-**Do NOT delete:**
-- The feature branch (kept for reference — the user can delete it manually)
-- PRD, design docs, brainstorm log (kept as historical record)
-- MOM files from this feature's meetings
+**Archive artifacts (not delete):**
+
+> **Model override:** Use **Haiku** for file moves and Beads commands.
+
+Move the abandoned feature's artifacts to the archive so they don't clutter active directories:
+
+```bash
+mkdir -p docs/pdlc/archive/prds docs/pdlc/archive/design/[feature-name] docs/pdlc/archive/reviews docs/pdlc/archive/brainstorm docs/pdlc/archive/mom
+mv docs/pdlc/prds/PRD_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
+mv docs/pdlc/prds/plans/plan_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
+mv docs/pdlc/design/[feature-name]/* docs/pdlc/archive/design/[feature-name]/ 2>/dev/null || true
+rmdir docs/pdlc/design/[feature-name] 2>/dev/null || true
+mv docs/pdlc/reviews/REVIEW_[feature-name]_*.md docs/pdlc/archive/reviews/ 2>/dev/null || true
+mv docs/pdlc/brainstorm/brainstorm_[feature-name]_*.md docs/pdlc/archive/brainstorm/ 2>/dev/null || true
+mv docs/pdlc/mom/[feature-name]_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
+```
+
+Clean up Beads:
+```bash
+bd purge 2>/dev/null || true
+bd admin compact --stats 2>/dev/null || true
+```
+
+Commit:
+```bash
+git add docs/pdlc/archive/ docs/pdlc/prds/ docs/pdlc/design/ docs/pdlc/reviews/ docs/pdlc/brainstorm/ docs/pdlc/mom/
+git commit -m "chore(pdlc): archive abandoned [feature-name] artifacts + compact beads"
+git push origin main
+```
+
+> **End of model override.**
+
+The feature branch is kept (not merged, not deleted) — the user can prune it manually with `git branch -D feature/[name]`.
 
 ---
 

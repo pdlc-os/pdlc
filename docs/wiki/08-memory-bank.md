@@ -31,6 +31,12 @@ docs/pdlc/
   mom/
     [feature]_[topic]_mom_[YYYY]_[MM]_[DD].md
     MOM_decision_[ADR-NNN]_[YYYY-MM-DD].md
+  archive/                   <- shipped/abandoned feature artifacts moved here
+    prds/
+    design/[feature]/
+    reviews/
+    brainstorm/
+    mom/
 ```
 
 ### Temporary state files
