@@ -154,6 +154,75 @@ git push origin main
 
 > **End of model override.** Return to Jarvis's assigned model (Sonnet).
 
+### Step 16f — Update METRICS.md and generate trend summary
+
+Read the episode file for this feature to extract metrics:
+- **Cycle days**: from Inception start date (STATE.md Phase History) to today
+- **Test pass %**: from the Test Summary section of the episode file
+- **Review rounds**: count of review files or regeneration cycles
+- **Strikes**: number of 3-strike escalations (from episode or STATE.md)
+- **Tier 1 overrides**: count from STATE.md Phase History (events matching `tier1_override`)
+- **Security findings**: count of Phantom findings from the review file (Critical + Important)
+- **Tasks**: total Beads tasks for this feature (`bd list --label "epic:[feature-name]" --json | jq length`)
+- **Type**: `Feature` (or `Hotfix` if this was a hotfix episode)
+
+**Append a row** to `docs/pdlc/memory/METRICS.md`:
+
+```
+| [NNN] | [feature-name] | Feature | [cycle days] | [pass %] | [rounds] | [strikes] | [tier1] | [security] | [tasks] | [today] |
+```
+
+**Generate trend summary:**
+
+Read all existing rows from the METRICS.md table. Calculate:
+- **Project averages**: average cycle days, average test pass %, average review rounds, average strikes
+- **Previous episode**: the row immediately before this one
+- **This episode vs average**: for each metric, is this episode better, worse, or the same?
+- **This episode vs previous**: same comparison against the last shipped feature
+
+Replace the "## Trend Summary" section in METRICS.md with:
+
+```markdown
+## Trend Summary
+
+**Last updated:** [today] (after Episode [NNN]: [feature-name])
+
+### This episode vs project average
+
+| Metric | This Episode | Project Avg | Trend |
+|--------|-------------|-------------|-------|
+| Cycle time | [N] days | [avg] days | [↑ slower / ↓ faster / → same] |
+| Test pass rate | [N]% | [avg]% | [↑ better / ↓ worse / → same] |
+| Review rounds | [N] | [avg] | [↑ more / ↓ fewer / → same] |
+| Strike escalations | [N] | [avg] | [↑ more / ↓ fewer / → same] |
+| Security findings | [N] | [avg] | [↑ more / ↓ fewer / → same] |
+
+### This episode vs previous ([prev feature name])
+
+| Metric | This Episode | Previous | Change |
+|--------|-------------|----------|--------|
+| Cycle time | [N] days | [prev] days | [+N / -N / same] |
+| Test pass rate | [N]% | [prev]% | [+N / -N / same] |
+| Review rounds | [N] | [prev] | [+N / -N / same] |
+
+### Observations
+
+[Jarvis writes 2-3 sentences noting the most significant trends. Examples:
+- "Cycle time dropped from 5 days to 3 — the team is getting faster."
+- "Security findings increased from 0 to 3 — Phantom flagged new patterns worth reviewing."
+- "First episode with zero strike escalations — TDD is working well."
+If this is the first episode, write: "First episode — no trends to compare yet."]
+```
+
+**Present the trend summary to the user:**
+
+> "**Trend Summary for Episode [NNN]:**
+> [Paste the key observations — 2-3 sentences]
+>
+> Full metrics: `docs/pdlc/memory/METRICS.md`"
+
+Commit METRICS.md with the archive commit (amend or separate commit).
+
 ### Step 17 — Final STATE.md update
 
 Update `docs/pdlc/memory/STATE.md`:

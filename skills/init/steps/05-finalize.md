@@ -47,6 +47,7 @@ Files created:
   docs/pdlc/memory/STATE.md
   docs/pdlc/memory/ROADMAP.md
   docs/pdlc/memory/DECISIONS.md
+  docs/pdlc/memory/METRICS.md
   docs/pdlc/memory/CHANGELOG.md
   docs/pdlc/memory/OVERVIEW.md
   docs/pdlc/memory/episodes/index.md
@@ -73,6 +74,7 @@ Memory bank pre-populated from existing codebase:
   docs/pdlc/memory/STATE.md
   docs/pdlc/memory/ROADMAP.md
   docs/pdlc/memory/DECISIONS.md     ← [N] pre-PDLC decisions recorded (inferred)
+  docs/pdlc/memory/METRICS.md
   docs/pdlc/memory/CHANGELOG.md     ← pre-PDLC baseline entry added
   docs/pdlc/memory/OVERVIEW.md      ← existing features documented
   docs/pdlc/memory/episodes/index.md

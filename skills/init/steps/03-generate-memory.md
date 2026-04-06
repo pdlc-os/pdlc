@@ -129,7 +129,39 @@ Create this file with stub content:
 <!-- No releases yet. -->
 ```
 
-### 5g. `docs/pdlc/memory/OVERVIEW.md`
+### 5g. `docs/pdlc/memory/METRICS.md`
+
+Create this file with stub content:
+
+```markdown
+# Metrics
+
+**Project:** [project name from question 1]
+**Last updated:** [today's date]
+
+<!-- Append-only. Jarvis adds a row after every shipped feature.
+     Used by Oracle for roadmap planning and by Doctor for trend analysis.
+     Do not delete rows — they form the project's delivery history. -->
+
+---
+
+## Delivery Metrics
+
+| Episode | Feature | Type | Cycle Days | Test Pass % | Review Rounds | Strikes | Tier1 Overrides | Security Findings | Tasks | Date Shipped |
+|---------|---------|------|-----------|-------------|---------------|---------|-----------------|-------------------|-------|-------------|
+<!-- No episodes yet. -->
+
+---
+
+## Trend Summary
+
+<!-- Updated by Jarvis after every ship. Shows how the latest episode
+     compares to the project average and the previous episode. -->
+
+No trends yet — ship your first feature to start tracking.
+```
+
+### 5h. `docs/pdlc/memory/OVERVIEW.md`
 
 Create this file based on the `templates/OVERVIEW.md` structure. Fill in:
 

@@ -10,6 +10,7 @@ docs/pdlc/
     STATE.md               <- current phase, active task, party mode, phase history
     ROADMAP.md             <- prioritized feature backlog (F-NNN IDs, separate priority column)
     DECISIONS.md           <- decision registry (ADR format, links to MOM files)
+    METRICS.md             <- delivery metrics table + trend summary (append-only)
     CHANGELOG.md           <- what shipped and when
     OVERVIEW.md            <- aggregated delivery state
     episodes/
