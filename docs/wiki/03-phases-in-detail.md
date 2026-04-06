@@ -102,7 +102,7 @@ flowchart TD
     style TOSHIP fill:#1e3a5f,color:#fff
 ```
 
-**Neo** leads the entire phase.
+**Neo** leads the entire phase. Pre-flight includes a remote sync check and a Beads task verification — if no tasks exist for the feature (Plan was skipped or tasks were never created), PDLC redirects to the Plan sub-phase or helps create tasks on the spot.
 
 | Sub-phase | Meetings | What happens |
 |-----------|----------|-------------|
