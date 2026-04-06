@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     subgraph SETUP["Prerequisites (Haiku model)"]
-        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> AT[Agent Teams\ncheck] --> DOLT[Dolt] --> BEADS[Beads]
+        GIT[Git\ninit + .gitignore] --> GH[GitHub\nremote + auth] --> BREW[Homebrew] --> AT[Agent Teams\ncheck] --> DOLT[Dolt] --> BEADS[Beads] --> CICD[CI/CD\ndetect]
     end
     subgraph CORE["Project Setup (Opus model)"]
         QUESTIONS[Socratic\nquestions] --> MEMORY[Generate\nmemory files] --> ROADMAP[Roadmap\nideation] --> BDINIT[bd init]
@@ -27,6 +27,7 @@ Run once per project. **Oracle** leads.
 3. **Homebrew** — install if missing on macOS (needed for Dolt, gh); optional on Linux
 4. **Dolt** — SQL database for Beads (`brew install dolt` or official script)
 5. **Beads** — task manager (`npm install -g @beads/bd`)
+6. **CI/CD detection** — checks for GitHub Actions, npm deploy, Makefile, etc. Informational only — if not found, Pulse will help set it up during `/pdlc ship`
 
 After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
@@ -132,7 +133,7 @@ flowchart LR
 
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
-| **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger |
+| **Ship** | Pulse | Merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger. If no pipeline exists, offers to scaffold GitHub Actions or npm deploy script. |
 | **Verify** | Pulse | Smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |

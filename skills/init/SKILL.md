@@ -233,7 +233,24 @@ Verify: `bd --version`. Do not proceed until `bd --version` succeeds.
 > "Beads is required. Install it manually before running `/pdlc init`:
 > `npm install -g @beads/bd`"
 
-> **End of model override.** Steps 1a–1e are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
+**1f. Detect CI/CD pipeline.**
+
+Check for an existing CI/CD setup in this order:
+
+1. `package.json` → does it have a `deploy` script? (`npm run deploy`)
+2. `Makefile` → does it have a `deploy` target? (`make deploy`)
+3. `.github/workflows/` → do any workflow files exist?
+4. Other CI configs: `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/config.yml`, `bitbucket-pipelines.yml`
+
+**If any CI/CD is found:**
+> "CI/CD: ✓ detected ([what was found — e.g., 'GitHub Actions workflow', 'npm deploy script'])"
+
+**If no CI/CD is found:**
+> "CI/CD: not detected. That's fine for now — when you get to `/pdlc ship`, Pulse (DevOps) will help you set up a deployment pipeline. You can also set one up manually at any time."
+
+This is informational only — no CI/CD is not a blocker for init. The finding is noted so that `/pdlc ship` Step 9 knows to offer scaffolding instead of just saying "deploy manually."
+
+> **End of model override.** Steps 1a–1f are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
 
 ---
 

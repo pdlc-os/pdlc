@@ -108,9 +108,32 @@ Pulse role: detect the CI/CD setup in this order:
    gh workflow run [workflow-filename] --ref main
    ```
    (requires GitHub CLI `gh` to be authenticated)
-4. If none of the above are found, tell the user:
-   > "No CI/CD deployment command detected. Please trigger your deployment manually and confirm when the deployment is complete."
-   > Wait for user confirmation before proceeding to Verify.
+4. If none of the above are found, offer to scaffold a pipeline:
+
+   > "No CI/CD pipeline detected. Would you like me to set one up?
+   >
+   > - **GitHub Actions** — I'll create a `.github/workflows/deploy.yml` tailored to your tech stack from CONSTITUTION.md
+   > - **npm deploy script** — I'll add a `deploy` script to `package.json` that you can customize
+   > - **Skip** — deploy manually this time; I'll ask again next ship"
+
+   **If the user chooses GitHub Actions:**
+   Read `docs/pdlc/memory/CONSTITUTION.md` for the tech stack. Generate a deployment workflow file at `.github/workflows/deploy.yml` that:
+   - Triggers on push to `main`
+   - Installs dependencies for the declared stack
+   - Runs the Constitution's required test gates
+   - Deploys (placeholder step the user customizes for their hosting provider)
+   
+   Commit the workflow file: `git add .github/workflows/deploy.yml && git commit -m "ci: add deployment workflow"`
+   Push: `git push origin main`
+   Then trigger: `gh workflow run deploy.yml --ref main`
+
+   **If the user chooses npm deploy script:**
+   Add a `deploy` script to `package.json` with a placeholder command. Tell the user to customize it for their deployment target.
+   Run: `npm run deploy`
+
+   **If the user chooses Skip:**
+   > "No problem. Please trigger your deployment manually and confirm when it's complete."
+   Wait for user confirmation before proceeding to Verify.
 
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Verify`
