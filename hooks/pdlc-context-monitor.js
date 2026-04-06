@@ -1,12 +1,40 @@
 #!/usr/bin/env node
 // pdlc-context-monitor.js — PDLC PostToolUse hook for Claude Code
-// Fires after every tool execution; injects context warnings when context usage
-// is high, and auto-checkpoints STATE.md on CRITICAL.
+// Fires after every tool execution; estimates context usage from tool call
+// patterns, injects warnings when usage is high, and auto-checkpoints
+// STATE.md on CRITICAL.
 
 'use strict';
 
 const fs   = require('fs');
 const path = require('path');
+
+// ── Configuration ────────────────────────────────────────────────────────────
+
+// Claude's context window size in tokens (1M for Opus 4.6)
+const CONTEXT_WINDOW = 1_000_000;
+
+// Warning thresholds (percentage of estimated context usage)
+const THRESHOLD_WARNING  = 50;  // warn every 5 tool calls
+const THRESHOLD_CRITICAL = 65;  // warn every tool call + auto-checkpoint
+
+// Rough token estimates per tool call type
+const TOKEN_ESTIMATES = {
+  Read:         2000,   // average file read
+  Grep:         500,    // search results
+  Glob:         200,    // file list
+  Bash:         1000,   // command output
+  Edit:         300,    // small diff
+  Write:        500,    // file content echoed back
+  Agent:        3000,   // subagent response
+  WebFetch:     2000,   // web content
+  WebSearch:    500,    // search results
+  NotebookEdit: 1000,   // notebook cell
+  default:      500,    // unknown tool type
+};
+
+// Each conversation turn (user message + assistant response) costs roughly this
+const TURN_OVERHEAD = 1500;
 
 // ── Bridge file helpers ───────────────────────────────────────────────────────
 function readBridge(bridgePath) {
@@ -27,23 +55,22 @@ function writeBridge(bridgePath, data) {
 }
 
 // ── STATE.md checkpoint update ────────────────────────────────────────────────
-// Replaces the JSON block inside the "## Context Checkpoint" section.
-function updateContextCheckpoint(stateMdPath, sessionId) {
+function updateContextCheckpoint(stateMdPath, sessionId, toolCount, usedPct) {
   try {
     let content = fs.readFileSync(stateMdPath, 'utf8');
 
     const checkpoint = {
-      triggered_at: new Date().toISOString(),
-      session_id:   sessionId,
-      active_task:  null,   // hooks don't have task context — Claude fills this in
-      sub_phase:    null,
+      triggered_at:     new Date().toISOString(),
+      session_id:       sessionId,
+      tool_count:       toolCount,
+      estimated_usage:  `${usedPct}%`,
+      active_task:      null,   // hooks don't have task context — Claude fills this in
+      sub_phase:        null,
       work_in_progress: null,
-      next_action:  null,
-      files_open:   [],
+      next_action:      null,
+      files_open:       [],
     };
 
-    // Replace the JSON block inside the Context Checkpoint section.
-    // The block starts with ```json and ends with ``` on its own line.
     const jsonBlock = '```json\n' + JSON.stringify(checkpoint, null, 2) + '\n```';
     const updated   = content.replace(
       /```json[\s\S]*?```/,
@@ -58,6 +85,30 @@ function updateContextCheckpoint(stateMdPath, sessionId) {
   }
 }
 
+// ── Estimate tokens from tool result ─────────────────────────────────────────
+function estimateToolTokens(toolName, input, output) {
+  let tokens = TOKEN_ESTIMATES[toolName] || TOKEN_ESTIMATES.default;
+
+  // If we have actual output content, estimate from its length
+  // Rough rule: 1 token ≈ 4 characters
+  if (output && typeof output === 'string') {
+    const outputTokens = Math.ceil(output.length / 4);
+    tokens = Math.max(tokens, outputTokens);
+  }
+
+  // For Read tool, check if limit was specified (smaller reads = fewer tokens)
+  if (toolName === 'Read' && input && input.limit) {
+    tokens = Math.min(tokens, input.limit * 80); // ~80 chars per line
+  }
+
+  // For Agent tool, responses tend to be large
+  if (toolName === 'Agent') {
+    tokens = Math.max(tokens, 3000);
+  }
+
+  return tokens;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 function main() {
   let input = {};
@@ -66,56 +117,96 @@ function main() {
     const raw = fs.readFileSync(0, 'utf8').trim();
     if (raw) input = JSON.parse(raw);
   } catch (_) {
-    // Unreadable stdin — proceed normally
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }
 
-  const sessionId = input.session_id || 'unknown';
-  const cwd       = input.cwd        || process.cwd();
+  const sessionId  = input.session_id || 'unknown';
+  const cwd        = input.cwd        || process.cwd();
+  const toolName   = input.tool_name  || 'unknown';
+  const toolInput  = input.tool_input || {};
+  const toolOutput = (input.tool_result && input.tool_result.content) || '';
 
   const bridgePath  = `/tmp/pdlc-ctx-${sessionId}.json`;
   const stateMdPath = path.join(cwd, 'docs', 'pdlc', 'memory', 'STATE.md');
 
-  // ── Read bridge file ────────────────────────────────────────────────────────
+  // ── Read or initialize bridge file ──────────────────────────────────────────
   let bridge = readBridge(bridgePath);
 
   if (!bridge) {
-    // First time we've seen this session — create defaults and proceed quietly
-    writeBridge(bridgePath, { used_pct: 0, tool_count: 0, session_id: sessionId });
-    process.stdout.write(JSON.stringify({ continue: true }));
-    process.exit(0);
+    bridge = {
+      session_id:      sessionId,
+      tool_count:      0,
+      estimated_tokens: 0,
+      used_pct:        0,
+      warnings_sent:   0,
+      critical_sent:   false,
+      started_at:      new Date().toISOString(),
+    };
   }
 
-  const usedPct  = typeof bridge.used_pct   === 'number' ? bridge.used_pct   : 0;
-  const toolCount = (typeof bridge.tool_count === 'number' ? bridge.tool_count : 0) + 1;
+  // ── Update counters ─────────────────────────────────────────────────────────
+  const toolCount      = (bridge.tool_count || 0) + 1;
+  const toolTokens     = estimateToolTokens(toolName, toolInput, toolOutput);
+  const totalTokens    = (bridge.estimated_tokens || 0) + toolTokens + TURN_OVERHEAD;
+  const usedPct        = Math.min(99, Math.round((totalTokens / CONTEXT_WINDOW) * 100));
 
-  // Write updated tool_count immediately (before any early exit)
-  writeBridge(bridgePath, Object.assign({}, bridge, {
-    tool_count: toolCount,
-    session_id: sessionId,
-  }));
+  // Write updated bridge immediately
+  writeBridge(bridgePath, {
+    session_id:       sessionId,
+    tool_count:       toolCount,
+    estimated_tokens: totalTokens,
+    used_pct:         usedPct,
+    warnings_sent:    bridge.warnings_sent || 0,
+    critical_sent:    bridge.critical_sent || false,
+    started_at:       bridge.started_at || new Date().toISOString(),
+    updated_at:       new Date().toISOString(),
+  });
 
   // ── Threshold checks ────────────────────────────────────────────────────────
 
-  // CRITICAL: used_pct >= 80 — fire on every tool call (modulo 1 === 0 always true)
-  if (usedPct >= 80) {
+  // CRITICAL: >= 65% — fire every tool call, auto-checkpoint
+  if (usedPct >= THRESHOLD_CRITICAL) {
     // Auto-save checkpoint in STATE.md
-    updateContextCheckpoint(stateMdPath, sessionId);
+    updateContextCheckpoint(stateMdPath, sessionId, toolCount, usedPct);
+
+    // Update bridge to record critical was sent
+    writeBridge(bridgePath, {
+      session_id:       sessionId,
+      tool_count:       toolCount,
+      estimated_tokens: totalTokens,
+      used_pct:         usedPct,
+      warnings_sent:    (bridge.warnings_sent || 0) + 1,
+      critical_sent:    true,
+      started_at:       bridge.started_at,
+      updated_at:       new Date().toISOString(),
+    });
 
     const msg =
-      `🚨 PDLC CRITICAL: Context at ${usedPct}% — PDLC is auto-saving your position. ` +
-      `Please finish this tool call and then run /pdlc build to resume from STATE.md.`;
+      `🚨 PDLC CRITICAL: Context estimated at ~${usedPct}% (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
+      `Auto-saving checkpoint to STATE.md. Wrap up the current task cleanly — ` +
+      `update STATE.md with your progress and finish the active step before context compacts.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
   }
 
-  // WARNING: used_pct >= 65 — fire every 5 tool calls
-  if (usedPct >= 65 && toolCount % 5 === 0) {
+  // WARNING: >= 50% — fire every 5 tool calls
+  if (usedPct >= THRESHOLD_WARNING && toolCount % 5 === 0) {
+    writeBridge(bridgePath, {
+      session_id:       sessionId,
+      tool_count:       toolCount,
+      estimated_tokens: totalTokens,
+      used_pct:         usedPct,
+      warnings_sent:    (bridge.warnings_sent || 0) + 1,
+      critical_sent:    bridge.critical_sent || false,
+      started_at:       bridge.started_at,
+      updated_at:       new Date().toISOString(),
+    });
+
     const msg =
-      `⚠️  PDLC Context Warning: Context at ${usedPct}% — recommend wrapping up current task ` +
-      `and saving state to docs/pdlc/memory/STATE.md before context compacts.`;
+      `⚠️  PDLC Context Warning: ~${usedPct}% estimated (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
+      `Consider wrapping up the current task and saving state to STATE.md.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);

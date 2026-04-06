@@ -143,26 +143,12 @@ function main() {
     phase = parsed.phase;
     task  = parsed.task;
 
-    // Estimate used_pct from STATE.md mtime if bridge doesn't already have it
-    if (!bridge.used_pct) {
-      const stat = fs.statSync(stateMdPath);
-      const ageMs = Date.now() - stat.mtimeMs;
-      // Rough heuristic: assume context grows ~1% per minute of activity
-      // Cap at 95 so we never claim 100% just from age
-      usedPct = Math.min(95, Math.round(ageMs / 60000));
-    }
+    // used_pct is written by pdlc-context-monitor.js (PostToolUse hook)
+    // which tracks tool calls and estimates token accumulation.
+    // The statusline just reads it — it doesn't compute its own estimate.
   } catch (_) {
     stateExists = false;
   }
-
-  // ── Update bridge file with latest used_pct ─────────────────────────────────
-  const updatedBridge = Object.assign({}, bridge, {
-    used_pct:   usedPct,
-    session_id: sessionId,
-    cwd,
-    updated_at: new Date().toISOString(),
-  });
-  writeBridge(bridgePath, updatedBridge);
 
   // ── Build output string ─────────────────────────────────────────────────────
   if (!stateExists) {
