@@ -139,6 +139,22 @@ flowchart LR
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped` |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
+### Abandoning a feature with `/pdlc abandon`
+
+If a feature is discovered to be unviable mid-inception or mid-build, abandon it cleanly. Oracle leads.
+
+| Step | What happens |
+|------|-------------|
+| **Confirm** | User explains why the feature is being abandoned |
+| **Record** | ADR entry in DECISIONS.md with reason, work completed, phase reached |
+| **Close tasks** | All open Beads tasks for the feature closed with abandonment note |
+| **Update ROADMAP** | Status set to `Dropped` with date and episode reference |
+| **Episode** | Compact abandonment episode with reason, work completed, lessons learned |
+| **Preserve** | PRD, design docs, brainstorm log, and feature branch kept for reference (not deleted) |
+| **Next feature** | Oracle presents next roadmap item — continue, pause, or switch |
+
+Abandonment is permanent in ROADMAP.md. To revisit the feature later, add it as a new entry with a new `F-NNN` ID.
+
 ### Pausing and resuming with `/pdlc pause` and `/pdlc resume`
 
 You can explicitly pause the current feature at any point and resume it later.

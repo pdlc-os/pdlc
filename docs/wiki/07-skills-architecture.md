@@ -90,6 +90,9 @@ skills/
   doctor/
     SKILL.md                          <- comprehensive health check (8 checks)
 
+  abandon/
+    SKILL.md                          <- drop in-progress feature + cleanup
+
   rollback/
     SKILL.md                          <- revert shipped feature + post-mortem
 

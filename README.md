@@ -186,6 +186,14 @@ This triggers a **Decision Review Party** where all 9 agents assess cross-cuttin
 
 This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
+If a feature turns out to be unviable, abandon it cleanly:
+
+```
+/pdlc abandon
+```
+
+This closes all Beads tasks, marks the feature as Dropped in the roadmap, creates an abandonment episode, and hands off to the next feature. All artifacts (PRD, design docs, branch) are preserved for reference.
+
 Need to step away or switch context? Pause cleanly and resume later:
 
 ```
