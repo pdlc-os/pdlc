@@ -14,6 +14,12 @@ During Inception (`/pdlc brainstorm`), PDLC can optionally run a local Node.js +
 
 The server shuts down automatically when Inception ends. Mockup files persist in `.pdlc/brainstorm/` for reference.
 
+**Error handling:**
+- **Port conflicts:** If the random port is occupied, the server automatically retries up to 5 different ports
+- **Health endpoint:** `GET /health` returns server status, uptime, screen count, and connected clients — used by the brainstorm flow to verify the server is alive before each write
+- **Crash recovery:** Uncaught exceptions are caught and written to `$STATE_DIR/server-stopped` with the reason. The brainstorm flow detects this, informs you, and auto-restarts
+- **Startup validation:** The start script verifies the server responds to `/health` after startup, not just that the process is running
+
 
 ---
 

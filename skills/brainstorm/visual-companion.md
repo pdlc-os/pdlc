@@ -66,7 +66,20 @@ scripts/start-server.sh --project-dir $(pwd) --feature [feature-name] --host 0.0
 
 ### 1 — Check server is alive, then write HTML
 
-Before each write, check that `$STATE_DIR/server-info` exists. If it doesn't (or `$STATE_DIR/server-stopped` exists), the server has shut down — restart it with `start-server.sh` before continuing. The server auto-exits after 30 minutes of inactivity.
+Before each write, verify the server is running:
+
+1. Check that `$STATE_DIR/server-info` exists. If it doesn't (or `$STATE_DIR/server-stopped` exists), the server has shut down.
+2. If `server-info` exists, call the health endpoint to verify it's actually responding:
+   ```bash
+   curl -sf "http://[url]/health"
+   ```
+   The health endpoint returns `{"status":"ok","uptime":"...","screens":N,"clients":N}`.
+3. If the health check fails or the server has stopped, restart it with `start-server.sh` before continuing. The server auto-exits after 30 minutes of inactivity.
+
+**If the server crashed** (check `$STATE_DIR/server-stopped` for the reason), inform the user:
+> "The visual companion server stopped unexpectedly: [reason]. Restarting..."
+
+Then restart. The server handles port conflicts automatically — if the original port is now occupied, it retries up to 5 random ports.
 
 Write your HTML content to a new file in `screen_dir`:
 - Use semantic filenames: `navigation.html`, `dashboard-layout.html`, `data-model.html`

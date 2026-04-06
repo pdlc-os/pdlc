@@ -131,6 +131,20 @@ function getNewestScreen() {
 
 function handleRequest(req, res) {
   touchActivity();
+
+  // Health check endpoint — used by start-server.sh and brainstorm flow to verify server is alive
+  if (req.method === 'GET' && req.url === '/health') {
+    const screenCount = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.html')).length;
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      status: 'ok',
+      uptime: Math.round((Date.now() - lastActivity) / 1000) + 's idle',
+      screens: screenCount,
+      clients: clients.size,
+    }));
+    return;
+  }
+
   if (req.method === 'GET' && req.url === '/') {
     const screenFile = getNewestScreen();
     let html = screenFile
@@ -339,18 +353,60 @@ function startServer() {
     }
   }
 
-  server.listen(PORT, HOST, () => {
-    const info = JSON.stringify({
-      type: 'server-started', port: Number(PORT), host: HOST,
-      url_host: URL_HOST, url: 'http://' + URL_HOST + ':' + PORT,
-      screen_dir: CONTENT_DIR, state_dir: STATE_DIR
+  // Port retry logic — try up to 5 random ports if the first is occupied
+  let attempts = 0;
+  const MAX_PORT_ATTEMPTS = 5;
+  let currentPort = Number(PORT);
+
+  function tryListen() {
+    server.listen(currentPort, HOST, () => {
+      const info = JSON.stringify({
+        type: 'server-started', port: currentPort, host: HOST,
+        url_host: URL_HOST, url: 'http://' + URL_HOST + ':' + currentPort,
+        screen_dir: CONTENT_DIR, state_dir: STATE_DIR
+      });
+      console.log(info);
+      fs.writeFileSync(path.join(STATE_DIR, 'server-info'), info + '\n');
     });
-    console.log(info);
-    fs.writeFileSync(path.join(STATE_DIR, 'server-info'), info + '\n');
+  }
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && attempts < MAX_PORT_ATTEMPTS) {
+      attempts++;
+      currentPort = 49152 + Math.floor(Math.random() * 16383);
+      console.error(JSON.stringify({ type: 'port-retry', attempt: attempts, port: currentPort, reason: 'EADDRINUSE' }));
+      server.close();
+      tryListen();
+    } else {
+      console.error(JSON.stringify({ type: 'server-error', error: err.message, code: err.code }));
+      fs.writeFileSync(
+        path.join(STATE_DIR, 'server-stopped'),
+        JSON.stringify({ reason: 'startup error: ' + err.message, timestamp: Date.now() }) + '\n'
+      );
+      process.exit(1);
+    }
   });
+
+  tryListen();
 }
 
 if (require.main === module) {
+  // Catch uncaught exceptions — write crash info to state dir so the brainstorm flow can detect it
+  process.on('uncaughtException', (err) => {
+    console.error(JSON.stringify({ type: 'server-crash', error: err.message, stack: err.stack }));
+    try {
+      fs.writeFileSync(
+        path.join(STATE_DIR, 'server-stopped'),
+        JSON.stringify({ reason: 'crash: ' + err.message, timestamp: Date.now() }) + '\n'
+      );
+    } catch (_) {}
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    console.error(JSON.stringify({ type: 'server-unhandled-rejection', error: String(reason) }));
+  });
+
   startServer();
 }
 

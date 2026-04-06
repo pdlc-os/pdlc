@@ -162,6 +162,24 @@ for i in {1..50}; do
       echo "{\"error\": \"Server started but was killed. Retry in a persistent terminal with: $SCRIPT_DIR/start-server.sh${PROJECT_DIR:+ --project-dir $PROJECT_DIR}${FEATURE_NAME:+ --feature $FEATURE_NAME} --host $BIND_HOST --url-host $URL_HOST --foreground\"}"
       exit 1
     fi
+
+    # Extract port from log and verify with HTTP health check
+    SERVER_PORT=$(grep "server-started" "$LOG_FILE" | head -1 | sed 's/.*"port":\([0-9]*\).*/\1/')
+    if [[ -n "$SERVER_PORT" ]]; then
+      health_ok="false"
+      for h in {1..10}; do
+        if curl -sf "http://${URL_HOST}:${SERVER_PORT}/health" >/dev/null 2>&1; then
+          health_ok="true"
+          break
+        fi
+        sleep 0.2
+      done
+      if [[ "$health_ok" != "true" ]]; then
+        echo "{\"error\": \"Server process is running but /health endpoint is not responding on port $SERVER_PORT\"}"
+        exit 1
+      fi
+    fi
+
     grep "server-started" "$LOG_FILE" | head -1
     exit 0
   fi
