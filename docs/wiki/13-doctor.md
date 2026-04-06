@@ -17,7 +17,7 @@ Run `/pdlc doctor` at any time to scan your project for inconsistencies between 
 | 1 | **State file integrity** | Missing or empty memory files from `docs/pdlc/memory/` |
 | 2 | **STATE.md consistency** | Mismatched phase/sub-phase, active feature during Idle, stale checkpoints |
 | 3 | **ROADMAP vs STATE vs reality** | Multiple In Progress features, shipped features without episodes, orphaned statuses |
-| 4 | **Beads task graph vs STATE** | Orphaned claimed tasks, "done" tasks with no commits, open tasks on shipped features, circular dependencies |
+| 4 | **Beads health + task graph vs STATE** | Runs `bd doctor` for internal integrity, then: orphaned claimed tasks, "done" tasks with no commits, open tasks on shipped features, circular dependencies. Uses Haiku model. |
 | 5 | **Document vs code drift** | PRD acceptance criteria without tests, architecture docs describing non-existent components, API contract drift, removed functionality still in OVERVIEW |
 | 6 | **Git history analysis** | Revert/rollback detection, non-PDLC commits, multi-user edits to PDLC files, cross-session changes |
 | 7 | **Pending file health** | Stale `.pending-party.json` or `.pending-decision.json`, conflicting pending files |

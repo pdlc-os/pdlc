@@ -91,7 +91,24 @@ Cross-reference roadmap status with actual state:
 
 ---
 
-## Check 4 — Beads task graph vs STATE.md
+## Check 4 — Beads health and task graph vs STATE.md
+
+> **Model override:** This check uses the **Haiku** model. Beads diagnostics and task graph operations are mechanical CLI work.
+
+### 4a — Run Beads doctor
+
+Run: `bd doctor`
+
+This is Beads' built-in diagnostic. It checks the `.beads/` database for internal corruption, orphaned records, and integrity issues. Capture the output.
+
+**If `bd doctor` reports issues:**
+- Include each issue as a finding with appropriate severity
+- `bd doctor` may suggest fix commands — capture those for the fix phase
+
+**If `bd doctor` passes clean:**
+> "Beads internal health: ✓ clean"
+
+### 4b — Cross-reference Beads with PDLC state
 
 Cross-reference Beads tasks with project state:
 
@@ -103,10 +120,13 @@ Cross-reference Beads tasks with project state:
 - **Stale ready queue** — tasks in ready state for >7 days with no progress
 
 **Findings:**
+- `bd doctor` issue → `[CRITICAL/WARNING] Beads internal: [issue from bd doctor]`
 - Orphaned claimed task → `[WARNING] Beads task [id] is claimed but STATE.md has no active task`
 - Done without commits → `[WARNING] Beads task [id] marked done but no matching git commits found`
 - Open tasks on shipped feature → `[CRITICAL] Feature [F-NNN] is Shipped but [N] Beads tasks are still open`
 - Circular dependency → `[CRITICAL] Circular dependency detected in task graph: [details]`
+
+> **End of model override.** Return to Neo's assigned model (Opus) for remaining checks.
 
 ---
 
