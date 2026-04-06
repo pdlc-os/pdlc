@@ -1,7 +1,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-statusline.js"
+    "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-statusline.js"
   },
   "hooks": {
     "PostToolUse": [
@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-context-monitor.js"
+            "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-context-monitor.js"
           }
         ]
       }
@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
+            "command": "node ${PDLC_PLUGIN_ROOT}/hooks/pdlc-guardrails.js"
           }
         ]
       }
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/pdlc-session-start.sh"
+            "command": "bash ${PDLC_PLUGIN_ROOT}/hooks/pdlc-session-start.sh"
           }
         ]
       }

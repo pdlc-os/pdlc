@@ -49,7 +49,7 @@ function deepMerge(target, source) {
 function resolvePlaceholders(obj) {
   return JSON.parse(
     JSON.stringify(obj).replace(
-      /\$\{CLAUDE_PLUGIN_ROOT\}/g,
+      /\$\{PDLC_PLUGIN_ROOT\}/g,
       PLUGIN_ROOT.replace(/\\/g, '/')
     )
   );
