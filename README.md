@@ -16,7 +16,10 @@ PDLC combines the best of four Claude Code workflows:
 
 ### Smart-handling of Tokens & Context
 
-PDLC is built to minimize context window consumption. It estimates context usage by tracking tool calls and token accumulation, warning at ~50% estimated usage and auto-checkpointing STATE.md at ~65% so no work is lost (thresholds are configurable in CONSTITUTION.md). Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
+- PDLC is built to minimize context window consumption. It estimates context usage by tracking tool calls and token accumulation, warning at ~50% estimated usage and auto-checkpointing STATE.md at ~65% so no work is lost (thresholds are configurable in CONSTITUTION.md).
+- Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. 
+- Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. 
+- Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
 
 ### Multi-developer ready
 

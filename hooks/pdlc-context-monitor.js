@@ -204,8 +204,8 @@ function main() {
 
     const msg =
       `🚨 PDLC CRITICAL: Context estimated at ~${usedPct}% (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `Auto-saving checkpoint to STATE.md. Wrap up the current task cleanly — ` +
-      `update STATE.md with your progress and finish the active step before context compacts.`;
+      `Auto-saving checkpoint to STATE.md. Finish the current step, then run /pdlc pause to save your position. ` +
+      `The next session will resume from this checkpoint automatically.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
@@ -226,7 +226,7 @@ function main() {
 
     const msg =
       `⚠️  PDLC Context Warning: ~${usedPct}% estimated (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `Consider wrapping up the current task and saving state to STATE.md.`;
+      `Consider finishing the current step, then run /pdlc pause to save your position cleanly.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
