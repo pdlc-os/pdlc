@@ -11,7 +11,7 @@ const { execSync } = require('child_process');
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
 const VERSION = require(path.join(PLUGIN_ROOT, 'package.json')).version;
 const GLOBAL_SETTINGS_PATH = path.join(os.homedir(), '.claude', 'settings.json');
-const PLUGIN_SETTINGS_PATH = path.join(PLUGIN_ROOT, '.claude', 'settings.json');
+const PLUGIN_SETTINGS_PATH = path.join(PLUGIN_ROOT, 'config', 'claude-settings.json');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
