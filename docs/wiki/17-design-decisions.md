@@ -58,7 +58,7 @@ One file to override all defaults. `CONSTITUTION.md` governs tech stack, archite
 
 ### Guardrails cover all write tools, not just Bash
 
-Destructive actions can happen through Claude's Edit and Write tools, not just Bash commands. A `sed` editing CONSTITUTION.md is caught by the Bash guardrail, but a direct Edit tool call would bypass it. So guardrails fire on Bash, Edit, and Write — checking if the target file is a protected PDLC memory file. CONSTITUTION.md, STATE.md, and DECISIONS.md are Tier 2 (pause and confirm); ROADMAP.md, INTENT.md, OVERVIEW.md, and CHANGELOG.md are Tier 3 (logged warning). This prevents state drift from direct edits while not blocking PDLC's own internal writes (which go through the skill files, not through the user).
+Destructive actions can happen through Claude's Edit and Write tools, not just Bash commands. A `sed` editing CONSTITUTION.md is caught by the Bash guardrail, but a direct Edit tool call would bypass it. So guardrails fire on Bash, Edit, and Write — checking if the target file is a protected PDLC memory file. CONSTITUTION.md and DECISIONS.md are Tier 2 (pause and confirm); STATE.md, ROADMAP.md, INTENT.md, OVERVIEW.md, and CHANGELOG.md are Tier 3 (logged warning). STATE.md was moved from Tier 2 to Tier 3 because it is a working file that PDLC commands update on every phase transition — blocking those edits interrupted PDLC's own operational flow (e.g., init couldn't proceed to brainstorm because the STATE.md update kept triggering Tier 2 confirmation blocks).
 
 ### Skills split into sub-files
 

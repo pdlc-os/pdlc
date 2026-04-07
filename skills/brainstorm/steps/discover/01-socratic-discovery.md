@@ -1,10 +1,8 @@
 # Step 2 — Socratic discovery
 
-Before asking the first question, print this notice in blue text using ANSI escape codes:
+Before asking the first question, print this notice:
 
-```
-\x1b[34mTip: You can type 'skip', 'done', 'generate', 'draft', or 'create' at any time to stop the questions and proceed with whatever information has been collected so far.\x1b[0m
-```
+> **Tip:** You can type `skip`, `done`, `generate`, `draft`, or `create` at any time to stop the questions and proceed with whatever information has been collected so far.
 
 **If divergent ideation was run (Step 0):** before asking the first question, review `[divergent-standouts]` from the brainstorm log. Use the standouts to sharpen the Socratic questions — reference specific standout ideas when asking about success metrics ("One idea that surfaced was X — does that direction change what success looks like?"), constraints ("Standout idea Y touched [area] — what constraints apply there?"), and risks ("Several ideas pointed toward Z — what assumptions are we making if we go that direction?"). Do not recite the standouts back verbatim; weave them into the questions naturally.
 

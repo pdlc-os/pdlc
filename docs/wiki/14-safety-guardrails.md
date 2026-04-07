@@ -22,7 +22,6 @@ PDLC stops and asks before proceeding. Individual items can be downgraded to Tie
 - Production database commands
 - Any external API write call (POST/PUT/DELETE to external URLs)
 - Modifying `CONSTITUTION.md` (via any tool — Bash, Edit, or Write)
-- Modifying `STATE.md` directly (normally managed by PDLC commands)
 - Modifying `DECISIONS.md` directly (append-only registry)
 - Closing all open Beads tasks at once
 
@@ -30,6 +29,7 @@ PDLC stops and asks before proceeding. Individual items can be downgraded to Tie
 
 PDLC proceeds and records the decision in `STATE.md`.
 
+- Modifying `STATE.md` directly (working file — PDLC commands update it on every phase transition)
 - Skipping a test layer
 - Overriding a Constitution rule
 - Accepting a Phantom security warning without fixing

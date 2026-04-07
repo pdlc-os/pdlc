@@ -171,8 +171,8 @@ When Claude enters a bug-fix loop during Construction (build → test → fix �
 | **Soft warnings only** | Security findings (Phantom) and test coverage gaps (Echo) are flagged but do not hard-block progress. Human decides: fix now, accept, or defer to tech debt. |
 | **Constitution overrides defaults** | Any rule in this document can be changed by editing `docs/pdlc/memory/CONSTITUTION.md`. The Constitution is the single source of truth for all project-specific rules. |
 | **Tier 1 hard blocks** | Force-push to `main`, dropping DB tables without a migration file, deleting files not created on the current branch, deploying with failing smoke tests, hardcoded secrets, critical dependency vulnerabilities — override via `/pdlc override-tier1` (double-RED confirmation, permanently logged). |
-| **Tier 2 pause & confirm** | `rm -rf`, `git reset --hard`, production DB migrations, editing `CONSTITUTION.md`/`STATE.md`/`DECISIONS.md` (via any tool — Bash, Edit, Write), closing all Beads tasks at once, any external API call that writes/posts/sends — PDLC stops and waits for explicit yes. |
-| **Tier 3 logged warnings** | Skipping a test layer, overriding a Constitution rule, accepting a Phantom security warning without fixing, accepting an Echo coverage gap, editing `ROADMAP.md`/`INTENT.md`/`OVERVIEW.md`/`CHANGELOG.md` directly — PDLC proceeds and records the decision in `STATE.md`. |
+| **Tier 2 pause & confirm** | `rm -rf`, `git reset --hard`, production DB migrations, editing `CONSTITUTION.md`/`DECISIONS.md` (via any tool — Bash, Edit, Write), closing all Beads tasks at once, any external API call that writes/posts/sends — PDLC stops and waits for explicit yes. |
+| **Tier 3 logged warnings** | Skipping a test layer, overriding a Constitution rule, accepting a Phantom security warning without fixing, accepting an Echo coverage gap, editing `STATE.md`/`ROADMAP.md`/`INTENT.md`/`OVERVIEW.md`/`CHANGELOG.md` directly — PDLC proceeds and records the decision in `STATE.md`. |
 
 ---
 

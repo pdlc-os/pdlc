@@ -32,7 +32,7 @@ If the command returns a "not a git repository" error, offer to initialize:
 **If the user accepts:**
 
 1. Run `git init`
-2. Ask the user: "Any additional paths to exclude from git? (Enter paths separated by commas, or press Enter to skip)"
+2. Ask the user: "Any additional paths to exclude from git? (Enter paths separated by commas, or say **skip** to continue with defaults)"
 3. Set up .gitignore with the required PDLC entries plus any user-provided paths:
    ```bash
    bash scripts/setup-gitignore.sh [extra paths as separate arguments, if any]

@@ -7,11 +7,9 @@
 
 > **Skip this step if the user accepted the brownfield repo scan in Step 2.** The scan already generated the memory files. Jump to Step 6.
 
-Before asking the first question, print this notice in blue text using ANSI escape codes:
+Before asking the first question, print this notice:
 
-```
-\x1b[34mTip: You can type 'skip' at any time to stop the questions and proceed with whatever information has been collected so far.\x1b[0m
-```
+> **Tip:** You can type `skip` at any time to stop the questions and proceed with whatever information has been collected so far.
 
 Ask the user the following questions **one at a time**. Wait for a complete answer before asking the next question. Do not batch questions together.
 

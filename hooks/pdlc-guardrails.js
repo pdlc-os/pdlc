@@ -186,11 +186,11 @@ const PROTECTED_FILES = {
   // Tier 2 — pause and confirm
   tier2: [
     'CONSTITUTION.md',
-    'STATE.md',
     'DECISIONS.md',
   ],
   // Tier 3 — logged warning
   tier3: [
+    'STATE.md',
     'ROADMAP.md',
     'INTENT.md',
     'OVERVIEW.md',

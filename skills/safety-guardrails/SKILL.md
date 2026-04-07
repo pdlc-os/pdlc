@@ -57,9 +57,9 @@ Tier 2 actions can be **downgraded to Tier 3** (proceed with logged warning only
 - Trigger: any HTTP `POST`, `PUT`, `PATCH`, or `DELETE` to an external URL (i.e. not `localhost` or `127.0.0.1`). Includes Slack webhooks, email APIs, payment processors, third-party services, GitHub API write calls.
 - Pause message: "About to make a [METHOD] request to [URL]. This is an external write operation. Confirm? (yes/no)"
 
-**5. Modifying CONSTITUTION.md**
-- Trigger: any write, edit, or overwrite of `docs/pdlc/memory/CONSTITUTION.md`.
-- Pause message: "About to modify CONSTITUTION.md. This changes the rules governing this project. Confirm? (yes/no)"
+**5. Modifying CONSTITUTION.md or DECISIONS.md**
+- Trigger: any write, edit, or overwrite of `docs/pdlc/memory/CONSTITUTION.md` or `docs/pdlc/memory/DECISIONS.md`.
+- Pause message: "About to modify [file]. This changes the rules/decisions governing this project. Confirm? (yes/no)"
 
 **6. Closing all open Beads tasks at once**
 - Trigger: any command that marks all remaining open Beads tasks as done in a single operation (e.g. `bd done --all`, or a scripted loop closing every task).
@@ -93,6 +93,11 @@ Log format:
 **4. Accepting an Echo test coverage gap**
 - Trigger: human marks an Echo finding (test coverage gap or missing edge case) in a review file as "Accept and move on" without requesting a fix.
 - Log entry must include: the finding title, the affected coverage area, and the human's stated reason (if provided).
+
+**5. Editing STATE.md directly**
+- Trigger: any write or edit of `docs/pdlc/memory/STATE.md` (via Edit, Write, Bash, or any other tool).
+- Note: STATE.md is a working file that PDLC commands update frequently during phase transitions. It is Tier 3 (not Tier 2) to avoid interrupting PDLC's own operational flow.
+- Log entry must include: what was changed and the current phase/step context.
 
 ---
 
