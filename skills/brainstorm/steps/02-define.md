@@ -5,9 +5,26 @@
 
 ### Step 7 — Generate the PRD draft
 
-Read `[brainstorm-log]` completely before writing anything. Use it as the authoritative record of everything discussed — divergent standouts, Socratic Q&A, adversarial findings and follow-up answers, ingested external context, and the confirmed discovery summary. The PRD must reflect the full evolved understanding captured there, not just the last few messages in context.
+**Before doing anything else**, send this message to the user so they know work is in progress:
 
-Auto-generate a complete PRD draft from the brainstorm log. Use `templates/PRD.md` as the exact structure. Fill in every section:
+> "Discovery is locked. I'm now reading the full brainstorm log and drafting the PRD — this takes a moment since I'm synthesizing everything from Socratic discovery, adversarial review, edge cases, and the confirmed summary. Hang tight."
+
+Then read `[brainstorm-log]` completely before writing anything. Use it as the authoritative record of everything discussed — divergent standouts, Socratic Q&A, adversarial findings and follow-up answers, ingested external context, and the confirmed discovery summary. The PRD must reflect the full evolved understanding captured there, not just the last few messages in context.
+
+Auto-generate a complete PRD draft from the brainstorm log. Use `templates/PRD.md` as the exact structure.
+
+**Write the PRD incrementally, section by section.** After writing each section to the file, send a short progress message to the user so they can see work is happening. Use this exact pattern:
+
+1. Create the file with frontmatter + **Overview** + **Problem Statement** + **Target User** → message: `"✏️ Overview, Problem Statement, Target User — done."`
+2. Append **Requirements** + **Assumptions** → message: `"✏️ Requirements, Assumptions — done."`
+3. Append **Acceptance Criteria** → message: `"✏️ Acceptance Criteria — done."`
+4. Append **User Stories** → message: `"✏️ User Stories — done."`
+5. Append **Non-Functional Requirements** + **Known Risks** + **Out of Scope** → message: `"✏️ NFRs, Known Risks, Out of Scope — done."`
+6. Append **Design Docs** (placeholder) + **Related Episodes** + **Approval** (blank) → message: `"✏️ PRD draft complete."`
+
+Each write appends to the file in progress — do not rewrite the entire file on each step. The groupings above balance progress visibility with avoiding excessive messages.
+
+Section requirements:
 
 - **Overview**: 2–4 sentences connecting the feature to a goal in INTENT.md
 - **Problem Statement**: concrete, feature-specific problem from the discovery

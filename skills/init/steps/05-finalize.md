@@ -5,15 +5,17 @@
 
 ## Step 7 — Initialize Beads
 
-Run: `bd init --quiet`
+Run the Beads initialization script:
+```bash
+bash scripts/init-beads.sh
+```
 
-This creates the `.beads/` directory in the project root, which stores the task graph locally.
+Parse the JSON output:
+- `"status":"created"` — Beads initialized successfully with Dolt server mode.
+- `"status":"already-exists"` — `.beads/` already present, nothing to do.
+- `"status":"error"` — show the `message` to the user and tell them:
 
-If `bd init` fails, show the user the error output and tell them:
-
-> "Beads initialization failed. Check the error above. Common causes: permissions issue in the project directory, or `bd` version mismatch. Re-run `bd init` manually to debug."
-
-If `bd init` succeeds, continue.
+> "Beads initialization failed. Check the error above. Common causes: permissions issue in the project directory, or `bd`/`dolt` version mismatch. Re-run `bd init --server` manually to debug."
 
 ---
 
@@ -59,8 +61,6 @@ Directories created:
   docs/pdlc/reviews/
 
 Beads initialized: .beads/ created in project root.
-
-Next step: run /pdlc brainstorm <feature-name> to start your first feature.
 ```
 
 **For brownfield projects (repo scan ran):**
@@ -82,12 +82,12 @@ Memory bank pre-populated from existing codebase:
 Beads initialized: .beads/ created in project root.
 
   ⚠  Inferred content is marked "(inferred — please verify)" throughout.
-     Review INTENT.md and OVERVIEW.md before your first /pdlc brainstorm session.
-
-Next step: run /pdlc brainstorm <feature-name> to start your first feature.
+     Review INTENT.md and OVERVIEW.md before your first brainstorm session.
 ```
 
 Replace counts (e.g. `[N] decisions`) with actual numbers from the scan.
+
+Do **not** print a "Next step: run /pdlc brainstorm..." message — Step 10 in `SKILL.md` handles the transition to brainstorm automatically.
 
 ---
 

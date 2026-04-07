@@ -32,18 +32,14 @@ If the command returns a "not a git repository" error, offer to initialize:
 **If the user accepts:**
 
 1. Run `git init`
-2. Create a `.gitignore` file (or append to existing) with at minimum:
+2. Ask the user: "Any additional paths to exclude from git? (Enter paths separated by commas, or press Enter to skip)"
+3. Set up .gitignore with the required PDLC entries plus any user-provided paths:
+   ```bash
+   bash scripts/setup-gitignore.sh [extra paths as separate arguments, if any]
    ```
-   node_modules/
-   .claude/
-   .env
-   .env.*
-   .DS_Store
-   *.log
-   ```
-   Ask the user: "Any additional paths to exclude from git? (Enter paths separated by commas, or press Enter to skip)"
-   Append any user-provided paths.
-3. Stage and commit:
+   For example, if the user said `tmp/, dist/`: `bash scripts/setup-gitignore.sh "tmp/" "dist/"`
+   If no extra paths: `bash scripts/setup-gitignore.sh`
+4. Stage and commit:
    ```bash
    git add .gitignore
    git commit -m "chore: initial commit with .gitignore"
@@ -137,103 +133,50 @@ If yes, walk through the relevant fix based on the error.
 
 Proceed to the next step regardless — GitHub is recommended but not strictly required for init.
 
-**1c. Verify Homebrew is installed.**
+**1c. Check Homebrew, Dolt, and Beads install status.**
 
-Run: `brew --version`
+Run the dependency check script:
+```bash
+bash scripts/check-deps.sh
+```
 
-**If Homebrew is found:**
-> "Homebrew: ✓ installed"
+Parse the JSON output. For each tool, report its status:
+- If the value is not `"missing"`: `"[Tool]: ✓ [version]"`
+- If `brew` is `"missing"`: prompt to install Homebrew (tell user to run `! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`). On Linux, Homebrew is optional — Dolt and gh can be installed via their official install scripts instead.
+- If `dolt` is `"missing"`: prompt to install (`brew install dolt` on macOS, or `sudo bash -c 'curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash'` on Linux)
+- If `bd` is `"missing"`: prompt to install (`npm install -g @beads/bd`)
+- If `gh` was flagged as missing in Step 1b and Homebrew is now available: `brew install gh`
 
-**If Homebrew is not found:**
+After all tools are resolved (installed or user declined), re-run `bash scripts/check-deps.sh` to confirm final state.
 
-> "Homebrew is not installed. It's used to install Dolt, Beads dependencies, and the GitHub CLI on macOS.
->
-> Install Homebrew now? (Y/n)"
-
-**If the user accepts:**
-
-Tell the user to run the official installer (it requires interactive input):
-> "Please run this command:
-> `! /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"`
->
-> Follow the prompts. I'll continue once it's done."
-
-Wait for the user to confirm, then verify with `brew --version`.
-
-**If the user declines:**
-> "Skipping Homebrew. You'll need to install Dolt and other dependencies manually."
-
-**If on Linux:** Homebrew is optional. Check if it's available; if not, note that Dolt and gh will be installed via their official install scripts instead. Do not prompt to install Homebrew on Linux unless the user asks.
-
-After Homebrew is verified (or skipped), install any tools noted as needed from earlier steps:
-- If `gh` was flagged as missing in Step 1b: `brew install gh` (or provide the Linux install script)
-- Verify: `gh --version`
+If any required tool (`dolt`, `bd`) is still missing after the user declined installation, warn them that PDLC cannot proceed without it.
 
 **1c-ii. Verify Agent Teams mode is enabled.**
 
-PDLC uses Claude Code's Agent Teams feature by default for multi-agent meetings. Check if it's enabled in the Claude Code settings.
+PDLC's installer (`npx @pdlc-os/pdlc`) automatically enables Agent Teams by adding `"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"` to the `env` block in the Claude Code settings file. This step verifies it's present — it should be unless the user modified their settings after install.
 
-Read `~/.claude/settings.json` (global) or `.claude/settings.local.json` (local). Check if `enableAgentTeams` (or the equivalent Agent Teams configuration) is present and set to `true`.
+Check `.claude/settings.local.json` (project-local) and `~/.claude/settings.json` (global). Look for `"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"` inside the `env` block.
 
-**If Agent Teams is enabled:**
+**If the env var is set to `"1"` in either file:**
 > "Agent Teams: ✓ enabled"
 
-**If Agent Teams is not enabled or the setting is missing:**
+**If it is missing or set to `"0"` (unexpected — may have been removed manually):**
 
-> "PDLC uses Agent Teams mode for multi-agent meetings — this gives each agent its own context window so they can collaborate directly and use tools to verify their analysis.
+> "Agent Teams isn't enabled — PDLC normally sets this up during install. It gives each agent its own context window so multi-agent meetings don't consume your main context.
 >
-> Enable Agent Teams now? (Y/n)"
+> Re-enable Agent Teams now? (Y/n)"
 
 **If the user accepts:**
-Update the appropriate settings file (`.claude/settings.local.json` for local installs, `~/.claude/settings.json` for global) to enable Agent Teams.
+Add `"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"` to the `env` block in `.claude/settings.local.json` (create the file and/or the `env` key if they don't exist). Do not overwrite other existing keys in the file.
 
-> "Agent Teams: ✓ enabled"
+> "Agent Teams: ✓ re-enabled"
 
 **If the user declines:**
-> "Agent Teams not enabled. PDLC will fall back to Subagent mode for all multi-agent meetings — agents will report to a primary agent instead of collaborating directly. You can enable Agent Teams later in your Claude Code settings."
+> "Agent Teams not enabled. PDLC will fall back to Subagent mode for all multi-agent meetings — agents will report to a primary agent instead of collaborating directly. You can enable it later by adding `\"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS\": \"1\"` to the `env` block in `.claude/settings.local.json`."
 
 Record the user's choice: if declined, set `Party Mode` to `subagents` in STATE.md once it's created (Step 5c). This ensures the orchestrator uses Subagent mode throughout.
 
-**1d. Verify Dolt is installed.**
-
-Run: `dolt version`
-
-**If Dolt is found:**
-> "Dolt: ✓ installed"
-
-**If Dolt is not found:**
-
-> "Dolt is a SQL database required by Beads for task storage. Install it now? (Y/n)"
-
-**If the user accepts:**
-- macOS (Homebrew available): `brew install dolt`
-- Linux: `sudo bash -c 'curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash'`
-
-Verify: `dolt version`
-
-**If the user declines:**
-> "Dolt is required by Beads. Install it manually before running `/pdlc init`."
-
-**1e. Verify Beads is installed.**
-
-Run: `bd --version`
-
-**If Beads is found:**
-> "Beads (bd): ✓ installed"
-
-**If Beads is not found:**
-
-> "Beads (`bd`) is required for PDLC's task management. Install it now? (Y/n)"
-
-**If the user accepts:** `npm install -g @beads/bd` (or `npm install --save-dev @beads/bd` for local installs)
-
-Verify: `bd --version`. Do not proceed until `bd --version` succeeds.
-
-**If the user declines:**
-> "Beads is required. Install it manually before running `/pdlc init`:
-> `npm install -g @beads/bd`"
-
-**1f. Detect CI/CD pipeline.**
+**1d. Detect CI/CD pipeline.**
 
 Check for an existing CI/CD setup in this order:
 
@@ -250,7 +193,7 @@ Check for an existing CI/CD setup in this order:
 
 This is informational only — no CI/CD is not a blocker for init. The finding is noted so that `/pdlc ship` Step 9 knows to offer scaffolding instead of just saying "deploy manually."
 
-**1g. Baseline security scan.**
+**1e. Baseline security scan.**
 
 Run a baseline security audit to surface existing vulnerabilities before any features are built.
 
@@ -284,7 +227,7 @@ If clean:
 
 This is a baseline — Phantom will do deeper security reviews during Construction, and security scans run again before every ship.
 
-> **End of model override.** Steps 1a–1g are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
+> **End of model override.** Steps 1a–1e are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
 
 ---
 

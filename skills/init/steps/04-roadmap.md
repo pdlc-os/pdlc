@@ -25,21 +25,56 @@ Wait for the user's feedback. Iterate until they're satisfied — add features t
 
 ---
 
-## Step 6b — Propose and validate priority sequence
+## Step 6b — Recommend build strategy and propose priority sequence
 
-Once the feature list is confirmed, analyze the features for:
-- **Dependencies** — which features are prerequisites for others (e.g., auth before billing, data model before API, core entities before reporting)
+Once the feature list is confirmed, recommend a build strategy based on whether this is a greenfield or brownfield project (determined in Step 2 of `01-setup.md`).
+
+**If greenfield (new/empty repo):** recommend the **Tracer Bullet** approach.
+
+> "Since this is a greenfield project, I'd recommend the **Tracer Bullet** approach — build one thin, end-to-end slice through the entire stack first (UI → API → DB → deploy). This proves the architecture works before you invest in breadth. Each subsequent feature widens the slice rather than adding new layers.
+>
+> The alternative is the **Layered** approach — build each horizontal layer fully before moving up (e.g., complete the data model, then all APIs, then all UI). This works well when the architecture is already proven.
+>
+> Which approach would you prefer?
+> - **Tracer bullet** *(recommended for new projects)*
+> - **Layered**"
+
+**If brownfield (existing codebase):** recommend the **Layered** approach.
+
+> "Since this project already has an established codebase and architecture, I'd recommend the **Layered** approach — build each feature fully within the existing architecture patterns before moving to the next. This minimizes disruption and leverages what's already proven.
+>
+> The alternative is the **Tracer Bullet** approach — build one thin, end-to-end slice first. This is useful if you're adding a major new subsystem that needs its own architecture validation.
+>
+> Which approach would you prefer?
+> - **Layered** *(recommended for existing projects)*
+> - **Tracer bullet**"
+
+Wait for the user's choice. Record the chosen strategy in `docs/pdlc/memory/ROADMAP.md` as a `## Build Strategy` section (added before the Feature Backlog table):
+
+```markdown
+## Build Strategy
+
+**Approach:** [Tracer Bullet | Layered]
+**Rationale:** [one sentence — e.g., "Greenfield project — prove the full stack works end-to-end before widening."]
+```
+
+Then analyze the features for priority sequencing, **using the chosen strategy to inform the order**:
+
+- **Tracer Bullet** — prioritize the feature that touches the most layers end-to-end. Subsequent features widen coverage. Dependencies still apply, but breadth-first layering is not the default.
+- **Layered** — prioritize foundational/infrastructure features first, then build upward. Dependencies and building blocks dominate the sequence.
+
+In both cases, also weigh:
 - **User value** — what delivers the most impact soonest
 - **Technical risk** — build the riskiest thing early to de-risk
 
 Propose a priority sequence with rationale:
 
-> "Here's the build order I'd recommend:
+> "Here's the build order I'd recommend (using the **[chosen strategy]** approach):
 >
 > | Priority | Feature | Rationale |
 > |----------|---------|-----------|
-> | 1 | [feature-slug] | [why first — e.g., 'foundation for all other features'] |
-> | 2 | [feature-slug] | [why second — e.g., 'depends on auth, enables billing'] |
+> | 1 | [feature-slug] | [why first — e.g., 'thin end-to-end slice through auth + API + UI'] |
+> | 2 | [feature-slug] | [why second — e.g., 'widens the slice to cover billing'] |
 > | ... | ... | ... |
 >
 > Does this sequence work for you?
@@ -83,6 +118,13 @@ Once the prioritized list is confirmed, update `docs/pdlc/memory/ROADMAP.md` wit
 
 **Project:** [project name]
 **Last updated:** [today's date YYYY-MM-DD]
+
+---
+
+## Build Strategy
+
+**Approach:** [Tracer Bullet | Layered]
+**Rationale:** [one sentence explaining why this approach was chosen]
 
 ---
 

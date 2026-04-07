@@ -39,31 +39,12 @@ After the repo scan completes and the user approves the findings, **skip Step 4 
 
 ## Step 3 — Create the directory structure
 
-Create the following directories (use `mkdir -p` to create all levels at once):
-
-```
-docs/pdlc/memory/episodes/
-docs/pdlc/prds/plans/
-docs/pdlc/design/
-docs/pdlc/reviews/
-```
-
-Run these commands:
+Run the directory setup script:
 ```bash
-mkdir -p docs/pdlc/memory/episodes
-mkdir -p docs/pdlc/prds/plans
-mkdir -p docs/pdlc/design
-mkdir -p docs/pdlc/reviews
-mkdir -p docs/pdlc/brainstorm
-mkdir -p docs/pdlc/mom
-mkdir -p docs/pdlc/archive/prds
-mkdir -p docs/pdlc/archive/design
-mkdir -p docs/pdlc/archive/reviews
-mkdir -p docs/pdlc/archive/brainstorm
-mkdir -p docs/pdlc/archive/mom
+bash scripts/init-dirs.sh "$(pwd)"
 ```
 
-Confirm each directory was created. Tell the user which directories were created.
+The script creates all PDLC directories idempotently. Parse the JSON output — report `new` (newly created) and `total` (all expected) counts to the user.
 
 ---
 
