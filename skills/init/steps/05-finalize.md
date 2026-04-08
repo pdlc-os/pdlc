@@ -11,11 +11,13 @@ bash scripts/init-beads.sh
 ```
 
 Parse the JSON output:
-- `"status":"created"` — Beads initialized successfully with Dolt server mode.
-- `"status":"already-exists"` — `.beads/` already present, nothing to do.
+- `"status":"created"` — Beads initialized successfully with Dolt embedded mode. Report: `"Beads: ✓ initialized"`
+- `"status":"already-exists"` — `.beads/` already present and database is healthy. Report: `"Beads: ✓ already initialized"`
+- `"status":"repaired"` — database existed but was unhealthy, `bd doctor --fix` repaired it. Report: `"Beads: ✓ repaired"`
+- `"status":"reinitialized"` — database was unhealthy and repair failed, re-initialized with `--force`. Report: `"Beads: ✓ re-initialized (previous database was unhealthy)"`
 - `"status":"error"` — show the `message` to the user and tell them:
 
-> "Beads initialization failed. Check the error above. Common causes: permissions issue in the project directory, or `bd`/`dolt` version mismatch. Re-run `bd init --server` manually to debug."
+> "Beads initialization failed. Check the error above. Common causes: permissions issue in the project directory, or `bd`/`dolt` version mismatch. Run `bd doctor` to diagnose."
 
 ---
 

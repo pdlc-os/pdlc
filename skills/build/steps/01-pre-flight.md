@@ -26,9 +26,17 @@ Read `docs/pdlc/memory/CONSTITUTION.md` completely. Note:
 - Coding standards (Section 2)
 - Definition of done (Section 5)
 
-### Step 2a — Verify Beads tasks exist
+### Step 2a — Verify Beads database and tasks exist
 
-Check that tasks were created for this feature during the Plan sub-phase:
+First, verify the Beads database is healthy:
+
+```bash
+bash scripts/init-beads.sh
+```
+
+If the status is `"error"`, stop and tell the user to fix the Beads installation before proceeding. For any other status (`created`, `repaired`, `reinitialized`, `already-exists`), continue.
+
+Then check that tasks were created for this feature during the Plan sub-phase:
 
 ```bash
 bd list --label "epic:[feature-name]" --json

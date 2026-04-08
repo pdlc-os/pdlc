@@ -168,6 +168,12 @@ Parse the JSON output. For each tool, report its status:
 - If `bd` is `"missing"`: prompt to install (`npm install -g @beads/bd`)
 - If `gh` was flagged as missing in Step 1b and Homebrew is now available: `brew install gh`
 
+Check the `beads_db` field:
+- `"healthy"`: `"Beads database: ✓ healthy"`
+- `"unhealthy"`: the database exists but has issues — Step 7 will repair it automatically
+- `"not-initialized"`: normal for first-time init — Step 7 will create it
+- `"none"`: `bd` is not installed, so no database check was possible
+
 After all tools are resolved (installed or user declined), re-run `bash scripts/check-deps.sh` to confirm final state.
 
 If any required tool (`dolt`, `bd`) is still missing after the user declined installation, warn them that PDLC cannot proceed without it.
