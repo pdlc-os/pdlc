@@ -17,11 +17,7 @@ If the user says `no`: stop and tell them to resolve whatever is blocking before
 
 ### Step 4 — Merge to main
 
-Switch to main and merge:
-```bash
-git checkout main
-git merge --no-ff feature/[feature-name] -m "feat([feature-name]): [one-line feature description from the PRD Overview section]"
-```
+The merge, tag, and push are handled by a single script in Steps 7-8. First, generate the release notes and determine the version.
 
 **TIER 1 HARD BLOCK**: Do not force-push to main under any circumstances. If a merge conflict arises, stop and tell the user:
 
@@ -52,6 +48,8 @@ Generate a CHANGELOG entry in Conventional Changelog format. Draft it as:
 - [only if applicable — feature or API that is not backward compatible]
 ```
 
+Apply the writing principles from `skills/writing-clearly-and-concisely/SKILL.md` to the CHANGELOG entry: active voice, concrete language, no filler. Each bullet should tell the reader exactly what changed and why it matters.
+
 Prepend this entry to `docs/pdlc/memory/CHANGELOG.md`.
 
 ### Step 6 — Determine semantic version
@@ -76,24 +74,17 @@ If you are unsure, ask the user:
 
 Increment the version accordingly. Example: `v1.2.3` → minor bump → `v1.3.0`.
 
-### Step 7 — Tag the commit
+### Steps 7-8 — Merge, tag, and push
+
+Run the ship-merge script which handles checkout, merge, tag, and push in a single operation:
 
 ```bash
-git tag v[X.Y.Z] -m "[feature-name] — [one-line description from PRD Overview]"
+bash scripts/ship-merge.sh [feature-name] v[X.Y.Z] "[one-line description from PRD Overview]"
 ```
 
-### Step 8 — Push to origin
+**TIER 1 HARD BLOCK**: The script does not force-push. If the merge fails (conflict) or push is rejected (non-fast-forward), the script exits with an error. Tell the user:
 
-```bash
-git push origin main
-git push origin v[X.Y.Z]
-```
-
-**TIER 1 HARD BLOCK**: Do not use `--force` on `git push origin main`. If the push is rejected (non-fast-forward), stop and tell the user:
-
-> "Push rejected — main has diverged. Please pull and resolve manually:
-> `git pull --rebase origin main`
-> Then re-run `/pdlc ship`."
+> "Merge or push failed. Please resolve manually, then re-run `/pdlc ship`."
 
 Do not attempt to force-push.
 
@@ -138,6 +129,30 @@ Pulse role: detect the CI/CD setup in this order:
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Verify`
 - **Last Checkpoint**: `Operation / Verify / [now ISO 8601]`
+
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
+
+```json
+{
+  "phase_completed": "Operation / Ship",
+  "next_phase": "Operation / Verify",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/memory/CHANGELOG.md",
+    "docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md"
+  ],
+  "decisions_made": ["[e.g. 'Tagged v1.3.0', 'GitHub Actions deploy triggered', 'CHANGELOG prepended']"],
+  "next_action": "Run smoke tests against the deployment — read skills/ship/steps/02-verify.md",
+  "pending_questions": []
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1`. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Code is merged and deployed. Type `/clear` and the next session will resume seamlessly from Verify."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
 
 ---
 

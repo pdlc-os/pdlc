@@ -60,6 +60,29 @@ approved-date: [ISO 8601 timestamp]
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Define`.
 
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block (between the `## Handoff` heading and the next `---`) with:
+
+```json
+{
+  "phase_completed": "Inception / Discover",
+  "next_phase": "Inception / Define",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/brainstorm/brainstorm_[feature-name]_[date].md"
+  ],
+  "decisions_made": ["[2-3 key decisions from discovery — e.g. 'Chose REST over GraphQL', 'Target user: solo devs']"],
+  "next_action": "Read skills/brainstorm/steps/02-define.md and generate the PRD draft",
+  "pending_questions": []
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1` to read the most recent bridge file. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Your handoff is saved. Type `/clear` and the next session will resume seamlessly from Define."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
+
 ---
 
 Return to `01-discover.md`. Discover is complete.

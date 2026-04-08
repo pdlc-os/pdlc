@@ -67,9 +67,7 @@ Append to STATE.md Phase History:
 **Remote sync check:** Read `skills/sync-check.md` and execute the sync check protocol. The hotfix must be based on the current state of production (latest main). If behind, pull before branching.
 
 ```bash
-git checkout main
-git pull origin main
-git checkout -b hotfix/[hotfix-name]
+git checkout main && git pull origin main && git checkout -b hotfix/[hotfix-name]
 ```
 
 Update STATE.md:
@@ -137,20 +135,15 @@ If existing tests fail, stop and inform the user — the hotfix introduced a reg
 
 ## Step 6 — Expedited ship
 
-**Merge to main:**
-```bash
-git checkout main
-git merge --no-ff hotfix/[hotfix-name] -m "hotfix([hotfix-name]): [one-line description]"
-```
+**Merge, tag, and push:**
 
-**Patch version bump:**
-Read the current tag and bump patch: `v1.2.3` → `v1.2.4`
+Read the current tag and bump patch: `v1.2.3` → `v1.2.4`. Then run:
 
 ```bash
-git tag v[X.Y.Z] -m "hotfix: [hotfix-name]"
-git push origin main
-git push origin v[X.Y.Z]
+bash scripts/hotfix-merge.sh [hotfix-name] v[X.Y.Z] "[one-line description]"
 ```
+
+The script handles checkout to main, merge, tag, and push in a single operation.
 
 **CHANGELOG entry:**
 ```markdown

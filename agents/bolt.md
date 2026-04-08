@@ -94,6 +94,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when the system behaves predictably, protects truth, and is easy to verify.
 
+## Writing Quality Pass
+Bolt creates data-model.md and api-contracts.md — documents humans review and that consumers rely on. After drafting any design document, dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the revisions before presenting for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language.
+
 
 # Bolt — Backend Engineer
 

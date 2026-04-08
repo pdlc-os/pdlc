@@ -89,9 +89,10 @@ function updateContextCheckpoint(stateMdPath, sessionId, toolCount, usedPct) {
     };
 
     const jsonBlock = '```json\n' + JSON.stringify(checkpoint, null, 2) + '\n```';
+    // Target only the Context Checkpoint JSON block, not the Handoff block
     const updated   = content.replace(
-      /```json[\s\S]*?```/,
-      jsonBlock
+      /(## Context Checkpoint[\s\S]*?)```json[\s\S]*?```/,
+      '$1' + jsonBlock
     );
 
     if (updated !== content) {
@@ -204,8 +205,8 @@ function main() {
 
     const msg =
       `🚨 PDLC CRITICAL: Context estimated at ~${usedPct}% (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `Auto-saving checkpoint to STATE.md. Finish the current step, then run /pdlc pause to save your position. ` +
-      `The next session will resume from this checkpoint automatically.`;
+      `Auto-saving checkpoint to STATE.md. Strongly recommend typing \`/clear\` now — ` +
+      `your handoff is saved and the next session will resume seamlessly.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
@@ -226,7 +227,7 @@ function main() {
 
     const msg =
       `⚠️  PDLC Context Warning: ~${usedPct}% estimated (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `Consider finishing the current step, then run /pdlc pause to save your position cleanly.`;
+      `If you're at an approval gate, consider typing \`/clear\` — your handoff will ensure seamless resumption.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);

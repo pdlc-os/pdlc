@@ -147,6 +147,8 @@ Follow `templates/review.md` structure. For each finding:
 
 Add the draft CHANGELOG entry (from Jarvis) as the final section.
 
+**Writing quality pass:** Each agent's findings must follow their **Writing Quality Pass** (see `agents/*.md`). Findings should be concrete ("SQL injection via unsanitized `user_id` in `/api/orders`") not vague ("potential security issue in order service").
+
 ---
 
 ## Proceed

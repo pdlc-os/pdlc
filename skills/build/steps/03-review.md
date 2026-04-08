@@ -82,6 +82,30 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Test`
 - **Last Checkpoint**: `Construction / Test / [now ISO 8601]`
 
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
+
+```json
+{
+  "phase_completed": "Construction / Review",
+  "next_phase": "Construction / Test",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/reviews/REVIEW_[feature-name]_[YYYY-MM-DD].md",
+    "docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md"
+  ],
+  "decisions_made": ["[2-3 review decisions — e.g. 'Accepted 2 advisory warnings', 'Deferred XSS finding to tech debt']"],
+  "next_action": "Run the test suite — read skills/build/steps/04-test.md",
+  "pending_questions": []
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1`. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Review is done. Type `/clear` and the next session will resume seamlessly from Test."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
+
 ---
 
 Return to `SKILL.md` and proceed to the TEST section.

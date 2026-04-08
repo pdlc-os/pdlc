@@ -115,6 +115,40 @@ none
 
 ---
 
+## Handoff
+
+<!-- Context handoff for session continuity.
+     This section is OVERWRITTEN (not appended) at each approval gate so Claude
+     can resume cleanly after a /clear. It captures the minimum context needed to
+     pick up where the last session left off.
+
+     Fields:
+       - phase_completed: the phase/sub-phase that just finished
+       - next_phase: the phase/sub-phase that should start next
+       - feature: the active feature name
+       - key_outputs: file paths to artifacts produced (Claude reads these on resume)
+       - decisions_made: important decisions from the completed phase (2-3 items max)
+       - next_action: the exact first thing Claude should do on resume
+       - pending_questions: unresolved items the user needs to address
+
+     Written by: PDLC skill files at each approval gate
+     Read by: pdlc-session-start.sh on session start
+     Cleared by: 03-reflect.md Step 17 when feature completes -->
+
+```json
+{
+  "phase_completed": null,
+  "next_phase": null,
+  "feature": null,
+  "key_outputs": [],
+  "decisions_made": [],
+  "next_action": null,
+  "pending_questions": []
+}
+```
+
+---
+
 ## Phase History
 
 <!-- Append a row every time the phase or sub-phase changes.

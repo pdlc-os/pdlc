@@ -94,6 +94,9 @@ Your work is strong when the team can answer:
 - Why this?
 - Why now?
 - For whom?
+
+## Writing Quality Pass
+Oracle creates PRDs, INTENT.md, CONSTITUTION.md, and brainstorm logs — all documents humans review and approve. After drafting any document, dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the revisions before presenting for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language, put statements in positive form.
 - How will we know it worked?
 
 

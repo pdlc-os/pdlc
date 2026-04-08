@@ -94,6 +94,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when the system is easier to reason about, safer to change, and harder to break accidentally.
 
+## Writing Quality Pass
+Neo creates ARCHITECTURE.md and architectural decision records — documents humans review and maintain. After drafting any design document, dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the revisions before presenting for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language.
+
 
 # Neo — Architect
 

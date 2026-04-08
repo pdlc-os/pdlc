@@ -65,6 +65,137 @@ fi
 # STATE.md exists — read it and inject into the session
 state_content="$(cat "$state_file")"
 
+# ── Check for active handoff ────────────────────────────────────────────────
+handoff_message=""
+if command -v python3 &>/dev/null; then
+  handoff_message="$(python3 -c '
+import sys, re, json
+
+content = open(sys.argv[1]).read()
+
+# ── Extract current phase and sub-phase from STATE.md ──
+phase_match = re.search(r"## Current Phase\s*\n(?:<!--.*?-->\s*\n)*\s*(.+)", content)
+current_phase = phase_match.group(1).strip() if phase_match else ""
+
+subphase_match = re.search(r"## Current Sub-phase\s*\n(?:<!--.*?-->\s*\n)*\s*(.+)", content)
+current_subphase = subphase_match.group(1).strip() if subphase_match else "none"
+
+feature_match = re.search(r"## Current Feature\s*\n(?:<!--.*?-->\s*\n)*\s*(.+)", content)
+current_feature = feature_match.group(1).strip() if feature_match else "none"
+
+# ── Find the Handoff JSON block ──
+match = re.search(r"## Handoff[\s\S]*?```json\s*(\{[\s\S]*?\})\s*```", content)
+
+handoff = None
+if match:
+    try:
+        handoff = json.loads(match.group(1))
+    except json.JSONDecodeError:
+        pass
+
+has_handoff = handoff and handoff.get("next_phase") and handoff["next_phase"] is not None
+
+# ── Determine if handoff is stale ──
+# Build the expected state string from handoff (e.g. "Inception / Define")
+# and compare against actual STATE.md phase + sub-phase
+is_stale = False
+if has_handoff:
+    expected = handoff["next_phase"]  # e.g. "Inception / Define"
+    # Build actual from STATE.md fields
+    actual_parts = []
+    if current_phase and "Idle" not in current_phase and "Complete" not in current_phase:
+        # Normalize: "Construction" from phase, "Build" from sub-phase
+        phase_word = current_phase.split("/")[0].split("—")[0].strip()
+        actual_parts.append(phase_word)
+    if current_subphase and current_subphase != "none":
+        actual_parts.append(current_subphase)
+    actual = " / ".join(actual_parts)
+
+    # Stale if STATE.md has moved past where the handoff points
+    if actual and expected and actual.lower() != expected.lower():
+        is_stale = True
+
+lines = []
+
+if has_handoff and not is_stale:
+    # ── Fresh handoff: resume from gate boundary ──
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("RESUME FROM HANDOFF")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("")
+    lines.append("Feature: " + handoff.get("feature", "unknown"))
+    lines.append("Last completed: " + handoff.get("phase_completed", "unknown"))
+    lines.append("Resume from: " + handoff.get("next_phase", "unknown"))
+    lines.append("")
+
+    if handoff.get("next_action"):
+        lines.append("NEXT ACTION: " + handoff["next_action"])
+        lines.append("")
+
+    outputs = handoff.get("key_outputs", [])
+    if outputs:
+        lines.append("Key artifacts (read these first):")
+        for f in outputs:
+            lines.append("  - " + f)
+        lines.append("")
+
+    decisions = handoff.get("decisions_made", [])
+    if decisions:
+        lines.append("Decisions from last phase:")
+        for d in decisions:
+            lines.append("  - " + d)
+        lines.append("")
+
+    pending = handoff.get("pending_questions", [])
+    if pending:
+        lines.append("Pending questions:")
+        for q in pending:
+            lines.append("  - " + q)
+        lines.append("")
+
+    lines.append("Read the key artifacts above, then proceed with the next action.")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
+elif is_stale or (not has_handoff and current_subphase != "none" and current_feature != "none"):
+    # ── Stale handoff or mid-phase clear: resume from STATE.md ──
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("RESUME FROM STATE (mid-phase)")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("")
+    lines.append("Feature: " + current_feature)
+    lines.append("Current phase: " + current_phase)
+    lines.append("Current sub-phase: " + current_subphase)
+    lines.append("")
+    if has_handoff:
+        lines.append("NOTE: Handoff is stale (from " + handoff.get("phase_completed", "?") + ").")
+        lines.append("Context was cleared mid-phase, after the last gate.")
+        lines.append("")
+        # Still show previous decisions as context
+        decisions = handoff.get("decisions_made", [])
+        if decisions:
+            lines.append("Decisions from earlier phases:")
+            for d in decisions:
+                lines.append("  - " + d)
+            lines.append("")
+        outputs = handoff.get("key_outputs", [])
+        if outputs:
+            lines.append("Artifacts from earlier phases:")
+            for f in outputs:
+                lines.append("  - " + f)
+            lines.append("")
+    else:
+        lines.append("NOTE: No handoff saved. Context was cleared before reaching a gate.")
+        lines.append("")
+    lines.append("Read STATE.md, then read the skill file for the current sub-phase to resume.")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
+# If no handoff and no active work (Idle/Init), output nothing — handled by main flow
+
+if lines:
+    print("\n".join(lines))
+' "$state_file" 2>/dev/null)" || true
+fi
+
 # ── Read ROADMAP.md for progress overview ────────────────────────────────────
 roadmap_file="${project_dir}/docs/pdlc/memory/ROADMAP.md"
 roadmap_summary=""
@@ -229,15 +360,28 @@ for fid, fname in in_progress:
 fi
 
 # ── Build the session message ────────────────────────────────────────────────
-message="$(printf '%s\n\n%s\n\n%s%s%s' \
-  "📋 PDLC Active — resuming from STATE.md" \
-  "## Current State
+if [[ -n "$handoff_message" ]]; then
+  message="$(printf '%s\n\n%s\n\n%s\n\n%s%s%s' \
+    "📋 PDLC Active — resuming from handoff" \
+    "$handoff_message" \
+    "## Current State
 ${state_content}" \
-  "${roadmap_summary}" \
-  "${pending_notice}" \
-  "
+    "${roadmap_summary}" \
+    "${pending_notice}" \
+    "
 
 See CLAUDE.md for the full PDLC flow.")"
+else
+  message="$(printf '%s\n\n%s\n\n%s%s%s' \
+    "📋 PDLC Active — resuming from STATE.md" \
+    "## Current State
+${state_content}" \
+    "${roadmap_summary}" \
+    "${pending_notice}" \
+    "
+
+See CLAUDE.md for the full PDLC flow.")"
+fi
 
 emit_json "$message"
 exit 0

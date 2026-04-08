@@ -37,6 +37,8 @@ Update:
 - **Status**: keep as `Draft` — it becomes `Approved` after human sign-off below
 - **Links → PR**: fill in the PR link if one was created (check `gh pr list` or ask the user)
 
+Apply Jarvis's **Writing Quality Pass** (see `agents/jarvis.md`) before presenting the episode file for approval.
+
 ### Step 15 — Episode file approval gate
 
 Tell the user:
@@ -84,14 +86,10 @@ If no matching row exists (the feature was added ad-hoc and never captured in th
 **16d. Commit everything:**
 
 ```bash
-git add docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md
-git add docs/pdlc/memory/episodes/index.md
-git add docs/pdlc/memory/OVERVIEW.md
-git add docs/pdlc/memory/CHANGELOG.md
-git add docs/pdlc/memory/ROADMAP.md
-git commit -m "docs(pdlc): add episode [NNN] — [feature-name]"
-git push origin main
+bash scripts/commit-episode.sh [NNN] [feature-name] [YYYY-MM-DD]
 ```
+
+The script stages all episode + memory files, commits, and pushes to main in a single operation.
 
 **TIER 2 action**: this is a direct push to main (not a PR). Since this is a docs-only commit (episode file), it is acceptable — but confirm with the user if their workflow requires a PR even for docs.
 
@@ -99,55 +97,22 @@ git push origin main
 
 > **Model override:** Use the **Haiku** model for this step — it's file moves and CLI commands.
 
-Archive the shipped feature's artifacts so they don't clutter the active working directories. Move (not copy) each file to its archive counterpart:
+Archive the shipped feature's artifacts and clean up Beads:
 
 ```bash
-# PRD
-mkdir -p docs/pdlc/archive/prds
-mv docs/pdlc/prds/PRD_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
-mv docs/pdlc/prds/plans/plan_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
-
-# Design docs
-mkdir -p docs/pdlc/archive/design/[feature-name]
-mv docs/pdlc/design/[feature-name]/* docs/pdlc/archive/design/[feature-name]/ 2>/dev/null || true
-rmdir docs/pdlc/design/[feature-name] 2>/dev/null || true
-
-# Review files
-mkdir -p docs/pdlc/archive/reviews
-mv docs/pdlc/reviews/REVIEW_[feature-name]_*.md docs/pdlc/archive/reviews/ 2>/dev/null || true
-
-# Brainstorm log
-mkdir -p docs/pdlc/archive/brainstorm
-mv docs/pdlc/brainstorm/brainstorm_[feature-name]_*.md docs/pdlc/archive/brainstorm/ 2>/dev/null || true
-
-# MOM files for this feature
-mkdir -p docs/pdlc/archive/mom
-mv docs/pdlc/mom/[feature-name]_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
-mv docs/pdlc/mom/MOM_decision_*_[feature-name]_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
-mv docs/pdlc/mom/MOM_whatif_*_[feature-name]_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
+bash scripts/archive-feature.sh [feature-name]
 ```
 
-**Do NOT archive:**
-- Episode files (`docs/pdlc/memory/episodes/`) — these are permanent records, already in the right place
-- Memory files (STATE.md, ROADMAP.md, etc.) — these are live project state
-- The `docs/pdlc/archive/` directory itself
+The script moves PRDs, design docs, reviews, brainstorm logs, and MOM files to `docs/pdlc/archive/`, then runs `bd purge` and `bd admin compact`.
 
-**Clean up Beads:**
-
-```bash
-bd purge 2>/dev/null || true
-bd admin compact --stats 2>/dev/null || true
-```
-
-`bd purge` removes completed tasks from the active graph. `bd admin compact --stats` compresses the Beads database and reports size savings.
+**Do NOT archive** (the script handles this correctly):
+- Episode files (`docs/pdlc/memory/episodes/`) — permanent records
+- Memory files (STATE.md, ROADMAP.md, etc.) — live project state
 
 **Commit the archive:**
 
 ```bash
-git add docs/pdlc/archive/
-git add docs/pdlc/prds/ docs/pdlc/design/ docs/pdlc/reviews/ docs/pdlc/brainstorm/ docs/pdlc/mom/
-git commit -m "chore(pdlc): archive [feature-name] artifacts + compact beads"
-git push origin main
+bash scripts/commit-archive.sh [feature-name]
 ```
 
 > "Archived [feature-name] artifacts to `docs/pdlc/archive/`. Beads compacted."
@@ -231,6 +196,20 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Active Beads Task**: `none`
 - **Current Sub-phase**: `none`
 - **Last Checkpoint**: `Operation / Complete / [now ISO 8601]`
+
+**Clear the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with the empty template:
+
+```json
+{
+  "phase_completed": null,
+  "next_phase": null,
+  "feature": null,
+  "key_outputs": [],
+  "decisions_made": [],
+  "next_action": null,
+  "pending_questions": []
+}
+```
 
 Append to Phase History:
 ```

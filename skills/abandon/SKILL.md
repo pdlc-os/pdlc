@@ -163,30 +163,16 @@ Append to Phase History:
 
 > **Model override:** Use **Haiku** for file moves and Beads commands.
 
-Move the abandoned feature's artifacts to the archive so they don't clutter active directories:
+Archive the abandoned feature's artifacts and clean up Beads:
 
 ```bash
-mkdir -p docs/pdlc/archive/prds docs/pdlc/archive/design/[feature-name] docs/pdlc/archive/reviews docs/pdlc/archive/brainstorm docs/pdlc/archive/mom
-mv docs/pdlc/prds/PRD_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
-mv docs/pdlc/prds/plans/plan_[feature-name]_*.md docs/pdlc/archive/prds/ 2>/dev/null || true
-mv docs/pdlc/design/[feature-name]/* docs/pdlc/archive/design/[feature-name]/ 2>/dev/null || true
-rmdir docs/pdlc/design/[feature-name] 2>/dev/null || true
-mv docs/pdlc/reviews/REVIEW_[feature-name]_*.md docs/pdlc/archive/reviews/ 2>/dev/null || true
-mv docs/pdlc/brainstorm/brainstorm_[feature-name]_*.md docs/pdlc/archive/brainstorm/ 2>/dev/null || true
-mv docs/pdlc/mom/[feature-name]_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
+bash scripts/archive-feature.sh [feature-name]
 ```
 
-Clean up Beads:
-```bash
-bd purge 2>/dev/null || true
-bd admin compact --stats 2>/dev/null || true
-```
+Commit the archive:
 
-Commit:
 ```bash
-git add docs/pdlc/archive/ docs/pdlc/prds/ docs/pdlc/design/ docs/pdlc/reviews/ docs/pdlc/brainstorm/ docs/pdlc/mom/
-git commit -m "chore(pdlc): archive abandoned [feature-name] artifacts + compact beads"
-git push origin main
+bash scripts/commit-archive.sh [feature-name]
 ```
 
 > **End of model override.**

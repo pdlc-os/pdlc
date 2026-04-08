@@ -85,6 +85,30 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Reflect`
 - **Last Checkpoint**: `Operation / Reflect / [now ISO 8601]`
 
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
+
+```json
+{
+  "phase_completed": "Operation / Verify",
+  "next_phase": "Operation / Reflect",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md",
+    "docs/pdlc/memory/CHANGELOG.md"
+  ],
+  "decisions_made": ["[e.g. 'Smoke tests passed', 'No critical vulnerabilities', 'Deployment verified at [url]']"],
+  "next_action": "Generate the retrospective — read skills/ship/steps/03-reflect.md",
+  "pending_questions": []
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1`. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Deployment is verified. Type `/clear` and the next session will resume seamlessly from Reflect."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
+
 ---
 
 Return to `SKILL.md` and proceed to **Sub-phase 3 — REFLECT**.

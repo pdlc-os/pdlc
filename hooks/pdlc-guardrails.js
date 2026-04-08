@@ -32,7 +32,7 @@ function tier1Block(reason, command) {
     `\x1b[41m\x1b[37m ⛔ PDLC HARD BLOCK — TIER 1 SAFETY ⛔ \x1b[0m\n` +
     `\x1b[31mThis action is blocked: ${reason}.\n\n` +
     `To override, run the double-RED confirmation protocol:\n` +
-    `  /pdlc override-tier1 "${safeCmd}"\n\n` +
+    `  \`/pdlc override-tier1 "${safeCmd}"\`\n\n` +
     `This requires two explicit confirmations and is permanently logged.\x1b[0m`;
   block(msg);
 }
@@ -244,7 +244,7 @@ function main() {
           `⚠️  PDLC Tier 2 Confirmation Required\n\n` +
           `About to ${toolName.toLowerCase()} protected file: ${match.file}\n\n` +
           `This file is part of PDLC's memory bank and is normally managed by PDLC commands.\n` +
-          `Direct edits may cause state drift that /pdlc doctor will flag.\n\n` +
+          `Direct edits may cause state drift that \`/pdlc doctor\` will flag.\n\n` +
           `Type 'yes' to confirm or 'no' to cancel.`
         );
       }
@@ -323,7 +323,7 @@ function main() {
   // 1d. Deploy commands when test gates haven't passed
   if (isDeployCommand(command) && !testGatesHavePassed(cwd)) {
     tier1Block(
-      'deploy attempted before test gates have passed — run /pdlc ship to go through the proper Ship flow',
+      'deploy attempted before test gates have passed — run `/pdlc ship` to go through the proper Ship flow',
       command
     );
   }

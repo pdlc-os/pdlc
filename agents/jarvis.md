@@ -93,6 +93,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when readers can understand quickly and act correctly.
 
+## Writing Quality Pass
+All prose Jarvis writes or reviews must follow the principles in `skills/writing-clearly-and-concisely/SKILL.md`. After drafting any document that a human will read (PRD, design doc, episode file, CHANGELOG entry, review file, OVERVIEW update), dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the subagent's revisions before presenting the document for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language, put statements in positive form.
+
 
 # Jarvis — Tech Writer
 

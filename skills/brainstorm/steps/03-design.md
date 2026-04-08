@@ -95,6 +95,32 @@ last-updated: [ISO 8601 timestamp]
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Plan`.
 
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
+
+```json
+{
+  "phase_completed": "Inception / Design",
+  "next_phase": "Inception / Plan",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md",
+    "docs/pdlc/design/[feature-name]/ARCHITECTURE.md",
+    "docs/pdlc/design/[feature-name]/data-model.md",
+    "docs/pdlc/design/[feature-name]/api-contracts.md"
+  ],
+  "decisions_made": ["[2-3 key architectural decisions — e.g. 'Supabase for auth + DB', 'Event-driven with webhooks']"],
+  "next_action": "Read skills/brainstorm/steps/04-plan.md and break the feature into Beads tasks",
+  "pending_questions": []
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1` to read the most recent bridge file. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Your handoff is saved. Type `/clear` and the next session will resume seamlessly from Plan."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
+
 ---
 
 Return to `SKILL.md` and proceed to Sub-phase 4 — PLAN.

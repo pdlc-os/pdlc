@@ -43,6 +43,8 @@ Set **Status**: `Draft` and **Date**: today's date.
 
 Save the file to: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
 
+Apply Oracle's **Writing Quality Pass** (see `agents/oracle.md`) before presenting the PRD for approval.
+
 ---
 
 ### Step 8 — PRD approval gate
@@ -69,6 +71,30 @@ prd: docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md
 ```
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Design`.
+
+**Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
+
+```json
+{
+  "phase_completed": "Inception / Define",
+  "next_phase": "Inception / Design",
+  "feature": "[feature-name]",
+  "key_outputs": [
+    "docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md",
+    "docs/pdlc/brainstorm/brainstorm_[feature-name]_[date].md"
+  ],
+  "decisions_made": ["[2-3 top-level decisions from the PRD — e.g. 'BDD stories cover 4 user flows', 'NFR: p95 latency < 200ms']"],
+  "next_action": "Read skills/brainstorm/steps/03-design.md and begin Bloom's Taxonomy design questioning",
+  "pending_questions": ["[any items user flagged during PRD review, or empty]"]
+}
+```
+
+Then check context usage: run `cat /tmp/pdlc-ctx-*.json 2>/dev/null | sort -t'"' -k4 -r | head -1` to read the most recent bridge file. If `used_pct` is **65% or above**, strongly recommend clearing:
+
+> "**Context is at ~[X]% — strongly recommend clearing now.**
+> Your handoff is saved. Type `/clear` and the next session will resume seamlessly from Design."
+
+If below 65% or the bridge file doesn't exist, don't mention it.
 
 ---
 

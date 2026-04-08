@@ -83,51 +83,72 @@ If yes, walk through the relevant fix based on the error.
 
 **If no remote exists:**
 
-> "No GitHub remote configured. Would you like to set one up? This ensures your code can be pushed and PRs can be created during `/pdlc ship`.
+First, detect the current GitHub state before prompting:
+
+1. Check if `gh` CLI is installed: `gh --version`
+2. If installed, check auth: `gh auth status`
+
+**If `gh` is installed and authenticated:**
+
+Parse the output of `gh auth status` to extract the authenticated account and hostname (github.com or GHE). Then:
+
+> "No GitHub remote, but you're already authenticated as **[username]** on **[hostname]** ✓
 >
-> Options:
-> - **GitHub.com** — I'll create a repo and configure the remote
+> I'll create a repo and configure the remote. Defaults:
+> - **Repo name:** `[current directory name]`
+> - **Visibility:** private
+> - **Account:** [username]
+>
+> Proceed with these defaults? (yes / change name / change visibility / skip)"
+
+**If the user confirms** (yes, y, looks good):
+→ Create the repo with defaults:
+```bash
+gh repo create [current-directory-name] --private --source=. --remote=origin --push
+```
+
+**If the user wants to change** (name or visibility):
+→ Ask only for the specific thing they want to change, then create.
+
+**If the user says skip:**
+→ Skip GitHub setup (see below).
+
+**If `gh` is installed but NOT authenticated:**
+
+> "GitHub CLI is installed but not authenticated. Want me to set up GitHub for this project?
+>
+> - **Yes** — I'll walk you through login, then create the repo
+> - **Skip** — set up GitHub later"
+
+If yes: tell the user to run `! gh auth login` (interactive). Wait for confirmation, verify with `gh auth status`, then proceed to repo creation with defaults as above.
+
+**If `gh` is NOT installed:**
+
+> "No GitHub remote configured and GitHub CLI (`gh`) is not installed. Would you like to set up GitHub?
+>
+> - **GitHub.com** — I'll install `gh` (via Homebrew), authenticate, and create the repo
 > - **GitHub Enterprise** — provide your GHE hostname and I'll configure it
-> - **Skip** — set up GitHub later (some PDLC features like PR creation won't work until configured)"
+> - **Skip** — set up GitHub later (PR creation during `/pdlc ship` requires a GitHub remote)"
 
-**If the user chooses GitHub.com or GitHub Enterprise:**
+If the user chooses GitHub.com or GitHub Enterprise: note that `gh` needs installing and proceed to Step 1c — Homebrew will be verified first, then `gh` installed via brew. After install, run `gh auth status`. If not authenticated, tell the user to run `! gh auth login`. Then proceed to repo creation with defaults as above.
 
-1. Check `gh` CLI is installed: `gh --version`. If not found:
-   > "The GitHub CLI (`gh`) is required. I'll install it after checking for Homebrew."
-   
-   Note that `gh` needs installing and proceed to Step 1c — Homebrew will be verified first, then `gh` installed via brew.
+For GitHub Enterprise, tell the user: `! gh auth login --hostname [their-ghe-hostname]`
 
-2. Check `gh` is authenticated: `gh auth status`. If not:
-   > "GitHub CLI is not authenticated. Let's log in."
-   
-   Tell the user to run the interactive login themselves:
-   > "Please run this command (it requires interactive input):
-   > `! gh auth login`
-   >
-   > Follow the prompts to authenticate. I'll continue once you're done."
-   
-   Wait for the user to confirm, then verify with `gh auth status`.
-   
-   For GitHub Enterprise, tell the user:
-   > "Please run: `! gh auth login --hostname [their-ghe-hostname]`"
+**Repo creation (all paths converge here):**
 
-3. Create the repository:
-   Ask: "What should the GitHub repo be named? (default: `[current directory name]`)"
-   Ask: "Public or private? (default: private)"
-   
-   ```bash
-   gh repo create [repo-name] --[public|private] --source=. --remote=origin --push
-   ```
+```bash
+gh repo create [repo-name] --[public|private] --source=. --remote=origin --push
+```
 
-4. Verify:
-   ```bash
-   git remote -v
-   git push --dry-run origin HEAD
-   ```
-   
-   > "GitHub configured and verified: `[remote URL]` ✓"
+Verify:
+```bash
+git remote -v
+git push --dry-run origin HEAD
+```
 
-**If the user chooses Skip:**
+> "GitHub configured and verified: `[remote URL]` ✓"
+
+**If the user chooses Skip (from any path):**
 
 > "Skipping GitHub setup. You can configure it later — run `gh repo create` or add a remote manually. Note: PR creation during `/pdlc ship` requires a GitHub remote."
 
