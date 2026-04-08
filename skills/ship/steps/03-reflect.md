@@ -73,7 +73,25 @@ Read `docs/pdlc/memory/OVERVIEW.md`. Update:
 - **Known Tech Debt**: append any tech debt items recorded in the episode file
 - **Last updated**: today's date
 
-**16c. Update ROADMAP.md:**
+**16c. Update CLAUDE.md:**
+
+Read the project-root `CLAUDE.md`. If it exists, refresh it to reflect the feature just shipped:
+
+1. **Architecture section**: If this feature changed the architecture meaningfully (new service, new layer, new integration, new database table), update the Architecture section to reflect the current state. Remove any `<!-- update after first build -->` markers and replace planned content with actuals.
+
+2. **Project Structure section**: If new top-level directories were created or the directory layout changed, update the structure description. On the first ship after a greenfield init, replace the planned structure with the actual layout by running `find . -maxdepth 2 -not -path './.git/*' -not -path './node_modules/*' -not -path './.beads/*' -type d | sort`.
+
+3. **Key Files section**: If new entry points, route files, schema files, or other structurally important files were added, add them. Remove any that were deleted.
+
+4. **Development section**: If new scripts were added to package.json (or equivalent) that affect install/dev/build/test/deploy commands, update them.
+
+5. **Tech Stack section**: If new significant dependencies or infrastructure were added (new database, new cloud service, new major library), add them.
+
+**Do not touch** sections that are unchanged. Keep the file under 80 lines. If no meaningful changes apply, skip this step entirely — do not update the file just to change a date.
+
+If `CLAUDE.md` does not exist at the project root (e.g., user deleted it or it predates this feature), skip this step.
+
+**16d. Update ROADMAP.md:**
 
 Read `docs/pdlc/memory/ROADMAP.md`. Find the row in the Feature Backlog table whose feature slug matches `[feature-name]`. Update that row:
 - **Status**: `Planned` or `In Progress` → `Shipped`
@@ -83,7 +101,7 @@ Read `docs/pdlc/memory/ROADMAP.md`. Find the row in the Feature Backlog table wh
 
 If no matching row exists (the feature was added ad-hoc and never captured in the roadmap), append a new row with the next available `F-NNN` ID, the feature details, `Shipped` status, today's date, and the episode reference.
 
-**16d. Commit everything:**
+**16e. Commit everything:**
 
 ```bash
 bash scripts/commit-episode.sh [NNN] [feature-name] [YYYY-MM-DD]
@@ -93,7 +111,7 @@ The script stages all episode + memory files, commits, and pushes to main in a s
 
 **TIER 2 action**: this is a direct push to main (not a PR). Since this is a docs-only commit (episode file), it is acceptable — but confirm with the user if their workflow requires a PR even for docs.
 
-### Step 16e — Archive completed feature artifacts
+### Step 16f — Archive completed feature artifacts
 
 > **Model override:** Use the **Haiku** model for this step — it's file moves and CLI commands.
 
@@ -119,7 +137,7 @@ bash scripts/commit-archive.sh [feature-name]
 
 > **End of model override.** Return to Jarvis's assigned model (Sonnet).
 
-### Step 16f — Update METRICS.md and generate trend summary
+### Step 16g — Update METRICS.md and generate trend summary
 
 Read the episode file for this feature to extract metrics:
 - **Cycle days**: from Inception start date (STATE.md Phase History) to today

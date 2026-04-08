@@ -95,6 +95,57 @@ last-updated: [ISO 8601 timestamp]
 
 Update `docs/pdlc/memory/STATE.md`: Current Sub-phase → `Plan`.
 
+### Step 12a — Generate or update CLAUDE.md
+
+**First feature only (no CLAUDE.md exists at project root):** Generate a project-level `CLAUDE.md` at the repository root. This gives Claude persistent context about the project across all sessions.
+
+Read `docs/pdlc/memory/CONSTITUTION.md` (tech stack, constraints, coding standards), `docs/pdlc/memory/INTENT.md` (problem, target user), the approved PRD, and the three design documents just approved. Synthesise into:
+
+```markdown
+# [Project Name]
+
+[1–2 sentence description from INTENT.md problem statement and value prop]
+
+## Tech Stack
+
+- **Language:** [from CONSTITUTION.md §2]
+- **Framework:** [from CONSTITUTION.md §2]
+- **Database:** [from CONSTITUTION.md §2]
+- **Infrastructure:** [from CONSTITUTION.md §2, if specified]
+- **Key libraries:** [from CONSTITUTION.md §2 or design docs]
+
+## Project Structure
+
+[Describe the directory layout planned in the architecture doc. Focus on top 2 levels — which directories contain what.]
+
+## Development
+
+- **Install:** `[install command — infer from tech stack, e.g. npm install]`
+- **Dev server:** `[start command]`
+- **Build:** `[build command]`
+- **Test:** `[test command(s) from CONSTITUTION.md §7]`
+
+## Architecture
+
+[2–4 sentences from ARCHITECTURE.md — architectural style, key layers, data flow. Reference specific directories.]
+
+## Coding Conventions
+
+[From CONSTITUTION.md §5 — naming patterns, file organization, import style, error handling. List 3–6 conventions.]
+
+## Key Files
+
+[List the main entry points, route definitions, schema files, and config files planned in the architecture. Use format: `path/to/file` — one-line description.]
+```
+
+**Rules:**
+- Keep under 80 lines. This file loads into every Claude session.
+- Only include facts from the approved documents. Do not speculate.
+- Do not duplicate PDLC-specific content (phases, agents, memory files) — that's in the PDLC plugin's own CLAUDE.md.
+- For greenfield projects, some sections (Key Files, Project Structure) will be based on the planned architecture. Mark with `<!-- update after first build -->` so the ship phase knows to replace with actuals.
+
+**Subsequent features (CLAUDE.md already exists):** Skip this step. CLAUDE.md is updated during `/pdlc ship` after each feature lands.
+
 **Write the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with:
 
 ```json

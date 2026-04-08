@@ -249,6 +249,56 @@ Mark all pre-PDLC entries as `*(pre-PDLC, inferred)*` so the team knows these we
 - Populate with project name but leave feature planning sections as stubs
 - Set STATE.md to `Initialization Complete — Ready for /pdlc brainstorm`
 
+#### `CLAUDE.md` (project root)
+
+Generate a project-level `CLAUDE.md` at the repository root. This file gives Claude persistent context about the project across all sessions — not just PDLC sessions. It should be concise, factual, and derived entirely from scan findings.
+
+Structure:
+
+```markdown
+# [Project Name]
+
+[1–2 sentence description of what the project does, from README or inferred from features]
+
+## Tech Stack
+
+- **Language:** [primary language(s)]
+- **Framework:** [framework(s)]
+- **Database:** [if detected]
+- **Infrastructure:** [Docker, cloud provider, etc. if detected]
+- **Key libraries:** [top 5–8 significant dependencies]
+
+## Project Structure
+
+[Brief description of directory layout — which directories contain what. Focus on the top 2 levels. Use a compact list, not a tree diagram.]
+
+## Development
+
+- **Install:** `[install command from package.json/Gemfile/etc.]`
+- **Dev server:** `[start command]`
+- **Build:** `[build command]`
+- **Test:** `[test command(s)]`
+- **Deploy:** `[deploy command, or "Not configured" if none found]`
+
+## Architecture
+
+[2–4 sentences describing the architectural style, key layers, and data flow. Reference specific directories where each layer lives.]
+
+## Coding Conventions
+
+[List 3–6 conventions observed in the codebase — naming patterns, file organization, import style, error handling approach, etc. Only include conventions that are clearly consistent across the codebase.]
+
+## Key Files
+
+[List 5–10 of the most important files for understanding the project — entry points, route definitions, schema files, config files. Use format: `path/to/file` — one-line description.]
+```
+
+**Rules for CLAUDE.md generation:**
+- Keep it under 80 lines. Brevity is critical — this file is loaded into every Claude session.
+- Only include facts evidenced by the scan. Do not speculate or add aspirational content.
+- Do not duplicate PDLC-specific information (phases, agents, memory files) — that belongs in the PDLC CLAUDE.md installed by the plugin.
+- If CLAUDE.md already exists in the repo, **do not overwrite it**. Instead, present the generated content to the user and ask: "A CLAUDE.md already exists. Want me to merge these findings into it, replace it, or skip?"
+
 ---
 
 ## Rules
@@ -263,4 +313,4 @@ Mark all pre-PDLC entries as `*(pre-PDLC, inferred)*` so the team knows these we
 
 ## Output
 
-Seven fully populated memory files under `docs/pdlc/memory/`, derived from real codebase analysis rather than blank templates.
+Seven fully populated memory files under `docs/pdlc/memory/` plus a project-root `CLAUDE.md`, all derived from real codebase analysis rather than blank templates.

@@ -110,6 +110,23 @@ No active workflow to reconcile. The decision is recorded and will be available 
 
 ---
 
+## Step 5b — Conditional CLAUDE.md refresh
+
+If the decision affects **architecture, tech stack, or project structure** (check the MOM's agent assessments — Neo flagged architecture impact, or Bolt/Friday flagged structural changes, or the decision explicitly changes a technology choice), update the project-root `CLAUDE.md`:
+
+1. Read `CLAUDE.md` from the project root. If it doesn't exist, skip this step.
+2. Identify which sections are affected:
+   - **Architecture** — if the decision changes architectural style, adds/removes a layer or service, or alters data flow
+   - **Tech Stack** — if the decision adds, removes, or replaces a technology (language, framework, database, infrastructure)
+   - **Project Structure** — if the decision reorganizes directories or introduces new top-level modules
+   - **Key Files** — if the decision introduces or removes structurally important files
+3. Update only the affected sections. Keep the file under 80 lines.
+4. If no sections are affected, skip entirely.
+
+This keeps CLAUDE.md current for decisions that cause significant structural evolution, without touching it for minor decisions.
+
+---
+
 ## Step 6 — Summary and resume
 
 Present the full summary:
@@ -123,6 +140,7 @@ Present the full summary:
 > [If Beads tasks changed:] **Beads updates:** [created N / updated N / closed N tasks]
 > [If PRD updated:] **PRD updated** — re-approval needed: [yes/no]
 > [If design docs updated:] **Design docs updated** — re-approval needed: [yes/no]
+> [If CLAUDE.md updated:] **CLAUDE.md updated** — [sections changed]
 > [If resequenced:] **Roadmap resequenced** — [brief summary]"
 
 **If a phase was active:**
