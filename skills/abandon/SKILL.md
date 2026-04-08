@@ -6,7 +6,31 @@ argument-hint: [feature-name]
 
 You are abandoning a feature that is no longer viable. The argument passed is: `$ARGUMENTS`
 
-If `$ARGUMENTS` is empty, read `docs/pdlc/memory/STATE.md` for the current active feature. If no feature is active, stop:
+If `$ARGUMENTS` is empty, read `docs/pdlc/memory/STATE.md` for the current active feature. If no feature is active:
+
+**Check for greenfield initialization to abandon:** Read `docs/pdlc/memory/STATE.md`. If it exists and the project has **no shipped episodes** (check `docs/pdlc/memory/episodes/index.md` — all rows are placeholder `—` or the file has no data rows), and `CLAUDE.md` exists at the project root with `<!-- pdlc-scaffold: true -->` or `<!-- pdlc-expanded: true -->` marker — this is an orphaned greenfield initialization.
+
+Ask the user:
+
+> "No active feature found, but this looks like an incomplete greenfield initialization (scaffold CLAUDE.md exists, no features shipped).
+>
+> Would you like to **abandon this initialization** and start fresh? This will:
+> - Delete the scaffold `CLAUDE.md`
+> - Remove all `docs/pdlc/` memory files
+> - Clean the slate for a new `/pdlc init`
+>
+> **(yes / no)**"
+
+If the user confirms: delete `CLAUDE.md` (and `.claude/docs/` if it exists), remove the `docs/pdlc/` directory tree, and confirm:
+
+> "Initialization abandoned. All PDLC files removed. Run `/pdlc init` to start fresh."
+
+Stop here — do not continue to the feature abandonment flow.
+
+If the user declines, stop:
+> "No changes made. Run `/pdlc brainstorm` to continue where you left off."
+
+**If no greenfield initialization detected either**, stop:
 > "No active feature to abandon. Nothing to do."
 
 If a feature name was provided, verify it matches the active feature in STATE.md or exists in ROADMAP.md as "In Progress" or "Planned".
@@ -210,3 +234,4 @@ Handle the response the same way as the ship Step 18 feature loop.
 - An ADR entry is always created — the decision to abandon is a formal decision.
 - The feature branch is NOT merged and NOT deleted. The user can prune it manually with `git branch -D feature/[name]`.
 - If `.paused-feature.json` exists for this feature (it was paused during a hotfix), delete it as part of cleanup.
+- **Greenfield initialization abandonment** (no active feature, scaffold CLAUDE.md, no shipped episodes) removes `CLAUDE.md`, `.claude/docs/`, and `docs/pdlc/` entirely. This is a **Tier 2** action — the user has already confirmed via the abandon prompt, which serves as the Tier 2 confirmation. Log the event in git: `git add -A && git commit -m "chore: abandon greenfield initialization — clean slate for re-init"`.
