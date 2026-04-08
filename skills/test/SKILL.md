@@ -125,7 +125,7 @@ Tier 3 guardrail events logged: [list any skips or accepts]
    - If all required layers pass: update `docs/pdlc/memory/STATE.md` — test gate status: passed.
    - If a required layer has failures: surface a soft warning to the human. Present the full failure output. Ask: "(A) Fix the failures now, (B) Accept and continue (logged as Tier 3 guardrail event), or (C) Defer — add to tech debt log."
 
-4. Mark the Beads task as done: `bd done [task-id] --message "All test layers complete"`
+4. Mark the Beads task as done: `bd close [task-id] --reason "All test layers complete"`
 
 5. Update `docs/pdlc/memory/STATE.md`: task complete, test gate status, any open items.
 

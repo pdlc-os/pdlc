@@ -247,9 +247,9 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
 5. Create a Beads task for the fix:
    ```bash
    bd create "Fix: [root cause summary]" \
-     --description "[Approach description from the post-mortem. See ADR-NNN and MOM.]" \
-     --label "epic:[feature-name],fix,post-mortem" \
-     --type fix
+     -d "[Approach description from the post-mortem. See ADR-NNN and MOM.]" \
+     -l "epic:[feature-name],fix,post-mortem" \
+     -t bug
    ```
 
 6. Delete `.pending-party.json`.

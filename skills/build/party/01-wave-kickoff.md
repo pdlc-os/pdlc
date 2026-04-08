@@ -116,9 +116,9 @@ After discussion, produce:
 3. **Recommended ordering** — a numbered execution order for this wave
 4. **Dependency updates** — if any hidden dependency was found, update Beads:
    ```bash
-   bd dep add [task-a-id] --blocks [task-b-id]
+   bd dep [task-a-id] --blocks [task-b-id]
    ```
-   Run this for each new dependency before proceeding. If any `bd dep add` command fails or if `bd ready --json` returns empty after the updates (but open tasks remain), a circular dependency may have been introduced. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 1** (Beads Circular Dependency) before continuing.
+   Run this for each new dependency before proceeding. If any `bd dep` command fails or if `bd ready --json` returns empty after the updates (but open tasks remain), a circular dependency may have been introduced. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 1** (Beads Circular Dependency) before continuing.
 
 Tell the user:
 > "Wave [N] standup complete. [N] tasks confirmed parallel / [N] tasks resequenced.

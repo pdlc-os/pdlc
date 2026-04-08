@@ -47,7 +47,7 @@ Save the full current state to `docs/pdlc/memory/.paused-feature.json`:
 
 If there's an active Beads task, unclaim it so it doesn't block:
 ```bash
-bd update [task-id] --unclaim
+bd update [task-id] --assignee "" --status open
 ```
 
 Inform the user:
@@ -100,9 +100,9 @@ Record the answers. This replaces the full PRD — hotfixes don't get inception.
 
 ```bash
 bd create "Hotfix: [hotfix-name]" \
-  --description "[user's description from Step 3]" \
-  --label "hotfix,emergency" \
-  --type fix
+  -d "[user's description from Step 3]" \
+  -l "hotfix,emergency" \
+  -t bug
 ```
 
 Claim the task:

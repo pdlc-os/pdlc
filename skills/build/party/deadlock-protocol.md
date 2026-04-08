@@ -46,7 +46,7 @@ Scan the output for a cycle: any node that appears on both sides of a blocking a
 1. Identify the dependency added most recently by scanning the Wave Kickoff MOM file (`docs/pdlc/mom/[feature-name]_wave-kickoff_mom_*.md`) for "Dependency updates" — those are the newest additions and most likely candidates.
 2. Remove the most recently added dep:
    ```bash
-   bd dep remove [task-a-id] --blocks [task-b-id]
+   bd dep remove [task-b-id] [task-a-id]
    ```
 3. Re-run `bd ready --json`. If tasks are now unblocked, log the decision and continue.
 4. Record in STATE.md as a Tier 3 event:

@@ -50,7 +50,7 @@ Read all fields from STATE.md. Save to `docs/pdlc/memory/.paused-feature.json`:
 If STATE.md shows an active Beads task:
 
 ```bash
-bd update [task-id] --unclaim
+bd update [task-id] --assignee "" --status open
 ```
 
 This releases the task so it returns to the ready queue. It will be reclaimed on resume.

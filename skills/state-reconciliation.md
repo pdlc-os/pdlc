@@ -67,7 +67,7 @@ Read both files. Check for conflicts:
 
 **Conflict: Beads shows a task as "claimed" but STATE.md's Active Beads Task is "none".**
 - This means `bd update --claim` ran but STATE.md wasn't updated.
-- **Resolution:** Check if the task has any committed code (run `git log --oneline --grep="[task-id]"` or check the task's branch status). If work exists, update STATE.md to reflect the active task. If no work exists, unclaim the task: `bd update --unclaim [task-id]`.
+- **Resolution:** Check if the task has any committed code (run `git log --oneline --grep="[task-id]"` or check the task's branch status). If work exists, update STATE.md to reflect the active task. If no work exists, unclaim the task: `bd update [task-id] --assignee "" --status open`.
 
 **Conflict: STATE.md shows an active task but Beads shows it as "done".**
 - This means `bd done` ran but STATE.md wasn't updated.

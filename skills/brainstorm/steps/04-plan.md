@@ -20,9 +20,9 @@ Analyze the approved PRD and design documents. Break the feature into discrete, 
 For each task, run:
 ```bash
 bd create "[Task title]" \
-  --description "[Detailed description. Reference PRD acceptance criteria by number. Include any context the implementing agent will need.]" \
-  --label "epic:[feature-name],story:[US-id],[domain-label]" \
-  --type feature
+  -d "[Detailed description. Reference PRD acceptance criteria by number. Include any context the implementing agent will need.]" \
+  -l "epic:[feature-name],story:[US-id],[domain-label]" \
+  -t feature
 ```
 
 Capture the Beads task ID returned for each task (format: `bd-XXXX`).
@@ -33,7 +33,7 @@ Capture the Beads task ID returned for each task (format: `bd-XXXX`).
 
 For each dependency relationship (task B cannot start before task A completes), run:
 ```bash
-bd dep add [task-a-id] --blocks [task-b-id]
+bd dep [task-a-id] --blocks [task-b-id]
 ```
 
 Set up all dependency relationships before generating the tree.

@@ -34,7 +34,7 @@ mv docs/pdlc/mom/MOM_decision_*_${feature}_*.md docs/pdlc/archive/mom/ 2>/dev/nu
 mv docs/pdlc/mom/MOM_whatif_*_${feature}_*.md docs/pdlc/archive/mom/ 2>/dev/null || true
 
 # Clean up Beads
-bd purge 2>/dev/null || true
-bd admin compact --stats 2>/dev/null || true
+bd purge --force 2>/dev/null || true
+bd admin compact --dolt 2>/dev/null || true
 
 echo '{"status":"archived","feature":"'"$feature"'"}'

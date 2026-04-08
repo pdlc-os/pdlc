@@ -85,7 +85,7 @@ bd list --label "epic:[feature-name]" --json
 
 For each open task (not already "done"):
 ```bash
-bd done [task-id] --message "Feature abandoned — see ADR-[NNN]"
+bd close [task-id] --reason "Feature abandoned — see ADR-[NNN]"
 ```
 
 Report:
