@@ -49,6 +49,26 @@ Before the first user-facing message, read `skills/formatting.md` and output a *
 
 ## Step 1 — Confirm abandonment
 
+Read `docs/pdlc/memory/STATE.md` to determine the current phase. Tailor the confirmation based on how far the feature has progressed:
+
+**If currently in Inception (brainstorming):**
+
+> "You're about to abandon **[feature-name]** during brainstorming.
+>
+> Current state: **Inception / [sub-phase]**
+> [If brainstorm log exists:] Brainstorm log: `docs/pdlc/brainstorm/brainstorm_[feature]_[date].md`
+> [If PRD exists:] PRD: `docs/pdlc/prds/PRD_[feature]_[date].md`
+> [If design docs exist:] Design: `docs/pdlc/design/[feature]/`
+>
+> No code has been written yet — this is a clean exit. This will:
+> - Archive brainstorm artifacts (log, PRD, design docs)
+> - Update ROADMAP.md to **Dropped**
+> - Create an abandonment episode
+>
+> **Why are you abandoning this feature?**"
+
+**If currently in Construction or Operation:**
+
 > "You're about to abandon **[feature-name]**.
 >
 > Current state: **[phase] / [sub-phase]**
@@ -102,7 +122,9 @@ Append to `docs/pdlc/memory/DECISIONS.md`:
 
 ## Step 3 — Close Beads tasks
 
-List all tasks for this feature:
+**If currently in Inception:** Skip this step — no Beads tasks exist during brainstorming.
+
+**Otherwise:** List all tasks for this feature:
 ```bash
 bd list --label "epic:[feature-name]" --json
 ```
@@ -207,14 +229,39 @@ The feature branch is kept (not merged, not deleted) — the user can prune it m
 
 ## Step 7 — Handoff to next feature
 
-> **Oracle (Product Manager):** "Feature `[feature-name]` has been abandoned and cleaned up. Everything is documented — the PRD, design docs, and branch are preserved for reference in case you want to revisit later."
+Read `docs/pdlc/memory/ROADMAP.md`. Find the next priority feature with status `Planned`. Call it `[next-feature]` with ID `[next-id]`.
 
-Read `docs/pdlc/memory/ROADMAP.md`. Find the next priority feature with status `Planned`. Present it using the same next-feature flow as ship Step 18:
+**If abandoned during Inception (brainstorming):**
+
+> **Oracle (Product Manager):** "Feature `[feature-name]` has been dropped from brainstorming. The brainstorm log and any docs are archived for reference — nothing is lost if you want to revisit the idea later."
+
+> "Here's the roadmap:
+>
+> - **Just dropped:** `[feature-name]`
+> [If next feature exists:]
+> - **Next on the roadmap:** `[next-id]: [next-feature]` — [description]
+> - **Remaining:** [N] features planned
+>
+> What would you like to do?
+> - **Brainstorm next** — start brainstorming `[next-feature]` now
+> - **Pick a different feature** — choose from the roadmap or propose a new one
+> - **Pause** — take a break, come back later"
+
+Handle the response:
+
+- **Brainstorm next**: Update ROADMAP.md — set `[next-feature]` to `In Progress`. Immediately begin `/pdlc brainstorm [next-feature]`.
+- **Pick a different feature**: If from roadmap, update that feature to `In Progress` and begin `/pdlc brainstorm [that-feature]`. If new, add to ROADMAP.md with next `F-NNN` ID, set to `In Progress`, and begin brainstorm.
+- **Pause**: Acknowledge and stop.
+
+**If abandoned during Construction or Operation:**
+
+> **Oracle (Product Manager):** "Feature `[feature-name]` has been abandoned and cleaned up. Everything is documented — the PRD, design docs, and branch are preserved for reference in case you want to revisit later."
 
 > "Here's where we stand on the roadmap:
 >
 > - **Just abandoned:** `[feature-name]`
-> - **Next on the roadmap:** `[F-NNN]: [next-feature]` — [description]
+> [If next feature exists:]
+> - **Next on the roadmap:** `[next-id]: [next-feature]` — [description]
 > - **Remaining:** [N] features planned
 >
 > What would you like to do?
