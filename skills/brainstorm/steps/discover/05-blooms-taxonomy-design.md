@@ -130,4 +130,4 @@ After all rounds (or when the user skips), append to `[brainstorm-log]` under a 
 
 ---
 
-Return to `03-design.md` and proceed to document generation.
+**Do not stop or wait for user input.** Return to `03-design.md` and immediately proceed to document generation (Step 10).

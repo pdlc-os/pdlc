@@ -48,4 +48,4 @@ The script creates all PDLC directories idempotently. Parse the JSON output — 
 
 ---
 
-Return to `SKILL.md` and proceed to Step 4.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to Step 4 (Socratic Initialization).

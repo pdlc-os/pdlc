@@ -66,4 +66,4 @@ Continue until the top findings are addressed or the user types any termination 
 
 Update `last-updated` in the frontmatter to now.
 
-Return to `01-discover.md` and proceed to Step 4.
+**Do not stop or wait for user input.** Return to `01-discover.md` and immediately proceed to Step 4 (Edge Case Analysis).

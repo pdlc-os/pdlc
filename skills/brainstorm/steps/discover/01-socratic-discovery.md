@@ -120,4 +120,4 @@ Continue until you have a clear, concrete picture of the feature. Stop when you 
 
 Update `last-updated` in the frontmatter to now.
 
-Return to `01-discover.md` and proceed to Step 3.
+**Do not stop or wait for user input.** Return to `01-discover.md` and immediately proceed to Step 2a (Progressive Thinking).

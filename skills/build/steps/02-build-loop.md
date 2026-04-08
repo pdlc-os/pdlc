@@ -164,4 +164,4 @@ Return to **Step 4**. Continue until `bd ready` returns an empty list.
 
 ---
 
-Return to `SKILL.md` and proceed to the REVIEW section.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to the REVIEW section.

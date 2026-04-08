@@ -183,4 +183,14 @@ Create `docs/pdlc/memory/episodes/index.md` with this content:
 
 ---
 
-Return to `SKILL.md` and proceed to Step 7.
+## Transition to Roadmap Ideation
+
+After all memory files and the episodes index are created, **you must immediately continue** to the next step. Do not stop, do not wait for user input, and do not end your turn here.
+
+Output the following to the user:
+
+> "Memory files created ✓ — CONSTITUTION, INTENT, STATE, ROADMAP (stub), DECISIONS, CHANGELOG, METRICS, OVERVIEW, and episodes index are all in place.
+>
+> Now let's figure out **what to build**. I'm going to generate a starter list of candidate features based on everything you've told me."
+
+Then return to `SKILL.md` and proceed to Roadmap Ideation (Steps 6a–6d) without pausing.

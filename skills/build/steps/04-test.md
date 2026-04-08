@@ -85,4 +85,4 @@ Wait for the human's choice. Repeat until all failures are resolved or explicitl
 
 ---
 
-Return to `SKILL.md` and proceed to the WRAP-UP section.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to the WRAP-UP section.

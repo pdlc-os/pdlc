@@ -96,6 +96,32 @@ Or directly from GitHub (always latest):
 npm install -g pdlc-os/pdlc
 ```
 
+### Install from source (offline / restricted networks)
+
+If the npm registry is blocked (e.g., corporate firewalls), you can build a tarball from the Git repository and install from that.
+
+```bash
+# Clone the repo and build the tarball
+git clone https://github.com/pdlc-os/pdlc.git
+cd pdlc
+npm pack
+```
+
+This produces a file like `pdlc-os-pdlc-2.3.1.tgz`. Install it locally or globally:
+
+```bash
+# Local (from your project directory)
+cd /path/to/your-repo
+npm install --save-dev /path/to/pdlc/pdlc-os-pdlc-2.3.1.tgz
+
+# Global
+npm install -g /path/to/pdlc/pdlc-os-pdlc-2.3.1.tgz
+```
+
+The postinstall script runs the same way as a registry install — hooks are registered and you'll be prompted to install Beads and Dolt.
+
+> **Tip:** To share with teammates on the same restricted network, distribute the `.tgz` file via internal file share, Artifactory, or email. Each developer runs `npm install` against the tarball path.
+
 ### Verify installation
 
 ```bash

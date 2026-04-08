@@ -37,4 +37,4 @@ Store all answers. You will use them to fill in the memory files below.
 
 ---
 
-Return to `SKILL.md` and proceed to Step 5.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to Steps 5–6 (Generate Memory Files).

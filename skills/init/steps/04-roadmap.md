@@ -1,6 +1,8 @@
 # Roadmap Ideation
 ## Steps 6a–6d
 
+**Do not wait for user input before starting Step 6a.** Begin generating the candidate feature list immediately upon entering this file.
+
 ---
 
 ## Step 6a — Ideate features

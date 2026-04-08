@@ -93,4 +93,4 @@ Do **not** print a "Next step: run /pdlc brainstorm..." message — Step 10 in `
 
 ---
 
-Return to `SKILL.md` and proceed to Step 10.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to Step 10 (Launch first feature or prompt).

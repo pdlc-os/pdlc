@@ -80,4 +80,4 @@ Store the triage decisions as `[edge-case-triage]` — they feed directly into t
 
 Update `last-updated` in the frontmatter to now.
 
-Return to `01-discover.md` and proceed to Step 5.
+**Do not stop or wait for user input.** Return to `01-discover.md` and immediately proceed to Steps 5–6 (Synthesis).

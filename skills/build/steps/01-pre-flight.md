@@ -85,4 +85,4 @@ Update `docs/pdlc/memory/STATE.md`:
 
 ---
 
-Return to `SKILL.md` and proceed to the BUILD LOOP.
+**Do not stop or wait for user input.** Return to `SKILL.md` and immediately proceed to the BUILD LOOP.

@@ -181,4 +181,4 @@ Append to `[brainstorm-log]` under a new section:
 
 ---
 
-Return to `01-discover.md` and proceed to Adversarial Review.
+**Do not stop or wait for user input.** Return to `01-discover.md` and immediately proceed to Step 3 (Adversarial Review).
