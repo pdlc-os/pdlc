@@ -7,6 +7,20 @@
 
 > **Skip this step if the user accepted the brownfield repo scan in Step 2.** The scan already generated the memory files. Jump to Step 6.
 
+### Pre-fill from existing CLAUDE.md
+
+Before starting the questions, check if `CLAUDE.md` exists at the project root. If it does, read it and extract any available context: project name, description, tech stack, architecture, conventions, key files, dev commands.
+
+Use this to **pre-fill suggested answers** for the Socratic questions. For each question where CLAUDE.md provides a clear answer, present the suggestion and let the user confirm or override:
+
+> "[Question text]
+>
+> *(From your existing CLAUDE.md: [suggested answer])*
+>
+> Press Enter to accept, or type your own answer."
+
+This saves the user from re-typing context that already exists in their repo. If CLAUDE.md doesn't exist, proceed with the questions as normal.
+
 Before asking the first question, print this notice:
 
 > **Tip:** You can type `skip` at any time to stop the questions and proceed with whatever information has been collected so far.

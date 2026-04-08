@@ -37,7 +37,7 @@ From this output, identify:
 - Entry points (`main.*`, `index.*`, `app.*`, `server.*`, `cmd/`)
 - Test directories (`__tests__/`, `spec/`, `test/`, `tests/`, `*.test.*`, `*.spec.*`)
 - Config files (`.env.example`, `docker-compose.yml`, `Dockerfile`, CI/CD configs)
-- Existing documentation (`README*`, `docs/` excluding `docs/pdlc/`)
+- Existing documentation (`README*`, `CLAUDE.md`, `docs/` excluding `docs/pdlc/`)
 
 ---
 
@@ -56,6 +56,7 @@ Read every file from this list that exists:
 - `README.md` / `README.rst` / `README.txt` — for existing documentation
 - `.env.example` — for environment variable hints
 - Any existing `ARCHITECTURE.md`, `CONTRIBUTING.md`, `DECISIONS.md`, or `ADR/` directory
+- `CLAUDE.md` — if present, this is the richest single source of project context (tech stack, architecture, conventions, key files, dev commands)
 
 Extract from these files:
 - **Tech stack**: languages, frameworks, databases, cloud providers, key libraries
@@ -63,6 +64,13 @@ Extract from these files:
 - **Dependencies**: categorise into frontend, backend, testing, dev tools
 - **Environment variables**: what external services are configured
 - **CI/CD pipeline**: what stages run on merge/push
+
+**If `CLAUDE.md` exists**, treat it as a high-confidence source. Its contents were likely curated by a developer and should be preferred over inferences when they conflict. Extract:
+- Tech stack and key libraries (use directly in CONSTITUTION.md §2)
+- Architecture description (use as the basis for OVERVIEW.md architecture section)
+- Coding conventions (use directly in CONSTITUTION.md §5)
+- Project structure and key files (use in OVERVIEW.md)
+- Development commands (use in CONSTITUTION.md §7 test commands and OVERVIEW.md)
 
 ---
 
@@ -297,7 +305,7 @@ Structure:
 - Keep it under 80 lines. Brevity is critical — this file is loaded into every Claude session.
 - Only include facts evidenced by the scan. Do not speculate or add aspirational content.
 - Do not duplicate PDLC-specific information (phases, agents, memory files) — that belongs in the PDLC CLAUDE.md installed by the plugin.
-- If CLAUDE.md already exists in the repo, **do not overwrite it**. Instead, present the generated content to the user and ask: "A CLAUDE.md already exists. Want me to merge these findings into it, replace it, or skip?"
+- If CLAUDE.md already exists in the repo, **do not overwrite it**. The existing content was already ingested in Step 2 and used to seed the memory files. Present a diff of what the scan would add or change, then ask: "Your existing CLAUDE.md was used to seed the memory files. The scan found additional context that could enrich it. Want me to **(A) merge** the new findings into the existing file, **(B) replace** it entirely with the scan-generated version, or **(C) keep** the original as-is?"
 
 ---
 
