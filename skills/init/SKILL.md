@@ -43,7 +43,7 @@ Return here when all answers are collected (or the user typed `skip`).
 
 Read `skills/init/steps/03-generate-memory.md` and execute it completely.
 
-Return here when all memory files and the episodes index are created.
+Return here when all memory files, the episodes index, and the scaffold CLAUDE.md are created.
 
 ### Steps 6a–6d — Roadmap Ideation
 

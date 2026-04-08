@@ -77,6 +77,8 @@ Read `docs/pdlc/memory/OVERVIEW.md`. Update:
 
 Read the project-root `CLAUDE.md`. If it exists, refresh it to reflect the feature just shipped:
 
+**First ship (scaffold or expanded CLAUDE.md):** If the file contains `<!-- pdlc-scaffold: true -->` or `<!-- pdlc-expanded: true -->`, this is the first feature ship. Replace all planned content with actuals and remove both markers. Every section should now describe what was actually built, not what was planned.
+
 1. **Architecture section**: If this feature changed the architecture meaningfully (new service, new layer, new integration, new database table), update the Architecture section to reflect the current state. Remove any `<!-- update after first build -->` markers and replace planned content with actuals.
 
 2. **Project Structure section**: If new top-level directories were created or the directory layout changed, update the structure description. On the first ship after a greenfield init, replace the planned structure with the actual layout by running `find . -maxdepth 2 -not -path './.git/*' -not -path './node_modules/*' -not -path './.beads/*' -type d | sort`.

@@ -183,13 +183,49 @@ Create `docs/pdlc/memory/episodes/index.md` with this content:
 
 ---
 
+## Step 5i — Generate scaffold CLAUDE.md
+
+After the memory files are created, generate a lightweight scaffold `CLAUDE.md` at the project root. This gives Claude useful project context from the very first session, even before any code exists.
+
+**If `CLAUDE.md` already exists at the project root**, skip this step — do not overwrite it.
+
+Using the answers from the Socratic questions, create `CLAUDE.md`:
+
+```markdown
+# [Project Name]
+
+<!-- pdlc-scaffold: true — This file was generated during PDLC initialization from Socratic answers. It will be expanded with architecture, conventions, and key files after the first brainstorm Design phase, and updated with actuals after each feature ships. -->
+
+[1–2 sentence description derived from question 2 (problem statement) and question 3 (target user)]
+
+## Tech Stack
+
+- **Language:** [from question 4]
+- **Framework:** [from question 4]
+- **Database:** [from question 4, if mentioned]
+- **Infrastructure:** [from question 4, if mentioned]
+
+## Development
+
+- **Install:** `[infer from tech stack, e.g. npm install, pip install -r requirements.txt]`
+- **Test:** `[from question 6 — e.g. npm test, pytest]`
+
+## Architectural Constraints
+
+[From question 5. If "none", write "No constraints defined yet."]
+```
+
+This scaffold is intentionally minimal (~25–30 lines). It captures only what the user has confirmed. Sections like Architecture, Coding Conventions, Key Files, and Project Structure are **not included yet** — they will be added by brainstorm Step 12a after the Design phase produces real architecture docs.
+
+---
+
 ## Transition to Roadmap Ideation
 
-After all memory files and the episodes index are created, **you must immediately continue** to the next step. Do not stop, do not wait for user input, and do not end your turn here.
+After all memory files, the episodes index, and the scaffold CLAUDE.md are created, **you must immediately continue** to the next step. Do not stop, do not wait for user input, and do not end your turn here.
 
 Output the following to the user:
 
-> "Memory files created ✓ — CONSTITUTION, INTENT, STATE, ROADMAP (stub), DECISIONS, CHANGELOG, METRICS, OVERVIEW, and episodes index are all in place.
+> "Memory files created ✓ — CONSTITUTION, INTENT, STATE, ROADMAP (stub), DECISIONS, CHANGELOG, METRICS, OVERVIEW, episodes index, and scaffold CLAUDE.md are all in place.
 >
 > Now let's figure out **what to build**. I'm going to generate a starter list of candidate features based on everything you've told me."
 
