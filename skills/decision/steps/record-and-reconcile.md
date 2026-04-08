@@ -120,8 +120,9 @@ If the decision affects **architecture, tech stack, or project structure** (chec
    - **Tech Stack** — if the decision adds, removes, or replaces a technology (language, framework, database, infrastructure)
    - **Project Structure** — if the decision reorganizes directories or introduces new top-level modules
    - **Key Files** — if the decision introduces or removes structurally important files
-3. Update only the affected sections. Keep the file under 80 lines.
-4. If no sections are affected, skip entirely.
+3. Update only the affected sections. Also update any corresponding `.claude/docs/` sub-files if they exist (e.g., if the Architecture section was split out, update `.claude/docs/architecture.md`).
+4. **Size check:** After updating, if CLAUDE.md exceeds 180 lines, apply the overflow protocol from `skills/repo-scan/SKILL.md` — split overflowing sections into `.claude/docs/` sub-files with return directives.
+5. If no sections are affected, skip entirely.
 
 This keeps CLAUDE.md current for decisions that cause significant structural evolution, without touching it for minor decisions.
 

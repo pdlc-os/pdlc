@@ -87,7 +87,9 @@ Read the project-root `CLAUDE.md`. If it exists, refresh it to reflect the featu
 
 5. **Tech Stack section**: If new significant dependencies or infrastructure were added (new database, new cloud service, new major library), add them.
 
-**Do not touch** sections that are unchanged. Keep the file under 80 lines. If no meaningful changes apply, skip this step entirely — do not update the file just to change a date.
+**Do not touch** sections that are unchanged. If no meaningful changes apply, skip this step entirely — do not update the file just to change a date.
+
+**Size check:** After updating, count the lines in CLAUDE.md. If it exceeds 180 lines, apply the overflow protocol from `skills/repo-scan/SKILL.md` — split overflowing sections into `.claude/docs/` sub-files with return directives, keep CLAUDE.md as the abbreviated entry point. If sub-files already exist in `.claude/docs/`, update them in place rather than creating duplicates.
 
 If `CLAUDE.md` does not exist at the project root (e.g., user deleted it or it predates this feature), skip this step.
 

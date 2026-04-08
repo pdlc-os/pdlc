@@ -139,7 +139,7 @@ Read `docs/pdlc/memory/CONSTITUTION.md` (tech stack, constraints, coding standar
 ```
 
 **Rules:**
-- Keep under 80 lines. This file loads into every Claude session.
+- **Size limit: 180 lines.** If the generated content exceeds 180 lines, apply the overflow protocol in `skills/repo-scan/SKILL.md` (split overflowing sections into `.claude/docs/` sub-files with return directives, keep CLAUDE.md as the abbreviated entry point).
 - Only include facts from the approved documents. Do not speculate.
 - Do not duplicate PDLC-specific content (phases, agents, memory files) — that's in the PDLC plugin's own CLAUDE.md.
 - For greenfield projects, some sections (Key Files, Project Structure) will be based on the planned architecture. Mark with `<!-- update after first build -->` so the ship phase knows to replace with actuals.

@@ -302,10 +302,43 @@ Structure:
 ```
 
 **Rules for CLAUDE.md generation:**
-- Keep it under 80 lines. Brevity is critical — this file is loaded into every Claude session.
+- **Size limit: 180 lines.** This file is loaded into every Claude session, so keep it concise. If the generated content exceeds 180 lines, apply the overflow protocol below.
 - Only include facts evidenced by the scan. Do not speculate or add aspirational content.
 - Do not duplicate PDLC-specific information (phases, agents, memory files) — that belongs in the PDLC CLAUDE.md installed by the plugin.
 - If CLAUDE.md already exists in the repo, **do not overwrite it**. The existing content was already ingested in Step 2 and used to seed the memory files. Present a diff of what the scan would add or change, then ask: "Your existing CLAUDE.md was used to seed the memory files. The scan found additional context that could enrich it. Want me to **(A) merge** the new findings into the existing file, **(B) replace** it entirely with the scan-generated version, or **(C) keep** the original as-is?"
+
+**Overflow protocol — splitting into sub-files:**
+
+If CLAUDE.md exceeds 180 lines after generation (or after any update), split the overflowing sections into sub-files under `.claude/docs/`:
+
+1. **Identify the largest sections** (Architecture, Coding Conventions, and Key Files are the most likely to overflow). Move each overflowing section's detailed content into its own sub-file:
+   - `.claude/docs/architecture.md` — full architecture description
+   - `.claude/docs/coding-conventions.md` — detailed conventions and patterns
+   - `.claude/docs/key-files.md` — comprehensive file reference
+   - `.claude/docs/development.md` — extended dev setup, environment config, troubleshooting
+
+2. **Replace the moved section in CLAUDE.md** with a brief summary (2–3 lines) and a reference:
+   ```markdown
+   ## Architecture
+
+   [2–3 sentence summary of architectural style and key layers.]
+
+   See [.claude/docs/architecture.md](.claude/docs/architecture.md) for full architecture details.
+   ```
+
+3. **Each sub-file must end with a return directive:**
+   ```markdown
+   ---
+
+   **This is a sub-file of the project root `CLAUDE.md`.** After reading this file, return to `CLAUDE.md` and continue with the next section. Do not stop or wait for input here.
+   ```
+
+4. **Create `.claude/docs/` directory** if it doesn't exist:
+   ```bash
+   mkdir -p .claude/docs
+   ```
+
+5. **Keep CLAUDE.md as the single entry point.** It must always contain the full section headings with summaries — sub-files provide depth, not replacement. A reader of CLAUDE.md alone should get a complete (if abbreviated) picture of the project.
 
 ---
 
