@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html data-theme="dark">
+<html data-theme="light">
 <head>
   <meta charset="utf-8">
   <title>PDLC Visual Companion</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
     /*
-     * PDLC VISUAL COMPANION — Material Design Frame
+     * PDLC VISUAL COMPANION — Flexy Admin Design System
      *
-     * Material Design 2 inspired styling with:
-     * - Roboto font family + Material Icons
-     * - MD elevation system (dp shadows)
-     * - MD color palette with light/dark themes
+     * Based on WrapPixel Flexy-admin-Nextjs-Free theme:
+     * - DM Sans font family + Material Icons
+     * - Flexy elevation (soft box-shadows)
+     * - Flexy color palette with light/dark themes
      * - Ripple effects on interactive elements
      * - Light/dark toggle with smooth transitions
+     * - 20px card radius, 7px button/input radius
      *
      * Structural contracts preserved:
      * - #claude-content: content fragment injection point
@@ -28,98 +29,111 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
 
-    /* ===== MATERIAL DESIGN THEME VARIABLES ===== */
+    /* ===== THEME VARIABLES ===== */
     :root {
-      /* Transitions for theme switching */
       --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* --- Dark Theme (default) --- */
-    [data-theme="dark"] {
-      --md-surface: #121212;
-      --md-surface-1: #1e1e1e;   /* dp01 overlay */
-      --md-surface-2: #232323;   /* dp02 */
-      --md-surface-3: #252525;   /* dp03 */
-      --md-surface-4: #272727;   /* dp04 */
-      --md-surface-6: #2c2c2c;   /* dp06 */
-      --md-surface-8: #2e2e2e;   /* dp08 */
-      --md-surface-12: #333333;  /* dp12 */
-      --md-on-surface: #e1e1e1;
-      --md-on-surface-medium: #a0a0a0;
-      --md-on-surface-disabled: #6c6c6c;
-      --md-primary: #bb86fc;
-      --md-primary-variant: #3700b3;
-      --md-on-primary: #000000;
-      --md-secondary: #03dac6;
-      --md-secondary-variant: #018786;
-      --md-on-secondary: #000000;
-      --md-error: #cf6679;
-      --md-on-error: #000000;
-      --md-success: #66bb6a;
-      --md-warning: #ffa726;
-      --md-outline: #444444;
-      --md-divider: rgba(255, 255, 255, 0.12);
-      --md-hover: rgba(255, 255, 255, 0.04);
-      --md-selected: rgba(187, 134, 252, 0.12);
-      --md-selected-border: var(--md-primary);
-      --md-ripple: rgba(255, 255, 255, 0.1);
-      --md-header-bg: #0e0e0e;
-      --md-elevation-1: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.48);
-      --md-elevation-2: 0 3px 6px rgba(0,0,0,0.32), 0 3px 6px rgba(0,0,0,0.46);
-      --md-elevation-4: 0 6px 10px rgba(0,0,0,0.28), 0 3px 10px rgba(0,0,0,0.42);
-      --md-elevation-8: 0 8px 16px rgba(0,0,0,0.24), 0 6px 16px rgba(0,0,0,0.38);
-    }
-
-    /* --- Light Theme --- */
+    /* --- Light Theme (default — Flexy palette) --- */
     [data-theme="light"] {
-      --md-surface: #fafafa;
+      --md-surface: #fafbfb;
       --md-surface-1: #ffffff;
       --md-surface-2: #ffffff;
-      --md-surface-3: #f5f5f5;
-      --md-surface-4: #f5f5f5;
-      --md-surface-6: #eeeeee;
-      --md-surface-8: #eeeeee;
-      --md-surface-12: #e0e0e0;
-      --md-on-surface: #1c1c1c;
-      --md-on-surface-medium: #666666;
-      --md-on-surface-disabled: #9e9e9e;
-      --md-primary: #6200ee;
-      --md-primary-variant: #3700b3;
+      --md-surface-3: #f6f9fc;
+      --md-surface-4: #ecf0f2;
+      --md-surface-6: #EAEFF4;
+      --md-surface-8: #DFE5EF;
+      --md-surface-12: #e5eaef;
+      --md-on-surface: #11142d;
+      --md-on-surface-medium: #5A6A85;
+      --md-on-surface-disabled: #767e89;
+      --md-primary: #1e4db7;
+      --md-primary-light: #e7ecf7;
+      --md-primary-variant: #173f98;
       --md-on-primary: #ffffff;
-      --md-secondary: #03dac6;
-      --md-secondary-variant: #018786;
-      --md-on-secondary: #000000;
-      --md-error: #b00020;
+      --md-secondary: #1a97f5;
+      --md-secondary-light: #EFF9FF;
+      --md-secondary-variant: #1682d4;
+      --md-on-secondary: #ffffff;
+      --md-error: #fc4b6c;
+      --md-error-light: #fdf3f5;
       --md-on-error: #ffffff;
-      --md-success: #2e7d32;
-      --md-warning: #e65100;
-      --md-outline: #d0d0d0;
-      --md-divider: rgba(0, 0, 0, 0.12);
-      --md-hover: rgba(0, 0, 0, 0.04);
-      --md-selected: rgba(98, 0, 238, 0.08);
+      --md-success: #00c292;
+      --md-success-light: #ebfaf2;
+      --md-warning: #fdc90f;
+      --md-warning-light: #fff4e5;
+      --md-info: #0bb2fb;
+      --md-info-light: #dff8ff;
+      --md-outline: #e5eaef;
+      --md-divider: #e9e9e9;
+      --md-hover: #f6f9fc;
+      --md-selected: rgba(30, 77, 183, 0.08);
       --md-selected-border: var(--md-primary);
-      --md-ripple: rgba(0, 0, 0, 0.08);
+      --md-ripple: rgba(0, 0, 0, 0.06);
       --md-header-bg: #ffffff;
-      --md-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
-      --md-elevation-2: 0 3px 6px rgba(0,0,0,0.10), 0 3px 6px rgba(0,0,0,0.15);
-      --md-elevation-4: 0 6px 10px rgba(0,0,0,0.08), 0 3px 10px rgba(0,0,0,0.12);
-      --md-elevation-8: 0 8px 16px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.10);
+      --md-elevation-1: 0px 7px 30px 0px rgba(90, 114, 123, 0.11);
+      --md-elevation-2: 0px 7px 30px 0px rgba(90, 114, 123, 0.11);
+      --md-elevation-4: 0px 10px 35px 0px rgba(90, 114, 123, 0.15);
+      --md-elevation-8: 0px 12px 40px 0px rgba(90, 114, 123, 0.20);
+    }
+
+    /* --- Dark Theme (Flexy-inspired dark complement) --- */
+    [data-theme="dark"] {
+      --md-surface: #0f1724;
+      --md-surface-1: #162033;
+      --md-surface-2: #1a2540;
+      --md-surface-3: #1e2a48;
+      --md-surface-4: #223050;
+      --md-surface-6: #283856;
+      --md-surface-8: #2e3f5e;
+      --md-surface-12: #384a6b;
+      --md-on-surface: #e4e7eb;
+      --md-on-surface-medium: #9ca8bc;
+      --md-on-surface-disabled: #6b7a92;
+      --md-primary: #5b8def;
+      --md-primary-light: rgba(91, 141, 239, 0.12);
+      --md-primary-variant: #1e4db7;
+      --md-on-primary: #ffffff;
+      --md-secondary: #4db5f9;
+      --md-secondary-light: rgba(77, 181, 249, 0.10);
+      --md-secondary-variant: #1a97f5;
+      --md-on-secondary: #0f1724;
+      --md-error: #fd7b93;
+      --md-error-light: rgba(253, 123, 147, 0.10);
+      --md-on-error: #0f1724;
+      --md-success: #33d4ac;
+      --md-success-light: rgba(51, 212, 172, 0.10);
+      --md-warning: #fdd64b;
+      --md-warning-light: rgba(253, 214, 75, 0.10);
+      --md-info: #3dc1fc;
+      --md-info-light: rgba(61, 193, 252, 0.10);
+      --md-outline: #2e3f5e;
+      --md-divider: rgba(255, 255, 255, 0.08);
+      --md-hover: rgba(255, 255, 255, 0.04);
+      --md-selected: rgba(91, 141, 239, 0.15);
+      --md-selected-border: var(--md-primary);
+      --md-ripple: rgba(255, 255, 255, 0.08);
+      --md-header-bg: #0d1420;
+      --md-elevation-1: 0px 4px 20px 0px rgba(0, 0, 0, 0.30);
+      --md-elevation-2: 0px 7px 30px 0px rgba(0, 0, 0, 0.35);
+      --md-elevation-4: 0px 10px 35px 0px rgba(0, 0, 0, 0.40);
+      --md-elevation-8: 0px 12px 40px 0px rgba(0, 0, 0, 0.50);
     }
 
     /* ===== BASE ===== */
     body {
-      font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+      font-family: 'DM Sans', Helvetica, Arial, sans-serif;
       background: var(--md-surface);
       color: var(--md-on-surface);
       display: flex;
       flex-direction: column;
-      line-height: 1.6;
+      line-height: 1.5;
       letter-spacing: 0.01em;
       transition: var(--theme-transition);
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== MATERIAL ELEVATION HELPERS ===== */
+    /* ===== ELEVATION HELPERS ===== */
     .elevation-1 { box-shadow: var(--md-elevation-1); }
     .elevation-2 { box-shadow: var(--md-elevation-2); }
     .elevation-4 { box-shadow: var(--md-elevation-4); }
@@ -149,15 +163,15 @@
       transition: width 0.4s ease, height 0.4s ease, opacity 0.6s ease;
     }
 
-    /* ===== HEADER (App Bar) ===== */
+    /* ===== HEADER (App Bar — Flexy style, no shadow) ===== */
     .header {
       background: var(--md-header-bg);
-      padding: 0 1rem 0 1.25rem;
-      height: 3.5rem;
+      padding: 0 1.25rem;
+      height: 4.375rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: var(--md-elevation-2);
+      border-bottom: 1px solid var(--md-divider);
       flex-shrink: 0;
       z-index: 10;
       transition: var(--theme-transition);
@@ -166,14 +180,14 @@
     .header-logo {
       width: 2rem; height: 2rem;
       background: var(--md-primary);
-      border-radius: 8px;
+      border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.75rem; font-weight: 700; color: var(--md-on-primary);
       letter-spacing: -0.02em;
       flex-shrink: 0;
     }
     .header h1 {
-      font-size: 1rem;
+      font-size: 1.125rem;
       font-weight: 500;
       color: var(--md-on-surface);
       letter-spacing: 0.01em;
@@ -243,10 +257,10 @@
       font-weight: 500;
     }
 
-    /* ===== TYPOGRAPHY (Material type scale) ===== */
+    /* ===== TYPOGRAPHY (Flexy type scale — DM Sans) ===== */
     h2 {
       font-size: 1.5rem;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: 0em;
       margin-bottom: 0.5rem;
       color: var(--md-on-surface);
@@ -254,7 +268,7 @@
     h3 {
       font-size: 1.125rem;
       font-weight: 500;
-      letter-spacing: 0.0075em;
+      letter-spacing: 0em;
       margin-bottom: 0.25rem;
       color: var(--md-on-surface);
     }
@@ -275,13 +289,13 @@
       font-weight: 500;
     }
 
-    /* ===== OPTIONS (Material cards for A/B/C choices) ===== */
+    /* ===== OPTIONS (Flexy cards for A/B/C choices) ===== */
     .options { display: flex; flex-direction: column; gap: 0.75rem; }
     .option {
       background: var(--md-surface-1);
       border: 1.5px solid var(--md-outline);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
+      border-radius: 20px;
+      padding: 1.25rem 1.5rem;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
@@ -300,12 +314,12 @@
       box-shadow: var(--md-elevation-2);
     }
     .option .letter {
-      background: var(--md-surface-6);
-      color: var(--md-on-surface-medium);
-      width: 2rem; height: 2rem;
+      background: var(--md-primary-light);
+      color: var(--md-primary);
+      width: 2.25rem; height: 2.25rem;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 500; font-size: 0.875rem; flex-shrink: 0;
+      font-weight: 700; font-size: 0.875rem; flex-shrink: 0;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .option.selected .letter {
@@ -316,15 +330,16 @@
     .option .content h3 { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.125rem; }
     .option .content p { color: var(--md-on-surface-medium); font-size: 0.8125rem; margin: 0; line-height: 1.5; }
 
-    /* ===== CARDS (Material cards for designs/mockups) ===== */
+    /* ===== CARDS (Flexy cards for designs/mockups) ===== */
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
     .card {
       background: var(--md-surface-1);
       border: 1px solid var(--md-outline);
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--md-elevation-1);
     }
     .card:hover {
       box-shadow: var(--md-elevation-4);
@@ -340,7 +355,7 @@
       aspect-ratio: 16/10;
       display: flex; align-items: center; justify-content: center;
     }
-    .card-body { padding: 1rem 1.25rem; }
+    .card-body { padding: 1.25rem 1.5rem; }
     .card-body h3 { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.25rem; }
     .card-body p { color: var(--md-on-surface-medium); font-size: 0.8125rem; }
 
@@ -348,7 +363,7 @@
     .mockup {
       background: var(--md-surface-1);
       border: 1px solid var(--md-outline);
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
       margin-bottom: 1.5rem;
       box-shadow: var(--md-elevation-1);
@@ -356,7 +371,7 @@
     }
     .mockup-header {
       background: var(--md-surface-4);
-      padding: 0.625rem 1rem;
+      padding: 0.75rem 1.25rem;
       font-size: 0.75rem;
       font-weight: 500;
       color: var(--md-on-surface-medium);
@@ -370,12 +385,12 @@
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
 
-    /* ===== PROS/CONS (Material outlined cards) ===== */
+    /* ===== PROS/CONS (Flexy outlined cards) ===== */
     .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
     @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } }
     .pros, .cons {
       background: var(--md-surface-1);
-      border-radius: 12px;
+      border-radius: 20px;
       padding: 1.25rem;
       border: 1px solid var(--md-outline);
       transition: var(--theme-transition);
@@ -391,7 +406,7 @@
     .placeholder {
       background: var(--md-surface-3);
       border: 2px dashed var(--md-outline);
-      border-radius: 12px;
+      border-radius: 20px;
       padding: 2rem;
       text-align: center;
       color: var(--md-on-surface-disabled);
@@ -403,13 +418,12 @@
       background: var(--md-surface-2);
       border-bottom: 1px solid var(--md-divider);
       color: var(--md-on-surface);
-      padding: 0.875rem 1rem;
+      padding: 0.875rem 1.25rem;
       display: flex;
       gap: 1.5rem;
       font-size: 0.875rem;
       font-weight: 500;
       align-items: center;
-      box-shadow: var(--md-elevation-1);
     }
     .mock-nav a, .mock-nav span { color: var(--md-on-surface-medium); text-decoration: none; font-size: 0.8125rem; font-weight: 500; }
     .mock-nav a.active, .mock-nav span.active { color: var(--md-primary); }
@@ -425,32 +439,32 @@
       color: var(--md-on-primary);
       border: none;
       padding: 0.625rem 1.5rem;
-      border-radius: 8px;
-      font-family: 'Roboto', sans-serif;
+      border-radius: 7px;
+      font-family: 'DM Sans', Helvetica, Arial, sans-serif;
       font-size: 0.875rem;
       font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      text-transform: none;
       cursor: pointer;
       transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
-      box-shadow: var(--md-elevation-1);
+      box-shadow: none;
     }
-    .mock-button:hover { box-shadow: var(--md-elevation-4); }
-    .mock-button:active { box-shadow: var(--md-elevation-8); }
+    .mock-button:hover { box-shadow: var(--md-elevation-1); background: var(--md-primary-variant); }
+    .mock-button:active { box-shadow: none; }
     .mock-input {
       background: var(--md-surface);
       border: 1.5px solid var(--md-outline);
-      border-radius: 8px;
+      border-radius: 7px;
       padding: 0.75rem 1rem;
       width: 100%;
       color: var(--md-on-surface);
-      font-family: 'Roboto', sans-serif;
+      font-family: 'DM Sans', Helvetica, Arial, sans-serif;
       font-size: 0.875rem;
       transition: border-color 0.2s;
     }
+    .mock-input::placeholder { color: var(--md-on-surface-medium); opacity: 0.8; }
     .mock-input:focus { outline: none; border-color: var(--md-primary); border-width: 2px; }
 
-    /* ===== PHASE BADGES (Material chips) ===== */
+    /* ===== PHASE BADGES (Flexy chip style) ===== */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -462,19 +476,19 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
-    .badge-inception { background: rgba(187,134,252,0.15); color: var(--md-primary); }
-    .badge-design { background: rgba(3,218,198,0.15); color: var(--md-secondary); }
-    .badge-build { background: rgba(102,187,106,0.15); color: var(--md-success); }
-    .badge-review { background: rgba(255,167,38,0.15); color: var(--md-warning); }
+    .badge-inception { background: var(--md-primary-light); color: var(--md-primary); }
+    .badge-design { background: var(--md-secondary-light); color: var(--md-secondary); }
+    .badge-build { background: var(--md-success-light); color: var(--md-success); }
+    .badge-review { background: var(--md-warning-light); color: var(--md-warning); }
 
     /* ===== MERMAID DIAGRAM OVERRIDES ===== */
     .mermaid { background: transparent !important; }
 
-    /* ===== SCROLLBAR (subtle Material-style) ===== */
+    /* ===== SCROLLBAR (subtle Flexy-style) ===== */
     .main::-webkit-scrollbar { width: 8px; }
     .main::-webkit-scrollbar-track { background: transparent; }
     .main::-webkit-scrollbar-thumb {
-      background: var(--md-outline);
+      background: var(--md-surface-8);
       border-radius: 4px;
     }
     .main::-webkit-scrollbar-thumb:hover { background: var(--md-on-surface-disabled); }
@@ -489,7 +503,7 @@
     <div class="header-right">
       <div class="status">Connected</div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
-        <span class="material-icons-round" id="theme-icon">light_mode</span>
+        <span class="material-icons-round" id="theme-icon">dark_mode</span>
       </button>
     </div>
   </div>
@@ -522,10 +536,10 @@
     // Restore saved theme
     (function() {
       var saved = localStorage.getItem('pdlc-theme');
-      if (saved === 'light') {
-        document.documentElement.dataset.theme = 'light';
+      if (saved === 'dark') {
+        document.documentElement.dataset.theme = 'dark';
         var icon = document.getElementById('theme-icon');
-        if (icon) icon.textContent = 'dark_mode';
+        if (icon) icon.textContent = 'light_mode';
       }
     })();
   </script>

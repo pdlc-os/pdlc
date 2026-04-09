@@ -116,7 +116,9 @@ The frame template loads Mermaid from CDN. Write diagrams directly in content fr
 
 ### Theme toggle
 
-The frame includes a light/dark toggle button in the header. The user's preference is persisted in `localStorage`. The default theme is dark. Do not write theme-specific CSS in content fragments — use the `var(--md-*)` CSS variables and the theme system handles both modes automatically.
+The frame includes a light/dark toggle button in the header. The user's preference is persisted in `localStorage`. The default theme is light (Flexy Admin design system). Do not write theme-specific CSS in content fragments — use the `var(--md-*)` CSS variables and the theme system handles both modes automatically.
+
+Additional Flexy variables available beyond the base set: `--md-primary-light`, `--md-secondary-light`, `--md-error-light`, `--md-success-light`, `--md-warning-light`, `--md-info`, `--md-info-light` — use these for tinted backgrounds (e.g., badge fills, status indicators, alert backgrounds).
 
 ---
 
