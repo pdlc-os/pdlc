@@ -90,14 +90,17 @@ none
 
 ## Context Checkpoint
 
-<!-- Auto-populated by the context monitor hook when context hits CRITICAL (≤25% remaining).
-     Records exactly where Claude was so the next session can resume cleanly.
-     Do not edit manually.
+<!-- Updated by Claude after each numbered step within a skill, and by the
+     context monitor hook at CRITICAL (≤25% remaining).
+     Records exactly where Claude was so /clear recovery is precise.
 
-     Fields written by hook:
+     Fields:
+       - triggered_at: ISO timestamp of the last update
        - active_task: Beads task ID and title at time of save
        - sub_phase: sub-phase in progress
-       - work_in_progress: one-sentence summary of what was being done
+       - step: the step number just completed (e.g. "Step 7")
+       - skill_file: path to the skill file being executed
+       - work_in_progress: one-sentence summary of what was just completed
        - next_action: the exact next step Claude should take on resume
        - files_open: list of files that were being edited
 -->
@@ -107,6 +110,8 @@ none
   "triggered_at": null,
   "active_task": null,
   "sub_phase": null,
+  "step": null,
+  "skill_file": null,
   "work_in_progress": null,
   "next_action": null,
   "files_open": []

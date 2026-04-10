@@ -28,6 +28,26 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 
 When the session start hook injects a resume banner, Claude **must inform the user** about the resume state before doing anything else. Read `docs/pdlc/reference/session-resume.md` for the three resume scenarios (fresh handoff, stale handoff, no handoff) and the exact messages to display.
 
+## Step Checkpoint
+
+After completing each numbered step within a skill, Claude **must** update the Context Checkpoint in `docs/pdlc/memory/STATE.md` with the current progress. This ensures `/clear` recovery is precise — not just phase/sub-phase but the exact step.
+
+Write only the JSON block under `## Context Checkpoint`:
+```json
+{
+  "triggered_at": "<ISO timestamp>",
+  "active_task": "<Beads task ID or null>",
+  "sub_phase": "<current sub-phase>",
+  "step": "<step number just completed, e.g. 'Step 7'>",
+  "skill_file": "<path to the skill file being executed>",
+  "work_in_progress": "<1-sentence: what was just completed>",
+  "next_action": "<1-sentence: the exact next step to execute>",
+  "files_open": ["<paths of files being actively worked on>"]
+}
+```
+
+This write is lightweight (one small JSON block) and is **not** a Tier 3 logged warning — it is routine bookkeeping exempt from the STATE.md direct-edit rule.
+
 ---
 
 ## Key Rules

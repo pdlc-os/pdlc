@@ -117,7 +117,53 @@ if has_handoff:
 
 lines = []
 
-if has_handoff and not is_stale:
+# ── Extract Context Checkpoint ──
+ctx_match = re.search(r"## Context Checkpoint[\s\S]*?```json\s*(\{[\s\S]*?\})\s*```", content)
+ctx = None
+if ctx_match:
+    try:
+        ctx = json.loads(ctx_match.group(1))
+    except json.JSONDecodeError:
+        pass
+
+has_step_checkpoint = ctx and ctx.get("step") and ctx.get("next_action") and ctx["step"] is not None
+
+if has_step_checkpoint and (not has_handoff or is_stale):
+    # ── Step checkpoint: most precise mid-phase resume ──
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("RESUME FROM STEP CHECKPOINT")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("")
+    lines.append("Feature: " + current_feature)
+    lines.append("Sub-phase: " + (ctx.get("sub_phase") or current_subphase))
+    lines.append("Last completed: " + ctx["step"])
+    if ctx.get("skill_file"):
+        lines.append("Skill file: " + ctx["skill_file"])
+    lines.append("")
+    if ctx.get("work_in_progress"):
+        lines.append("Just finished: " + ctx["work_in_progress"])
+    lines.append("NEXT ACTION: " + ctx["next_action"])
+    lines.append("")
+    if ctx.get("files_open") and len(ctx["files_open"]) > 0:
+        lines.append("Files in progress:")
+        for f in ctx["files_open"]:
+            lines.append("  - " + f)
+        lines.append("")
+    if ctx.get("active_task"):
+        lines.append("Active Beads task: " + ctx["active_task"])
+        lines.append("")
+    # Include earlier handoff context if available
+    if has_handoff:
+        decisions = handoff.get("decisions_made", [])
+        if decisions:
+            lines.append("Decisions from earlier phases:")
+            for d in decisions:
+                lines.append("  - " + d)
+            lines.append("")
+    lines.append("Read the skill file above, jump to the step AFTER the last completed step, and continue.")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
+elif has_handoff and not is_stale:
     # ── Fresh handoff: resume from gate boundary ──
     lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     lines.append("RESUME FROM HANDOFF")

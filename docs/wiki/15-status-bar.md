@@ -29,7 +29,11 @@ The estimate is stored in a bridge file (`/tmp/pdlc-ctx-{sessionId}.json`) and u
 | **WARNING** | >= 50% | Warning injected every 5 tool calls: "Consider wrapping up" |
 | **CRITICAL** | >= 65% | Warning on every tool call + auto-checkpoint saved to STATE.md |
 
-At CRITICAL, the context checkpoint in STATE.md is updated with the session ID, tool count, and estimated usage so the next session can resume cleanly.
+The Context Checkpoint in STATE.md is updated in two ways:
+- **After each step:** Claude writes the step number, skill file, work completed, and next action after completing each numbered step within a skill. This ensures `/clear` recovery is precise — not just phase/sub-phase but the exact step.
+- **At CRITICAL:** The context monitor hook auto-writes the session ID, tool count, and estimated usage as a safety net.
+
+On session resume (including after `/clear`), the session-start hook reads the Context Checkpoint and includes step-level positioning in the resume banner.
 
 ### Color coding
 

@@ -83,6 +83,8 @@ function updateContextCheckpoint(stateMdPath, sessionId, toolCount, usedPct) {
       estimated_usage:  `${usedPct}%`,
       active_task:      null,   // hooks don't have task context — Claude fills this in
       sub_phase:        null,
+      step:             null,
+      skill_file:       null,
       work_in_progress: null,
       next_action:      null,
       files_open:       [],
