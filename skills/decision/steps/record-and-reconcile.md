@@ -66,7 +66,7 @@ The decision may affect the brainstorm log, PRD, or design docs that are being a
 - Re-present updated design docs for re-approval if material.
 
 **Beads tasks** (if already created — sub-phase is Plan):
-- If the decision changes scope: create new tasks, close obsolete ones, or update descriptions via `bd create`, `bd done`, `bd update`.
+- If the decision changes scope: create new tasks, close obsolete ones, or update descriptions via `bd create`, `bd done`, `bd update`. When creating new tasks, include full metadata (collect `git_user`, `git_branch`, `utc_now` first; add `user:`, `roadmap:`, `branch:` labels and the metadata header in `-d`).
 - If the decision changes dependencies: update with `bd dep add` / `bd dep remove`.
 - Regenerate the dependency tree and update the plan file.
 

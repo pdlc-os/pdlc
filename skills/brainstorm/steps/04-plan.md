@@ -17,11 +17,21 @@ Analyze the approved PRD and design documents. Break the feature into discrete, 
 
 ### Step 14 — Create tasks in Beads
 
+Before creating tasks, collect the metadata context:
+```bash
+git_user="$(git config user.name)"
+git_branch="$(git branch --show-current)"
+utc_now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+```
+
+Look up the **Roadmap ID** (e.g., `F-001`) for the current feature from `docs/pdlc/memory/ROADMAP.md`.
+
 For each task, run:
 ```bash
 bd create "[Task title]" \
-  -d "[Detailed description. Reference PRD acceptance criteria by number. Include any context the implementing agent will need.]" \
-  -l "epic:[feature-name],story:[US-id],[domain-label]" \
+  -d "[Created: ${utc_now} | Author: ${git_user} | Branch: ${git_branch} | Roadmap: [F-ID]]
+[Detailed description. Reference PRD acceptance criteria by number. Include any context the implementing agent will need.]" \
+  -l "epic:[feature-name],story:[US-id],[domain-label],user:${git_user},roadmap:[F-ID],branch:${git_branch}" \
   -t feature
 ```
 
@@ -84,8 +94,8 @@ Create `docs/pdlc/prds/plans/plan_[feature-name]_[YYYY-MM-DD].md` with this cont
 
 ## Tasks
 
-| Beads ID | Title | Labels | Depends On |
-|----------|-------|--------|-----------|
+| Beads ID | Title | Labels | Depends On | Author | Created (UTC) |
+|----------|-------|--------|-----------|--------|---------------|
 [one row per task, filled in from Step 13 and 14]
 
 ---

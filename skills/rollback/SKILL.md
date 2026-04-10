@@ -244,11 +244,12 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
    - **Current Sub-phase**: `Build`
    - **Current Feature**: `[feature-name]`
 
-5. Create a Beads task for the fix:
+5. Create a Beads task for the fix (collect metadata first: `git_user="$(git config user.name)"`, `git_branch="$(git branch --show-current)"`, `utc_now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"`):
    ```bash
    bd create "Fix: [root cause summary]" \
-     -d "[Approach description from the post-mortem. See ADR-NNN and MOM.]" \
-     -l "epic:[feature-name],fix,post-mortem" \
+     -d "[Created: ${utc_now} | Author: ${git_user} | Branch: ${git_branch} | Roadmap: [F-ID]]
+   [Approach description from the post-mortem. See ADR-NNN and MOM.]" \
+     -l "epic:[feature-name],fix,post-mortem,user:${git_user},roadmap:[F-ID],branch:${git_branch}" \
      -t bug
    ```
 

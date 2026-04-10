@@ -98,10 +98,18 @@ Record the answers. This replaces the full PRD — hotfixes don't get inception.
 
 ## Step 4 — Create Beads task
 
+Collect metadata context:
+```bash
+git_user="$(git config user.name)"
+git_branch="$(git branch --show-current)"
+utc_now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+```
+
 ```bash
 bd create "Hotfix: [hotfix-name]" \
-  -d "[user's description from Step 3]" \
-  -l "hotfix,emergency" \
+  -d "[Created: ${utc_now} | Author: ${git_user} | Branch: ${git_branch}]
+[user's description from Step 3]" \
+  -l "hotfix,emergency,user:${git_user},branch:${git_branch}" \
   -t bug
 ```
 
