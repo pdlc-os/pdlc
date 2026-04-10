@@ -53,6 +53,12 @@ emit_json() {
   fi
 }
 
+# ── Reset context monitor bridge files ────────────────────────────────────────
+# After /clear the context window is fresh, but the bridge file from the
+# previous session still holds inflated token counts. Remove all bridge files
+# so the PostToolUse context monitor starts counting from zero.
+rm -f /tmp/pdlc-ctx-*.json 2>/dev/null || true
+
 # ── Main logic ────────────────────────────────────────────────────────────────
 if [[ ! -f "$state_file" ]]; then
   # PDLC not yet initialized for this project
