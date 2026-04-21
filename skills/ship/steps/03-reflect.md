@@ -34,7 +34,10 @@ Append the Reflect Notes section with all content from Step 13.
 
 Fill the **Deployment Record** section. Jarvis asks Pulse for the details (Pulse has just finished Ship/Verify and knows exactly what was deployed). Quote the answers into the episode file:
 - **Deployed to:** which environment(s) from DEPLOYMENTS.md, with the version tag
-- **CI/CD method:** which of the four Step 9 paths was used
+- **CI/CD method:** which path from Step 9.3 was used (npm deploy / make / GitHub Actions / scaffold / custom-artifact-based invocation)
+- **Custom deploy artifact used:** path if Step 9.1 accepted one; otherwise "no — default pipeline"
+- **Deployment Review Party:** path to the review MOM if convened (`docs/pdlc/mom/MOM_deployment_*`); otherwise "not convened"
+- **Tier 1 overrides used:** any `/pdlc override-tier1` invocations during this ship, with the finding they resolved; otherwise "none"
 - **Config changes introduced:** new env vars, new workflow steps, new infrastructure, any tag values added to DEPLOYMENTS.md
 - **New tags recorded:** new tag keys or values added to the environment's Tags table (e.g. a new region, a new account-id)
 - **Rollback tested:** whether rollback was exercised and how

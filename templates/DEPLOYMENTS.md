@@ -34,6 +34,8 @@
 - **Method:** <!-- GitHub Actions | npm script | Makefile | manual | custom -->
 - **Command:** <!-- e.g. `gh workflow run deploy.yml --ref main -f env=prod` -->
 - **Workflow file:** <!-- e.g. .github/workflows/deploy.yml — link relative to project root -->
+- **Custom deploy artifact:** <!-- path(s) to any user-supplied deploy/CI/CD/build artifact that Pulse composed with the default pipeline, e.g. scripts/deploy-prod.sh. Leave as "none — default pipeline" if only the auto-detected pipeline is used. -->
+- **Latest Deployment Review MOM:** <!-- path to the most recent docs/pdlc/mom/MOM_deployment_[feature]_[date].md, if the deploy was reviewed; otherwise "n/a" -->
 - **Triggered by:** <!-- who/what is allowed to deploy — e.g. merge to main, manual by release captain -->
 - **Typical duration:** <!-- e.g. 6 minutes -->
 

@@ -14,6 +14,7 @@ Party mode brings multiple agents together for structured discussions. Five meet
 | **Decision Review** | Any phase | `/pdlc decision` or deferred findings | Full team † | MOM with impact assessment, roadmap resequencing, recommended changes |
 | **What-If Analysis** | Any phase | `/pdlc whatif` | Full team † | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
 | **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | Full team † (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
+| **Deployment Review** | Operation / Ship | User provides a custom deploy/CI/CD/build artifact | Full team † (Pulse leads) | Consolidated deploy plan: adopted from user, PDLC scaffolding, recommended modifications, Tier 1 blocks |
 | **Sync Assessment** | Pre-flight (brainstorm, build, ship, hotfix, rollback) | Local main behind origin | Neo + Oracle + Bolt + Friday + Echo + Phantom (6 agents) | Remote diff analysis, conflict risk, pull/review/proceed recommendation |
 
 <sub>† **Full team** = the 9 built-in agents plus any custom agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the current context.</sub>
@@ -35,7 +36,7 @@ Build
   Test ─────────────── (no meetings)
 
 Ship
-  Ship ─────────────── (no meetings — Pulse handles merge/deploy)
+  Ship ─────────────── Deployment Review (only if user provides a custom deploy artifact)
   Verify ───────────── (no meetings — Pulse runs smoke tests)
   Reflect ──────────── (no meetings — Jarvis writes retro)
 
@@ -61,6 +62,7 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 | **Decision Review** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Full team (9 built-in + matching custom agents) assess owned artifacts. Includes roadmap resequencing discussion. |
 | **What-If Analysis** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Same pattern as Decision Review but read-only — no files modified. |
 | **Post-Mortem** | Oracle | 3 (root cause → cross-examination → fix proposals) | Yes — agents cross-examine each other's findings | Oracle facilitates. Each agent diagnoses from their domain. Produces 3 ranked fix approaches. Required — cannot be skipped. |
+| **Deployment Review** | Pulse | 3 (per-agent assessment → cross-talk → consolidated plan) | Yes — overlapping findings routed for single-fix resolution | Pulse leads. Runs only when user provides a custom deploy/CI/CD/build artifact. Critical security findings (hardcoded secrets, exposed credentials) become Tier 1 blocks. User preference wins on non-Tier-1 conflicts. |
 | **Sync Assessment** | Phase lead | 1 (parallel assessment of remote diff) | Only if conflict risk is Medium/High | 6 agents assess remote changes from their domain. Lightweight (~1-2 min). Only fires when local is behind remote. |
 
 **Cross-talk cap:** Maximum 1 cross-talk round per meeting (except Progressive Thinking which has conflict resolution built into its structure). If disagreement persists, it's surfaced in the MOM as an open question for the human.

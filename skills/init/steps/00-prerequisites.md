@@ -260,7 +260,7 @@ Check for an existing CI/CD setup in this order:
 **If no CI/CD is found:**
 > "CI/CD: not detected. That's fine for now — when you get to `/pdlc ship`, Pulse (DevOps) will help you set up a deployment pipeline. You can also set one up manually at any time."
 
-This is informational only — no CI/CD is not a blocker for init. The finding is noted so that `/pdlc ship` Step 9 knows to offer scaffolding instead of just saying "deploy manually."
+This is informational only — no CI/CD is not a blocker for init. The finding is noted so that `/pdlc ship` Step 9.3 knows to offer scaffolding instead of just saying "deploy manually."
 
 ---
 

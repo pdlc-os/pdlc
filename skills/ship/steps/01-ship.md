@@ -88,9 +88,54 @@ bash scripts/ship-merge.sh [feature-name] v[X.Y.Z] "[one-line description from P
 
 Do not attempt to force-push.
 
-### Step 9 — Trigger CI/CD (Pulse coordinates)
+### Step 9 — Deploy (Pulse coordinates)
 
-Pulse role: detect the CI/CD setup in this order:
+Pulse leads the deploy sub-phase: ask the user about custom deployment artifacts, reconcile them with the default pipeline if provided, trigger the deploy, and record the outcome.
+
+#### Step 9.1 — Custom deployment artifact prompt
+
+Before the default CI/CD detection runs, Pulse asks the user whether they have a custom deployment, CI/CD, or build script to use for this deploy:
+
+> **Pulse:** "Before I trigger the deploy, do you have a custom deployment, CI/CD, or build script you'd like me to use or layer into the pipeline for this feature?
+>
+> - Paste the script inline, or give me file paths (one per line)
+> - It can be a full deploy script, a pre/post-deploy hook, a custom workflow, an IaC file, or a Makefile target — whatever you want run
+> - Say `no` to use the default pipeline (auto-detected)
+>
+> Your preferences take precedence. If you provide an artifact, I'll compose it with PDLC's defaults, convene a short deployment review with the team to verify it from every angle (architecture, security, tests, ops, UX, docs), then present the consolidated plan for your approval before running anything."
+
+Wait for the user's response.
+
+**If the user says `no`** (or any equivalent): skip to **Step 9.3 — Detect CI/CD and trigger**.
+
+**If the user provides one or more artifacts**: proceed to Step 9.2.
+
+#### Step 9.2 — Compose plan and run Deployment Review
+
+1. **Read every artifact in full.** Do not abbreviate. If the user pasted a shell script inline, save it to a temp file for agent review. If file paths were given, read each.
+
+2. **Identify target environment(s).** If the user specified environments (e.g., "use this for prod only"), use those. If they didn't:
+   - If `docs/pdlc/memory/DEPLOYMENTS.md` has a single registered environment, assume that one.
+   - If multiple environments are registered, ask once: "Which environment(s) should these artifacts apply to? Your options: [list env names from DEPLOYMENTS.md]."
+
+3. **Draft a composed plan.** Pulse produces a structured draft merging:
+   - What the user's artifact(s) do
+   - What PDLC's default pipeline for this deploy would do (semver tag, smoke tests, DEPLOYMENTS.md recording, episode drafting, rollback tag)
+   - Where they overlap, complement, or conflict
+
+4. **Convene the Deployment Review Party.** Read `skills/ship/steps/custom-deploy-review.md` and execute it completely. The full team (9 built-in agents + any matching custom agents) assesses the composed plan. Pulse leads and synthesizes a consolidated plan at the end. MOM is written to `docs/pdlc/mom/MOM_deployment_[feature-name]_[YYYY-MM-DD].md`.
+
+5. **Present the consolidated plan to the user** (the review protocol does this — it returns here with the user's choice: `proceed`, `proceed as-is`, `modify`, or `abort`).
+
+**If the user chose `abort`:** stop the deploy. Update STATE.md with a Phase History row: `| [now] | ship_aborted | Operation | Ship | [feature-name] |`. Tell the user: "Deploy aborted. Feature branch and merge commit remain; re-run `/pdlc ship` when ready."
+
+**If the user chose `proceed`, `proceed as-is`, or `modify`:** the consolidated plan (with whatever modifications the user accepted) becomes the deploy plan for Step 9.3.
+
+**Tier 1 check:** if the review identified Critical findings that constitute Tier 1 hard blocks (hardcoded secrets, exposed credentials, missing smoke-test gate when one is mandated by CONSTITUTION.md §7), the deploy must not proceed unless the user has explicitly run `/pdlc override-tier1`. The review protocol surfaces this; honor it here.
+
+#### Step 9.3 — Detect CI/CD and trigger
+
+If the user provided a custom artifact in Step 9.1 and the consolidated plan from Step 9.2 specifies the invocation, **use that invocation**. Otherwise, detect the CI/CD setup in this order:
 
 1. Check for `npm run deploy` in `package.json` → if found, run `npm run deploy`
 2. Check for `make deploy` in `Makefile` → if found, run `make deploy`
@@ -126,7 +171,7 @@ Pulse role: detect the CI/CD setup in this order:
    > "No problem. Please trigger your deployment manually and confirm when it's complete."
    Wait for user confirmation before proceeding to Verify.
 
-### Step 9a — Record the deployment in DEPLOYMENTS.md (Pulse)
+#### Step 9.4 — Record the deployment in DEPLOYMENTS.md (Pulse)
 
 Open `docs/pdlc/memory/DEPLOYMENTS.md` and update it for this deploy. This is the single place where deployment memory accumulates — future sessions, teammates, and sub-agents read this to understand how the app runs.
 
@@ -143,6 +188,8 @@ Open `docs/pdlc/memory/DEPLOYMENTS.md` and update it for this deploy. This is th
 3. Update the `Last updated` date at the top of the file.
 
 If any new tag key surfaces during this deploy (e.g. a new region, a new account-id), add it to the Tags table for the affected environment(s) and note it in the Change Log.
+
+**If a custom deploy artifact was used** (Step 9.2 ran a Deployment Review): add a **Custom deploy artifact** line to the environment block (path to the user's artifact, e.g. `scripts/deploy-prod.sh`), and include a reference in the Deployment History Notes column: `"Custom artifact used — see docs/pdlc/mom/MOM_deployment_[feature]_[date].md"`. Any Tier 1 override that allowed the deploy to proceed despite Critical findings is also noted in the History row.
 
 **Do not commit yet** — Jarvis commits DEPLOYMENTS.md alongside the episode file during Reflect.
 

@@ -11,7 +11,7 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 | **Phase 0 — Initialization** | `/pdlc init` | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, Constitution, Intent, Memory Bank, Roadmap ideation |
 | **Phase 1 — Inception** | `/pdlc brainstorm` | Discover (Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan |
 | **Phase 2 — Construction** | `/pdlc build` | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
-| **Phase 3 — Operation** | `/pdlc ship` | Ship → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
+| **Phase 3 — Operation** | `/pdlc ship` | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
 | **Decision** | `/pdlc decision` | Record a decision with full team impact assessment (any phase) |
 | **What-If** | `/pdlc whatif` | Read-only scenario exploration with team analysis (any phase) |
 | **Doctor** | `/pdlc doctor` | Comprehensive health check: state, docs, code, Beads, git history |

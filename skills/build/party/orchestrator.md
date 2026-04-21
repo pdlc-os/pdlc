@@ -15,7 +15,7 @@ At the very start of the meeting (before spawning any agents), write `docs/pdlc/
 
 ```json
 {
-  "meetingType": "[wave-kickoff | design-roundtable | party-review | strike-panel | decision-review]",
+  "meetingType": "[wave-kickoff | design-roundtable | party-review | strike-panel | decision-review | deployment-review | whatif-analysis | post-mortem]",
   "feature": "[current feature from STATE.md]",
   "taskId": "[active Beads task ID, or — if not task-specific]",
   "timestamp": "[now ISO 8601]",
@@ -82,6 +82,7 @@ Follow the exact visual pattern defined in the "Meeting Announcement Block" sect
 | Party Review | ~2–3 minutes | Full parallel review with cross-talk and linked findings |
 | Strike Panel | ~1 minute | Focused diagnosis of a specific failure |
 | Decision Review | ~2–4 minutes | Full team (9 built-in + any matching custom agents) assesses impacts across all artifacts |
+| Deployment Review | ~2–3 minutes | Full team assesses a user-provided custom deploy/CI/CD/build artifact composed with PDLC's default pipeline |
 
 These are estimates — actual time depends on complexity and spawn mode (solo is fastest, subagents is slowest). If the meeting takes noticeably longer than the estimate, output a brief progress update:
 

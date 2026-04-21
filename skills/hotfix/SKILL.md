@@ -161,7 +161,7 @@ The script handles checkout to main, merge, tag, and push in a single operation.
 - [hotfix-name]: [description]
 ```
 
-**Trigger deploy** — same detection as ship Step 9 (npm deploy / make deploy / GitHub Actions / manual).
+**Trigger deploy** — use the same auto-detection logic as ship Step 9.3 (npm deploy / make deploy / GitHub Actions / manual). **The custom-deployment prompt and Deployment Review Party from ship Step 9.1–9.2 are deliberately skipped in hotfix mode.** Hotfixes prioritize speed over review overhead; if the user has a custom deploy script in the repo, Pulse picks it up through the normal auto-detection (e.g. an existing `npm run deploy` pointing at their script), but the full team meeting is not convened.
 
 **Mark task done:**
 ```bash

@@ -134,7 +134,7 @@ flowchart LR
 
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
-| **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag, CI/CD trigger. If no pipeline exists, offers to scaffold GitHub Actions or npm deploy script. |
+| **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag. Pulse then asks whether the user has a custom deploy/CI/CD/build artifact — if yes, composes it with the default pipeline and runs a **Deployment Review Party** (full team assesses; consolidated plan presented for approval; user preference wins on non-Tier-1 conflicts). CI/CD is triggered with either the consolidated plan or the default (auto-detected: GitHub Actions, npm deploy, Makefile, or scaffolded). Outcome recorded in `DEPLOYMENTS.md`. |
 | **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with trend summary, artifacts archived, Beads compacted |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |

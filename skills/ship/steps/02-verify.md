@@ -83,7 +83,7 @@ Wait for explicit `yes`. If the user says `no`: help them diagnose the issue. Do
 
 ### Step 12a — Confirm DEPLOYMENTS.md reflects the verified deploy (Pulse)
 
-The Deployment History row written in Ship Step 9a was provisional. Now that smoke tests have passed, finalize it:
+The Deployment History row written in Ship Step 9.4 was provisional. Now that smoke tests have passed, finalize it:
 
 1. Open `docs/pdlc/memory/DEPLOYMENTS.md`.
 2. In the affected environment's **Deployment History** table, confirm the newest row shows the correct version and today's date. If the deploy URL or smoke-test URL changed during Verify (e.g. you discovered the health endpoint moved), update the Verification subsection.

@@ -136,9 +136,12 @@
 
 - **Deployed to:** <!-- environment name(s) from DEPLOYMENTS.md, with version -->
 - **CI/CD method:** <!-- e.g. GitHub Actions workflow, npm deploy script, manual -->
+- **Custom deploy artifact used:** <!-- path to user's artifact if supplied during ship, e.g. scripts/deploy-prod.sh; or "no — default pipeline" -->
+- **Deployment Review Party:** <!-- MOM path if convened, e.g. docs/pdlc/mom/MOM_deployment_[feature]_[date].md; or "not convened — default pipeline" -->
 - **Config changes introduced:** <!-- new env vars, workflow steps, infra resources, tags -->
 - **New tags recorded:** <!-- any new tag key/values added to DEPLOYMENTS.md for this env -->
 - **Rollback tested:** <!-- yes / no / n/a — if yes, how was it verified -->
+- **Tier 1 overrides used:** <!-- list any /pdlc override-tier1 invocations during this ship, or "none" -->
 - **DEPLOYMENTS.md updated:** <!-- yes / no — if no, why -->
 
 ---

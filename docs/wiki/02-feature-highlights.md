@@ -40,6 +40,8 @@
 |---------|-------------|
 | **Merge Commit Strategy** | `git merge --no-ff` preserves full branch history. Semantic versioning with auto-tagging. |
 | **CHANGELOG Generation** | Jarvis drafts Conventional Changelog entries from commit history during Ship. |
+| **Custom Deploy Artifact Support** | At the start of Ship, Pulse asks whether you have a custom deploy/CI/CD/build script. If yes, Pulse composes it with PDLC's default pipeline and runs a **Deployment Review Party** — full team assesses from every angle (architecture, security, tests, ops, UX, PRD). User preferences take precedence; Critical security findings become Tier 1 blocks. |
+| **Deployment Register** | `DEPLOYMENTS.md` — canonical per-environment register: URL, deploy/rollback commands, workflow file, required env-var names, extensible tags (app-id, instance-id, region, cloud-provider, tenant, cost-center, compliance-scope, etc.), per-deploy history, change log. |
 | **Smoke Test Verification** | Runs against deployed environment with human sign-off gate. |
 | **Retrospective** | Per-agent contributions, what went well / broke / to improve, metrics snapshot. Episode file committed to permanent record. |
 | **Roadmap Tracking** | Jarvis marks shipped features in ROADMAP.md with date and episode reference. Ad-hoc features retroactively added. |
