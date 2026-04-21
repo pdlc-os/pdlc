@@ -81,7 +81,7 @@ Follow the exact visual pattern defined in the "Meeting Announcement Block" sect
 | Design Roundtable | ~1–2 minutes | Multi-round design debate with cross-talk |
 | Party Review | ~2–3 minutes | Full parallel review with cross-talk and linked findings |
 | Strike Panel | ~1 minute | Focused diagnosis of a specific failure |
-| Decision Review | ~2–4 minutes | All 9 agents assess impacts across all artifacts |
+| Decision Review | ~2–4 minutes | Full team (9 built-in + any matching custom agents) assesses impacts across all artifacts |
 
 These are estimates — actual time depends on complexity and spawn mode (solo is fastest, subagents is slowest). If the meeting takes noticeably longer than the estimate, output a brief progress update:
 

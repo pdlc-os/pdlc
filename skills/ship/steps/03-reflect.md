@@ -32,12 +32,22 @@ Open `docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md`.
 
 Append the Reflect Notes section with all content from Step 13.
 
+Fill the **Deployment Record** section. Jarvis asks Pulse for the details (Pulse has just finished Ship/Verify and knows exactly what was deployed). Quote the answers into the episode file:
+- **Deployed to:** which environment(s) from DEPLOYMENTS.md, with the version tag
+- **CI/CD method:** which of the four Step 9 paths was used
+- **Config changes introduced:** new env vars, new workflow steps, new infrastructure, any tag values added to DEPLOYMENTS.md
+- **New tags recorded:** new tag keys or values added to the environment's Tags table (e.g. a new region, a new account-id)
+- **Rollback tested:** whether rollback was exercised and how
+- **DEPLOYMENTS.md updated:** yes/no — if no, note why (e.g. "infrastructure-only change, no runtime deploy")
+
+If the feature was infrastructure-only or shipped entirely behind a flag with no runtime change, write `Not applicable — no deployment changes` for the whole section.
+
 Update:
 - **Date delivered**: today's date (the actual merge date)
 - **Status**: keep as `Draft` — it becomes `Approved` after human sign-off below
 - **Links → PR**: fill in the PR link if one was created (check `gh pr list` or ask the user)
 
-Apply Jarvis's **Writing Quality Pass** (see `agents/jarvis.md`) before presenting the episode file for approval.
+Apply Jarvis's **Writing Quality Pass** and **Distillation Pass** (see `agents/jarvis.md`) before presenting the episode file for approval.
 
 ### Step 15 — Episode file approval gate
 

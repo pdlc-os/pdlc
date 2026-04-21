@@ -251,13 +251,13 @@ At any point during inception or construction, record a decision or explore a sc
 /pdlc decision We should use PostgreSQL instead of MongoDB
 ```
 
-This triggers a **Decision Review Party** where all 9 agents assess cross-cutting impacts, produce minutes of meeting, and reconcile downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
+This triggers a **Decision Review Party** where the full team — 9 built-in agents plus any custom agents you've added to `.pdlc/agents/` that match the context — assesses cross-cutting impacts, produces minutes of meeting, and reconciles downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
 
 ```
 /pdlc whatif What if we switched from REST to GraphQL?
 ```
 
-This runs a **read-only What-If Analysis** — all 9 agents assess the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
+This runs a **read-only What-If Analysis** — the full team (built-in agents plus any matching custom agents) assesses the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
 
 If a feature turns out to be unviable, abandon it cleanly:
 
@@ -290,7 +290,7 @@ If a shipped feature needs to be reverted:
 /pdlc rollback user-authentication
 ```
 
-This reverts the merge commit, runs a **Post-Mortem Party** with all 9 agents to diagnose the root cause, and presents 3 ranked fix approaches. You can fix and re-ship, abandon the feature, or pause.
+This reverts the merge commit, runs a **Post-Mortem Party** with the full team (built-in agents plus any matching custom agents) to diagnose the root cause, and presents 3 ranked fix approaches. You can fix and re-ship, abandon the feature, or pause.
 
 If something feels off — after pulling a teammate's changes, after a rollback, or after a long break:
 
@@ -323,7 +323,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 
 | #   | Document                                                 | What it covers                                                                              |
 | --- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| 09  | [The Agent Team](docs/wiki/09-agent-team.md)             | 9 specialist agents: roles, models (Opus/Sonnet), focus areas, lead agent assignments       |
+| 09  | [The Agent Team](docs/wiki/09-agent-team.md)             | 9 built-in specialist agents plus custom-agent extensibility via `.pdlc/agents/`            |
 | 10  | [Party Mode](docs/wiki/10-party-mode.md)                 | 8 meeting types, meeting map across phases, spawn modes, announcements, durable checkpoints |
 | 11  | [Deadlock Detection](docs/wiki/11-deadlock-detection.md) | 6 deadlock types with auto-resolution and human escalation paths                            |
 

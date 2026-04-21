@@ -18,6 +18,7 @@ git add docs/pdlc/memory/OVERVIEW.md
 git add docs/pdlc/memory/CHANGELOG.md
 git add docs/pdlc/memory/ROADMAP.md
 git add docs/pdlc/memory/METRICS.md 2>/dev/null || true
+git add docs/pdlc/memory/DEPLOYMENTS.md 2>/dev/null || true
 
 # Commit and push
 git commit -m "docs(pdlc): add episode ${episode_id} — ${feature}"

@@ -160,6 +160,17 @@ Create this file based on the `templates/OVERVIEW.md` structure. Fill in:
 
 Leave the Active Functionality, Shipped Features, Architecture Summary, Known Tech Debt, and Decision Log Summary sections with their default placeholder text.
 
+### 5i. `docs/pdlc/memory/DEPLOYMENTS.md`
+
+Create this file based on the `templates/DEPLOYMENTS.md` structure. Fill in:
+
+- **Project name**: from question 1
+- **Last updated**: today's date
+
+Leave the Environments list, Cross-environment references, and Change Log sections with their template placeholders — Pulse populates them during the first Ship sub-phase. The file serves as scaffolding until a real deploy is recorded.
+
+Preserve the `<!-- pdlc-template-version: X.Y.Z -->` comment for future upgrades.
+
 ---
 
 ## Step 6 — Create the episodes index
@@ -225,7 +236,7 @@ After all memory files, the episodes index, and the scaffold CLAUDE.md are creat
 
 Output the following to the user:
 
-> "Memory files created ✓ — CONSTITUTION, INTENT, STATE, ROADMAP (stub), DECISIONS, CHANGELOG, METRICS, OVERVIEW, episodes index, and scaffold CLAUDE.md are all in place.
+> "Memory files created ✓ — CONSTITUTION, INTENT, STATE, ROADMAP (stub), DECISIONS, CHANGELOG, METRICS, OVERVIEW, DEPLOYMENTS, episodes index, and scaffold CLAUDE.md are all in place.
 >
 > Now let's figure out **what to build**. I'm going to generate a starter list of candidate features based on everything you've told me."
 

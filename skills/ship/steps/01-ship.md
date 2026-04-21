@@ -126,6 +126,26 @@ Pulse role: detect the CI/CD setup in this order:
    > "No problem. Please trigger your deployment manually and confirm when it's complete."
    Wait for user confirmation before proceeding to Verify.
 
+### Step 9a — Record the deployment in DEPLOYMENTS.md (Pulse)
+
+Open `docs/pdlc/memory/DEPLOYMENTS.md` and update it for this deploy. This is the single place where deployment memory accumulates — future sessions, teammates, and sub-agents read this to understand how the app runs.
+
+**For a first-ever deploy to an environment** (no existing section with a matching name):
+1. Clone the Environment block from the template structure.
+2. Fill in: name (e.g. `production`, `staging`, `production-us-east`), Purpose, URL, Status, Deploy method/command/workflow file, Verification, Rollback, and the secrets table (names only, never values).
+3. Fill in the **Tags** table. Ask the user for any tag values they want recorded — app-id, instance-id, region, cloud-provider, cloud-account-id, tenant, cost-center, compliance-scope, etc. Use kebab-case keys. Leave rows blank (or delete them) if not applicable.
+4. Add an entry to the Deployment History table: today's date, version tag from Step 6, "Pulse", episode number, and any notes about this deploy (new migration step, env var added, etc.).
+5. Append a row to the Change Log at the bottom of the file describing what was added.
+
+**For a repeat deploy to an existing environment:**
+1. Confirm URL, deploy method, secrets, and tags still match reality. If anything changed, update and log the change in the Change Log.
+2. Append a new row to the Deployment History table for this deploy.
+3. Update the `Last updated` date at the top of the file.
+
+If any new tag key surfaces during this deploy (e.g. a new region, a new account-id), add it to the Tags table for the affected environment(s) and note it in the Change Log.
+
+**Do not commit yet** — Jarvis commits DEPLOYMENTS.md alongside the episode file during Reflect.
+
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Verify`
 - **Last Checkpoint**: `Operation / Verify / [now ISO 8601]`
@@ -139,9 +159,10 @@ Update `docs/pdlc/memory/STATE.md`:
   "feature": "[feature-name]",
   "key_outputs": [
     "docs/pdlc/memory/CHANGELOG.md",
+    "docs/pdlc/memory/DEPLOYMENTS.md",
     "docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md"
   ],
-  "decisions_made": ["[e.g. 'Tagged v1.3.0', 'GitHub Actions deploy triggered', 'CHANGELOG prepended']"],
+  "decisions_made": ["[e.g. 'Tagged v1.3.0', 'GitHub Actions deploy triggered', 'CHANGELOG prepended', 'DEPLOYMENTS.md recorded production-us-east']"],
   "next_action": "Run smoke tests against the deployment — read skills/ship/steps/02-verify.md",
   "pending_questions": []
 }

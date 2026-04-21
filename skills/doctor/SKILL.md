@@ -25,9 +25,10 @@ Read these files (skip any that don't exist — their absence is itself a findin
 5. `docs/pdlc/memory/INTENT.md`
 6. `docs/pdlc/memory/OVERVIEW.md`
 7. `docs/pdlc/memory/CHANGELOG.md`
-8. `docs/pdlc/memory/episodes/index.md`
-9. `docs/pdlc/memory/.pending-party.json` (if exists)
-10. `docs/pdlc/memory/.pending-decision.json` (if exists)
+8. `docs/pdlc/memory/DEPLOYMENTS.md`
+9. `docs/pdlc/memory/episodes/index.md`
+10. `docs/pdlc/memory/.pending-party.json` (if exists)
+11. `docs/pdlc/memory/.pending-decision.json` (if exists)
 
 Run: `bd list --json` (capture all Beads tasks)
 Run: `git log --oneline -50` (recent commit history)
@@ -48,6 +49,7 @@ Verify all expected memory files exist:
 | DECISIONS.md | Yes | Init |
 | CHANGELOG.md | Yes | Init |
 | OVERVIEW.md | Yes | Init |
+| DEPLOYMENTS.md | Yes | Init |
 | episodes/index.md | Yes | Init |
 
 **Findings:**

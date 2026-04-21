@@ -199,7 +199,7 @@ If a shipped feature needs to be reverted (production incident, critical bug, fa
 |------|-------------|
 | **Sync + Revert** | Remote sync check, then `git revert` of the merge commit, push to origin, rollback tag |
 | **State update** | ROADMAP set to `Rolled Back`, CHANGELOG rollback entry, episode file updated |
-| **Post-Mortem Party** | Oracle leads all 9 agents through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
+| **Post-Mortem Party** | Oracle leads the full team (9 built-in + matching custom agents) through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
 | **Options** | **Fix and re-ship** (3 ranked approaches with effort/risk), **Abandon** (drop feature, move to next), or **Pause** |
 
 The post-mortem meeting is required — it cannot be skipped. Every rollback produces an ADR entry and a MOM file.
@@ -212,7 +212,7 @@ Use `/pdlc decision` to **pivot** the design mid-flight -- change tech stack, re
 |------|-------------|
 | **Checkpoint** | Pauses current workflow, saves recovery state |
 | **Classify** | Tag source (user vs PDLC flow), phase, sub-phase, agent |
-| **Decision Review Party** | All 9 agents assess impacts on their owned artifacts |
+| **Decision Review Party** | The full team (9 built-in + matching custom agents) assesses impacts on their owned artifacts |
 | **MOM** | Minutes with assessments, cross-cutting concerns, risk consensus, roadmap resequencing proposal |
 | **User approval** | Recommended changes table. Apply all, selectively, modify, or cancel |
 | **Reconciliation** | Beads tasks, PRDs, design docs, episode drafts, test flags, roadmap all updated |

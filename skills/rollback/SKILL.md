@@ -125,7 +125,7 @@ Write `.pending-party.json` with `meetingType: "post-mortem"`.
 
 Output a **Meeting Announcement Block** per `skills/formatting.md`:
 - **Called by:** Oracle (Product Manager)
-- **Participants:** all 9 agents
+- **Participants:** the full team — 9 built-in agents plus any matching custom agents from `.pdlc/agents/`
 - **Purpose:** Post-mortem analysis of `[feature-name]` rollback
 - **Estimated time:** ~3–5 minutes
 
@@ -143,6 +143,8 @@ Oracle asks each agent to analyze the failure from their domain:
 | **Muse** | Did the user experience degrade? Was the impact visible to end users? |
 | **Pulse** | Was this a deployment issue? Environment config, CI/CD, infra? Did the deploy itself cause it? |
 | **Jarvis** | Were the docs accurate? Did the API contracts match reality? Were there documentation gaps? |
+
+**Custom agents:** any agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the rolled-back feature's labels also participate. Each produces the same output format for their focus areas — e.g., a custom `Sage` (Data Engineer) agent would answer "did the data layer contribute to the failure? Schema, query patterns, or migration?" framed from their persona file.
 
 Each agent produces:
 ```

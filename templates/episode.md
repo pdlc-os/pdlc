@@ -115,6 +115,34 @@
 
 ---
 
+## Deployment Record
+
+<!-- Filled by Pulse during Ship/Verify and quoted by Jarvis when drafting the episode.
+     Captures what changed about the deployment for THIS feature so that
+     DEPLOYMENTS.md evolves visibly over time.
+
+     Leave this section as "Not applicable — no deployment changes" for features
+     that ship behind a feature flag or are infrastructure-only.
+
+     Example:
+       - **Deployed to:** production (v1.3.0)
+       - **CI/CD method:** GitHub Actions — `.github/workflows/deploy.yml`
+       - **Config changes introduced:** added `STRIPE_WEBHOOK_SECRET` env var;
+         deploy.yml gained a `db-migrate` step before the serve step
+       - **New tags recorded:** none (production-us-east was already registered)
+       - **Rollback tested:** yes — dry-run on staging via `rollback.yml`
+       - **DEPLOYMENTS.md updated:** yes (secret list + deploy history row)
+-->
+
+- **Deployed to:** <!-- environment name(s) from DEPLOYMENTS.md, with version -->
+- **CI/CD method:** <!-- e.g. GitHub Actions workflow, npm deploy script, manual -->
+- **Config changes introduced:** <!-- new env vars, workflow steps, infra resources, tags -->
+- **New tags recorded:** <!-- any new tag key/values added to DEPLOYMENTS.md for this env -->
+- **Rollback tested:** <!-- yes / no / n/a — if yes, how was it verified -->
+- **DEPLOYMENTS.md updated:** <!-- yes / no — if no, why -->
+
+---
+
 ## Known Tradeoffs & Tech Debt Introduced
 
 <!-- Honest record of shortcuts taken, things deferred, or imperfections knowingly accepted.

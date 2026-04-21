@@ -69,7 +69,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 ## Reference
 
 - **Flow diagram:** `docs/pdlc/reference/flow-diagram.md`
-- **Agent roster (9 agents):** `docs/pdlc/reference/agents.md` — full personas in `agents/*.md`
+- **Agent roster (9 built-in + any custom agents from `.pdlc/agents/`):** `docs/pdlc/reference/agents.md` — full personas in `agents/*.md`
 - **Approval gates & 3-Strike:** `docs/pdlc/reference/approval-gates.md`
 - **Safety guardrails:** `skills/safety-guardrails/SKILL.md`
 
@@ -83,6 +83,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 - **Delivery metrics + trends:** `docs/pdlc/memory/METRICS.md`
 - **Changelog:** `docs/pdlc/memory/CHANGELOG.md`
 - **Aggregated delivery overview:** `docs/pdlc/memory/OVERVIEW.md`
+- **Deployment register (environments, URLs, commands, tags, history):** `docs/pdlc/memory/DEPLOYMENTS.md`
 - **Episode history:** `docs/pdlc/memory/episodes/index.md`
 - **Archived feature artifacts:** `docs/pdlc/archive/`
 - **State reconciliation protocol:** `skills/state-reconciliation.md`

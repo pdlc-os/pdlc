@@ -57,7 +57,7 @@ Read `skills/formatting.md` and output a **Sub-phase Transition Header** for "WH
 
 Then output a **Meeting Announcement Block** (per `skills/formatting.md`):
 - **Called by:** [Lead Agent Name] ([Role])
-- **Participants:** all 9 agents
+- **Participants:** the full team — 9 built-in agents plus any matching custom agents from `.pdlc/agents/`
 - **Purpose:** Read-only analysis of: "[scenario text]"
 - **Estimated time:** ~2–4 minutes
 
@@ -84,6 +84,8 @@ Each agent evaluates the scenario **hypothetically** — what would happen if th
 | **Jarvis** (Tech Writer) | Documentation impact | What docs would change? API docs? User-facing descriptions? |
 | **Muse** (UX) | UX impact | How does this affect user flows? Mental model changes? Usability concerns? |
 | **Pulse** (DevOps) | Ops impact | Deployment changes? Infrastructure? Environment config? CI/CD pipeline? |
+
+**Custom agents:** any agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the scenario's keywords also participate. Each assesses the scenario from their focus areas per their persona file, using the same output format.
 
 Each agent produces:
 ```

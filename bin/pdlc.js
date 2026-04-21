@@ -848,6 +848,7 @@ function migrateTemplates(memoryDir, templatesDir) {
     'STATE.md':        'STATE.md',
     'OVERVIEW.md':     'OVERVIEW.md',
     'METRICS.md':      'METRICS.md',
+    'DEPLOYMENTS.md':  'DEPLOYMENTS.md',
   };
 
   for (const [templateName, memoryName] of Object.entries(templateMap)) {

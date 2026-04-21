@@ -11,7 +11,7 @@ Run `/pdlc rollback [feature-name]` to revert a shipped feature that's causing p
 | **Confirm** | Shows what will be reverted (merge commit, version, episode) and asks for confirmation |
 | **Revert** | `git revert` of the merge commit (preserves history, no force-push). Rollback tag created. |
 | **State update** | ROADMAP set to `Rolled Back`, CHANGELOG rollback entry, episode file updated with rollback details |
-| **Post-Mortem Party** | Required meeting — Oracle leads all 9 agents through 3 rounds |
+| **Post-Mortem Party** | Required meeting — Oracle leads the full team (9 built-in + matching custom agents) through 3 rounds |
 | **Options** | Fix and re-ship, abandon the feature, or pause |
 
 ### Post-Mortem meeting

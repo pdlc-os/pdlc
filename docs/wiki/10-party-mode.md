@@ -11,10 +11,12 @@ Party mode brings multiple agents together for structured discussions. Five meet
 | **Design Roundtable** | Construction / Build | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
 | **Party Review** | Construction / Review | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
 | **Strike Panel** | Construction / Build | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
-| **Decision Review** | Any phase | `/pdlc decision` or deferred findings | All 9 agents | MOM with impact assessment, roadmap resequencing, recommended changes |
-| **What-If Analysis** | Any phase | `/pdlc whatif` | All 9 agents | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
-| **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | All 9 agents (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
+| **Decision Review** | Any phase | `/pdlc decision` or deferred findings | Full team † | MOM with impact assessment, roadmap resequencing, recommended changes |
+| **What-If Analysis** | Any phase | `/pdlc whatif` | Full team † | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
+| **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | Full team † (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
 | **Sync Assessment** | Pre-flight (brainstorm, build, ship, hotfix, rollback) | Local main behind origin | Neo + Oracle + Bolt + Friday + Echo + Phantom (6 agents) | Remote diff analysis, conflict risk, pull/review/proceed recommendation |
+
+<sub>† **Full team** = the 9 built-in agents plus any custom agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the current context.</sub>
 
 ### Meeting map across phases
 
@@ -56,7 +58,7 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 | **Design Roundtable** | Neo | 2 (positions → reactions) | Always — agents react to each other | Neo frames the design question, agents propose approaches, then react to each other's proposals. Converges to single Implementation Decision. |
 | **Party Review** | Neo | 2 (independent review → cross-linking) | Always — interconnected findings routed between agents | All 4 agents review the same diff with different mandates simultaneously. Cross-talk links related findings to shared root causes. |
 | **Strike Panel** | Neo | 2 (diagnosis → ranked approaches) | Yes — agents react to diagnoses | Focused on a specific test failure. Produces 3 ranked approaches for the human to choose from. |
-| **Decision Review** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | All 9 agents assess owned artifacts. Includes roadmap resequencing discussion. |
+| **Decision Review** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Full team (9 built-in + matching custom agents) assess owned artifacts. Includes roadmap resequencing discussion. |
 | **What-If Analysis** | Phase lead | 2 (individual assessment → team discussion) | Yes — cross-cutting concerns | Same pattern as Decision Review but read-only — no files modified. |
 | **Post-Mortem** | Oracle | 3 (root cause → cross-examination → fix proposals) | Yes — agents cross-examine each other's findings | Oracle facilitates. Each agent diagnoses from their domain. Produces 3 ranked fix approaches. Required — cannot be skipped. |
 | **Sync Assessment** | Phase lead | 1 (parallel assessment of remote diff) | Only if conflict risk is Medium/High | 6 agents assess remote changes from their domain. Lightweight (~1-2 min). Only fires when local is behind remote. |

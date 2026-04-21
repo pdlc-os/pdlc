@@ -81,6 +81,17 @@ Present a summary of smoke test results:
 
 Wait for explicit `yes`. If the user says `no`: help them diagnose the issue. Do not proceed to Reflect until the user confirms the deployment is good.
 
+### Step 12a — Confirm DEPLOYMENTS.md reflects the verified deploy (Pulse)
+
+The Deployment History row written in Ship Step 9a was provisional. Now that smoke tests have passed, finalize it:
+
+1. Open `docs/pdlc/memory/DEPLOYMENTS.md`.
+2. In the affected environment's **Deployment History** table, confirm the newest row shows the correct version and today's date. If the deploy URL or smoke-test URL changed during Verify (e.g. you discovered the health endpoint moved), update the Verification subsection.
+3. If any smoke-test finding surfaced a missing piece (env var the app needed that wasn't documented, a required warmup step, a DNS caveat), capture it in the environment's **Notes** section and append a row to the Change Log.
+4. Update the `Last updated` date at the top.
+
+Keep the edits minimal — DEPLOYMENTS.md is canonical operational memory, not a deploy diary. Record only what someone re-reading this file next quarter will actually need.
+
 Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Reflect`
 - **Last Checkpoint**: `Operation / Reflect / [now ISO 8601]`
@@ -94,9 +105,10 @@ Update `docs/pdlc/memory/STATE.md`:
   "feature": "[feature-name]",
   "key_outputs": [
     "docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md",
-    "docs/pdlc/memory/CHANGELOG.md"
+    "docs/pdlc/memory/CHANGELOG.md",
+    "docs/pdlc/memory/DEPLOYMENTS.md"
   ],
-  "decisions_made": ["[e.g. 'Smoke tests passed', 'No critical vulnerabilities', 'Deployment verified at [url]']"],
+  "decisions_made": ["[e.g. 'Smoke tests passed', 'No critical vulnerabilities', 'Deployment verified at [url]', 'DEPLOYMENTS.md finalized for [env]']"],
   "next_action": "Generate the retrospective — read skills/ship/steps/03-reflect.md",
   "pending_questions": []
 }

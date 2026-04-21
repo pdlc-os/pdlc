@@ -14,12 +14,14 @@ In sequential review, each agent reviews in isolation. A Phantom security findin
 
 ## Participants
 
-The four always-on reviewers. All four participate in every party review — no exceptions.
+The four always-on built-in reviewers participate in every party review — no exceptions.
 
 - **Neo** — Architecture & PRD conformance (leads and synthesizes)
 - **Echo** — Test coverage & quality
 - **Phantom** — Security
 - **Jarvis** — Documentation & API contracts
+
+**Custom agents:** any agents in `.pdlc/agents/` with `always_on: true`, or whose `auto_select_on_labels` match the current feature's labels, also join the review. They receive the same full context and produce a review mandate tailored to their focus areas per their persona file (same output format: numbered findings labeled Critical / Important / Advisory). Neo synthesizes across all reviewers, including custom ones, during Round 2 cross-talk.
 
 ---
 

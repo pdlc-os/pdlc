@@ -117,7 +117,7 @@ This decision was triggered by the user explicitly issuing `/pdlc decision`. Rec
 
 ## Step 2 — Impact Assessment (Decision Review Party)
 
-Before committing the decision to the registry, convene a **Decision Review Party** — a party mode meeting where all agents assess the impact of this decision on their owned artifacts. Read `skills/build/party/orchestrator.md` for spawn mode and agent roster.
+Before committing the decision to the registry, convene a **Decision Review Party** — a party mode meeting where the full team (9 built-in agents plus any matching custom agents from `.pdlc/agents/`) assesses the impact of this decision on their owned artifacts. Read `skills/build/party/orchestrator.md` for spawn mode and agent roster.
 
 ### 2a — Individual agent assessment
 
@@ -134,6 +134,8 @@ Each agent reviews their owned artifacts and evaluates whether this decision has
 | **Jarvis** (Tech Writer) | `docs/pdlc/memory/OVERVIEW.md`, `docs/pdlc/memory/CHANGELOG.md`, API docs, README | Does this change documented functionality, API documentation, or user-facing descriptions? |
 | **Muse** (UX) | User flows, interaction design, wireframes | Does this change user-facing behavior, flows, or interaction patterns? |
 | **Pulse** (DevOps) | CI/CD config, deployment scripts, environment config | Does this affect deployment, environment variables, feature flags, infrastructure, or CI/CD pipeline? |
+
+**Custom agents:** any agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the decision context also participate. Each reviews the artifacts they own per their persona file and produces the same structured assessment format.
 
 Each agent produces a structured assessment:
 ```
@@ -222,7 +224,7 @@ Present the MOM summary to the user. Include:
 3. Any roadmap resequencing proposal
 4. Any disagreements that need the user's judgment
 
-> "**Decision Review complete.** [N] of 9 agents identified impacts.
+> "**Decision Review complete.** [N] of [total participating] agents identified impacts.
 >
 > **Recommended changes:**
 > [table from MOM]
