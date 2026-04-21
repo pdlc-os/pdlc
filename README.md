@@ -92,7 +92,7 @@ npm install -g pdlc-os/pdlc
 
 ### Install from source (offline / restricted networks)
 
-If the npm registry is blocked (e.g., corporate firewalls), you can build a tarball from the Git repository and install from that.
+If the npm registry is blocked (e.g., corporate firewalls), build a tarball from the Git repository and install from that in two steps — the tarball first, then the interactive setup:
 
 ```bash
 # Clone the repo and build the tarball
@@ -101,20 +101,34 @@ cd pdlc
 npm pack
 ```
 
-This produces a file like `pdlc-os-pdlc-2.3.1.tgz`. Install it locally or globally:
+This produces a file like `pdlc-os-pdlc-2.6.1.tgz`.
+
+**Step 1 — install the package** (pass `--ignore-scripts` to skip the non-interactive postinstall):
 
 ```bash
-# Local (from your project directory)
-cd /path/to/your-repo
-npm install --save-dev /path/to/pdlc/pdlc-os-pdlc-2.3.1.tgz
-
 # Global
-npm install -g /path/to/pdlc/pdlc-os-pdlc-2.3.1.tgz
+npm install -g /path/to/pdlc/pdlc-os-pdlc-2.6.1.tgz --ignore-scripts
+
+# Or local (from your project directory)
+cd /path/to/your-repo
+npm install --save-dev /path/to/pdlc/pdlc-os-pdlc-2.6.1.tgz --ignore-scripts
 ```
 
-The postinstall script runs the same way as a registry install — hooks are registered and you'll be prompted to install Beads and Dolt.
+**Step 2 — run the interactive setup** in your terminal. This prints the PDLC banner, registers hooks, and prompts for Beads/Dolt — the exact same experience as the `npx` install path:
 
-> **Tip:** To share with teammates on the same restricted network, distribute the `.tgz` file via internal file share, Artifactory, or email. Each developer runs `npm install` against the tarball path.
+```bash
+# Global
+pdlc install
+
+# Or local
+npx pdlc install --local
+```
+
+Why two steps? `npm install` runs its lifecycle scripts without a TTY, which suppresses the banner and makes the Beads/Dolt prompts silently no-op. Running `pdlc install` after the tarball install restores the full interactive flow.
+
+> **If you skip `--ignore-scripts`**, the install still succeeds — hooks and slash commands get registered silently, and you'll see a follow-up block telling you to run `pdlc install` to complete the setup. Either path works; the two-step pattern above is cleaner.
+
+> **Tip:** To share with teammates on the same restricted network, distribute the `.tgz` file via internal file share, Artifactory, or email. Each developer runs the two-step install against the tarball path.
 
 ### Verify installation
 

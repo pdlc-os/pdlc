@@ -503,6 +503,13 @@ async function install(opts = {}) {
     log(`  Scope       : all projects (global)`);
   }
 
+  if (opts._headless) {
+    // Headless path (npm postinstall without a TTY): skip the interactive
+    // Beads/Dolt prompts. The caller emits a follow-up block telling the
+    // user to run `pdlc install` in a real terminal for the full setup.
+    return;
+  }
+
   await promptInstallBeads(local);
 
   if (isBeadsInstalled()) {
@@ -653,18 +660,63 @@ function status() {
 }
 
 /**
- * Called by `npm postinstall`. Auto-detects local vs global install.
+ * Emit a prominent block telling the user to run `pdlc install` to finish
+ * setup in a real terminal. Used when postinstall runs headless (no TTY)
+ * — e.g., `npm install -g ./pdlc.tgz` from an offline tarball. The banner
+ * graphic and Beads/Dolt prompts need a TTY, so we defer them.
+ */
+function headlessFollowup(local) {
+  const cmd = local ? 'npx pdlc install --local' : 'pdlc install';
+  const width = 62;
+  const pad = (s) => '│  ' + s + ' '.repeat(Math.max(0, width - 4 - s.length)) + '│';
+  const rule = '─'.repeat(width - 2);
+  log('');
+  log('┌' + rule + '┐');
+  log(pad('PDLC v' + VERSION + ' files installed.'));
+  log(pad('Interactive setup skipped (no terminal detected).'));
+  log('├' + rule + '┤');
+  log(pad('Run this in a terminal to finish setup:'));
+  log(pad(''));
+  log(pad('  ' + cmd));
+  log(pad(''));
+  log(pad("It prints the PDLC banner and prompts for Beads/Dolt"));
+  log(pad('installation — identical to the `npx` install flow.'));
+  log('└' + rule + '┘');
+  log('');
+}
+
+/**
+ * Called by `npm postinstall`. Auto-detects local vs global install, and
+ * whether a TTY is available for the interactive flow.
  */
 async function postinstall() {
   const initCwd = process.env.INIT_CWD || '';
   if (path.resolve(initCwd) === PLUGIN_ROOT) return;
   if (process.env.CI && !process.env.PDLC_INSTALL_IN_CI) return;
 
-  if (isLocalInstall()) {
-    await install({ local: true, repoRoot: getRepoRoot() });
-  } else {
-    await install({ local: false });
+  const local = isLocalInstall();
+  const interactive = process.stdin.isTTY && process.stdout.isTTY
+    && !process.env.PDLC_NONINTERACTIVE;
+
+  if (interactive) {
+    if (local) {
+      await install({ local: true, repoRoot: getRepoRoot() });
+    } else {
+      await install({ local: false });
+    }
+    return;
   }
+
+  // Headless (offline tarball via `npm install -g ./pdlc.tgz`, CI, etc.):
+  // register hooks + commands silently, then point the user at `pdlc install`
+  // for the banner and interactive Beads/Dolt setup.
+  await install({
+    local,
+    repoRoot: local ? getRepoRoot() : undefined,
+    _skipBanner: true,
+    _headless: true,
+  });
+  headlessFollowup(local);
 }
 
 async function upgrade(opts = {}) {
