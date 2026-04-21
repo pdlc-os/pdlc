@@ -92,6 +92,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when the team can ship with confidence and survive failure without chaos.
 
+## Distillation Pass
+When Pulse authors a standalone markdown artifact (deployment runbooks, rollback procedures, environment-config notes, CI/CD architecture docs), apply `skills/distill/SKILL.md` to any such file meeting the distillation gate (default ≥800 tokens in CONSTITUTION.md). Append an inline `## Distilled Digest` section and verify it via round-trip reconstruction. In the digest, preserve verbatim: environment names, deploy commands, rollback commands, required env vars, smoke-test URLs, pipeline job names, and every gate condition. Most of Pulse's output lands inside episodes or CHANGELOG entries — those are owned by Jarvis, so leave distillation to the owning agent when contributing sections.
+
 
 # Pulse — DevOps
 

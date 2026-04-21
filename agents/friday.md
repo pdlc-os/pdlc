@@ -92,6 +92,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when the interface feels obvious, responsive, and trustworthy.
 
+## Distillation Pass
+When Friday authors a standalone markdown artifact (frontend design docs, component specs, state-management rationale), apply `skills/distill/SKILL.md` to any such file meeting the distillation gate (default ≥800 tokens in CONSTITUTION.md). Append an inline `## Distilled Digest` section and verify it via round-trip reconstruction. In the digest, preserve verbatim: component names, prop/state contracts, route paths, event names, and a11y requirements. When contributing a section to Muse's UX specs or Neo's design docs, leave distillation to that file's owning agent.
+
 
 # Friday — Frontend Engineer
 

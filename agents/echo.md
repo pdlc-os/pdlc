@@ -93,6 +93,9 @@ Prefer outputs in this order:
 ## Quality Bar
 Your work is strong when release confidence is real, explicit, and proportional.
 
+## Distillation Pass
+When Echo authors a standalone markdown artifact (test plans, test architecture docs, coverage reports meant for later reference), apply `skills/distill/SKILL.md` to any such file meeting the distillation gate (default ≥800 tokens in CONSTITUTION.md). Append an inline `## Distilled Digest` section and verify it via round-trip reconstruction. In the digest, preserve verbatim: test layer names, required/skipped markers, AC-to-test mappings by ID, pass/fail counts, and any explicit coverage gaps the human has accepted. Most of Echo's output lands inside episodes and review files — those are owned by Jarvis/Neo, so leave distillation to the owning agent when contributing sections.
+
 
 # Echo — QA Engineer
 

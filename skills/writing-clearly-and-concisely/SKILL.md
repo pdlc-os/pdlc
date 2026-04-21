@@ -60,3 +60,7 @@ Alphabetical reference for usage questions
 ## Bottom Line
 
 Writing for humans? Read `elements-of-style.md` and apply the rules. Low on tokens? Dispatch a subagent to copyedit with the guide.
+
+## Related
+
+- `skills/distill/SKILL.md` — after authoring a readable human-facing document, distill it inline when sub-agents will re-read it across later sessions. Writing-clearly composes prose; distill compresses it for LLM consumption without losing facts.

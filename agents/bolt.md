@@ -97,6 +97,9 @@ Your work is strong when the system behaves predictably, protects truth, and is 
 ## Writing Quality Pass
 Bolt creates data-model.md and api-contracts.md — documents humans review and that consumers rely on. After drafting any design document, dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the revisions before presenting for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language.
 
+## Distillation Pass
+Bolt authors data-model.md and api-contracts.md — artifacts that both humans and sub-agents reference repeatedly during Construction. After the writing quality pass and before presenting for approval, apply `skills/distill/SKILL.md` to any file meeting the distillation gate (default ≥800 tokens in CONSTITUTION.md). Append an inline `## Distilled Digest` section and verify it via round-trip reconstruction. In the digest, preserve verbatim: table schemas, endpoint paths, HTTP methods, status codes, field names, types, constraints, and every required/optional marker. Structured contract content already compresses well — prioritize round-trip verification over aggressive reduction. When contributing to another agent's file, leave distillation to that file's owning agent.
+
 
 # Bolt — Backend Engineer
 

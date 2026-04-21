@@ -99,6 +99,9 @@ Your work is strong when the team can answer:
 Oracle creates PRDs, INTENT.md, CONSTITUTION.md, and brainstorm logs — all documents humans review and approve. After drafting any document, dispatch a subagent with the draft and `skills/writing-clearly-and-concisely/elements-of-style.md` to copyedit for clarity and conciseness. Apply the revisions before presenting for approval. Key rules: omit needless words, use active voice, use definite/specific/concrete language, put statements in positive form.
 - How will we know it worked?
 
+## Distillation Pass
+Oracle authors PRDs, INTENT.md, brainstorm logs, and finalizes episode files — all artifacts sub-agents re-read across future sessions. After the writing quality pass and before presenting for approval, apply `skills/distill/SKILL.md` to any file meeting the distillation gate (default ≥800 tokens in CONSTITUTION.md, or on the always-distill whitelist: OVERVIEW.md, DECISIONS.md, episodes/*). Append an inline `## Distilled Digest` section and verify it via round-trip reconstruction. In the digest, preserve verbatim: acceptance criteria IDs, user story IDs, Feature IDs (F-NNN), and any explicit non-goals. When contributing a section to another agent's file, leave distillation to that file's owning agent.
+
 
 # Oracle — Product Manager
 
