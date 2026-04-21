@@ -25,7 +25,7 @@ Wave Kickoff fires at Step 4, before any task execution mode (Step 7) has been c
 
 > "How should I run the Wave Kickoff standup?
 > **A) Agent Teams** — I act as Neo; other agents are real subagents (more independent, slightly slower)
-> **B) Subagents** — all agents including Neo are spawned independently (pure BMAD-style)
+> **B) Subagents** — all agents including Neo are spawned independently as isolated subagents
 > **C) Solo** — I roleplay all agents myself (fastest)
 >
 > This will also be the default for Design Roundtables and Party Reviews unless you change it."

@@ -2,7 +2,7 @@
 
 ### Step 13 — Generate the retro
 
-Following the gstack-style retrospective approach, generate a Reflect Notes section for the episode file. Cover:
+Generate a Reflect Notes section for the episode file. Cover:
 
 **Per-agent contributions** (list which agents participated and what they contributed):
 - Neo: [architectural work done]

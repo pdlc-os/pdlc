@@ -68,7 +68,7 @@ flowchart TD
     O4 --> O5[VERIFY\nSmoke tests vs\ndeployed environment]
     O5 --> O6{Human\nsign-off?}
     O6 -->|No — issues found| O5
-    O6 -->|Approved| O7[REFLECT\ngstack-style retro:\nper-agent breakdown\nshipping streaks · metrics]
+    O6 -->|Approved| O7[REFLECT\nRetro:\nper-agent breakdown\nshipping streaks · metrics]
     O7 --> O8[Human approves\nepisode file]
     O8 --> O9[Commit episode\nUpdate docs/pdlc/memory/OVERVIEW.md\nUpdate docs/pdlc/memory/CHANGELOG.md]
     O9 --> O10([Feature Delivered\nReady for next /pdlc brainstorm])
