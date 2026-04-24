@@ -127,15 +127,17 @@ If you want the default behavior where Claude asks before each tool call, just r
 **Install scope:**
 - **Every install — global OR local — symlinks `superclaude` into `~/.local/bin/`** so it's reachable from any shell, regardless of how you installed PDLC. A local install no longer traps the binary inside `./node_modules/.bin/`.
 - Global installs additionally get the standard npm bin symlink (e.g. in your nvm/Homebrew bin dir). The two symlinks coexist — whichever your `$PATH` finds first wins.
-- If `~/.local/bin` isn't on your `$PATH`, the installer prints the exact line to add:
-  ```bash
-  export PATH="$HOME/.local/bin:$PATH"
+- **If `~/.local/bin` isn't already on `$PATH`, the installer offers to add it for you.** In an interactive terminal you'll see a prompt like:
+  ```text
+  /Users/you/.local/bin is not on your PATH — `superclaude` will not resolve in a new shell until it is.
+  Add `export PATH="$HOME/.local/bin:$PATH"` to /Users/you/.zshrc? (Y/n)
   ```
-  Drop it in `~/.zshrc` (or `~/.bashrc`) and `source` the file to pick up `superclaude` immediately.
+  Hit Enter (or `y`) and a commented sentinel block is appended to your detected shell rc (`~/.zshrc` for zsh, `~/.bashrc`/`~/.bash_profile` for bash). Then run `source ~/.zshrc` (or open a new terminal) to activate it. Answer `n` and you'll get the manual-add instructions instead. A child process cannot reload the parent shell's env, so the `source` step is always yours to run.
+- In non-interactive / headless installs (CI, `npm install` without a TTY) the installer just prints the `export` line for you to paste.
 
-**Windows:** npm auto-generates a `.cmd` shim so `superclaude` works in PowerShell and cmd too. The `~/.local/bin` symlink is skipped on Windows.
+**Windows:** npm auto-generates a `.cmd` shim so `superclaude` works in PowerShell and cmd too. The `~/.local/bin` symlink and PATH prompt are skipped on Windows.
 
-**Removing it:** `superclaude` is removed automatically when you `npx @pdlc-os/pdlc uninstall` (the uninstaller deletes the `~/.local/bin/superclaude` symlink too) or `npm uninstall @pdlc-os/pdlc`.
+**Removing it:** `superclaude` is removed automatically when you `npx @pdlc-os/pdlc uninstall` — the uninstaller deletes the `~/.local/bin/superclaude` symlink *and* strips the sentinel block from your shell rc file(s). `npm uninstall @pdlc-os/pdlc` removes the package but does not run our uninstaller, so run `pdlc uninstall` first if you want the PATH cleanup.
 
 > **Prerequisite:** the `claude` binary must be on your PATH. If Claude Code isn't installed yet, `superclaude` will exit with "command not found: claude" — install Claude Code first, then `superclaude` works immediately.
 

@@ -563,18 +563,14 @@ function removeCommands(targetRoot) {
 const LOCAL_BIN_DIR = path.join(os.homedir(), '.local', 'bin');
 const LOCAL_BIN_SUPERCLAUDE = path.join(LOCAL_BIN_DIR, 'superclaude');
 
+const PATH_SENTINEL_START = '# >>> pdlc superclaude PATH >>>';
+const PATH_SENTINEL_END   = '# <<< pdlc superclaude PATH <<<';
+const PATH_SENTINEL_BLOCK =
+  `${PATH_SENTINEL_START}\nexport PATH="$HOME/.local/bin:$PATH"\n${PATH_SENTINEL_END}\n`;
+
 function isPdlcSuperclaudeTarget(target) {
   const tail = path.join('bin', 'superclaude.sh');
   return target.endsWith(tail) || target.endsWith('/superclaude.sh');
-}
-
-function warnIfLocalBinNotOnPath() {
-  const entries = (process.env.PATH || '').split(path.delimiter).map(p => p.replace(/\/+$/, ''));
-  if (entries.includes(LOCAL_BIN_DIR)) return;
-  log(`\n  ⚠️  ${LOCAL_BIN_DIR} is not on your PATH.`);
-  log(`      Add this to your ~/.zshrc or ~/.bashrc so \`superclaude\` resolves anywhere:`);
-  log(`        export PATH="$HOME/.local/bin:$PATH"`);
-  log(`      Then restart your shell or run \`source ~/.zshrc\`.`);
 }
 
 function linkSuperclaudeToLocalBin() {
@@ -601,7 +597,6 @@ function linkSuperclaudeToLocalBin() {
     const currentTarget = fs.readlinkSync(LOCAL_BIN_SUPERCLAUDE);
     if (currentTarget === source) {
       log(`  superclaude : ✓ ${LOCAL_BIN_SUPERCLAUDE} → ${source}`);
-      warnIfLocalBinNotOnPath();
       return;
     }
     if (!isPdlcSuperclaudeTarget(currentTarget)) {
@@ -615,7 +610,6 @@ function linkSuperclaudeToLocalBin() {
   try {
     fs.symlinkSync(source, LOCAL_BIN_SUPERCLAUDE);
     log(`  superclaude : ✓ ${LOCAL_BIN_SUPERCLAUDE} → ${source}`);
-    warnIfLocalBinNotOnPath();
   } catch (err) {
     log(`  superclaude : ⚠️  Failed to create symlink — ${err.message}`);
   }
@@ -636,6 +630,128 @@ function unlinkSuperclaudeFromLocalBin() {
     log(`  superclaude : ✓ removed symlink at ${LOCAL_BIN_SUPERCLAUDE}`);
   } catch (err) {
     log(`  superclaude : ⚠️  Could not remove symlink — ${err.message}`);
+  }
+}
+
+function detectShellRc() {
+  const shell = process.env.SHELL || '';
+  const home = os.homedir();
+
+  if (/(^|\/)zsh$/.test(shell)) {
+    return path.join(home, '.zshrc');
+  }
+  if (/(^|\/)bash$/.test(shell)) {
+    const bashrc      = path.join(home, '.bashrc');
+    const bashProfile = path.join(home, '.bash_profile');
+    // macOS's Terminal.app runs bash as a login shell, which reads
+    // .bash_profile — prefer it if present. Linux generally uses .bashrc.
+    if (process.platform === 'darwin') {
+      if (fs.existsSync(bashProfile)) return bashProfile;
+      if (fs.existsSync(bashrc))      return bashrc;
+      return bashProfile;
+    }
+    if (fs.existsSync(bashrc))      return bashrc;
+    if (fs.existsSync(bashProfile)) return bashProfile;
+    return bashrc;
+  }
+  return null;
+}
+
+function rcAlreadyHasSentinel(rcFile) {
+  try {
+    return fs.readFileSync(rcFile, 'utf8').includes(PATH_SENTINEL_START);
+  } catch {
+    return false;
+  }
+}
+
+function appendPathSentinel(rcFile) {
+  fs.mkdirSync(path.dirname(rcFile), { recursive: true });
+  let existing = '';
+  try { existing = fs.readFileSync(rcFile, 'utf8'); } catch {}
+  const sep = existing === '' || existing.endsWith('\n') ? '' : '\n';
+  const prefix = existing === '' ? '' : '\n';
+  fs.writeFileSync(rcFile, existing + sep + prefix + PATH_SENTINEL_BLOCK, 'utf8');
+}
+
+async function ensureLocalBinOnPath(opts = {}) {
+  if (process.platform === 'win32') return;
+
+  const entries = (process.env.PATH || '')
+    .split(path.delimiter)
+    .map(p => p.replace(/\/+$/, ''));
+  if (entries.includes(LOCAL_BIN_DIR)) return;
+
+  const rcFile = detectShellRc();
+
+  // Headless: fall back to a manual-add hint.
+  if (!process.stdin.isTTY || opts._headless) {
+    log(`\n  ⚠️  ${LOCAL_BIN_DIR} is not on your PATH.`);
+    log(`      Add this line to ${rcFile || '~/.zshrc or ~/.bashrc'} so \`superclaude\` resolves anywhere:`);
+    log(`        export PATH="$HOME/.local/bin:$PATH"`);
+    log(`      Then restart your shell or run \`source ${rcFile || '~/.zshrc'}\`.`);
+    return;
+  }
+
+  if (!rcFile) {
+    log(`\n  ⚠️  ${LOCAL_BIN_DIR} is not on your PATH, and PDLC did not recognise your shell (${process.env.SHELL || 'unknown'}).`);
+    log(`      Add this line to your shell rc file manually:`);
+    log(`        export PATH="$HOME/.local/bin:$PATH"`);
+    return;
+  }
+
+  if (rcAlreadyHasSentinel(rcFile)) {
+    log(`  PATH        : ✓ ${rcFile} already contains the pdlc PATH block — run \`source ${rcFile}\` to activate it in this shell.`);
+    return;
+  }
+
+  log(`\n  ${LOCAL_BIN_DIR} is not on your PATH — \`superclaude\` will not resolve in a new shell until it is.`);
+  const answer = await prompt(`  Add \`export PATH="$HOME/.local/bin:$PATH"\` to ${rcFile}? (Y/n) `);
+  if (answer !== '' && answer !== 'y' && answer !== 'yes') {
+    log(`  PATH        : skipped. Add the export line to ${rcFile} manually, then \`source\` it.`);
+    return;
+  }
+
+  try {
+    appendPathSentinel(rcFile);
+    log(`  PATH        : ✓ appended pdlc block to ${rcFile}`);
+    log(`                Run \`source ${rcFile}\` (or open a new terminal) to activate it now.`);
+  } catch (err) {
+    log(`  PATH        : ⚠️  Failed to write ${rcFile} — ${err.message}`);
+    log(`                Add this manually: export PATH="$HOME/.local/bin:$PATH"`);
+  }
+}
+
+function removeLocalBinFromRcFiles() {
+  if (process.platform === 'win32') return;
+
+  const home = os.homedir();
+  const candidates = [
+    path.join(home, '.zshrc'),
+    path.join(home, '.bashrc'),
+    path.join(home, '.bash_profile'),
+  ];
+
+  for (const rcFile of candidates) {
+    let content;
+    try { content = fs.readFileSync(rcFile, 'utf8'); } catch { continue; }
+    const start = content.indexOf(PATH_SENTINEL_START);
+    if (start < 0) continue;
+    const endMark = content.indexOf(PATH_SENTINEL_END, start);
+    if (endMark < 0) continue;
+
+    let removeEnd = endMark + PATH_SENTINEL_END.length;
+    if (content[removeEnd] === '\n') removeEnd++;
+    let removeStart = start;
+    if (removeStart > 0 && content[removeStart - 1] === '\n') removeStart--;
+
+    const cleaned = content.slice(0, removeStart) + content.slice(removeEnd);
+    try {
+      fs.writeFileSync(rcFile, cleaned, 'utf8');
+      log(`  PATH        : ✓ removed pdlc PATH block from ${rcFile}`);
+    } catch (err) {
+      log(`  PATH        : ⚠️  Could not update ${rcFile} — ${err.message}`);
+    }
   }
 }
 
@@ -682,7 +798,6 @@ async function install(opts = {}) {
     log(`  Settings    : ${localSettingsPath}`);
     log(`  Commands    : ${path.join(repoRoot, '.claude', 'commands')}`);
     log(`  Scope       : this repo only`);
-    linkSuperclaudeToLocalBin();
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
 
@@ -702,8 +817,10 @@ async function install(opts = {}) {
     log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
     log(`  Commands    : ${path.join(os.homedir(), '.claude', 'commands')}`);
     log(`  Scope       : all projects (global)`);
-    linkSuperclaudeToLocalBin();
   }
+
+  linkSuperclaudeToLocalBin();
+  await ensureLocalBinOnPath({ _headless: opts._headless });
 
   if (opts._headless) {
     // Headless path (npm postinstall without a TTY): skip the interactive
@@ -807,6 +924,7 @@ async function uninstall(opts = {}) {
     removeCommands(repoRoot);
     log('  Slash commands removed from .claude/commands/');
     unlinkSuperclaudeFromLocalBin();
+    removeLocalBinFromRcFiles();
 
     await promptUninstallBeads(true);
     log('');
@@ -825,6 +943,7 @@ async function uninstall(opts = {}) {
     log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
     log('  Slash commands removed from ~/.claude/commands/');
     unlinkSuperclaudeFromLocalBin();
+    removeLocalBinFromRcFiles();
 
     await promptUninstallBeads(false);
     log('');
