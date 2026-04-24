@@ -25,7 +25,8 @@
     "node": ">=18"
   },
   "bin": {
-    "pdlc": "bin/pdlc.js"
+    "pdlc": "bin/pdlc.js",
+    "superclaude": "bin/superclaude.sh"
   },
   "main": "./bin/pdlc.js",
   "files": [

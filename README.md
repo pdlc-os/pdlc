@@ -107,6 +107,33 @@ npx @pdlc-os/pdlc status
 
 Shows install mode (local/global), plugin root path, hook registration, and Beads status.
 
+### The `superclaude` shortcut
+
+Installing PDLC also registers a `superclaude` command. It's a thin wrapper equivalent to:
+
+```bash
+claude --dangerously-skip-permissions "$@"
+```
+
+Use it when you want Claude Code to run tool calls (Bash, Edit, Write) **without per-command permission prompts** — e.g. a long-running PDLC session where you've decided to trust the workflow end-to-end.
+
+```bash
+superclaude                 # start Claude Code with prompts disabled
+superclaude /pdlc ship      # launch directly into a slash command
+```
+
+If you want the default behavior where Claude asks before each tool call, just run `claude` as usual. The two commands coexist — `superclaude` doesn't change anything about `claude`.
+
+**Install scope:**
+- Global install → `superclaude` lands in your npm global bin (already on PATH).
+- Local install → available via `npx superclaude` from inside the repo, or by adding `./node_modules/.bin` to PATH.
+
+**Windows:** npm auto-generates a `.cmd` shim so `superclaude` works in PowerShell and cmd too.
+
+**Removing it:** `superclaude` is removed automatically when you `npx @pdlc-os/pdlc uninstall` or `npm uninstall @pdlc-os/pdlc`.
+
+> **Prerequisite:** the `claude` binary must be on your PATH. If Claude Code isn't installed yet, `superclaude` will exit with "command not found: claude" — install Claude Code first, then `superclaude` works immediately.
+
 ### Uninstall
 
 **Local** (from inside the repo):
