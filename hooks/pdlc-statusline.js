@@ -117,7 +117,7 @@ function main() {
     if (raw) input = JSON.parse(raw);
   } catch (_) {
     // If we can't read / parse stdin, output the "not initialized" fallback
-    process.stdout.write(`PDLC │ Not initialized │ [░░░░░░░░░░] --%${RESET}\n`);
+    process.stdout.write(`PDLC │ Not initialized — run /setup │ [░░░░░░░░░░] --%${RESET}\n`);
     process.exit(0);
   }
 
@@ -152,7 +152,7 @@ function main() {
 
   // ── Build output string ─────────────────────────────────────────────────────
   if (!stateExists) {
-    process.stdout.write(`PDLC │ Not initialized │ [░░░░░░░░░░] --%${RESET}\n`);
+    process.stdout.write(`PDLC │ Not initialized — run /setup │ [░░░░░░░░░░] --%${RESET}\n`);
     process.exit(0);
   }
 
