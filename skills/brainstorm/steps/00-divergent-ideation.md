@@ -6,6 +6,60 @@ and surface the full possibility space *before* narrowing down to a single direc
 
 ---
 
+## Step 0 — Ground yourself in what's already built
+
+Before opening the idea space, read the project's shipped-features context so the ideation is anchored (and doesn't waste cycles re-proposing things the team has already built or explicitly dropped). Read these files in order — each is small, most on the always-distill whitelist so you read digests not full bodies:
+
+1. `docs/pdlc/memory/OVERVIEW.md` — scan **Active Functionality** and **Shipped Features**
+2. `docs/pdlc/memory/episodes/index.md` — scan the full list of shipped/abandoned episodes
+3. `docs/pdlc/memory/ROADMAP.md` — note features with status **Shipped**, **Deferred**, and especially **Dropped** (with the drop reason, if captured)
+4. The 1–2 most recent episode files' "What went well" and "What to improve next time" sections — patterns worth leveraging vs. pitfalls to avoid
+5. `CLAUDE.md` at the project root — if it has the `<!-- pdlc-expanded: true -->` marker (post-first-ship), scan **Key Files** and **Architecture** for the building blocks you can compose
+
+If the project has no shipped features yet (fresh init, this is F-001), skip to the Framing section — grounding applies only when there's actual prior work to ground against.
+
+### Emit an ALREADY BUILT block to the user
+
+Before starting the ideation, tell the user what you've loaded as ground truth:
+
+```
+ALREADY BUILT — grounding context for divergent ideation
+
+Shipped:
+  - F-001 (user-auth)       — [one-line capability]
+  - F-002 (billing)         — [one-line capability]
+
+Dropped (do not re-suggest):
+  - F-004 (real-time-push)  — dropped [date]: [reason from ROADMAP comment or episode]
+
+Deferred (open questions, but deprioritized):
+  - F-006 (multi-tenancy)   — deferred per ADR-NNN
+
+Key building blocks to leverage:
+  - [component/service/pattern from Key Files or Architecture]
+
+Ideation for [current-feature] will treat these as fixed context — I won't propose
+capabilities that duplicate shipped items, and I'll flag any idea that overlaps
+with a dropped path before adding it to standouts.
+```
+
+### Adjust the rotation lenses
+
+Keep the 10-idea batch structure, but the per-domain framings shift:
+
+- **Technical** → "Technical, given the current stack and the services/components listed above. What can be composed, extended, or reused?"
+- **User Experience** → "UX on top of existing user journeys. What seam between shipped features exposes new value?"
+- **Business & Viability** → "New leverage from the capabilities already shipped. What does the combined platform now make possible that a single feature couldn't?"
+- **Edge Cases & Failure Modes** → "Interactions with shipped features. What could break when [current-feature] meets [F-001/F-002]?"
+- **Analogies & Adjacent Domains** → unchanged
+- **Wild & Combinatorial** → "Inversions and combinations of shipped + candidate features, not blue-sky reinvention."
+
+### During clustering, tag duplicates
+
+When you present the cluster + standouts block, add a `[duplicate — already shipped]` tag to any idea that overlaps with an entry in the ALREADY BUILT block, and drop it from the standouts list. Flag `[overlaps dropped F-NNN]` for any idea that revisits a dropped path; include it in clusters but do not promote to standout unless the user explicitly asks "why was this dropped, would it work now?"
+
+---
+
 ## Framing
 
 Tell the user:

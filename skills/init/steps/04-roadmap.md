@@ -138,11 +138,15 @@ Once the prioritized list is confirmed, update `docs/pdlc/memory/ROADMAP.md` wit
 
 ## Feature Backlog
 
-| ID | Feature | Description | Priority | Status | Shipped | Episode |
-|----|---------|-------------|----------|--------|---------|---------|
-| F-001 | [feature-slug] | [one-sentence description] | 1 | Planned | — | — |
-| F-002 | [feature-slug] | [one-sentence description] | 2 | Planned | — | — |
-| F-003 | [feature-slug] | [one-sentence description] | 3 | Planned | — | — |
+<!-- Claimed by: git user email of the dev holding the roadmap-level Beads claim.
+     This column is a cache of Beads assignees — if it disagrees with `bd list
+     --label roadmap`, Beads wins (rendered on next /pdlc ship or /pdlc doctor). -->
+
+| ID | Feature | Description | Priority | Status | Claimed by | Shipped | Episode |
+|----|---------|-------------|----------|--------|------------|---------|---------|
+| F-001 | [feature-slug] | [one-sentence description] | 1 | Planned | — | — | — |
+| F-002 | [feature-slug] | [one-sentence description] | 2 | Planned | — | — | — |
+| F-003 | [feature-slug] | [one-sentence description] | 3 | Planned | — | — | — |
 [... one row per feature ...]
 
 ---
@@ -159,6 +163,49 @@ Once the prioritized list is confirmed, update `docs/pdlc/memory/ROADMAP.md` wit
 Feature IDs use the format `F-NNN` (zero-padded, sequential). IDs are **permanent** — once assigned, a Feature ID never changes, even if the feature is resequenced, deferred, or dropped.
 
 Priority is a **separate integer column** (1 = build first) that can be freely resequenced at any time without affecting Feature IDs. When a decision triggers a roadmap resequencing (via the Decision Review Party in `skills/decision/SKILL.md`), only the Priority numbers change — Feature IDs and ADR numbers remain stable.
+
+### Step 6c.1 — Bootstrap Beads roadmap tasks (claim authority)
+
+ROADMAP.md is a human-readable view. The authoritative claim lock — preventing two developers from picking up the same priority-next feature — lives in Beads. Create one Beads task per feature row so the claim can be atomic.
+
+For **each row** in the Feature Backlog table, run:
+
+```bash
+bd create \
+  --title "F-NNN feature-slug" \
+  --description "one-sentence description from the roadmap" \
+  --label roadmap \
+  --label F-NNN \
+  --label priority:N \
+  --status planned
+```
+
+(Replace `F-NNN`, `feature-slug`, description, and `N` with the actual row values.)
+
+If your Beads install supports custom metadata, also attach:
+
+```json
+{
+  "feature_id": "F-NNN",
+  "priority": N,
+  "description": "...",
+  "prd_path": null,
+  "design_dir": null,
+  "episode_path": null,
+  "shipped_date": null,
+  "branch": null
+}
+```
+
+These fields are filled progressively: `branch` at build pre-flight, `prd_path` during Define, `design_dir` during Design, `episode_path` + `shipped_date` at ship. Doctor uses them for drift detection.
+
+**On error (Beads not available):** if `bd create` fails, do NOT abort init. Print a warning and continue:
+
+> "⚠️ Beads is unavailable — roadmap-claim tasks not created. Run `bd init && /pdlc doctor` after installing Beads to bootstrap them retroactively."
+
+Claim coordination will degrade gracefully — `/pdlc brainstorm` will fall back to reading ROADMAP.md `Status` column for in-progress detection. This is the legacy single-dev behavior.
+
+**On new-feature addition** (via decision-review resequencing, ad-hoc add in ship Step 18, or abandon hand-off): the same `bd create` call runs when the new F-NNN row is appended to ROADMAP.md. Any code path that adds a roadmap row must also create the matching Beads task.
 
 ---
 

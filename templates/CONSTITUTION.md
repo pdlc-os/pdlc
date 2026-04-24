@@ -291,8 +291,9 @@ Examples:
 <!-- Distillation threshold: files larger than this (in tokens) get an inline
      `## Distilled Digest` section produced by the distill skill. Sub-agents
      read the digest instead of the full file to save context. Files on the
-     always-distill whitelist (OVERVIEW.md, DECISIONS.md, episodes/*.md) are
-     distilled regardless of size.
+     always-distill whitelist (OVERVIEW.md, DECISIONS.md, DEPLOYMENTS.md,
+     ROADMAP.md, episodes/index.md, episodes/*.md) are distilled regardless
+     of size.
      Raise this value if you have context headroom and want less distillation
      overhead. Lower it if sub-agent context pressure is acute. -->
 

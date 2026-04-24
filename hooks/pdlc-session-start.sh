@@ -248,6 +248,62 @@ if lines:
 ' "$state_file" 2>/dev/null)" || true
 fi
 
+# ── Roadmap-claim reconciliation (Beads is source of truth) ──────────────────
+# Compare STATE.md's cached Roadmap Claim against `bd list` so a session that
+# was interrupted between claim-and-STATE-write, or between STATE-write-and-
+# claim-release, resumes cleanly.
+claim_notice=""
+if command -v bd &>/dev/null && command -v python3 &>/dev/null; then
+  beads_claim_json="$(bd list --claimed-by me --label roadmap --status in-progress --json 2>/dev/null || echo '[]')"
+  export PDLC_BEADS_CLAIMS_JSON="$beads_claim_json"
+  claim_notice="$(python3 -c '
+import sys, os, re, json
+
+state_path = sys.argv[1]
+try:
+    state = open(state_path).read()
+except Exception:
+    sys.exit(0)
+
+try:
+    beads_claims = json.loads(os.environ.get("PDLC_BEADS_CLAIMS_JSON", "[]"))
+except Exception:
+    beads_claims = []
+
+beads_feature_ids = set()
+for task in beads_claims or []:
+    labels = task.get("labels", []) or []
+    for lbl in labels:
+        if re.match(r"^F-\d+$", lbl):
+            beads_feature_ids.add(lbl)
+
+claim_match = re.search(r"## Roadmap Claim[\s\S]*?(?=\n## )", state)
+state_claim_fid = None
+if claim_match:
+    fid = re.search(r"\*\*Feature ID:\*\*\s*`?(F-\d+)`?", claim_match.group(0))
+    if fid:
+        state_claim_fid = fid.group(1)
+
+lines = []
+if beads_feature_ids and not state_claim_fid:
+    fid = sorted(beads_feature_ids)[0]
+    lines.append("")
+    lines.append("⚠️ **Roadmap claim detected in Beads but not reflected in STATE.md** — " + fid + " is claimed by you.")
+    lines.append("Resume with `/pdlc brainstorm " + fid + "` — PDLC will rebuild STATE.md from the Beads claim and any existing brainstorm/PRD/design artifacts.")
+elif state_claim_fid and not beads_feature_ids:
+    lines.append("")
+    lines.append("⚠️ **STATE.md references roadmap claim " + state_claim_fid + " but Beads shows no active claim** — the claim may have been force-released or the Beads DB reset.")
+    lines.append("Options: (1) re-claim with `/pdlc brainstorm " + state_claim_fid + "`, (2) pick a different feature, or (3) run `/pdlc doctor`.")
+elif beads_feature_ids and state_claim_fid and state_claim_fid not in beads_feature_ids:
+    other = sorted(beads_feature_ids)[0]
+    lines.append("")
+    lines.append("⚠️ **Conflict:** STATE.md claims " + state_claim_fid + " but Beads shows " + other + " claimed by you. Pick one to resume, or run `/pdlc doctor`.")
+
+print("\n".join(lines))
+' "$state_file" 2>/dev/null || true)"
+  unset PDLC_BEADS_CLAIMS_JSON
+fi
+
 # ── Read ROADMAP.md for progress overview ────────────────────────────────────
 roadmap_file="${project_dir}/docs/pdlc/memory/ROADMAP.md"
 roadmap_summary=""
@@ -413,23 +469,25 @@ fi
 
 # ── Build the session message ────────────────────────────────────────────────
 if [[ -n "$handoff_message" ]]; then
-  message="$(printf '%s\n\n%s\n\n%s\n\n%s%s%s' \
+  message="$(printf '%s\n\n%s\n\n%s\n\n%s%s%s%s' \
     "📋 PDLC Active — resuming from handoff" \
     "$handoff_message" \
     "## Current State
 ${state_content}" \
     "${roadmap_summary}" \
     "${pending_notice}" \
+    "${claim_notice}" \
     "
 
 See CLAUDE.md for the full PDLC flow.")"
 else
-  message="$(printf '%s\n\n%s\n\n%s%s%s' \
+  message="$(printf '%s\n\n%s\n\n%s%s%s%s' \
     "📋 PDLC Active — resuming from STATE.md" \
     "## Current State
 ${state_content}" \
     "${roadmap_summary}" \
     "${pending_notice}" \
+    "${claim_notice}" \
     "
 
 See CLAUDE.md for the full PDLC flow.")"

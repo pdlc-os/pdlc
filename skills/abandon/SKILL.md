@@ -122,20 +122,34 @@ Append to `docs/pdlc/memory/DECISIONS.md`:
 
 ## Step 3 — Close Beads tasks
 
-**If currently in Inception:** Skip this step — no Beads tasks exist during brainstorming.
+### 3a. Close sub-tasks (Construction/Operation only)
 
-**Otherwise:** List all tasks for this feature:
+**If currently in Inception:** Skip to 3b — no sub-tasks exist yet.
+
+**Otherwise:** List all sub-tasks for this feature:
 ```bash
 bd list --label "epic:[feature-name]" --json
 ```
 
-For each open task (not already "done"):
+For each open sub-task (not already "done"):
 ```bash
 bd close [task-id] --reason "Feature abandoned — see ADR-[NNN]"
 ```
 
 Report:
-> "Closed [N] open Beads tasks for `[feature-name]`."
+> "Closed [N] open Beads sub-tasks for `[feature-name]`."
+
+### 3b. Update the roadmap-level Beads task (always)
+
+The roadmap-level task is the one with labels `roadmap` + `F-NNN`. Regardless of phase, update it so the claim is released and the feature status is durable:
+
+```bash
+bd list --label roadmap --label F-NNN --json     # find the task id
+bd update <bd-task-id> --status dropped
+bd unclaim <bd-task-id>
+```
+
+If your Beads version lacks `--status dropped`, use `bd close <bd-task-id> --reason "abandoned — see ADR-[NNN]"` instead. Either way, the claim must be released so `/pdlc brainstorm` stops treating the feature as held.
 
 ---
 
@@ -145,6 +159,7 @@ Find the feature row. Update:
 - **Status**: `In Progress` or `Planned` → `Dropped`
 - **Shipped**: `—` → `Dropped [today]`
 - **Episode**: `—` → `[NNN]_abandoned_[feature]_[date].md`
+- **Claimed by**: clear back to `—`
 
 ---
 
@@ -199,6 +214,7 @@ Update `docs/pdlc/memory/episodes/index.md`:
 - **Active Beads Task**: `none`
 - **Current Sub-phase**: `none`
 - **Last Checkpoint**: `Abandoned / [feature-name] / [now ISO 8601]`
+- **Roadmap Claim** block: replace contents with `_None held. Run `/pdlc brainstorm` to claim the next priority feature._`
 
 Append to Phase History:
 ```

@@ -24,11 +24,12 @@ All skill file paths below are relative to the plugin root above.
 | `rollback`    | Read `${PDLC_PLUGIN_ROOT}/skills/rollback/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `hotfix`      | Read `${PDLC_PLUGIN_ROOT}/skills/hotfix/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `abandon`     | Read `${PDLC_PLUGIN_ROOT}/skills/abandon/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `release`     | Read `${PDLC_PLUGIN_ROOT}/skills/release/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `pause`       | Read `${PDLC_PLUGIN_ROOT}/skills/pause/SKILL.md` and execute it. |
 | `resume`      | Read `${PDLC_PLUGIN_ROOT}/skills/resume/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `override-tier1` | Read `${PDLC_PLUGIN_ROOT}/skills/override-tier1/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
-| *(unknown)*   | **Before replying "unknown"**, check for a custom skill: look for `.pdlc/skills/<command>/SKILL.md` in the **project root**. If found, read and execute it. If not found, reply: "Unknown PDLC command: `<command>`. Available built-in commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`, `hotfix`, `pause`, `resume`, `override-tier1`. Check `.pdlc/skills/` for custom skills." |
+| *(unknown)*   | **Before replying "unknown"**, check for a custom skill: look for `.pdlc/skills/<command>/SKILL.md` in the **project root**. If found, read and execute it. If not found, reply: "Unknown PDLC command: `<command>`. Available built-in commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`, `hotfix`, `abandon`, `release`, `pause`, `resume`, `override-tier1`. Check `.pdlc/skills/` for custom skills." |
 
 When executing a skill, follow every instruction in its `SKILL.md` completely — treat the skill file as your primary prompt for that phase.
 

@@ -263,6 +263,14 @@ If a feature turns out to be unviable, abandon it cleanly:
 
 This closes all Beads tasks, marks the feature as Dropped in the roadmap, creates an abandonment episode, and hands off to the next feature. All artifacts (PRD, design docs, branch) are preserved for reference.
 
+If a teammate's claim on a roadmap feature is stuck (they left the team, machine unavailable, long pause), another dev can force-release it:
+
+```
+/pdlc release F-005
+```
+
+The claim is released in Beads, the ROADMAP is updated, and an ADR captures who released it and why. `/pdlc release` refuses your own active claim — use `/pdlc abandon` for that. Because `/pdlc brainstorm` resolves claims through Beads (atomic), two developers can never accidentally start on the same priority-next feature in the first place.
+
 Need to step away or switch context? Pause cleanly and resume later:
 
 ```

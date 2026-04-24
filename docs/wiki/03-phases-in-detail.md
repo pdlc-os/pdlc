@@ -71,6 +71,10 @@ Starts with a **remote sync check** — if local main is behind origin, a team m
 
 All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's 6-round design questioning — respect the **Interaction Mode** (Sketch or Socratic) captured in CONSTITUTION.md §9 during init. Sketch mode drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, prior brainstorm logs, and the 1–2 most recent episode files, then presents each round as a single batched block for confirm/edit/replace. Socratic mode asks one question at a time. Both cover identical depth; only the cadence differs.
 
+**Roadmap claim (multi-dev coordination).** Before any brainstorming, `/pdlc brainstorm` resolves which feature the dev owns via the Beads claim lock (labels `roadmap` + `F-NNN`). No argument → `bd ready` picks the next priority-planned feature and `bd claim` is atomic across all developers on the same repo, so two devs can never pick up the same feature. Explicit F-NNN → claim if free, resume if already held by you, refuse with a pointer if held by someone else. The claim survives session crashes: the session-start hook reads Beads and reconciles STATE.md against it, so a session that died between claim-and-checkpoint always resumes cleanly without orphaning the feature. `/pdlc release <F-NNN>` force-releases a stuck claim when needed and records an ADR.
+
+**Grounded divergent ideation.** If divergent ideation runs, it first reads OVERVIEW, episodes/index, ROADMAP (with attention to Dropped features and their reasons), and the 1–2 most recent episodes, then emits an `ALREADY BUILT` grounding block. Ideas are generated with that context as fixed anchoring — duplicates of shipped features are flagged during clustering and kept out of standouts.
+
 | Sub-phase | Lead | Key activities | Output |
 |-----------|------|---------------|--------|
 | **Discover** | Oracle | Divergent ideation (optional), Socratic interview (4 rounds), **Progressive Thinking** (required agent meeting), Adversarial review, Edge case analysis | Confirmed discovery summary |

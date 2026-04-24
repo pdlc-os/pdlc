@@ -128,6 +128,30 @@ Cross-reference Beads tasks with project state:
 - Open tasks on shipped feature → `[CRITICAL] Feature [F-NNN] is Shipped but [N] Beads tasks are still open`
 - Circular dependency → `[CRITICAL] Circular dependency detected in task graph: [details]`
 
+### 4c — Roadmap-claim integrity (Beads + STATE.md + ROADMAP.md)
+
+The roadmap-level Beads task is the authoritative claim lock. STATE.md's Roadmap Claim block and ROADMAP.md's Claimed-by column are caches. These four checks catch drift before it misroutes a `/pdlc brainstorm`:
+
+- **roadmap-claim-mismatch** — for the current user, compare `bd list --claimed-by me --label roadmap --status in-progress --json` against STATE.md's Roadmap Claim block.
+  - Beads has a claim but STATE.md block says `_None held._` → `[WARNING] Beads holds a roadmap claim on [F-NNN] not reflected in STATE.md. The next session-start banner will prompt resume, or run /pdlc brainstorm [F-NNN] to rebuild STATE.md.`
+  - STATE.md block has F-NNN but Beads has no claim → `[WARNING] STATE.md references roadmap claim [F-NNN] but Beads shows no active claim. Force-released? Run /pdlc brainstorm [F-NNN] to re-claim or clear the block manually.`
+  - Both set but to different F-NNN → `[CRITICAL] STATE.md claims [F-NNN-A] but Beads shows [F-NNN-B] claimed by you. Reconcile before continuing.`
+- **stale-roadmap-claim** — for every `roadmap` task with status `in-progress`, check the assignee's recent commits on any matching `feature/*` branch.
+  ```bash
+  bd list --label roadmap --status in-progress --json
+  git log --since="30 days ago" --all --author="[assignee-email]" --oneline | grep -c "feature/[feature-name]"
+  ```
+  If the count is 0 AND the claim is >30 days old → `[INFO] [F-NNN] claimed by [email] since [date] with no commits on feature/[name] in the last 30 days. Nudge the owner or run /pdlc release [F-NNN].`
+- **duplicate-roadmap-task** — count Beads tasks sharing the same `F-NNN` label.
+  ```bash
+  bd list --label roadmap --json | jq -r '.[] | .labels[]? | select(test("^F-\\d+$"))' | sort | uniq -c | awk '$1 > 1'
+  ```
+  Any duplicate → `[CRITICAL] Multiple Beads tasks share label [F-NNN]. Likely a migration bug. Investigate which is authoritative and bd close the stale one(s).`
+- **roadmap-beads-mirror-drift** — compare ROADMAP.md's Status/Priority/Claimed-by columns against the matching Beads tasks for each F-NNN.
+  - `[WARNING] F-NNN: ROADMAP shows Status=[X] but Beads task status is [Y]. Re-render ROADMAP from Beads.`
+  - `[WARNING] F-NNN: ROADMAP shows Priority=[X] but Beads label priority:[Y]. One or the other was edited in isolation.`
+  - `[WARNING] F-NNN: ROADMAP shows Claimed by=[X] but Beads assignee is [Y]. STATE.md reconciliation on next session will fix this.`
+
 > **End of model override.** Return to Neo's assigned model (Opus) for remaining checks.
 
 ---

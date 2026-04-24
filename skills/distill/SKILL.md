@@ -25,6 +25,8 @@ An agent authoring a markdown file invokes this skill when **any** of these is t
    - `docs/pdlc/memory/OVERVIEW.md`
    - `docs/pdlc/memory/DECISIONS.md`
    - `docs/pdlc/memory/DEPLOYMENTS.md`
+   - `docs/pdlc/memory/ROADMAP.md`
+   - `docs/pdlc/memory/episodes/index.md`
    - `docs/pdlc/memory/episodes/*.md`
 
 2. **The size gate is crossed** — for everything else, distill when the file exceeds the **distill threshold** (default: 800 tokens; overridable in CONSTITUTION.md Section 9) **and** the file is expected to be re-read by sub-agents in later sessions. Good candidates:
@@ -151,7 +153,7 @@ Digests become stale when the source changes.
 
 **Who regenerates:**
 - The agent that **writes** an update to a distilled file is responsible for re-running distillation after the edit. If they don't, the next reader will see stale checksum and regenerate or fall back.
-- For the always-distill whitelist (OVERVIEW, DECISIONS, DEPLOYMENTS, episodes), Jarvis is the final checkpoint — at the end of Reflect, Jarvis verifies all four have current digests.
+- For the always-distill whitelist (OVERVIEW, DECISIONS, DEPLOYMENTS, ROADMAP, episodes/index, episodes/*), Jarvis is the final checkpoint — at the end of Reflect, Jarvis verifies every whitelist file has a current digest.
 
 **Never** silently trust a stale digest. Always check the checksum before consuming.
 
@@ -179,7 +181,7 @@ The size gate threshold is defined in `docs/pdlc/memory/CONSTITUTION.md` Section
 
 Projects can override this. Set it higher if your context budget is comfortable and you want less distillation overhead. Set it lower if context pressure is acute.
 
-The always-distill whitelist is fixed at the skill level, not per-project — OVERVIEW, DECISIONS, and episodes always get distilled regardless of size.
+The always-distill whitelist is fixed at the skill level, not per-project — OVERVIEW, DECISIONS, DEPLOYMENTS, ROADMAP, episodes/index, and individual episode files always get distilled regardless of size.
 
 ---
 

@@ -1,5 +1,5 @@
 # State
-<!-- pdlc-template-version: 2.1.0 -->
+<!-- pdlc-template-version: 2.2.0 -->
 <!-- This file is the live operational state of the PDLC workflow.
      It is written by PDLC hooks and commands — do not edit manually unless recovering from an error.
      Claude reads this file at the start of every session to auto-resume from the last checkpoint.
@@ -36,6 +36,33 @@ none
      Set to "none" when no task is active. -->
 
 none
+
+---
+
+## Roadmap Claim
+
+<!-- Source of truth: Beads. This block is a cache rebuilt on every session start.
+     If this disagrees with `bd list --claimed-by <you> --label roadmap`, Beads wins
+     and pdlc-session-start.sh will reconcile.
+
+     Distinguish from "Active Beads Task" above: that field tracks the fine-grained
+     sub-task being worked on during Construction. This block tracks the roadmap-level
+     claim (F-NNN) — the feature you own end-to-end from brainstorm through ship.
+
+     Written by /pdlc brainstorm immediately after a successful bd claim, and cleared
+     by /pdlc ship at Reflect Step 17, or by /pdlc abandon at Step 6, or by /pdlc
+     release if the claim is force-released. -->
+
+_None held. Run `/pdlc brainstorm` to claim the next priority feature._
+
+<!-- When a claim is active, replace the line above with the block below:
+
+- **Feature ID:** F-NNN
+- **Beads task:** bd-NN
+- **Claimed by:** <git user email>
+- **Claimed at:** <ISO 8601 timestamp>
+- **Branch:** feature/<feature-slug>  (set at build pre-flight)
+-->
 
 ---
 

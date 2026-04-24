@@ -4,13 +4,87 @@ description: "Run the Inception phase for a feature (Discover → Define → Des
 argument-hint: <feature-name>
 ---
 
-You are running the Inception phase for a feature. The argument passed to this skill is: `$ARGUMENTS`
+You are running the Inception phase for a feature. The argument passed to this skill is: `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty, ask the user: "What feature would you like to brainstorm? (Provide a short slug, e.g. `user-auth` or `billing-integration`)"
+Use today's date as `[YYYY-MM-DD]` wherever dates appear in file names and metadata.
 
-The feature name (slug) must be kebab-case (lowercase, hyphens, no spaces). If the user provides a name with spaces, convert it automatically (e.g. "user auth" → `user-auth`) and confirm with them.
+---
 
-Store the feature slug as `[feature-name]`. Use today's date as `[YYYY-MM-DD]` wherever dates appear in file names and metadata.
+## Roadmap claim (who owns this feature)
+
+Before any brainstorming, resolve which feature you own via the Beads claim lock. Beads is the **source of truth** for roadmap ownership — multiple developers on the same repo each run this block, and only one can hold a given feature at a time.
+
+### Step A — Check existing claim held by the current user
+
+```bash
+bd list --claimed-by me --label roadmap --status in-progress --json
+```
+
+If the result contains **one entry** with a `roadmap` label and some `F-NNN` label:
+- Store the feature ID and slug from that task as `[feature-id]` and `[feature-name]`.
+- Print: "You already have `[feature-id]: [feature-name]` claimed — resuming your active claim."
+- **Skip to the "Write the Roadmap Claim block" step below** (this handles session-crash recovery: the claim was made previously, STATE.md may or may not reflect it, we resume either way).
+
+If the result has multiple entries, that's a conflict — present all entries to the user, ask which to resume, and close/release the others with `/pdlc release` before continuing.
+
+### Step B — If no existing claim, claim the next priority feature
+
+**If `$ARGUMENTS` is empty** (no explicit feature requested):
+
+```bash
+bd ready --label roadmap --json
+```
+
+Take the first entry (Beads orders by priority ascending, unclaimed first). Extract its `F-NNN` and slug. Then:
+
+```bash
+bd claim <bd-task-id>
+```
+
+If claim fails (another dev beat us): retry with the next ready entry. If no `ready` entries remain, tell the user every roadmap feature is already claimed or shipped — offer `/pdlc release` for stale claims or suggest adding a new feature.
+
+**If `$ARGUMENTS` is a feature slug or `F-NNN`** (explicit request):
+
+Look up the matching Beads task:
+```bash
+bd list --label roadmap --json | jq '.[] | select(.labels[]? == "F-NNN") // select(.title | startswith("F-NNN "))'
+```
+
+Inspect its state:
+- **Already claimed by me** → proceed as resume (same as Step A).
+- **Claimed by someone else** → stop with: "`F-NNN` is held by `[claimer]` since `[claimed_at]`. Either wait, ask them to `/pdlc release F-NNN`, or pick a different feature."
+- **Unclaimed and status `planned`** → `bd claim <task-id>` and proceed.
+- **Status `shipped` or `dropped`** → refuse; point at `/pdlc rollback` or `/pdlc brainstorm <different-feature>`.
+
+### Step C — Write the Roadmap Claim block to STATE.md immediately
+
+As soon as `bd claim` succeeds (or you detected an existing claim in Step A), write to `docs/pdlc/memory/STATE.md`:
+
+Replace the Roadmap Claim block's `_None held._` line with:
+
+```markdown
+- **Feature ID:** F-NNN
+- **Beads task:** bd-NN
+- **Claimed by:** <git config user.email>
+- **Claimed at:** <current ISO 8601 UTC timestamp>
+- **Branch:** (will be set at build pre-flight)
+```
+
+This write lands BEFORE any other step in brainstorm so a crash between claim and first artifact never orphans the claim. Also update:
+- `Current Feature`: `[feature-name]`
+- `Current Phase`: `Inception`
+- `Current Sub-phase`: `Discover`
+- `Last Checkpoint`: `Inception / Discover / [now ISO 8601]`
+
+### Step D — Fallback when Beads is unavailable
+
+If `bd` is not installed or returns non-zero on every call, fall back to the legacy single-dev flow: if `$ARGUMENTS` is empty, ask the user to name the feature; read ROADMAP.md to verify it's not already `Shipped` or `Dropped`; use the status column (`In Progress`) as the soft lock. Warn the user: "Beads unavailable — roadmap-claim coordination disabled. Install Beads for multi-dev safety."
+
+---
+
+The feature name (slug) must be kebab-case (lowercase, hyphens, no spaces). If Beads returns a title with spaces, convert it automatically (e.g. "user auth" → `user-auth`).
+
+Store the feature slug as `[feature-name]`.
 
 ---
 
@@ -92,7 +166,7 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Current Sub-phase**: `Discover`
 - **Last Checkpoint**: `Inception / Discover / [now ISO 8601]`
 
-Update `docs/pdlc/memory/ROADMAP.md`: find the row matching `[feature-name]` and set its **Status** to `In Progress`. If no matching row exists, append a new row with the next available `F-NNN` ID, the feature name, status `In Progress`, and `—` for Shipped/Episode. Update the file's **Last updated** date.
+Update `docs/pdlc/memory/ROADMAP.md`: find the row matching `[feature-name]` and set its **Status** to `In Progress` and **Claimed by** to your git `user.email`. If no matching row exists, append a new row with the next available `F-NNN` ID, the feature name, status `In Progress`, your `user.email` in Claimed by, and `—` for Shipped/Episode. Also create the matching Beads roadmap task (same pattern as Init Step 6c.1). Update the file's **Last updated** date.
 
 ---
 

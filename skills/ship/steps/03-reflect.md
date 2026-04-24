@@ -114,9 +114,69 @@ Read `docs/pdlc/memory/ROADMAP.md`. Find the row in the Feature Backlog table wh
 - **Status**: `Planned` or `In Progress` → `Shipped`
 - **Shipped**: `—` → `[today's date YYYY-MM-DD]`
 - **Episode**: `—` → `[NNN]_[feature-name]_[YYYY-MM-DD].md`
+- **Claimed by**: clear back to `—` (claim is released on ship)
 - **Last updated** (file header): today's date
 
-If no matching row exists (the feature was added ad-hoc and never captured in the roadmap), append a new row with the next available `F-NNN` ID, the feature details, `Shipped` status, today's date, and the episode reference.
+If no matching row exists (the feature was added ad-hoc and never captured in the roadmap), append a new row with the next available `F-NNN` ID, the feature details, `Shipped` status, today's date, and the episode reference. Also create the matching Beads task retroactively with `bd create --label roadmap --label F-NNN --label priority:N --status shipped` so the registry is consistent.
+
+**16d.1. Update the Beads roadmap task (source of truth):**
+
+Find the roadmap-level Beads task for this feature:
+```bash
+bd list --label roadmap --label F-NNN --json
+```
+
+Update its status and metadata. If your Beads version supports update+metadata in one call:
+```bash
+bd update <bd-task-id> --status shipped \
+  --set-meta episode_path="docs/pdlc/memory/episodes/[NNN]_[feature-name]_[YYYY-MM-DD].md" \
+  --set-meta shipped_date="[today]" \
+  --set-meta branch="feature/[feature-name]"
+bd unclaim <bd-task-id>   # release the claim now that it's shipped
+```
+
+If your Beads version lacks `--set-meta`, use `bd close <bd-task-id> --reason "shipped — see episode [NNN]"` instead, which ends the task's active state. The ROADMAP.md `Status = Shipped` row serves as the durable fact.
+
+**Do not skip this step** — the Beads state drives `/pdlc brainstorm`'s claim resolution for the next dev. If this task stays `in-progress` after ship, future `bd ready` calls will skip it incorrectly.
+
+**16d.2. Mirror the roadmap to a pinned GitHub issue (optional, stakeholder visibility):**
+
+If `gh` is available AND `git remote get-url origin` points at `github.com`, sync the current ROADMAP.md table to a pinned "Roadmap" issue so non-devs can browse progress without cloning. If either condition is false, skip silently.
+
+```bash
+gh auth status &>/dev/null && git remote get-url origin 2>/dev/null | grep -q github.com || echo "skip-mirror"
+```
+
+If not skipped, locate or create the pinned issue:
+
+```bash
+# Find existing pinned Roadmap issue
+gh issue list --label "Roadmap" --state open --json number,title,isPinned --jq '.[] | select(.isPinned == true) | .number' | head -1
+```
+
+If none exists, create one and pin it:
+```bash
+roadmap_issue=$(gh issue create --label "Roadmap" --title "Roadmap" --body "[placeholder — will be overwritten]" --json number --jq '.number')
+gh issue pin $roadmap_issue   # if your gh version lacks --pin, run gh api -X PUT ...
+```
+
+Render the current ROADMAP.md Feature Backlog table as the issue body:
+
+```bash
+gh issue edit $roadmap_issue --body "$(cat <<EOF
+> Canonical source: \`docs/pdlc/memory/ROADMAP.md\` — this issue is a read-only mirror refreshed at each \`/pdlc ship\`.
+> Last synced: $(date -u +%Y-%m-%dT%H:%M:%SZ) from commit $(git rev-parse --short HEAD).
+
+$(awk '/^## Feature Backlog/,/^---/' docs/pdlc/memory/ROADMAP.md)
+EOF
+)"
+```
+
+**Do not fail the ship if mirror sync fails** — this is a best-effort operation. Log a warning and continue:
+
+> "⚠️ Roadmap GitHub-issue mirror sync failed (gh auth expired, rate-limited, or permission missing). The canonical ROADMAP.md is committed and correct."
+
+Offline / non-GitHub teams never see this block — it auto-skips.
 
 **16e. Commit everything:**
 
@@ -231,6 +291,12 @@ Update `docs/pdlc/memory/STATE.md`:
 - **Active Beads Task**: `none`
 - **Current Sub-phase**: `none`
 - **Last Checkpoint**: `Operation / Complete / [now ISO 8601]`
+
+Also clear the **Roadmap Claim** block — replace its current contents with:
+```markdown
+_None held. Run `/pdlc brainstorm` to claim the next priority feature._
+```
+This reflects that the claim has been released in Beads (Step 16d.1) and lets the next `/pdlc brainstorm` run cleanly without needing reconciliation.
 
 **Clear the Handoff** in `docs/pdlc/memory/STATE.md`. Overwrite the Handoff JSON block with the empty template:
 
