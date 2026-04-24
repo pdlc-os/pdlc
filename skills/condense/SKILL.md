@@ -1,9 +1,9 @@
 ---
-name: caveman
+name: condense
 description: Syntactic compression ruleset for prose. Drops articles, filler, pleasantries, hedging, imperative softeners, and connective fluff without modifying code, paths, IDs, numbers, or proper nouns. Invoked by `distill` as its Pass 1 pre-compression step; also usable standalone when a prose block needs to shrink in place without restructuring.
 ---
 
-# Caveman Compression
+# Condense
 
 ## Overview
 
@@ -15,7 +15,7 @@ This skill does **not** restructure content (headers, bullets, tables, ordering)
 
 ## When to Use
 
-- **As Pass 1 inside `distill`** — runs before structural compression. The caller is `distill`; caveman never writes to disk on its own in this mode.
+- **As Pass 1 inside `distill`** — runs before structural compression. The caller is `distill`; condense never writes to disk on its own in this mode.
 - **Standalone, in-place** — when a specific prose block is over-written (e.g. a bloated PR description, an over-explained comment, an overly wordy docstring) and you want to shrink it without restructuring. In standalone use, the caller is responsible for verifying no fact was dropped; there is no built-in round-trip check.
 
 ### When NOT to use
@@ -122,14 +122,14 @@ Typical reduction on natural-language prose: **~40–50%** of tokens.
 
 1. `distill` identifies a markdown file that meets its trigger criteria.
 2. `distill` extracts the prose regions (everything outside code blocks, tables, frontmatter, and the existing digest section, if any).
-3. Caveman rules are applied to those prose regions in memory; the result becomes the input to `distill`'s Pass 2 (Structural).
-4. The original file on disk is **not** modified by caveman. Only `distill` writes back — appending the final digest section.
-5. `distill`'s round-trip verification (subagent reconstruction + fact diff) catches any fact that was accidentally dropped by caveman's mechanical rules.
+3. Condense rules are applied to those prose regions in memory; the result becomes the input to `distill`'s Pass 2 (Structural).
+4. The original file on disk is **not** modified by condense. Only `distill` writes back — appending the final digest section.
+5. `distill`'s round-trip verification (subagent reconstruction + fact diff) catches any fact that was accidentally dropped by condense's mechanical rules.
 
 ## Invocation Contract (standalone)
 
-1. Caller passes a prose block (or a file path and a region specifier) to caveman.
-2. Caveman returns the compressed prose.
+1. Caller passes a prose block (or a file path and a region specifier) to condense.
+2. Condense returns the compressed prose.
 3. Caller verifies the output preserves every fact, decision, number, and ID. No automatic verification is performed.
 4. Caller decides whether to write back, and where (append, replace, or keep as a candidate for review).
 
@@ -137,4 +137,4 @@ Typical reduction on natural-language prose: **~40–50%** of tokens.
 
 ## Bottom Line
 
-Caveman is a deterministic prose compressor with hard "never touch" boundaries around code, IDs, and proper nouns. It is cheap, mechanical, and one-dimensional. It should almost always run as Pass 1 inside `distill`; standalone use is reserved for shrinking a single bloated prose region where restructuring is unnecessary.
+Condense is a deterministic prose compressor with hard "never touch" boundaries around code, IDs, and proper nouns. It is cheap, mechanical, and one-dimensional. It should almost always run as Pass 1 inside `distill`; standalone use is reserved for shrinking a single bloated prose region where restructuring is unnecessary.
