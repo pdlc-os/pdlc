@@ -32,7 +32,9 @@ Run once per project. **Oracle** leads.
 
 After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
-**Greenfield** (empty repo): PDLC asks 7 Socratic questions and scaffolds memory files from your answers.
+**Interaction mode prompt**: before the 7 questions, PDLC asks whether you want **Sketch mode** (agent drafts answers from existing context and batches questions per round; default) or **Socratic mode** (one question at a time, answered from scratch). Both cover identical depth. The choice is persisted in `CONSTITUTION.md` §9 and applies to every questioning step in Init and every future Brainstorm phase. Change it anytime by editing §9.
+
+**Greenfield** (empty repo): PDLC asks 7 questions and scaffolds memory files from your answers. In Sketch mode, any answers derivable from an existing `CLAUDE.md` are pre-drafted and shown with their source.
 
 **Brownfield** (existing code): PDLC offers to deep-scan the repository, mapping structure, reading key files, analyzing tests and git history. Scan findings are presented for approval, then used to pre-populate memory files. All inferred content is marked `(inferred -- please verify)`.
 
@@ -66,6 +68,8 @@ flowchart LR
 ```
 
 Starts with a **remote sync check** — if local main is behind origin, a team meeting assesses the remote changes before proceeding. Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
+
+All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's 6-round design questioning — respect the **Interaction Mode** (Sketch or Socratic) captured in CONSTITUTION.md §9 during init. Sketch mode drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, prior brainstorm logs, and the 1–2 most recent episode files, then presents each round as a single batched block for confirm/edit/replace. Socratic mode asks one question at a time. Both cover identical depth; only the cadence differs.
 
 | Sub-phase | Lead | Key activities | Output |
 |-----------|------|---------------|--------|

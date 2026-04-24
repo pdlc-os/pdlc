@@ -8,7 +8,12 @@ Neo leads this round. The goal is to flesh out the architecture, data model, and
 >
 > There are 6 rounds — we'll move quickly through the ones you've already answered during discovery and spend more time where the design needs sharpening."
 
-Same rules as Socratic discovery: ask one question at a time, wait for a complete answer, adapt follow-ups based on what the user says. If the user says "skip" at any point, stop questioning and proceed to document generation with whatever has been collected.
+Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`. The round structure, focus areas, and minimum question counts below are identical in both modes — only the delivery cadence differs.
+
+- **Socratic mode:** Ask questions one at a time, wait for each answer, adapt follow-ups based on what the user says.
+- **Sketch mode:** For each round, gather context (CONSTITUTION.md tech stack, INTENT.md, the approved PRD, the feature's existing Socratic answers, and the 1–2 most recent episode files' architecture docs). Draft a proposed answer for each question in the round with a cited source. Present the full round as a single batched block per `skills/interaction-mode.md` Step B. Wait for one response, parse acceptances/edits/replacements, then move to the next round.
+
+If the user says `skip` at any point, stop questioning and proceed to document generation with whatever has been collected.
 
 ---
 

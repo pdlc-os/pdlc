@@ -7,29 +7,13 @@
 
 > **Skip this step if the user accepted the brownfield repo scan in Step 2.** The scan already generated the memory files. Jump to Step 6.
 
-### Pre-fill from existing CLAUDE.md
+Read `skills/interaction-mode.md` completely. The `[interaction-mode]` captured in Step 3.5 determines how the questions below are delivered — the question content is identical in both modes, only the cadence differs.
 
-Before starting the questions, check if `CLAUDE.md` exists at the project root. If it does, read it and extract any available context: project name, description, tech stack, architecture, conventions, key files, dev commands.
-
-Use this to **pre-fill suggested answers** for the Socratic questions. For each question where CLAUDE.md provides a clear answer, present the suggestion and let the user confirm or override:
-
-> "[Question text]
->
-> *(From your existing CLAUDE.md: [suggested answer])*
->
-> Press Enter to accept, or type your own answer."
-
-This saves the user from re-typing context that already exists in their repo. If CLAUDE.md doesn't exist, proceed with the questions as normal.
-
-Before asking the first question, print this notice:
+Before starting, print this notice:
 
 > **Tip:** You can type `skip` at any time to stop the questions and proceed with whatever information has been collected so far.
 
-Ask the user the following questions **one at a time**. Wait for a complete answer before asking the next question. Do not batch questions together.
-
-After each answer, check: **if the user's response is exactly `skip` (case-insensitive), stop asking questions immediately and proceed to Step 5 using whatever answers have been collected.** Leave unanswered fields as placeholders in the generated files.
-
-Ask each question exactly as written:
+The seven initialization questions (ask each exactly as written):
 
 1. "What is the name of your project?"
 2. "In one sentence, what problem does it solve?"
@@ -44,10 +28,32 @@ Ask each question exactly as written:
    - Changing CONSTITUTION.md
    - Closing all open Beads tasks at once
    - External API calls that write/post/send (Slack, email, webhooks)
-   
+
    List which of these (if any) you want to downgrade to Tier 3 (logged warning, no pause), or say 'none'."
 
-Store all answers. You will use them to fill in the memory files below.
+### If `[interaction-mode]` is `Sketch`
+
+Gather context first: read `CLAUDE.md` at the project root if it exists (project name, description, tech stack, architecture). Draft proposed answers for Q1–Q5 from that content where available. For Q6 propose the default `Unit + Integration`. For Q7 propose `none`. Any question without a context-backed draft is marked `(no context — your input needed)`.
+
+Present all seven questions as a single batched block per `skills/interaction-mode.md` Step B. Always include the source line for drafted answers (e.g. `Source: CLAUDE.md — Tech Stack section`). Wait for one response that addresses the batch; parse acceptances, edits, and replacements. If any answer is still vague or ambiguous, ask a batched follow-up (≤4 questions) before moving on.
+
+### If `[interaction-mode]` is `Socratic`
+
+If `CLAUDE.md` exists at the project root, read it and extract any relevant context. Use it to pre-fill suggested answers per question:
+
+> "[Question text]
+>
+> *(From your existing CLAUDE.md: [suggested answer])*
+>
+> Press Enter to accept, or type your own answer."
+
+Ask the questions **one at a time**. Wait for a complete answer before asking the next. Do not batch.
+
+### Termination (both modes)
+
+After each answer (or batch response), check for `skip` (case-insensitive). If the user skips, stop and proceed to Step 5 with whatever has been collected. Leave unanswered fields as placeholders in the generated files.
+
+Store all answers — including the `[interaction-mode]` chosen in Step 3.5. You will use them to fill in the memory files below, and will write `**Interaction Mode:** <Sketch|Socratic>` into CONSTITUTION.md §9.
 
 ---
 

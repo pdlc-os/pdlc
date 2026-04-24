@@ -18,14 +18,22 @@ Store the feature slug as `[feature-name]`. Use today's date as `[YYYY-MM-DD]` w
 
 **Remote sync check:** Before starting, read `skills/sync-check.md` and execute the sync check protocol. This verifies local main is current with origin/main. If behind, a team meeting assesses the remote changes and the user decides how to proceed.
 
-Then read these two files completely:
+Then read these three files completely:
 
-1. `docs/pdlc/memory/CONSTITUTION.md` — for tech stack, architectural constraints, test gates, and coding standards
+1. `docs/pdlc/memory/CONSTITUTION.md` — for tech stack, architectural constraints, test gates, coding standards, **and Interaction Mode** (§9)
 2. `docs/pdlc/memory/INTENT.md` — for the core problem, target user, and value proposition
+3. `skills/interaction-mode.md` — for the Sketch/Socratic protocol that governs how every questioning step in this phase is delivered
 
-If either file is missing, stop and tell the user:
+If CONSTITUTION or INTENT is missing, stop and tell the user:
 
 > "PDLC memory files not found. Please run `/pdlc init` first to set up this project."
+
+### Determine `[interaction-mode]`
+
+Look for `**Interaction Mode:** <Sketch|Socratic>` in CONSTITUTION.md §9.
+
+- If present, store the value as `[interaction-mode]` and proceed.
+- If missing (CONSTITUTION predates this setting), prompt the user once using the exact text from `skills/interaction-mode.md` "How to determine the active mode" section. Write the answer into CONSTITUTION.md §9 (this is the one-time prompt; the write itself counts as confirmation — no second Tier 2 prompt). Default to `Sketch` if the user presses Enter.
 
 ### Brainstorm log — create or resume
 

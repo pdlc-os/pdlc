@@ -1,5 +1,5 @@
 # Constitution
-<!-- pdlc-template-version: 2.1.0 -->
+<!-- pdlc-template-version: 2.2.0 -->
 <!-- This file is the single source of truth for how this project is built.
      PDLC reads it before every phase. Strong defaults are already set.
      Override only what your team explicitly agrees to change.
@@ -297,6 +297,21 @@ Examples:
      overhead. Lower it if sub-agent context pressure is acute. -->
 
 **Distill threshold (tokens):** 800
+
+<!-- Interaction Mode controls how PDLC asks structured questions during Init
+     and Brainstorm (Socratic discovery, Adversarial follow-ups, Bloom's design).
+     Both modes cover the same depth — they only change the conversational cadence.
+
+     - Sketch — agent drafts proposed answers from existing context (CONSTITUTION,
+       INTENT, CLAUDE.md, prior episodes) and batches questions per round. User
+       confirms, edits, or replaces any draft. Fewer turn-taking exchanges.
+     - Socratic — agent asks one question at a time; user answers from scratch.
+       More dialogue, no pre-drafts. This was PDLC's behavior before this setting.
+
+     You can change this anytime. The change takes effect at the next step that
+     asks structured questions. See `skills/interaction-mode.md` for the protocol. -->
+
+**Interaction Mode:** Sketch
 
 ---
 

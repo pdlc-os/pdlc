@@ -36,9 +36,10 @@ Then immediately tell the user:
 
 > "I'm going to ask follow-up questions on the most impactful of these. You can type `skip` at any time to stop and proceed to the discovery summary."
 
-Convert the **top 5 most impactful findings** (by risk to the feature succeeding) into targeted follow-up questions. Ask them **one at a time** following the same rules as the Socratic session: one question per message, wait for the answer, prefer multiple-choice where options exist.
+Convert the **top 5 most impactful findings** (by risk to the feature succeeding) into targeted follow-up questions. Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`:
 
-After each answer, update your internal model of the feature — if the answer resolves other findings, drop those follow-ups. If the answer surfaces new concerns, add them.
+- **Socratic mode:** Ask them **one at a time** — one question per message, wait for the answer, prefer multiple-choice where options exist. After each answer, update your internal model — if the answer resolves other findings, drop those follow-ups; if it surfaces new concerns, add them.
+- **Sketch mode:** Present all 5 follow-ups as a single batched block. For each, draft a proposed answer from the existing discovery record (Socratic answers, divergent standouts, CONSTITUTION/INTENT) where possible, citing the source. Mark any question with no context-backed draft as `(no context — your input needed)`. Wait for one response that addresses the batch. If the user's response closes fewer than all 5, loop once more with a smaller batched block for the remaining items.
 
 Continue until the top findings are addressed or the user types any termination command (`skip`, `generate`, `done`, `draft`, `create`).
 

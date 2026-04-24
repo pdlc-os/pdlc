@@ -8,8 +8,8 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 
 | Phase | Command | Description |
 |-------|---------|-------------|
-| **Phase 0 — Initialization** | `/pdlc init` | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, Constitution, Intent, Memory Bank, Roadmap ideation |
-| **Phase 1 — Inception** | `/pdlc brainstorm` | Discover (Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan |
+| **Phase 0 — Initialization** | `/pdlc init` | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, **Interaction Mode** (Sketch/Socratic), Constitution, Intent, Memory Bank, Roadmap ideation |
+| **Phase 1 — Inception** | `/pdlc brainstorm` | Discover (Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
 | **Phase 2 — Construction** | `/pdlc build` | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
 | **Phase 3 — Operation** | `/pdlc ship` | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
 | **Decision** | `/pdlc decision` | Record a decision with full team impact assessment (any phase) |
@@ -72,6 +72,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 - **Agent roster (9 built-in + any custom agents from `.pdlc/agents/`):** `docs/pdlc/reference/agents.md` — full personas in `agents/*.md`
 - **Approval gates & 3-Strike:** `docs/pdlc/reference/approval-gates.md`
 - **Safety guardrails:** `skills/safety-guardrails/SKILL.md`
+- **Interaction Mode (Sketch/Socratic) protocol:** `skills/interaction-mode.md`
 
 ## State & Configuration Pointers
 

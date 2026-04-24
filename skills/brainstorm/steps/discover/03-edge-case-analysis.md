@@ -47,7 +47,12 @@ After the table, ask the user to triage each unhandled finding into one of three
 >
 > You can respond with a list like: `1=in scope, 2=out of scope, 3=risk, 4=in scope` or address them one at a time."
 
-Process the user's triage. For any item marked **in scope**, ask one targeted follow-up to capture enough detail to write an acceptance criterion (e.g. "What should happen when X? What's the expected system response?"). Do not ask follow-ups for out-of-scope or risk items.
+Process the user's triage. For any item marked **in scope**, ask a targeted follow-up to capture enough detail to write an acceptance criterion (e.g. "What should happen when X? What's the expected system response?"). Do not ask follow-ups for out-of-scope or risk items.
+
+Apply `[interaction-mode]` from `skills/interaction-mode.md`:
+
+- **Socratic mode:** Ask one follow-up per message, sequentially, until every in-scope item has a captured answer.
+- **Sketch mode:** Present all in-scope follow-ups as a single batched block. For each, draft a proposed acceptance criterion from the feature's existing Socratic answers and discovery context (cite the source). Wait for one response, then loop once more with a smaller batched block if any remain unclear.
 
 Store the triage decisions as `[edge-case-triage]` — they feed directly into the PRD's Requirements, Acceptance Criteria, and Known Risks sections.
 

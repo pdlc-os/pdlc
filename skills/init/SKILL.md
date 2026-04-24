@@ -33,9 +33,22 @@ Read `skills/init/steps/01-setup.md` and execute it completely.
 
 Return here when directory structure is created.
 
+### Step 3.5 — Choose interaction mode
+
+Before starting the questions, ask the user once which interaction mode they prefer:
+
+> "How would you like me to ask you questions throughout PDLC (Init and Brainstorm)?
+>
+> - **Sketch** *(default)* — I'll propose answers drawn from your existing context (CONSTITUTION, INTENT, CLAUDE.md, prior episodes), batch the questions per round, and you confirm or edit each one. Fewer turn-taking exchanges.
+> - **Socratic** — I'll ask one question at a time and you answer from scratch. More dialogue, no pre-drafts.
+>
+> Both go equally deep — this only changes the cadence. You can change it later by editing `CONSTITUTION.md` §9."
+
+Store the answer as `[interaction-mode]` — default to `Sketch` if the user presses Enter or says "default". You will write this into CONSTITUTION.md §9 during Step 5–6 (memory file generation). Read `skills/interaction-mode.md` for the full protocol that all questioning steps will follow.
+
 ### Step 4 — Socratic Initialization
 
-Read `skills/init/steps/02-socratic-init.md` and execute it completely.
+Read `skills/init/steps/02-socratic-init.md` and execute it completely, applying the chosen `[interaction-mode]`.
 
 Return here when all answers are collected (or the user typed `skip`).
 

@@ -18,6 +18,7 @@ Create this file based on the `templates/CONSTITUTION.md` structure. Fill in the
 - **Architectural Constraints** (Section 3): use the answer from question 5. If "none", leave the placeholder bullets.
 - **Test Gates** (Section 7): check the boxes the user selected in question 6. Uncheck all others.
 - **Safety Guardrail Overrides** (Section 8): populate the table with any items from question 7. If "none", leave the placeholder row.
+- **Interaction Mode** (Section 9): write `**Interaction Mode:** <Sketch|Socratic>` with the value chosen in Step 3.5. Default to `Sketch` if the user deferred.
 - Set `Last updated:` to today's date.
 
 Leave all other sections with their default placeholder text — do not remove comments or examples.

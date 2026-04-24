@@ -6,6 +6,18 @@ PDLC brings together TDD discipline, systematic debugging, a visual brainstormin
 
 ---
 
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Quick Start](#quick-start)
+3. [Why PDLC?](#why-pdlc)
+4. [Documentation](#documentation)
+5. [PDLC-OS Marketplace](#pdlc-os-marketplace)
+6. [Prerequisites](#prerequisites)
+7. [License](#license)
+
+---
+
 ## Why PDLC?
 
 ### Smart-handling of Tokens & Context
@@ -14,6 +26,10 @@ PDLC brings together TDD discipline, systematic debugging, a visual brainstormin
 - Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. 
 - Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. 
 - Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
+
+### Sketch or Socratic — you pick the cadence
+
+PDLC's Init and Brainstorm phases ask a lot of structured questions. You choose how they're delivered: **Sketch mode** (default) drafts proposed answers from your existing context (CONSTITUTION, INTENT, CLAUDE.md, prior episodes) and batches the questions per round — you confirm or edit each one in a single response. **Socratic mode** asks one question at a time and you answer from scratch. Both go equally deep; only the cadence differs. The choice is captured in CONSTITUTION.md §9 and you can change it anytime.
 
 ### Multi-developer ready
 
@@ -34,18 +50,6 @@ During inception, PDLC can run a local browser-based UI (Material Design, light/
 ### Plug-and-play extensibility
 
 Add custom skills (`.pdlc/skills/<name>/SKILL.md`), custom agents (`.pdlc/agents/<name>.md`), and custom test layers (CONSTITUTION.md table) without forking. Templates are provided for both skills and agents. Custom agents are automatically included in team meetings when task labels match.
-
----
-
-## Table of Contents
-
-1. [Why PDLC?](#why-pdlc)
-2. [Installation](#installation)
-3. [Quick Start](#quick-start)
-4. [Documentation](#documentation)
-5. [PDLC-OS Marketplace](#pdlc-os-marketplace)
-6. [Prerequisites](#prerequisites)
-7. [License](#license)
 
 ---
 
@@ -225,7 +229,7 @@ Once installed, open any project in Claude Code:
 /pdlc init
 ```
 
-PDLC asks 7 questions about your project, scaffolds the memory bank, then **Oracle brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5-15 features in `ROADMAP.md`. Then start your first feature:
+PDLC first asks which **interaction mode** you prefer — **Sketch** (agent drafts answers from your context, questions batched per round; default) or **Socratic** (one question at a time, answered from scratch). Then it asks 7 questions about your project, scaffolds the memory bank, and **Oracle brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5-15 features in `ROADMAP.md`. Then start your first feature:
 
 ```
 /pdlc brainstorm user-authentication

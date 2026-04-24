@@ -3,6 +3,12 @@
 
 **Do not wait for user input before starting Step 6a.** Begin generating the candidate feature list immediately upon entering this file.
 
+Read `skills/interaction-mode.md` — the active `[interaction-mode]` (from Step 3.5, now persisted in CONSTITUTION.md §9) governs how the approval prompts below are presented. The feature ideation itself is always agent-led; only the confirmation cadence varies.
+
+In **Sketch mode**, Steps 6a + 6b may be presented together as a single block (candidate feature list + recommended build strategy + proposed priority sequence) for one-shot user review, since all three are agent proposals derived from the Socratic answers. The user's response can accept the whole block, edit specific items, or reject individual pieces.
+
+In **Socratic mode**, walk through 6a → 6b → 6c → 6d sequentially as originally written.
+
 ---
 
 ## Step 6a — Ideate features

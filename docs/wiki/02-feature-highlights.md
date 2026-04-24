@@ -4,6 +4,7 @@
 
 | Feature | What it does |
 |---------|-------------|
+| **Sketch vs Socratic Mode** | User picks the question cadence once during `/pdlc init` (persisted in CONSTITUTION §9). **Sketch** (default) drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, and prior episodes, then batches every round as a single block for confirm/edit/replace. **Socratic** asks one question at a time. Both cover identical depth — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's 6-round design questioning all respect the chosen mode. Change anytime by editing §9. |
 | **Divergent Ideation** | Optional pre-discovery: 100+ raw ideas using structured domain rotation (Technical -> UX -> Business -> Edge Cases), cycling every 10 ideas to prevent semantic drift. Clusters into themes, surfaces 10-15 standouts. |
 | **4-Round Socratic Interview** | Active + Challenging questioning posture across Problem Statement, Future State, Acceptance Criteria, and Current State. Minimum 5 questions per round. |
 | **Progressive Thinking** | Required agent team meeting after Socratic discovery. Oracle facilitates 6 rounds with all agents: Concrete (facts) → Inferential (inferences) → Consequential (implications) → Speculative (unknowns) → Conflicting (disagreements) → Strategic (priorities). User escalation only when agents can't resolve. |
