@@ -69,4 +69,4 @@ Construction is complete when STATE.md shows `Construction Complete — Ready fo
 - Human must approve the review file before PR comments are pushed. Never push automatically.
 - Never merge to main during Construction. The feature branch is merged during `/pdlc ship`.
 - If context is running low (≤35% remaining), update STATE.md immediately and wrap up the current task cleanly before context compacts.
-- The user can issue `/pdlc decision <text>` at any point during Construction to record a decision. This pauses the current flow, runs a full Decision Review Party, and after the decision is recorded, offers to resume Construction from the last STATE.md checkpoint. Any artifacts updated by the decision (architecture, test gates, roadmap) are automatically picked up on resume.
+- The user can issue `/pdlc decide <text>` at any point during Construction to record a decision. This pauses the current flow, runs a full Decision Review Party, and after the decision is recorded, offers to resume Construction from the last STATE.md checkpoint. Any artifacts updated by the decision (architecture, test gates, roadmap) are automatically picked up on resume.

@@ -212,5 +212,5 @@ Proceed with the phase's normal flow.
 - The sync check is a **pre-flight** operation — it runs before the phase starts, not during.
 - The meeting is lightweight (6 agents, ~1-2 minutes) — not a full 9-agent Decision Review.
 - If `git fetch` fails (no network), proceed silently with a warning: "Couldn't reach remote — proceeding with local state."
-- The sync check does NOT run during `/pdlc decision`, `/pdlc whatif`, `/pdlc doctor`, `/pdlc pause`, or `/pdlc resume` — these are non-phase operations.
+- The sync check does NOT run during `/pdlc decide`, `/pdlc whatif`, `/pdlc doctor`, `/pdlc pause`, or `/pdlc resume` — these are non-phase operations.
 - If the user chooses "proceed without pulling," the divergence is logged but not blocked — it's the user's choice.

@@ -15,7 +15,7 @@ Use `/pdlc release`:
 **Do not use `/pdlc release`** when:
 - The claim is yours → use `/pdlc abandon` instead (preserves artifacts, records the decision with full context).
 - The dev is temporarily away (vacation, on-call rotation, short pause) → they'll pick it up on return, and their claim is protected.
-- You want to re-sequence priorities → use `/pdlc decision` to formally change the roadmap instead of releasing the claim.
+- You want to re-sequence priorities → use `/pdlc decide` to formally change the roadmap instead of releasing the claim.
 
 ## What happens
 

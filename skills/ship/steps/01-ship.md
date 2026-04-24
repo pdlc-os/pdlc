@@ -131,7 +131,7 @@ Wait for the user's response.
 
 **If the user chose `proceed`, `proceed as-is`, or `modify`:** the consolidated plan (with whatever modifications the user accepted) becomes the deploy plan for Step 9.3.
 
-**Tier 1 check:** if the review identified Critical findings that constitute Tier 1 hard blocks (hardcoded secrets, exposed credentials, missing smoke-test gate when one is mandated by CONSTITUTION.md §7), the deploy must not proceed unless the user has explicitly run `/pdlc override-tier1`. The review protocol surfaces this; honor it here.
+**Tier 1 check:** if the review identified Critical findings that constitute Tier 1 hard blocks (hardcoded secrets, exposed credentials, missing smoke-test gate when one is mandated by CONSTITUTION.md §7), the deploy must not proceed unless the user has explicitly run `/pdlc override`. The review protocol surfaces this; honor it here.
 
 #### Step 9.3 — Detect CI/CD and trigger
 

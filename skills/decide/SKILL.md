@@ -1,5 +1,5 @@
 ---
-name: decision
+name: decide
 description: "Record an architectural or product decision in the PDLC Decision Registry"
 argument-hint: <decision text>
 ---
@@ -10,7 +10,7 @@ If `$ARGUMENTS` is empty, ask the user: "What decision would you like to record?
 
 ## Lead Agent: mirrors current phase
 
-The lead agent for the decision flow matches whoever is leading the current phase/sub-phase when `/pdlc decision` is issued. Read `docs/pdlc/memory/STATE.md` to determine the active phase and sub-phase, then select the lead:
+The lead agent for the decision flow matches whoever is leading the current phase/sub-phase when `/pdlc decide` is issued. Read `docs/pdlc/memory/STATE.md` to determine the active phase and sub-phase, then select the lead:
 
 | Phase | Sub-phase | Lead Agent |
 |-------|-----------|-----------|
@@ -96,7 +96,7 @@ This file is the recovery mechanism. It survives session loss, network failures,
 > Decision: *[decision text]*
 >
 > Your progress is saved. If this session is interrupted:
-> - Run `/pdlc decision` — PDLC will detect the pending decision and offer to resume
+> - Run `/pdlc decide` — PDLC will detect the pending decision and offer to resume
 > - Run `[resume command]` — resumes the [phase] workflow from its last checkpoint"
 
 **If no phase is active:**
@@ -104,11 +104,11 @@ This file is the recovery mechanism. It survives session loss, network failures,
 > "Decision: *[decision text]*
 >
 > Your progress is saved. If this session is interrupted:
-> - Run `/pdlc decision` — PDLC will detect the pending decision and offer to resume"
+> - Run `/pdlc decide` — PDLC will detect the pending decision and offer to resume"
 
 ### 1c — Classify
 
-This decision was triggered by the user explicitly issuing `/pdlc decision`. Record:
+This decision was triggered by the user explicitly issuing `/pdlc decide`. Record:
 - **Source**: `User (explicit)`
 - **Phase**: current phase from STATE.md (or `Any` if STATE.md shows Idle)
 - **Agent**: `—` (user-initiated, not agent-initiated)
@@ -165,7 +165,7 @@ Write the MOM to: `docs/pdlc/mom/MOM_decision_[ADR-NNN]_[YYYY-MM-DD].md`
 
 **Date:** [today YYYY-MM-DD]
 **Decision:** [full decision text]
-**Trigger:** [User (explicit) via /pdlc decision | PDLC flow — [phase]/[sub-phase]/[agent]]
+**Trigger:** [User (explicit) via /pdlc decide | PDLC flow — [phase]/[sub-phase]/[agent]]
 
 ---
 
@@ -251,4 +251,4 @@ Wait for user response.
 
 ## Steps 4–6 — Record, Reconcile, and Resume
 
-Read `skills/decision/steps/record-and-reconcile.md` and execute it completely (Steps 4–6: record the ADR, reconcile phase-specific impacts, present summary, and offer to resume).
+Read `skills/decide/steps/record-and-reconcile.md` and execute it completely (Steps 4–6: record the ADR, reconcile phase-specific impacts, present summary, and offer to resume).

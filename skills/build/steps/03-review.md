@@ -67,7 +67,7 @@ After approval:
 
 **Record deferred findings as decisions:**
 
-For each finding marked "Defer" or "Accept warning", record it in the Decision Registry using the full protocol in `skills/decision/SKILL.md`. For each entry, set:
+For each finding marked "Defer" or "Accept warning", record it in the Decision Registry using the full protocol in `skills/decide/SKILL.md`. For each entry, set:
 - **Source**: `PDLC flow`
 - **Phase**: `Construction`
 - **Sub-phase**: `Review`

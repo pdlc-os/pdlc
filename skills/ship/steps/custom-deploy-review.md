@@ -94,7 +94,7 @@ Specific changes Pulse recommends based on Round 1/2 findings. For each:
 Agents raised concerns but the user's preference is preserved. Listed explicitly so the user can override their own preference after seeing the full picture.
 
 ### Tier 1 blocks
-Any **Critical** security findings (hardcoded secrets, credentials, exposed internal URLs) become Tier 1 hard blocks. These are **not** "accepted without modification" — they must be resolved before deploy. If the user insists on proceeding, they must run `/pdlc override-tier1`, which is permanently logged.
+Any **Critical** security findings (hardcoded secrets, credentials, exposed internal URLs) become Tier 1 hard blocks. These are **not** "accepted without modification" — they must be resolved before deploy. If the user insists on proceeding, they must run `/pdlc override`, which is permanently logged.
 
 ---
 
@@ -180,7 +180,7 @@ Pulse presents the consolidated plan summary:
 > - [Critical finding 1] — cite `[file:line]`
 > - [Critical finding 2] — cite `[file:line]`
 >
-> These must be resolved before deploy, or override via `/pdlc override-tier1` (permanently logged).
+> These must be resolved before deploy, or override via `/pdlc override` (permanently logged).
 >
 > [If no Tier 1 blocks:]
 > **Your preferences take precedence.** Choose:

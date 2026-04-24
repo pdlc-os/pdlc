@@ -18,7 +18,8 @@ All skill file paths below are relative to the plugin root above.
 | `brainstorm`  | Read `${PDLC_PLUGIN_ROOT}/skills/brainstorm/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `build`       | Read `${PDLC_PLUGIN_ROOT}/skills/build/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `ship`        | Read `${PDLC_PLUGIN_ROOT}/skills/ship/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `decision`    | Read `${PDLC_PLUGIN_ROOT}/skills/decision/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `decide`      | Read `${PDLC_PLUGIN_ROOT}/skills/decide/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `decision`    | **Deprecated alias for `decide`** (kept for back-compat through v2.12; will be removed in v2.13). Read `${PDLC_PLUGIN_ROOT}/skills/decide/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. Warn: "The command `/pdlc decision` has been renamed to `/pdlc decide`. Please use the new name." |
 | `whatif`      | Read `${PDLC_PLUGIN_ROOT}/skills/whatif/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `doctor`      | Read `${PDLC_PLUGIN_ROOT}/skills/doctor/SKILL.md` and execute it. |
 | `rollback`    | Read `${PDLC_PLUGIN_ROOT}/skills/rollback/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
@@ -27,9 +28,10 @@ All skill file paths below are relative to the plugin root above.
 | `release`     | Read `${PDLC_PLUGIN_ROOT}/skills/release/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
 | `pause`       | Read `${PDLC_PLUGIN_ROOT}/skills/pause/SKILL.md` and execute it. |
 | `resume`      | Read `${PDLC_PLUGIN_ROOT}/skills/resume/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
-| `override-tier1` | Read `${PDLC_PLUGIN_ROOT}/skills/override-tier1/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `override`    | Read `${PDLC_PLUGIN_ROOT}/skills/override/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. |
+| `override-tier1` | **Deprecated alias for `override`** (kept for back-compat through v2.12; will be removed in v2.13). Read `${PDLC_PLUGIN_ROOT}/skills/override/SKILL.md` and execute it. Pass remaining args as `$ARGUMENTS`. Warn: "The command `/pdlc override-tier1` has been renamed to `/pdlc override`. Please use the new name." |
 | *(empty)*     | Read `docs/pdlc/memory/STATE.md` and resume from the last checkpoint per CLAUDE.md. |
-| *(unknown)*   | **Before replying "unknown"**, check for a custom skill: look for `.pdlc/skills/<command>/SKILL.md` in the **project root**. If found, read and execute it. If not found, reply: "Unknown PDLC command: `<command>`. Available built-in commands: `init`, `brainstorm`, `build`, `ship`, `decision`, `whatif`, `doctor`, `rollback`, `hotfix`, `abandon`, `release`, `pause`, `resume`, `override-tier1`. Check `.pdlc/skills/` for custom skills." |
+| *(unknown)*   | **Before replying "unknown"**, check for a custom skill: look for `.pdlc/skills/<command>/SKILL.md` in the **project root**. If found, read and execute it. If not found, reply: "Unknown PDLC command: `<command>`. Available built-in commands: `init`, `brainstorm`, `build`, `ship`, `decide`, `whatif`, `doctor`, `rollback`, `hotfix`, `abandon`, `release`, `pause`, `resume`, `override`. Check `.pdlc/skills/` for custom skills." |
 
 When executing a skill, follow every instruction in its `SKILL.md` completely — treat the skill file as your primary prompt for that phase.
 

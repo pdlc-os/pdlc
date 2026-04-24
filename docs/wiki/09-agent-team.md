@@ -27,7 +27,7 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 ### Lead agents by phase
 
-| Phase / Sub-phase | Lead Agent | Also leads `/pdlc decision` |
+| Phase / Sub-phase | Lead Agent | Also leads `/pdlc decide` |
 |-------------------|-----------|----------------------------|
 | Init | Oracle | Yes |
 | Brainstorm — Discover + Define | Oracle | Yes |

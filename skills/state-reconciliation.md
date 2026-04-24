@@ -136,6 +136,6 @@ This ensures that if a crash happens at any point:
 This protocol is referenced by:
 - `hooks/pdlc-session-start.sh` — detects pending files and triggers warnings
 - Every phase SKILL.md — reads STATE.md on entry and applies Step 2-4 before resuming
-- `skills/decision/SKILL.md` — checks pending files in pre-flight
+- `skills/decide/SKILL.md` — checks pending files in pre-flight
 - `skills/whatif/SKILL.md` — checks pending files in pre-flight
 - `skills/build/party/orchestrator.md` — checks `.pending-party.json` before every meeting

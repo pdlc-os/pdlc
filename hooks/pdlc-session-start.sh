@@ -401,7 +401,7 @@ if $has_pending_party && $has_pending_decision; then
   1. Interrupted party meeting (${meeting_type:-unknown})
   2. Interrupted decision
 
-These will be resolved in order (meeting first, then decision). Run \`/pdlc decision\` to start recovery, or resume the active workflow.
+These will be resolved in order (meeting first, then decision). Run \`/pdlc decide\` to start recovery, or resume the active workflow.
 
 Read \`skills/state-reconciliation.md\` for the full reconciliation protocol."
 elif $has_pending_party; then
@@ -415,7 +415,7 @@ elif $has_pending_party; then
 elif $has_pending_decision; then
   pending_notice="${pending_notice}
 
-⚠️ **Interrupted decision detected.** Run \`/pdlc decision\` to resume or discard the pending decision."
+⚠️ **Interrupted decision detected.** Run \`/pdlc decide\` to resume or discard the pending decision."
 fi
 
 # Check for paused feature (hotfix in progress)

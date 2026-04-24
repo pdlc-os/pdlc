@@ -4,7 +4,7 @@ PDLC enforces a three-tier safety system. Rules can be adjusted in `CONSTITUTION
 
 ### Tier 1 — Hard block
 
-Blocked by default. Requires the **double-RED confirmation protocol** to override: run `/pdlc override-tier1 "<command>"`, then confirm twice (type `OVERRIDE`, then `I ACCEPT FULL RESPONSIBILITY`). Every override is permanently logged in STATE.md and DECISIONS.md.
+Blocked by default. Requires the **double-RED confirmation protocol** to override: run `/pdlc override "<command>"`, then confirm twice (type `OVERRIDE`, then `I ACCEPT FULL RESPONSIBILITY`). Every override is permanently logged in STATE.md and DECISIONS.md.
 
 - Force-push to `main` or `master`
 - `DROP TABLE` without a prior migration file

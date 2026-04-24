@@ -200,7 +200,7 @@ Repeat until the user chooses Accept or Discard.
 
 ### Accept as decision
 
-The user wants to convert this exploration into a formal decision. Execute the decision workflow from `skills/decision/SKILL.md` with these modifications:
+The user wants to convert this exploration into a formal decision. Execute the decision workflow from `skills/decide/SKILL.md` with these modifications:
 
 - **Decision text:** use the scenario text as the decision
 - **Source:** `User (explicit, via /pdlc whatif)`
@@ -245,4 +245,4 @@ If no phase was active: stop.
 - **MOM files are permanent** — even discarded analyses are kept for reference.
 - When accepted as a decision, the What-If MOM is reused — never re-run the assessment.
 - The durable checkpoint protocol applies: `.pending-party.json` is written before the meeting and deleted on completion.
-- The lead agent mirrors the current phase lead, same as `/pdlc decision`.
+- The lead agent mirrors the current phase lead, same as `/pdlc decide`.

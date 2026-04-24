@@ -227,9 +227,9 @@ If a shipped feature needs to be reverted (production incident, critical bug, fa
 
 The post-mortem meeting is required — it cannot be skipped. Every rollback produces an ADR entry and a MOM file.
 
-### Pivoting with `/pdlc decision <text>`
+### Pivoting with `/pdlc decide <text>`
 
-Use `/pdlc decision` to **pivot** the design mid-flight -- change tech stack, rearchitect a component, alter scope, switch databases, or any other significant change. Available at any point during Inception, Construction, or Operation. The lead agent for the current phase runs the flow:
+Use `/pdlc decide` to **pivot** the design mid-flight -- change tech stack, rearchitect a component, alter scope, switch databases, or any other significant change. Available at any point during Inception, Construction, or Operation. The lead agent for the current phase runs the flow:
 
 | Step | What happens |
 |------|-------------|
@@ -253,7 +253,7 @@ Use `/pdlc whatif` for **scenario planning** -- explore hypothetical changes wit
 | **Accept as decision** | Converts to formal decision, reuses the What-If MOM (no duplicate meeting), runs decision workflow for reconciliation |
 | **Discard** | Files the MOM for reference, resumes paused workflow |
 
-Together, `/pdlc decision` and `/pdlc whatif` give you a full **pivot and scenario planning toolkit**: explore ideas safely with whatif, then commit to them with decision when ready.
+Together, `/pdlc decide` and `/pdlc whatif` give you a full **pivot and scenario planning toolkit**: explore ideas safely with whatif, then commit to them with decision when ready.
 
 
 ---

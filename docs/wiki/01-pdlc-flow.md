@@ -9,7 +9,7 @@ flowchart LR
     BUILD --> SHIP["/pdlc ship\n🟪 Pulse → 🟧 Jarvis → 🟦 Oracle"]
     SHIP -->|Next feature| BRAINSTORM
 
-    DECISION["/pdlc decision\n⚡ Any phase"] -.->|impacts| BRAINSTORM & BUILD & SHIP
+    DECISION["/pdlc decide\n⚡ Any phase"] -.->|impacts| BRAINSTORM & BUILD & SHIP
     WHATIF["/pdlc whatif\n🔍 Read-only"] -.->|may become| DECISION
 
     style INIT fill:#1e3a5f,color:#fff

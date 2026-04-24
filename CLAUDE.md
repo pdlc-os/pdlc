@@ -8,19 +8,19 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 
 | Phase | Command | Description |
 |-------|---------|-------------|
-| **Phase 0 — Initialization** | `/pdlc init` | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, **Interaction Mode** (Sketch/Socratic), Constitution, Intent, Memory Bank, Roadmap ideation |
-| **Phase 1 — Inception** | `/pdlc brainstorm` | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
-| **Phase 2 — Construction** | `/pdlc build` | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
-| **Phase 3 — Operation** | `/pdlc ship` | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
-| **Decision** | `/pdlc decision` | Record a decision with full team impact assessment (any phase) |
-| **What-If** | `/pdlc whatif` | Read-only scenario exploration with team analysis (any phase) |
-| **Doctor** | `/pdlc doctor` | Comprehensive health check: state, docs, code, Beads, git history |
-| **Rollback** | `/pdlc rollback` | Revert a shipped feature with post-mortem party |
-| **Hotfix** | `/pdlc hotfix` | Emergency compressed build-ship with auto-pause/resume |
-| **Pause / Resume** | `/pdlc pause` / `/pdlc resume` | Save and restore feature state across sessions |
-| **Abandon** | `/pdlc abandon` | Drop an in-progress feature with cleanup and archival |
-| **Release** | `/pdlc release` | Force-release a stuck roadmap claim so another dev can pick it up |
-| **Override** | `/pdlc override-tier1` | Double-RED confirmation for Tier 1 safety overrides |
+| **Phase 0 — Initialization** | `/pdlc init` (alias: `/setup`) | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, **Interaction Mode** (Sketch/Socratic), Constitution, Intent, Memory Bank, Roadmap ideation |
+| **Phase 1 — Inception** | `/pdlc brainstorm` (alias: `/brainstorm`) | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
+| **Phase 2 — Construction** | `/pdlc build` (alias: `/build`) | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
+| **Phase 3 — Operation** | `/pdlc ship` (alias: `/ship`) | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
+| **Decision** | `/pdlc decide` (alias: `/decide`) | Record a decision with full team impact assessment (any phase) |
+| **What-If** | `/pdlc whatif` (alias: `/whatif`) | Read-only scenario exploration with team analysis (any phase) |
+| **Doctor** | `/pdlc doctor` (alias: `/diagnose`) | Comprehensive health check: state, docs, code, Beads, git history |
+| **Rollback** | `/pdlc rollback` (alias: `/rollback`) | Revert a shipped feature with post-mortem party |
+| **Hotfix** | `/pdlc hotfix` (alias: `/hotfix`) | Emergency compressed build-ship with auto-pause/resume |
+| **Pause / Resume** | `/pdlc pause` / `/pdlc resume` (aliases: `/pause` / `/continue`) | Save and restore feature state across sessions |
+| **Abandon** | `/pdlc abandon` (alias: `/abandon`) | Drop an in-progress feature with cleanup and archival |
+| **Release** | `/pdlc release` (alias: `/release`) | Force-release a stuck roadmap claim so another dev can pick it up |
+| **Override** | `/pdlc override` (alias: `/override`) | Double-RED confirmation for Tier 1 safety overrides |
 | *(resume)* | *(none)* | If no command given, read `docs/pdlc/memory/STATE.md` and resume from last checkpoint |
 
 ---
@@ -61,7 +61,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 | **Merge commit** | All PRs use merge commits (no squash, no rebase) to preserve full branch history. |
 | **Soft warnings only** | Security findings (Phantom) and test coverage gaps (Echo) are flagged but do not hard-block progress. Human decides: fix now, accept, or defer to tech debt. |
 | **Constitution overrides defaults** | Any rule in this document can be changed by editing `docs/pdlc/memory/CONSTITUTION.md`. The Constitution is the single source of truth for all project-specific rules. |
-| **Tier 1 hard blocks** | Force-push to `main`, dropping DB tables without a migration file, deleting files not created on the current branch, deploying with failing smoke tests, hardcoded secrets, critical dependency vulnerabilities — override via `/pdlc override-tier1` (double-RED confirmation, permanently logged). |
+| **Tier 1 hard blocks** | Force-push to `main`, dropping DB tables without a migration file, deleting files not created on the current branch, deploying with failing smoke tests, hardcoded secrets, critical dependency vulnerabilities — override via `/pdlc override` (double-RED confirmation, permanently logged). |
 | **Tier 2 pause & confirm** | `rm -rf`, `git reset --hard`, production DB migrations, editing `CONSTITUTION.md`/`DECISIONS.md` (via any tool — Bash, Edit, Write), closing all Beads tasks at once, any external API call that writes/posts/sends — PDLC stops and waits for explicit yes. |
 | **Tier 3 logged warnings** | Skipping a test layer, overriding a Constitution rule, accepting a Phantom security warning without fixing, accepting an Echo coverage gap, editing `STATE.md`/`ROADMAP.md`/`INTENT.md`/`OVERVIEW.md`/`CHANGELOG.md` directly — PDLC proceeds and records the decision in `STATE.md`. |
 

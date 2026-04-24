@@ -10,7 +10,7 @@ PDLC is built entirely from skills — markdown files that Claude reads and exec
 | **Brainstorm** | `/pdlc brainstorm <feature>` | Run Inception: Discover -> Define -> Design -> Plan |
 | **Build** | `/pdlc build` | Run Construction: Build (TDD) -> Review -> Test |
 | **Ship** | `/pdlc ship` | Run Operation: Ship -> Verify -> Reflect -> Next Feature |
-| **Decision** | `/pdlc decision <text>` | Record a decision with full team impact assessment (any phase) |
+| **Decision** | `/pdlc decide <text>` | Record a decision with full team impact assessment (any phase) |
 | **What-If** | `/pdlc whatif <scenario>` | Read-only team analysis of a hypothetical scenario (any phase) |
 
 ### Supporting skills (referenced internally)

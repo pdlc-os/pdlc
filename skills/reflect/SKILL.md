@@ -108,7 +108,7 @@ Read `docs/pdlc/memory/DECISIONS.md` for any decisions recorded during this cycl
 - Propose a concrete remediation approach and a suggested future episode to address it
 
 **For any new tech debt discovered during the retrospective** (e.g., patterns noticed during Steps 4–6 that weren't captured during Review):
-Record each as a decision in the Decision Registry using the full protocol in `skills/decision/SKILL.md`. Set:
+Record each as a decision in the Decision Registry using the full protocol in `skills/decide/SKILL.md`. Set:
 - **Source**: `PDLC flow`
 - **Phase**: `Operation`
 - **Sub-phase**: `Reflect`

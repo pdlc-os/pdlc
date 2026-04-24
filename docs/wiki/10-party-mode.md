@@ -11,7 +11,7 @@ Party mode brings multiple agents together for structured discussions. Five meet
 | **Design Roundtable** | Construction / Build | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
 | **Party Review** | Construction / Review | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
 | **Strike Panel** | Construction / Build | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
-| **Decision Review** | Any phase | `/pdlc decision` or deferred findings | Full team † | MOM with impact assessment, roadmap resequencing, recommended changes |
+| **Decision Review** | Any phase | `/pdlc decide` or deferred findings | Full team † | MOM with impact assessment, roadmap resequencing, recommended changes |
 | **What-If Analysis** | Any phase | `/pdlc whatif` | Full team † | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
 | **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | Full team † (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
 | **Deployment Review** | Operation / Ship | User provides a custom deploy/CI/CD/build artifact | Full team † (Pulse leads) | Consolidated deploy plan: adopted from user, PDLC scaffolding, recommended modifications, Tier 1 blocks |
@@ -40,7 +40,7 @@ Ship
   Verify ───────────── (no meetings — Pulse runs smoke tests)
   Reflect ──────────── (no meetings — Jarvis writes retro)
 
-Any phase ──────────── Decision Review (/pdlc decision)
+Any phase ──────────── Decision Review (/pdlc decide)
 Any phase ──────────── What-If Analysis (/pdlc whatif)
 Post-ship ──────────── Post-Mortem (/pdlc rollback)
 

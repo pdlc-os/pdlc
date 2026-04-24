@@ -141,7 +141,7 @@
 - **Config changes introduced:** <!-- new env vars, workflow steps, infra resources, tags -->
 - **New tags recorded:** <!-- any new tag key/values added to DEPLOYMENTS.md for this env -->
 - **Rollback tested:** <!-- yes / no / n/a — if yes, how was it verified -->
-- **Tier 1 overrides used:** <!-- list any /pdlc override-tier1 invocations during this ship, or "none" -->
+- **Tier 1 overrides used:** <!-- list any /pdlc override invocations during this ship, or "none" -->
 - **DEPLOYMENTS.md updated:** <!-- yes / no — if no, why -->
 
 ---

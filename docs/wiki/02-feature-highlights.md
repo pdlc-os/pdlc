@@ -55,7 +55,7 @@
 | **Pause / Resume** | `/pdlc pause` saves full state, unclaims Beads task. `/pdlc resume` restores state, rebases on main, reclaims Beads task, checks for changes since pause, and picks up exactly where you left off. |
 | **Abandon** | `/pdlc abandon` — cleanly drop an in-progress feature. Closes Beads tasks, marks ROADMAP as Dropped, creates abandonment episode with lessons learned, records ADR, hands off to next roadmap feature. Artifacts preserved for reference. |
 
-### Decision Registry (`/pdlc decision`)
+### Decision Registry (`/pdlc decide`)
 
 | Feature | What it does |
 |---------|-------------|
@@ -80,6 +80,7 @@
 
 | Feature | What it does |
 |---------|-------------|
+| **Shortform Command Aliases** | Every `/pdlc <subcommand>` has a top-level alias so `/pdlc ship` and `/ship` are equivalent. The 14 aliases: `/setup`, `/brainstorm`, `/build`, `/ship`, `/decide`, `/whatif`, `/diagnose` (for `doctor` — avoids Claude Code built-in), `/rollback`, `/hotfix`, `/abandon`, `/release`, `/pause`, `/continue` (for `resume` — avoids Claude Code built-in), `/override`. All args forward through. Installed and removed by the same install/uninstall machinery as the `/pdlc` router. Custom skills remain `/pdlc <name>` only — top-level namespace is reserved for built-ins. |
 | **Safety Guardrails** | 3-tier system: Tier 1 hard blocks, Tier 2 pause-and-confirm, Tier 3 logged warnings. Configurable via Constitution. |
 | **Colored Transitions** | Phase transitions (cyan), sub-phase transitions (yellow), and agent handoffs (magenta) with ANSI color codes. |
 | **Humanized Handoffs** | Agent transitions include warm farewells and enthusiastic welcomes — feels like a real team. |

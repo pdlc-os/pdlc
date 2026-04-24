@@ -244,7 +244,7 @@ Merge, deploy, reflect, and commit the episode record. Before triggering the dep
 At any point during inception or construction, record a decision or explore a scenario:
 
 ```
-/pdlc decision We should use PostgreSQL instead of MongoDB
+/pdlc decide We should use PostgreSQL instead of MongoDB
 ```
 
 This triggers a **Decision Review Party** where the full team — 9 built-in agents plus any custom agents you've added to `.pdlc/agents/` that match the context — assesses cross-cutting impacts, produces minutes of meeting, and reconciles downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
@@ -304,6 +304,31 @@ If something feels off — after pulling a teammate's changes, after a rollback,
 
 This runs a **comprehensive health check** — 8 checks covering state file integrity, ROADMAP/STATE consistency, Beads task graph (including `bd doctor` for internal Beads health), document-vs-code drift, git rollback and multi-user detection, and Constitution compliance. Read-only by default, with optional fix mode.
 
+### Shortform aliases
+
+Every `/pdlc <subcommand>` has a top-level alias so you can skip the `/pdlc` prefix. Both forms are equivalent and stay in lockstep — use whichever feels natural. All args forward through unchanged.
+
+| Alias | Equivalent |
+|---|---|
+| `/setup` | `/pdlc init` |
+| `/brainstorm` | `/pdlc brainstorm [F-NNN]` |
+| `/build` | `/pdlc build` |
+| `/ship` | `/pdlc ship` |
+| `/decide` | `/pdlc decide <text>` |
+| `/whatif` | `/pdlc whatif <text>` |
+| `/diagnose` | `/pdlc doctor` (renamed to avoid Claude Code's built-in `/doctor`) |
+| `/rollback` | `/pdlc rollback [feature]` |
+| `/hotfix` | `/pdlc hotfix [name]` |
+| `/abandon` | `/pdlc abandon [feature]` |
+| `/release` | `/pdlc release [F-NNN]` |
+| `/pause` | `/pdlc pause` |
+| `/continue` | `/pdlc resume` (renamed to avoid Claude Code's built-in `/resume`) |
+| `/override` | `/pdlc override "<blocked command>"` |
+
+Custom skills you add under `.pdlc/skills/<name>/` remain as `/pdlc <name>` only — top-level namespace is reserved for built-ins.
+
+> **Note on v2.12 renames:** `/pdlc decision` is now `/pdlc decide`, and `/pdlc override-tier1` is now `/pdlc override`. The old names still work through v2.12 with a deprecation notice and will be removed in v2.13.
+
 ---
 
 ## Why PDLC?
@@ -325,7 +350,7 @@ Multiple developers can work on the same PDLC-enabled repo. Every phase starts w
 
 ### Scenario planning at any stage
 
-Use `/pdlc whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/pdlc decision` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
+Use `/pdlc whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/pdlc decide` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
 
 ### Full decision traceability
 

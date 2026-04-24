@@ -32,7 +32,7 @@ function tier1Block(reason, command) {
     `\x1b[41m\x1b[37m ⛔ PDLC HARD BLOCK — TIER 1 SAFETY ⛔ \x1b[0m\n` +
     `\x1b[31mThis action is blocked: ${reason}.\n\n` +
     `To override, run the double-RED confirmation protocol:\n` +
-    `  \`/pdlc override-tier1 "${safeCmd}"\`\n\n` +
+    `  \`/pdlc override "${safeCmd}"\`\n\n` +
     `This requires two explicit confirmations and is permanently logged.\x1b[0m`;
   block(msg);
 }

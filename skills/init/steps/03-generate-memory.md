@@ -92,7 +92,7 @@ Create this file with stub content:
 
 <!-- PDLC Decision Registry (ADR format).
      Entries are appended by:
-     - User: via /pdlc decision <text>
+     - User: via /pdlc decide <text>
      - Agents: during Construction/Review (Step 14) and Reflect (Step 7)
      Each entry records: what was decided, who decided, why, what was considered,
      and what cross-cutting impacts were applied.

@@ -1104,7 +1104,7 @@ Slash commands (inside a Claude Code session after install):
   /pdlc brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
   /pdlc build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
   /pdlc ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
-  /pdlc decision    Record a decision in the Decision Registry (any phase)
+  /pdlc decide    Record a decision in the Decision Registry (any phase)
   /pdlc whatif       Explore a hypothetical scenario with read-only team analysis
   /pdlc doctor       Run a comprehensive health check on PDLC state and code alignment
   /pdlc rollback     Revert a shipped feature with post-mortem and fix options
@@ -1112,7 +1112,7 @@ Slash commands (inside a Claude Code session after install):
   /pdlc abandon      Abandon the current feature and clean up artifacts
   /pdlc pause        Pause the current feature and save state for later
   /pdlc resume       Resume a paused feature from its saved checkpoint
-  /pdlc override-tier1  Override a Tier 1 safety block (double-RED confirmation)
+  /pdlc override  Override a Tier 1 safety block (double-RED confirmation)
 
 Marketplace: https://github.com/pdlc-os
 `);

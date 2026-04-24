@@ -1,5 +1,5 @@
 ---
-name: override-tier1
+name: override
 description: "Override a Tier 1 safety block with double-RED confirmation"
 argument-hint: "<blocked command>"
 ---
@@ -7,7 +7,7 @@ argument-hint: "<blocked command>"
 You are executing a Tier 1 safety override. This is the most dangerous operation in PDLC. The argument passed is the command that was blocked: `$ARGUMENTS`
 
 If `$ARGUMENTS` is empty, stop:
-> "No command specified. Usage: `/pdlc override-tier1 \"<the blocked command>\"`"
+> "No command specified. Usage: `/pdlc override \"<the blocked command>\"`"
 
 ---
 
@@ -104,4 +104,4 @@ If both confirmations pass:
 - Both confirmations must be exact string matches. No fuzzy matching, no "close enough."
 - The override is logged permanently — it cannot be hidden or deleted from STATE.md or DECISIONS.md.
 - Each override is a separate ADR entry. If the same command is overridden multiple times, each gets its own entry.
-- This skill should NEVER be invoked automatically by another skill. It must be triggered by the user explicitly typing `/pdlc override-tier1`.
+- This skill should NEVER be invoked automatically by another skill. It must be triggered by the user explicitly typing `/pdlc override`.
