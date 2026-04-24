@@ -382,6 +382,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 16  | [Visual Companion](docs/wiki/16-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception                 |
 | 17  | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
 | 18  | [Extensibility](docs/wiki/18-extensibility.md)       | Custom skills, custom agents, custom test layers — extend PDLC without forking             |
+| 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/pdlc release`       |
 
 ---
 
@@ -412,6 +413,7 @@ The `pdlc-os` GitHub organisation hosts community-contributed extensions:
 | -------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
 | Node.js >= 18                                      | [nodejs.org](https://nodejs.org)         |                                                                                           |
 | Claude Code                                        | [claude.ai/code](https://claude.ai/code) |                                                                                           |
+| Python 3                                           | Prompted during PDLC install             | Used by the session-start hook for handoff parsing, roadmap-claim reconciliation, progress rendering, and conflict detection. Auto-installed via Homebrew on macOS/Linux-with-brew; distro/Windows package command is printed otherwise. Hook degrades gracefully if Python 3 is missing. |
 | [Dolt](https://github.com/dolthub/dolt)            | Prompted during PDLC install             | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
 | [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install             | Task manager; same scope (local/global) as PDLC                                           |
 | Git                                                | Built into macOS/Linux                   |                                                                                           |

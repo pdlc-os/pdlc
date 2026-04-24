@@ -101,6 +101,111 @@ function isPdlcInstalled(settings) {
   );
 }
 
+// ─── Python 3 helpers ────────────────────────────────────────────────────────
+// PDLC's session-start hook uses python3 for handoff parsing, roadmap-claim
+// reconciliation, roadmap rendering, and conflict detection. Without python3
+// those features silently degrade to a plain STATE.md dump. The check below
+// gives the user a chance to install python3 at install time.
+
+function isPython3Installed() {
+  try {
+    execSync('python3 --version', { stdio: 'ignore' });
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function python3Version() {
+  try {
+    return execSync('python3 --version', { encoding: 'utf8' }).trim();
+  } catch (_) {
+    return 'unknown';
+  }
+}
+
+function getPython3InstallCmd() {
+  // Prefer Homebrew on macOS and Linux-with-brew; fall back to distro hints elsewhere.
+  if (process.platform === 'darwin' || isHomebrewInstalled()) {
+    return 'brew install python';
+  }
+  if (process.platform === 'linux') {
+    // Best-effort distro detection. We don't run these automatically because
+    // most require sudo and the exact package name varies.
+    try {
+      const osRelease = execSync('cat /etc/os-release 2>/dev/null', { encoding: 'utf8' });
+      if (/\b(ubuntu|debian)\b/i.test(osRelease)) return 'sudo apt install -y python3';
+      if (/\b(fedora|rhel|centos|rocky|almalinux)\b/i.test(osRelease)) return 'sudo dnf install -y python3';
+      if (/\barch\b/i.test(osRelease)) return 'sudo pacman -S --noconfirm python';
+      if (/\balpine\b/i.test(osRelease)) return 'sudo apk add python3';
+    } catch (_) { /* ignore */ }
+    return 'sudo apt install python3  # or your distro’s equivalent';
+  }
+  if (process.platform === 'win32') {
+    return 'winget install --id Python.Python.3 -e  # or download from https://python.org/downloads';
+  }
+  return 'install python3 using your package manager';
+}
+
+async function promptInstallPython3() {
+  if (isPython3Installed()) {
+    log(`\n  Python 3    : ✓ already installed (${python3Version()}) — skipping`);
+    return true;
+  }
+
+  const installCmd = getPython3InstallCmd();
+
+  log(`\n  Python 3 is used by PDLC’s session-start hook for:`);
+  log(`    • handoff parsing and mid-phase resume banners`);
+  log(`    • roadmap-claim reconciliation against Beads (multi-dev safety)`);
+  log(`    • roadmap progress rendering`);
+  log(`    • roadmap-vs-STATE conflict detection`);
+  log(`  Without Python 3, the hook still runs but degrades to a plain STATE.md dump.`);
+
+  if (!process.stdin.isTTY) {
+    log(`\n  To enable the full session-start experience, install Python 3:`);
+    log(`    ${installCmd}`);
+    log(`  After installation, open a new shell so PATH picks up python3.`);
+    return false;
+  }
+
+  // Homebrew-based installs are safe to run non-interactively.
+  const brewInstall = installCmd.startsWith('brew install');
+  const promptText = brewInstall
+    ? '  Install Python 3 via Homebrew now? (Y/n) '
+    : `  This install requires sudo and manual steps — PDLC will print the command but will NOT run it. Show install command? (Y/n) `;
+
+  const answer = await prompt(promptText);
+  if (answer === '' || answer === 'y' || answer === 'yes') {
+    if (brewInstall) {
+      log(`\n  Installing Python 3 via Homebrew...`);
+      try {
+        execSync(installCmd, { stdio: 'inherit' });
+        if (isPython3Installed()) {
+          log(`\n  Python 3    : ✓ installed (${python3Version()})`);
+          return true;
+        }
+        log(`\n  Python 3 installed but not yet on PATH in this shell.`);
+        log(`  Open a new terminal (or \`source\` your shell rc) and the hook will pick it up automatically.`);
+        return true;
+      } catch (err) {
+        log('\n  Python 3 installation failed. Install it manually:');
+        log(`  ${installCmd}`);
+        return false;
+      }
+    } else {
+      // sudo / winget flows: don't execute automatically
+      log('\n  Run this command when you’re ready:');
+      log(`    ${installCmd}`);
+      log(`  Open a new shell afterward so python3 shows up on PATH.`);
+      return false;
+    }
+  }
+  log('\n  Skipping Python 3 installation. The session-start hook will degrade gracefully.');
+  log(`  Install later with: ${installCmd}`);
+  return false;
+}
+
 // ─── Dolt helpers ────────────────────────────────────────────────────────────
 
 function isDoltInstalled() {
@@ -169,6 +274,14 @@ function beadsVersion() {
 }
 
 function printBeadsStatus() {
+  if (isPython3Installed()) {
+    console.log(`  Python 3    : \u2713 installed (${python3Version()})`);
+  } else {
+    console.log(`  Python 3    : \u2717 not found`);
+    console.log(`                Used by session-start hook for handoff parsing,`);
+    console.log(`                roadmap-claim reconciliation, and conflict detection.`);
+    console.log(`                Install: ${getPython3InstallCmd()}`);
+  }
   if (isDoltInstalled()) {
     console.log(`  Dolt        : \u2713 installed (${doltVersion()})`);
   } else {
@@ -509,6 +622,8 @@ async function install(opts = {}) {
     // user to run `pdlc install` in a real terminal for the full setup.
     return;
   }
+
+  await promptInstallPython3();
 
   await promptInstallBeads(local);
 

@@ -163,6 +163,21 @@ If a feature is discovered to be unviable mid-inception or mid-build, abandon it
 
 Abandonment is permanent in ROADMAP.md. To revisit the feature later, add it as a new entry with a new `F-NNN` ID.
 
+### Force-releasing a stuck claim with `/pdlc release`
+
+When a roadmap claim is stuck — the claimer left the team, their machine is unavailable, or they've gone silent for weeks with no commits — another developer can force-release the claim so the feature becomes available again. This is distinct from `/pdlc abandon` (which drops the feature entirely) and `/pdlc pause` (which keeps the claim with the original dev, who plans to return).
+
+| Step | What happens |
+|------|-------------|
+| **Target** | Run `/pdlc release F-NNN` with an explicit ID, or `/pdlc release` with no arg to list every active claim and pick one |
+| **Safeguards** | Refuses to release your own active claim (use `/pdlc abandon` for that). Requires an explicit reason captured before proceeding. |
+| **Release** | `bd unclaim` + flip the Beads task status back to `planned` so the next `bd ready --label roadmap` surfaces it |
+| **ROADMAP** | `Claimed by` column cleared, `Status` returns to `Planned` |
+| **Record** | ADR entry in DECISIONS.md noting who released it, the prior claimer, and the reason |
+| **Optional notify** | If the pinned GitHub Roadmap issue exists, a comment is posted noting the force-release |
+
+Because `/pdlc release` never touches artifacts (PRDs, design docs, feature branches), whoever picks the feature up next can choose to reuse or discard the prior work. The ADR is the durable audit trail — every force-release is reviewable later.
+
 ### Pausing and resuming with `/pdlc pause` and `/pdlc resume`
 
 You can explicitly pause the current feature at any point and resume it later.
