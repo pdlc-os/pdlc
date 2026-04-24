@@ -151,6 +151,9 @@ The roadmap-level Beads task is the authoritative claim lock. STATE.md's Roadmap
   - `[WARNING] F-NNN: ROADMAP shows Status=[X] but Beads task status is [Y]. Re-render ROADMAP from Beads.`
   - `[WARNING] F-NNN: ROADMAP shows Priority=[X] but Beads label priority:[Y]. One or the other was edited in isolation.`
   - `[WARNING] F-NNN: ROADMAP shows Claimed by=[X] but Beads assignee is [Y]. STATE.md reconciliation on next session will fix this.`
+- **missing-roadmap-beads-tasks** (upgrade migration) — ROADMAP.md has feature rows but `bd list --label roadmap --json` returns `[]`. This is the expected state for projects initialized before v2.11.0 added claim coordination. Every F-NNN is effectively unprotected against multi-dev double-claim.
+  - Finding: `[WARNING] ROADMAP.md lists [N] features but no roadmap-labeled Beads tasks exist. Multi-dev claim coordination is disabled until these are bootstrapped.`
+  - **Fix action** (offered in `/pdlc doctor --fix`): iterate over ROADMAP.md Feature Backlog rows and run `bd create --label roadmap --label F-NNN --label priority:N --status <planned|shipped|dropped>` per row. Shipped/Dropped rows get the corresponding status. Rows showing `In Progress` with a `Claimed by` value get the matching `bd claim` to preserve the existing assignee. The same bootstrap is offered inline by `/pdlc brainstorm` the first time a post-upgrade user runs it — so this finding is informational for users who haven't yet re-entered brainstorm.
 
 > **End of model override.** Return to Neo's assigned model (Opus) for remaining checks.
 

@@ -41,7 +41,49 @@ Take the first entry (Beads orders by priority ascending, unclaimed first). Extr
 bd claim <bd-task-id>
 ```
 
-If claim fails (another dev beat us): retry with the next ready entry. If no `ready` entries remain, tell the user every roadmap feature is already claimed or shipped — offer `/pdlc release` for stale claims or suggest adding a new feature.
+If claim fails (another dev beat us): retry with the next ready entry.
+
+**If `bd ready --label roadmap --json` returns an empty list**, distinguish three cases before reporting back to the user:
+
+1. **Every roadmap task is claimed or shipped/dropped.** `bd list --label roadmap --json` returns tasks, but all have assignees or are in terminal status. Tell the user every feature is already claimed or shipped — offer `/pdlc release` for stale claims or suggest adding a new feature via `/pdlc decision`.
+
+2. **No roadmap tasks exist at all.** `bd list --label roadmap --json` returns `[]`. Now check whether ROADMAP.md has features:
+
+   If ROADMAP.md contains feature rows with status `Planned` or `In Progress`, this project was initialized before roadmap-claim support (pre-v2.11.0) and needs a one-time migration. Offer the upgrade bootstrap:
+
+   > "This project has features in `ROADMAP.md` but no roadmap-level Beads tasks. That usually means the project was initialized before v2.11.0 added multi-dev claim coordination.
+   >
+   > I can bootstrap the Beads mirror now — one `bd create` per row with status `Planned` or `In Progress`, labels `roadmap` + `F-NNN` + `priority:N`. Existing `Shipped` and `Dropped` rows are marked as closed in Beads and are not claimable. This takes a few seconds and is safe to run any time.
+   >
+   > **Bootstrap roadmap Beads tasks now? (Y/n)**"
+
+   On `y` / empty: iterate over ROADMAP.md Feature Backlog rows. For each:
+
+   ```bash
+   # Planned / In Progress rows → claimable
+   bd create --title "F-NNN feature-slug" \
+             --description "description from ROADMAP row" \
+             --label roadmap --label F-NNN --label priority:N \
+             --status planned
+
+   # Shipped rows → closed, non-claimable (preserves history)
+   bd create --title "F-NNN feature-slug" \
+             --label roadmap --label F-NNN --label priority:N \
+             --status shipped
+
+   # Dropped rows → closed, non-claimable
+   bd create --title "F-NNN feature-slug" \
+             --label roadmap --label F-NNN --label priority:N \
+             --status dropped
+   ```
+
+   For rows that already showed `In Progress` in ROADMAP.md with a `Claimed by` value, also `bd claim <task-id>` assigning to that email so the existing claim is preserved. If no `Claimed by` is recorded, leave the task unclaimed — the next `/pdlc brainstorm` run will claim it normally.
+
+   After bootstrap completes, retry `bd ready --label roadmap --json` and continue the Step B claim flow.
+
+   On `n`: proceed in the Step D fallback (legacy single-dev mode) and warn: "Roadmap claim coordination disabled for this session. Run `/pdlc doctor` to bootstrap later."
+
+3. **ROADMAP.md itself has no feature rows.** This is a fresh project mid-init where roadmap ideation has not yet produced a backlog. Tell the user "No roadmap features yet — run `/pdlc init` to generate a backlog, then come back."
 
 **If `$ARGUMENTS` is a feature slug or `F-NNN`** (explicit request):
 
