@@ -1,6 +1,6 @@
 # Abandon — Drop an In-Progress Feature
 
-Run `/pdlc abandon` to cleanly stop work on a feature that is no longer viable. Oracle (PM) leads — this is a product decision.
+Run `/pdlc abandon` (alias: `/abandon`) to cleanly stop work on a feature that is no longer viable. Oracle (PM) leads — this is a product decision.
 
 ---
 

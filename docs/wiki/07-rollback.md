@@ -1,6 +1,6 @@
 # Rollback — Revert a Shipped Feature
 
-Run `/pdlc rollback [feature-name]` to revert a shipped feature that's causing production issues. Oracle (PM) leads.
+Run `/pdlc rollback [feature-name]` (alias: `/rollback [feature-name]`) to revert a shipped feature that's causing production issues. Oracle (PM) leads.
 
 ---
 

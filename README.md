@@ -346,6 +346,7 @@ Custom skills you add under `.pdlc/skills/<name>/` remain as `/pdlc <name>` only
 - Different models are used for different tasks — Haiku for setup/install operations, Opus for complex reasoning, Sonnet for focused specialist work. 
 - Skills are loaded as markdown files on demand (not kept in context), and Agent Teams mode is the default so multi-agent work happens in separate context windows rather than consuming a single one. 
 - Completed features are automatically archived and Beads is purged/compacted to reduce context noise from stale artifacts.
+- Large markdown artifacts (PRDs, design docs, OVERVIEW, DECISIONS, episodes) auto-distill into inline digests that sub-agents read in place of the full prose. Two-pass compression — a `caveman` syntactic pass (drops articles, filler, hedging, imperative softeners; preserves code/paths/IDs/numbers verbatim) followed by a structural digest pass — cuts re-read tokens 4–6× with round-trip fact verification (zero info loss) and sha256 staleness detection. See [`skills/distill/SKILL.md`](skills/distill/SKILL.md) and [`skills/caveman/SKILL.md`](skills/caveman/SKILL.md).
 
 ### Sketch or Socratic — you pick the cadence
 

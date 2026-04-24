@@ -4,7 +4,7 @@ Explicitly save your current feature state and resume later — across sessions,
 
 ---
 
-### Pause (`/pdlc pause`)
+### Pause (`/pdlc pause` · alias `/pause`)
 
 Cleanly saves your exact position so nothing is lost:
 
@@ -15,7 +15,7 @@ Cleanly saves your exact position so nothing is lost:
 
 Only one feature can be paused at a time. The session-start hook detects `.paused-feature.json` and reminds you on every new session.
 
-### Resume (`/pdlc resume`)
+### Resume (`/pdlc resume` · alias `/continue`)
 
 Restores your paused feature with full context awareness:
 

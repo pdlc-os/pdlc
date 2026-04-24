@@ -1,6 +1,6 @@
 # Hotfix — Emergency Compressed Build-Ship
 
-Run `/pdlc hotfix <name>` when production is broken and can't wait for the normal feature cycle. Pulse (DevOps) leads.
+Run `/pdlc hotfix <name>` (alias: `/hotfix <name>`) when production is broken and can't wait for the normal feature cycle. Pulse (DevOps) leads.
 
 ---
 

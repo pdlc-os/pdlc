@@ -89,6 +89,16 @@ python3 -c "import hashlib, sys; s=open(sys.argv[1]).read().split('\n## Distille
 
 ## Compression Patterns
 
+Apply passes in order: **(1) Syntactic → (2) Structural → (3) Abbreviations**. Round-trip verification catches any fact loss regardless of pass.
+
+### Pass 1 — Syntactic (caveman)
+
+Apply the full `skills/caveman/SKILL.md` ruleset to the prose regions that will feed into the digest. Caveman drops articles, filler, pleasantries, hedging, connective fluff, imperative softeners, and redundant phrasing, and shortens verb choice. It leaves code blocks, inline code, URLs, file paths, IDs, numbers, proper nouns (agent names, services, people), quoted error messages, frontmatter, table structure, and heading text untouched. This pass runs in memory only — caveman never writes to disk on distill's behalf.
+
+See `skills/caveman/SKILL.md` for the canonical rule list, examples, and "never modify" guarantees. Any fact accidentally lost in this pass is caught by the round-trip verification step below.
+
+### Pass 2 — Structural (keep verbatim / compress aggressively / structure over prose)
+
 **Keep verbatim** (these must survive intact):
 - All IDs: Beads task IDs, ADR IDs, feature F-IDs, episode numbers
 - All file paths
@@ -109,13 +119,15 @@ python3 -c "import hashlib, sys; s=open(sys.argv[1]).read().split('\n## Distille
 - Sequences → numbered lists
 - Any trade-off discussion → a short table: `| Option | Chosen | Reason |`
 
-**Abbreviations** — only where unambiguous in PDLC context:
+### Pass 3 — Abbreviations
+
+Only where unambiguous in PDLC context:
 - "acceptance criteria" → "AC"
 - "user story" → "US"
 - "architectural decision record" → "ADR"
 - Do not invent new abbreviations; only use ones already common in the source.
 
-Target compression: **3-5× reduction** in tokens with zero information loss.
+Target compression after all three passes: **4–6× reduction** in tokens with zero information loss (up from 3–5× before the syntactic pass).
 
 ---
 
@@ -187,6 +199,7 @@ The always-distill whitelist is fixed at the skill level, not per-project — OV
 
 ## Cross-references
 
+- `skills/caveman/SKILL.md` — the syntactic compression ruleset invoked as distill's Pass 1 (see above). Also usable standalone when a prose block needs to shrink in place without the full digest flow.
 - `skills/writing-clearly-and-concisely/SKILL.md` — for authoring readable prose (invoked before distillation, not after). The source content you distill should already be clear.
 - `agents/jarvis.md` — Jarvis is the keeper of distilled quality across the project; Jarvis verifies OVERVIEW/DECISIONS/episode digests during Reflect.
 

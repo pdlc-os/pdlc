@@ -1,4 +1,4 @@
-# Force-Releasing a Stuck Roadmap Claim (`/pdlc release`)
+# Force-Releasing a Stuck Roadmap Claim (`/pdlc release` · alias `/release`)
 
 PDLC uses Beads as the atomic claim lock on roadmap-level features — each `F-NNN` on the roadmap is a Beads task, and `/pdlc brainstorm` can only proceed once a dev holds the claim. This prevents two developers from accidentally starting on the same priority-next feature.
 

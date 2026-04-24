@@ -1,6 +1,6 @@
 # Doctor — Comprehensive Health Check
 
-Run `/pdlc doctor` at any time to scan your project for inconsistencies between PDLC state, documentation, task graph, and actual code. Neo (Architect) leads the check — read-only by default, with optional fix mode.
+Run `/pdlc doctor` (alias: `/diagnose`) at any time to scan your project for inconsistencies between PDLC state, documentation, task graph, and actual code. Neo (Architect) leads the check — read-only by default, with optional fix mode.
 
 ---
 
