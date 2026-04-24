@@ -112,7 +112,7 @@ Shows install mode (local/global), plugin root path, hook registration, and Bead
 Installing PDLC also registers a `superclaude` command. It's a thin wrapper equivalent to:
 
 ```bash
-claude --dangerously-skip-permissions "$@"
+claude --permission-mode bypassPermissions "$@"
 ```
 
 Use it when you want Claude Code to run tool calls (Bash, Edit, Write) **without per-command permission prompts** — e.g. a long-running PDLC session where you've decided to trust the workflow end-to-end.
