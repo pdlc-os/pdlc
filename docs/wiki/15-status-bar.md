@@ -19,21 +19,23 @@ Claude Code doesn't expose context window usage to hooks, so PDLC estimates it b
 - **Token accumulation** — output size from Read, Grep, Bash, Agent, etc. is estimated (1 token ≈ 4 chars)
 - **Turn overhead** — each conversation turn adds ~1500 tokens for message framing
 
-The estimate is stored in a bridge file (`/tmp/pdlc-ctx-{sessionId}.json`) and updated after every tool call by the context monitor hook.
+The estimate is stored in a bridge file (`/tmp/pdlc-ctx-{sessionId}.json`) and updated after every tool call by the context monitor hook. After `/clear` (SessionStart hook) or `/compact` (PostCompact hook) the bridge file is wiped so the bar resets to reflect the compacted or cleared state instead of carrying the pre-event total forward.
 
 ### Warning thresholds
 
 | Level | Threshold | Behavior |
 |-------|-----------|----------|
 | Normal | < 50% | No warnings |
-| **WARNING** | >= 50% | Warning injected every 5 tool calls: "Consider wrapping up" |
-| **CRITICAL** | >= 65% | Warning on every tool call + auto-checkpoint saved to STATE.md |
+| **WARNING** | >= 50% | Warning injected every 5 tool calls, recommending `/compact` (primary) or `/clear` (full reset) |
+| **CRITICAL** | >= 65% | Warning on every tool call + auto-checkpoint saved to STATE.md — same recommendation |
+
+At both thresholds the hook recommends **`/compact` first** because it summarizes older turns while keeping the current working context alive. `/clear` is offered as an alternative when you're at a clean approval gate and want a fully fresh session — the handoff block in STATE.md ensures the next session resumes seamlessly.
 
 The Context Checkpoint in STATE.md is updated in two ways:
 - **After each step:** Claude writes the step number, skill file, work completed, and next action after completing each numbered step within a skill. This ensures `/clear` recovery is precise — not just phase/sub-phase but the exact step.
 - **At CRITICAL:** The context monitor hook auto-writes the session ID, tool count, and estimated usage as a safety net.
 
-On session resume (including after `/clear`), the session-start hook reads the Context Checkpoint and includes step-level positioning in the resume banner.
+On session resume (including after `/clear` or `/compact`), the session-start hook reads the Context Checkpoint and includes step-level positioning in the resume banner.
 
 ### Color coding
 

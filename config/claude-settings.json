@@ -56,6 +56,16 @@
           }
         ]
       }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${PDLC_PLUGIN_ROOT}/hooks/pdlc-context-reset.sh"
+          }
+        ]
+      }
     ]
   }
 }

@@ -59,7 +59,7 @@ function resolvePlaceholders(obj) {
  *  Matches any hook whose command references a known PDLC script name,
  *  so stale entries from different install paths are also cleaned up. */
 function stripPdlc(settings) {
-  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js'];
+  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js', 'pdlc-context-reset.sh'];
   const isPdlcCommand = (cmd) => PDLC_SCRIPTS.some(s => cmd?.includes(s));
 
   const cleaned = JSON.parse(JSON.stringify(settings));
@@ -70,7 +70,7 @@ function stripPdlc(settings) {
   }
 
   // Remove PDLC entries from hook arrays
-  for (const event of ['PostToolUse', 'PreToolUse', 'SessionStart']) {
+  for (const event of ['PostToolUse', 'PreToolUse', 'SessionStart', 'PostCompact']) {
     if (!Array.isArray(cleaned.hooks?.[event])) continue;
     cleaned.hooks[event] = cleaned.hooks[event]
       .map(group => {
@@ -88,7 +88,7 @@ function stripPdlc(settings) {
 }
 
 function isPdlcInstalled(settings) {
-  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js'];
+  const PDLC_SCRIPTS = ['pdlc-context-monitor.js', 'pdlc-guardrails.js', 'pdlc-session-start.sh', 'pdlc-statusline.js', 'pdlc-context-reset.sh'];
   const isPdlcCommand = (cmd) => PDLC_SCRIPTS.some(s => cmd?.includes(s));
 
   return (
@@ -770,6 +770,7 @@ function status() {
     console.log('  PostToolUse    \u2192 pdlc-context-monitor.js');
     console.log('  PreToolUse     \u2192 pdlc-guardrails.js');
     console.log('  SessionStart   \u2192 pdlc-session-start.sh');
+    console.log('  PostCompact    \u2192 pdlc-context-reset.sh');
   }
   console.log('');
 }

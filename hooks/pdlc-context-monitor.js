@@ -207,8 +207,9 @@ function main() {
 
     const msg =
       `🚨 PDLC CRITICAL: Context estimated at ~${usedPct}% (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `Auto-saving checkpoint to STATE.md. Strongly recommend typing \`/clear\` now — ` +
-      `your handoff is saved and the next session will resume seamlessly.`;
+      `Auto-saving checkpoint to STATE.md.\n` +
+      `   ▶ Recommended: type 🔄 \`/compact\` now to summarize older turns and keep current work alive.\n` +
+      `   ▶ Alternative:  type 🧹 \`/clear\` for a full reset — your handoff is saved, the next session will resume seamlessly.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
@@ -228,8 +229,9 @@ function main() {
     });
 
     const msg =
-      `⚠️  PDLC Context Warning: ~${usedPct}% estimated (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens). ` +
-      `If you're at an approval gate, consider typing \`/clear\` — your handoff will ensure seamless resumption.`;
+      `⚠️  PDLC Context Warning: ~${usedPct}% estimated (${toolCount} tool calls, ~${Math.round(totalTokens/1000)}K tokens).\n` +
+      `   ▶ Recommended: type 🔄 \`/compact\` to summarize older turns and keep working without losing current context.\n` +
+      `   ▶ Alternative:  type 🧹 \`/clear\` for a full reset (handoff is saved) — best when you're at an approval gate.`;
 
     process.stdout.write(JSON.stringify({ continue: true, systemMessage: msg }));
     process.exit(0);
