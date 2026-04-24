@@ -181,6 +181,36 @@ function isExternalWriteCall(cmd) {
          EXTERNAL_URL_PATTERN.test(cmd);
 }
 
+// ── Metadata commands that legitimately quote file names in message text ────
+// git commit, git tag -m, gh release/pr/issue with --notes/--body commonly contain
+// PDLC memory file names in their message bodies. Those commands don't modify the
+// filesystem, so file-write guardrails must not fire on them.
+const METADATA_COMMAND_PATTERNS = [
+  /^\s*git\s+commit\b/,
+  /^\s*git\s+tag\b.*\s-[am]\b/,
+  /^\s*gh\s+(release|pr|issue)\b/,
+  /^\s*gh\s+api\b/,
+];
+
+function isMetadataCommand(cmd) {
+  return METADATA_COMMAND_PATTERNS.some(re => re.test(cmd));
+}
+
+// ── CONSTITUTION.md write-target detection ──────────────────────────────────
+// Only matches when CONSTITUTION.md is the actual operand of a write operation —
+// not when it merely appears inside a string argument. Patterns covered:
+//   sed/awk/tee/mv/cp …… CONSTITUTION.md
+//   echo/printf …… > CONSTITUTION.md
+//   > CONSTITUTION.md  or  >> CONSTITUTION.md  (any redirection target)
+const CONSTITUTION_WRITE_PATTERNS = [
+  /\b(sed|awk|tee|mv|cp|rm|install|cat)\s+[^|;&]*\bCONSTITUTION\.md\b/,
+  />>?\s*[^|;&]*CONSTITUTION\.md\b/,
+];
+
+function writesToConstitutionFile(cmd) {
+  return CONSTITUTION_WRITE_PATTERNS.some(re => re.test(cmd));
+}
+
 // ── Protected PDLC files ─────────────────────────────────────────────────────
 const PROTECTED_FILES = {
   // Tier 2 — pause and confirm
@@ -361,7 +391,15 @@ function main() {
   }
 
   // 2e. Modifying CONSTITUTION.md
-  if (/CONSTITUTION\.md/.test(command) && /\b(write|edit|echo|printf|sed|awk|mv|cp|tee|>|>>)\b/.test(command)) {
+  //
+  // Only fire when the file is the actual target of a write/edit operation.
+  // Commands like `git commit -m "…CONSTITUTION.md §9…"` or `gh release create --notes`
+  // legitimately mention the file name in their argument text and must NOT trigger a
+  // Tier 2 block — those are metadata operations, not file modifications.
+  if (isMetadataCommand(command)) {
+    // git/gh commit/release/pr/issue bodies frequently reference PDLC memory files.
+    // Skip rule 2e for these — they don't touch the file system.
+  } else if (writesToConstitutionFile(command)) {
     handleTier2('changing constitution.md');
   }
 
