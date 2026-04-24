@@ -552,6 +552,93 @@ function removeCommands(targetRoot) {
   } catch {}
 }
 
+// ─── Superclaude global symlink ──────────────────────────────────────────────
+// Whether PDLC is installed globally (npm -g) or locally (--save-dev), we
+// always try to symlink `superclaude` into ~/.local/bin so it's on PATH
+// regardless of install mode. Without this, local installs only expose
+// superclaude via ./node_modules/.bin which isn't on PATH by default.
+// Skipped on Windows — ~/.local/bin isn't a convention there, and npm
+// already creates a .cmd shim for global installs.
+
+const LOCAL_BIN_DIR = path.join(os.homedir(), '.local', 'bin');
+const LOCAL_BIN_SUPERCLAUDE = path.join(LOCAL_BIN_DIR, 'superclaude');
+
+function isPdlcSuperclaudeTarget(target) {
+  const tail = path.join('bin', 'superclaude.sh');
+  return target.endsWith(tail) || target.endsWith('/superclaude.sh');
+}
+
+function warnIfLocalBinNotOnPath() {
+  const entries = (process.env.PATH || '').split(path.delimiter).map(p => p.replace(/\/+$/, ''));
+  if (entries.includes(LOCAL_BIN_DIR)) return;
+  log(`\n  ⚠️  ${LOCAL_BIN_DIR} is not on your PATH.`);
+  log(`      Add this to your ~/.zshrc or ~/.bashrc so \`superclaude\` resolves anywhere:`);
+  log(`        export PATH="$HOME/.local/bin:$PATH"`);
+  log(`      Then restart your shell or run \`source ~/.zshrc\`.`);
+}
+
+function linkSuperclaudeToLocalBin() {
+  if (process.platform === 'win32') return;
+
+  const source = path.join(PLUGIN_ROOT, 'bin', 'superclaude.sh');
+  if (!fs.existsSync(source)) return;
+
+  try {
+    fs.mkdirSync(LOCAL_BIN_DIR, { recursive: true });
+  } catch (err) {
+    log(`  superclaude : ⚠️  Could not create ${LOCAL_BIN_DIR} — ${err.message}`);
+    return;
+  }
+
+  let existing = null;
+  try { existing = fs.lstatSync(LOCAL_BIN_SUPERCLAUDE); } catch {}
+
+  if (existing) {
+    if (!existing.isSymbolicLink()) {
+      log(`  superclaude : ⚠️  ${LOCAL_BIN_SUPERCLAUDE} exists and is not a symlink — leaving it alone.`);
+      return;
+    }
+    const currentTarget = fs.readlinkSync(LOCAL_BIN_SUPERCLAUDE);
+    if (currentTarget === source) {
+      log(`  superclaude : ✓ ${LOCAL_BIN_SUPERCLAUDE} → ${source}`);
+      warnIfLocalBinNotOnPath();
+      return;
+    }
+    if (!isPdlcSuperclaudeTarget(currentTarget)) {
+      log(`  superclaude : ⚠️  ${LOCAL_BIN_SUPERCLAUDE} points to ${currentTarget} (not a pdlc superclaude.sh) — leaving it alone.`);
+      return;
+    }
+    // Stale pdlc symlink from a different plugin root — replace it.
+    fs.unlinkSync(LOCAL_BIN_SUPERCLAUDE);
+  }
+
+  try {
+    fs.symlinkSync(source, LOCAL_BIN_SUPERCLAUDE);
+    log(`  superclaude : ✓ ${LOCAL_BIN_SUPERCLAUDE} → ${source}`);
+    warnIfLocalBinNotOnPath();
+  } catch (err) {
+    log(`  superclaude : ⚠️  Failed to create symlink — ${err.message}`);
+  }
+}
+
+function unlinkSuperclaudeFromLocalBin() {
+  if (process.platform === 'win32') return;
+
+  let existing = null;
+  try { existing = fs.lstatSync(LOCAL_BIN_SUPERCLAUDE); } catch { return; }
+  if (!existing.isSymbolicLink()) return;
+
+  const currentTarget = fs.readlinkSync(LOCAL_BIN_SUPERCLAUDE);
+  if (!isPdlcSuperclaudeTarget(currentTarget)) return;
+
+  try {
+    fs.unlinkSync(LOCAL_BIN_SUPERCLAUDE);
+    log(`  superclaude : ✓ removed symlink at ${LOCAL_BIN_SUPERCLAUDE}`);
+  } catch (err) {
+    log(`  superclaude : ⚠️  Could not remove symlink — ${err.message}`);
+  }
+}
+
 // ─── Commands ─────────────────────────────────────────────────────────────────
 
 async function install(opts = {}) {
@@ -595,6 +682,7 @@ async function install(opts = {}) {
     log(`  Settings    : ${localSettingsPath}`);
     log(`  Commands    : ${path.join(repoRoot, '.claude', 'commands')}`);
     log(`  Scope       : this repo only`);
+    linkSuperclaudeToLocalBin();
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH) ?? {};
 
@@ -614,6 +702,7 @@ async function install(opts = {}) {
     log(`  Settings    : ${GLOBAL_SETTINGS_PATH}`);
     log(`  Commands    : ${path.join(os.homedir(), '.claude', 'commands')}`);
     log(`  Scope       : all projects (global)`);
+    linkSuperclaudeToLocalBin();
   }
 
   if (opts._headless) {
@@ -717,6 +806,7 @@ async function uninstall(opts = {}) {
     }
     removeCommands(repoRoot);
     log('  Slash commands removed from .claude/commands/');
+    unlinkSuperclaudeFromLocalBin();
 
     await promptUninstallBeads(true);
     log('');
@@ -734,6 +824,7 @@ async function uninstall(opts = {}) {
     removeCommands(os.homedir());
     log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
     log('  Slash commands removed from ~/.claude/commands/');
+    unlinkSuperclaudeFromLocalBin();
 
     await promptUninstallBeads(false);
     log('');

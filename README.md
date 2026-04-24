@@ -125,12 +125,17 @@ superclaude /pdlc ship      # launch directly into a slash command
 If you want the default behavior where Claude asks before each tool call, just run `claude` as usual. The two commands coexist — `superclaude` doesn't change anything about `claude`.
 
 **Install scope:**
-- Global install → `superclaude` lands in your npm global bin (already on PATH).
-- Local install → available via `npx superclaude` from inside the repo, or by adding `./node_modules/.bin` to PATH.
+- **Every install — global OR local — symlinks `superclaude` into `~/.local/bin/`** so it's reachable from any shell, regardless of how you installed PDLC. A local install no longer traps the binary inside `./node_modules/.bin/`.
+- Global installs additionally get the standard npm bin symlink (e.g. in your nvm/Homebrew bin dir). The two symlinks coexist — whichever your `$PATH` finds first wins.
+- If `~/.local/bin` isn't on your `$PATH`, the installer prints the exact line to add:
+  ```bash
+  export PATH="$HOME/.local/bin:$PATH"
+  ```
+  Drop it in `~/.zshrc` (or `~/.bashrc`) and `source` the file to pick up `superclaude` immediately.
 
-**Windows:** npm auto-generates a `.cmd` shim so `superclaude` works in PowerShell and cmd too.
+**Windows:** npm auto-generates a `.cmd` shim so `superclaude` works in PowerShell and cmd too. The `~/.local/bin` symlink is skipped on Windows.
 
-**Removing it:** `superclaude` is removed automatically when you `npx @pdlc-os/pdlc uninstall` or `npm uninstall @pdlc-os/pdlc`.
+**Removing it:** `superclaude` is removed automatically when you `npx @pdlc-os/pdlc uninstall` (the uninstaller deletes the `~/.local/bin/superclaude` symlink too) or `npm uninstall @pdlc-os/pdlc`.
 
 > **Prerequisite:** the `claude` binary must be on your PATH. If Claude Code isn't installed yet, `superclaude` will exit with "command not found: claude" — install Claude Code first, then `superclaude` works immediately.
 
