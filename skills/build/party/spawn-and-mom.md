@@ -21,7 +21,7 @@ This is the highest fidelity mode — agents maintain independent reasoning and 
 The primary agent spawns sub-agents via the Agent tool. Sub-agents can only report back to the primary agent — they cannot talk to each other. The primary agent:
 - Spawns all participants in parallel
 - Collects all responses
-- Routes relevant responses between agents manually for cross-talk (one round max)
+- Routes relevant responses between agents manually for cross-talk (up to 3 rounds, exit early on consensus)
 - Synthesizes conclusion
 
 Faster than Agent Teams but cross-talk is mediated rather than direct.
@@ -71,16 +71,22 @@ or "React to what Phantom flagged about the auth surface."]
 
 ---
 
-## Cross-talk Round
+## Cross-talk Rounds
 
-After the first round, determine whether a cross-talk round is needed:
+After Round 1, determine whether cross-talk is needed:
 
 - **Run cross-talk if**: two or more agents reached contradictory conclusions, or one agent's finding directly affects another agent's domain
 - **Skip cross-talk if**: agents are broadly aligned and no finding is interdependent
 
-To run cross-talk: spawn only the agents whose perspectives interact. Pass the relevant other agent's response as "What Others Said." Ask them to react directly to that specific point.
+To run a cross-talk round: spawn only the agents whose perspectives interact. Pass the relevant other agent's response as "What Others Said." Ask them to react directly to that specific point and to try to move toward consensus — either by convincing the other agent or by adjusting their own position based on the other agent's reasoning.
 
-Maximum one cross-talk round per party session. Do not run more rounds — if disagreement persists, surface it in the MOM as an open question for the human.
+**Up to 3 cross-talk rounds per party session.** Run only as many rounds as needed — most disagreements that resolve at all resolve in 1 or 2 rounds. After each round, decide:
+
+1. **Consensus reached** — agents converged on a single position. Stop cross-talk; proceed to conclusion.
+2. **Positions moved but didn't converge** — there's progress. Run another round if rounds remain.
+3. **Positions locked, no movement** — cross-talk is unproductive. Stop early even if rounds remain; further rounds will not change the outcome.
+
+If consensus is not reached after 3 rounds (or earlier per (3)), surface the disagreement in the MOM as an open question for the human. Cross-talk is a bounded attempt at agent-side resolution — it is not a substitute for human decisioning when agents fundamentally disagree.
 
 ---
 
@@ -153,10 +159,13 @@ Include the task ID and title if applicable.]
 [repeat for each participant]
 
 ### Round 2 — Cross-talk
-*(omit this section if cross-talk was skipped)*
+*(omit this section if cross-talk was skipped; repeat as `Round 3 — Cross-talk` and `Round 4 — Cross-talk` for additional cross-talk rounds, up to 3 cross-talk rounds total)*
 
 **[Name] (responding to [Other Name]):**
 [Cross-talk response]
+
+[After the final cross-talk round, note the outcome:]
+*Outcome: consensus reached / locked, escalated to human / 3 rounds exhausted, escalated to human*
 
 ---
 

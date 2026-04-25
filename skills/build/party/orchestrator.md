@@ -36,7 +36,7 @@ Update the `progress` field at each key milestone:
 |---------------|---------|
 | `started` | Meeting initiated, agents not yet spawned |
 | `round-1-complete` | First round responses collected |
-| `cross-talk-complete` | Cross-talk round done (or skipped) |
+| `cross-talk-complete` | All cross-talk rounds done (or skipped) — consensus reached, locked early, or 3 rounds exhausted |
 | `mom-written` | MOM file written to disk |
 | `presented` | Results presented to user, awaiting response |
 
@@ -78,8 +78,8 @@ Follow the exact visual pattern defined in the "Meeting Announcement Block" sect
 | Meeting | Typical duration | Why |
 |---------|-----------------|-----|
 | Wave Kickoff | ~30 seconds | Quick standup — dependency check and wave plan |
-| Design Roundtable | ~1–2 minutes | Multi-round design debate with cross-talk |
-| Party Review | ~2–3 minutes | Full parallel review with cross-talk and linked findings |
+| Design Roundtable | ~1–4 minutes | Multi-round design debate with up to 3 cross-talk rounds |
+| Party Review | ~2–5 minutes | Full parallel review with up to 3 cross-talk rounds and linked findings |
 | Strike Panel | ~1 minute | Focused diagnosis of a specific failure |
 | Decision Review | ~2–4 minutes | Full team (9 built-in + any matching custom agents) assesses impacts across all artifacts |
 | Deployment Review | ~2–3 minutes | Full team assesses a user-provided custom deploy/CI/CD/build artifact composed with PDLC's default pipeline |

@@ -16,11 +16,11 @@ Run `/pdlc rollback [feature-name]` (alias: `/rollback [feature-name]`) to rever
 
 ### Post-Mortem meeting
 
-The post-mortem is mandatory — it cannot be skipped. Oracle facilitates 3 rounds:
+The post-mortem is mandatory — it cannot be skipped. Oracle facilitates the meeting:
 
 **Round 1 — Root cause diagnosis:** Each agent analyzes the failure from their domain (architecture, backend, frontend, tests, security, UX, ops, docs). Each produces: root cause assessment, whether it was preventable, severity.
 
-**Round 2 — Cross-examination:** Oracle routes specific findings between agents for direct challenge. If Bolt says "API returned wrong schema," Jarvis is asked "Was the contract correct?" Maximum one cross-examination round.
+**Round 2 — Cross-examination:** Oracle routes specific findings between agents for direct challenge. If Bolt says "API returned wrong schema," Jarvis is asked "Was the contract correct?" Cross-examination follows the canonical bounded cross-talk loop — **up to 3 rounds, exit early on consensus** (see `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds"). Most post-mortem disagreements resolve in 1–2 rounds.
 
 **Round 3 — Fix proposals:** Each agent that identified a problem proposes a concrete fix with effort and risk assessment. Oracle synthesizes into **3 ranked approaches**:
 1. **Recommended** — best fix with rationale

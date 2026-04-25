@@ -105,6 +105,8 @@ Do you agree this is a real conflict? If yes, what is the safest sequencing or
 coordination strategy — and does the Beads dependency graph need to be updated?
 ```
 
+Cross-talk follows the canonical bounded loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Wave Kickoff conflicts almost always resolve in 1 round; reach for round 2 or 3 only if agents are still disagreeing about sequencing or dep-graph updates.
+
 ---
 
 ## Output — Wave Execution Plan

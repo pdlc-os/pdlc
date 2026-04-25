@@ -70,7 +70,7 @@ Pulse identifies overlapping findings (where two agents flagged the same underly
 - If Echo flags a skipped test layer AND Neo flags an architectural invariant that test protects → route to both.
 - If Oracle flags missing PRD conformance AND Muse flags a UX impact → route to both.
 
-Maximum one cross-talk round. Update `.pending-party.json`: set `"progress": "cross-talk-complete"`.
+Cross-talk follows the canonical bounded loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Once cross-talk terminates (consensus reached, locked early, or 3 rounds exhausted), update `.pending-party.json`: set `"progress": "cross-talk-complete"`.
 
 ---
 

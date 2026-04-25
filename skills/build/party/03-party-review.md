@@ -132,6 +132,8 @@ Does this have architectural implications beyond the immediate fix?
 Should it trigger a DECISIONS.md entry or a change to CONSTITUTION.md?
 ```
 
+Cross-talk follows the canonical bounded loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Most interconnected findings resolve in round 1; use rounds 2–3 only when agents continue to disagree about whether findings share a root cause or how a Critical issue should be treated. If consensus is not reached, follow the Party Review branch of `skills/build/party/deadlock-protocol.md` (Deadlock Type 3) — write both findings independently with a linked-review note and surface the disagreement.
+
 ---
 
 ## Review File Output

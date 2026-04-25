@@ -3,7 +3,7 @@
 Read this file when any of the following conditions are true:
 - `bd ready` returns empty but open tasks remain
 - A party round's agents return empty, error, or identical responses
-- Agents cannot reach consensus after cross-talk
+- Agents cannot reach consensus after cross-talk (cross-talk runs up to 3 rounds with early exit on consensus)
 - A fix-regenerate cycle repeats more than twice
 - A Strike Panel is triggered a second time for the same test
 
@@ -100,13 +100,16 @@ Retry once with a stripped-down prompt (remove cross-talk context, reduce to the
 
 ## Deadlock Type 3 — Consensus Failure (Agents Cannot Agree)
 
-Applies to: Design Roundtable Round 2, Strike Panel Round 2, Party Review cross-talk.
+Applies to: Design Roundtable cross-talk, Strike Panel cross-talk, Party Review cross-talk.
+
+Cross-talk runs up to 3 rounds with early exit on consensus (see `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds"). This deadlock is reached when cross-talk terminates without consensus — either because positions locked with no movement (early exit) or because 3 rounds were exhausted without convergence.
 
 ### Detection
 
-After the cross-talk round:
+After cross-talk terminates:
 - Agents produce contradictory conclusions with no clear majority
 - Neo (or orchestrator) cannot synthesize a single decision from the responses
+- Either the loop hit 3 rounds, or it stopped earlier because positions stayed locked between rounds
 
 ### Resolution by meeting type
 

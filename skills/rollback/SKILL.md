@@ -161,7 +161,7 @@ Oracle identifies the most likely root cause(s) from Round 1. Routes specific fi
 - If Echo says "no test covered this path" → route to Neo: "Was this path in the architecture?"
 - If Phantom says "security warning was accepted" → route to Oracle: "Should the acceptance criteria have caught this?"
 
-Maximum one cross-examination round.
+Cross-examination follows the canonical bounded cross-talk loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Most post-mortem findings resolve in 1–2 rounds; reach for round 3 only if Oracle still cannot pin down the root cause.
 
 ### Round 3 — Fix recommendations
 

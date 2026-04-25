@@ -103,11 +103,13 @@ Does this change your recommendation? Make a final call: which approach should w
 and what specific adjustments address Echo's concern?
 ```
 
+Cross-talk follows the canonical bounded loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. In Design Roundtable, each additional round narrows the disagreement — by round 3, either Neo can synthesize a single approach or the architectural fork goes to the human.
+
 ---
 
 ## Consensus Failure
 
-If after Round 2 Neo cannot converge on a single implementation approach — either because agents' contradictions remain unresolved or no clear synthesis is possible — do not proceed to Step 9. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 3** for the Design Roundtable case. This requires human escalation with the exact disagreement framed as a forced choice before implementation begins.
+If after the final cross-talk round (consensus reached, locked early, or 3 rounds exhausted) Neo cannot converge on a single implementation approach — either because agents' contradictions remain unresolved or no clear synthesis is possible — do not proceed to Step 9. Read `skills/build/party/deadlock-protocol.md` and apply **Deadlock Type 3** for the Design Roundtable case. This requires human escalation with the exact disagreement framed as a forced choice before implementation begins.
 
 ---
 
