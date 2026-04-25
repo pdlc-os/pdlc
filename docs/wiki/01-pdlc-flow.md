@@ -61,7 +61,8 @@ flowchart TD
     SOCRATIC --> PROGRESSIVE[Progressive Thinking\n🗣 Agent team meeting\n6 rounds · Oracle facilitates]
     PROGRESSIVE --> ADVERSARIAL[Adversarial Review\n10+ findings · Top 3 follow-ups]
     ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · max 3 prompts\n1 triage + up to 2 follow-ups]
-    EDGE --> DSUM[Discovery summary]
+    EDGE --> UXDISC[UX Discovery\nMuse leads · max 3 questions\nvisual companion required\ngrounded in existing UI]
+    UXDISC --> DSUM[Discovery summary]
     DSUM --> DCONF{Human confirms?}
     DCONF -->|Adjust| DSUM
     DCONF -->|Confirmed| PRD[DEFINE\nAuto-generate PRD]

@@ -19,8 +19,9 @@ Auto-generate a complete PRD draft from the brainstorm log. Use `templates/PRD.m
 2. Append **Requirements** + **Assumptions** → message: `"✏️ Requirements, Assumptions — done."`
 3. Append **Acceptance Criteria** → message: `"✏️ Acceptance Criteria — done."`
 4. Append **User Stories** → message: `"✏️ User Stories — done."`
-5. Append **Non-Functional Requirements** + **Known Risks** + **Out of Scope** → message: `"✏️ NFRs, Known Risks, Out of Scope — done."`
-6. Append **Design Docs** (placeholder) + **Related Episodes** + **Approval** (blank) → message: `"✏️ PRD draft complete."`
+5. **(Conditional)** If `[brainstorm-log]` contains a `## UX Discovery` section that completed (not marked `Skipped:`), append the **User Experience** section, copying the selections from that brainstorm log section directly into the PRD template's User Experience subsections (Layout, User Flow, State Coverage, Design Deviations) — message: `"✏️ User Experience — done."`. If UX Discovery was skipped or absent, omit the User Experience section entirely from the PRD and skip this step (do not leave an empty section).
+6. Append **Non-Functional Requirements** + **Known Risks** + **Out of Scope** → message: `"✏️ NFRs, Known Risks, Out of Scope — done."`
+7. Append **Design Docs** (placeholder) + **Related Episodes** + **Approval** (blank) → message: `"✏️ PRD draft complete."`
 
 Each write appends to the file in progress — do not rewrite the entire file on each step. The groupings above balance progress visibility with avoiding excessive messages.
 
@@ -33,6 +34,7 @@ Section requirements:
 - **Assumptions**: surfaced from the discovery session. Minimum 3.
 - **Acceptance Criteria**: numbered, binary pass/fail conditions. Map 1:1 or 1:many with requirements. Include a criterion for each in-scope edge case. Minimum 4.
 - **User Stories**: BDD Given/When/Then format. Label as US-001, US-002, etc. One story per major acceptance criterion group. Cross-reference AC numbers.
+- **User Experience** *(conditional)*: include this section only if `[brainstorm-log]` has a completed `## UX Discovery` section. Copy the four subsections directly from the brainstorm log: **Layout** (selected option + cited shipped pattern + visual companion fragment path), **User Flow** (selected flow + cited pattern, or "single-screen — no flow"), **State Coverage** (empty / loading / error / success selections, each citing the existing state component used), and **Design Deviations** (each deviation + established pattern + verbatim rationale + DECISIONS.md candidate flag, or the "no deviations" note). Do not paraphrase — copy verbatim so Neo can consume the selections directly during Design.
 - **Non-Functional Requirements**: performance, security, accessibility derived from constraints and CONSTITUTION.md
 - **Known Risks**: include any edge cases triaged as "known risk" from the Edge Case Analysis, with deferral reasoning
 - **Out of Scope**: from the discovery answer, plus any edge cases triaged as "out of scope" — include a brief note on why each is excluded

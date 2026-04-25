@@ -12,9 +12,36 @@ mkdir -p docs/pdlc/design/[feature-name]
 
 ---
 
+### Step 9a-pre — UX Discovery handoff (conditional)
+
+Before starting Bloom's Taxonomy, check `[brainstorm-log]` for a `## UX Discovery` section.
+
+**If UX Discovery completed** (section exists and is not marked `Skipped:`), Neo performs two pre-checks:
+
+1. **DECISIONS.md candidate scan.** Search the brainstorm log's `## UX Discovery` → "Design Deviations" subsection for entries marked `DECISIONS.md candidate: yes`. For each one, present it to the user:
+
+   > **Neo (Architect):** "Muse flagged this deviation as a DECISIONS.md candidate during UX Discovery:
+   >
+   > - **Deviation:** [text from log]
+   > - **Established pattern:** [text from log]
+   > - **Rationale:** [verbatim user reason from log]
+   >
+   > Should I record this in DECISIONS.md before we move on? (yes / no / let me adjust the rationale first)"
+
+   If yes: invoke `/pdlc decide` with the deviation framed as a decision (a Decision Review Party will run; the resulting ADR is recorded in DECISIONS.md). After the decision lands, resume here.
+   If no or "adjust": continue without recording. Note the user's choice in the brainstorm log so future audits can see the deliberate skip.
+
+   If no candidates were flagged, skip this sub-step silently.
+
+2. **Bloom's pre-flight prep.** Read the brainstorm log's `## UX Discovery` Q2 (User Flow) selection. Pass it as input to Bloom's Round 1 so Neo can build on the captured flow rather than re-asking the user to walk through it. The Bloom's file (`05-blooms-taxonomy-design.md`) already handles this — confirm the flow is loaded into working context before invoking it.
+
+**If UX Discovery was skipped or absent**, skip this entire sub-step and proceed directly to Step 9a (Bloom's). Do not prompt the user about UX in Design — they already declined or the feature is non-UI.
+
+---
+
 ### Step 9a — Bloom's Taxonomy design questioning
 
-Before generating the design documents, Neo conducts a structured questioning round with the user to flesh out the architecture, data model, and API contracts. This uses Bloom's revised taxonomy — 6 rounds progressing from foundational recall to creative synthesis.
+Before generating the design documents, Neo conducts a structured questioning round with the user to flesh out the architecture, data model, and API contracts. This uses a condensed Bloom's revised taxonomy — 3 rounds (Mechanics → Apply → Trade-offs and Judgments) plus a Synthesis closing step.
 
 Read `skills/brainstorm/steps/discover/05-blooms-taxonomy-design.md` and execute it completely.
 
@@ -32,10 +59,16 @@ Document how this feature fits into the existing architecture. Include:
 - Where this feature lives in the system (which layer, which service)
 - What existing modules or services it integrates with or extends
 - New modules or services introduced (if any) and their boundaries
-- Data flow: how data moves through the system for this feature's key user journeys
+- Data flow: how data moves through the system for this feature's key user journeys (when UX Discovery captured the user flow, mirror its structure here so the system data flow and the user flow are aligned, not separately invented)
 - Architectural decisions made for this feature (with rationale)
 - How this conforms to the constraints in `CONSTITUTION.md` §3
 - A Mermaid flowchart showing the high-level component interactions
+- **UX-driven design decisions** *(conditional, only if UX Discovery completed)*: a dedicated section titled `## UX-Driven Design Decisions` with three subsections:
+  - **Component Reuse**: list each existing component composed by the chosen layout/flow/state selections, naming the component and the shipped feature whose pattern it inherits. This makes the inheritance auditable.
+  - **New Components**: list any new components this feature introduces (gaps where no existing component fit). For each, note the component's responsibility and which existing component family it should belong to going forward (so future features inherit *this* feature's additions).
+  - **Design Deviations**: copy each deviation entry from the PRD's User Experience section verbatim. For deviations recorded in DECISIONS.md (per Step 9a-pre), link to the ADR by ID. For deviations the user declined to record, note the deliberate skip with the user's reason.
+
+  Omit the entire `## UX-Driven Design Decisions` section if UX Discovery was skipped — do not leave an empty section.
 
 Use the tech stack from CONSTITUTION.md to ensure the architecture is specific to the actual stack, not generic.
 

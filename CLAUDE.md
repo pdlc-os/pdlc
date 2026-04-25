@@ -9,7 +9,7 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 | Phase | Command | Description |
 |-------|---------|-------------|
 | **Phase 0 — Initialization** | `/pdlc init` (alias: `/setup`) | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, **Interaction Mode** (Sketch/Socratic), Constitution, Intent, Memory Bank, Roadmap ideation |
-| **Phase 1 — Inception** | `/pdlc brainstorm` (alias: `/brainstorm`) | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case) → Define → Design (Bloom's Taxonomy) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
+| **Phase 1 — Inception** | `/pdlc brainstorm` (alias: `/brainstorm`) | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case + UX Discovery on UI features) → Define → Design (Bloom's Taxonomy) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
 | **Phase 2 — Construction** | `/pdlc build` (alias: `/build`) | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
 | **Phase 3 — Operation** | `/pdlc ship` (alias: `/ship`) | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
 | **Decision** | `/pdlc decide` (alias: `/decide`) | Record a decision with full team impact assessment (any phase) |

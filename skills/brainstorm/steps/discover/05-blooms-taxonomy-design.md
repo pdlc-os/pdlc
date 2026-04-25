@@ -23,8 +23,13 @@ If the user says `skip` at any point, stop questioning and proceed to document g
 
 Verify the user can articulate *how* the feature works end-to-end. Foundational facts (what services exist, what auth model is in place, what API patterns are standard) should already be inferable from CONSTITUTION.md and the PRD — read those, do not re-ask.
 
-Focus areas (pick the most relevant for this feature):
-- Walk me through the data flow for the primary user journey — what happens at each step, what gets read, what gets written, in what order?
+**Before asking, check if UX Discovery captured the user flow.** Read `[brainstorm-log]` → `## UX Discovery` → Q2 (User Flow). If a flow was captured (Q2 was not skipped), do not re-ask the user to walk through it — load the flow into working context and use it as the **input** to your mechanics questions instead. Frame Round 1 as building on the captured flow:
+
+> **Neo (Architect):** "Muse already walked through the user flow with you in UX Discovery — entry, primary path, branch points, exit. I'm taking that as given and asking about what happens *behind* it: which services get called at each step, what reads and writes happen, and what ordering matters."
+
+Focus areas (pick the most relevant for this feature; skip the data-flow question if UX Discovery already captured the user flow):
+- *(If UX Discovery skipped or absent)* Walk me through the data flow for the primary user journey — what happens at each step, what gets read, what gets written, in what order?
+- *(Always available)* For [step X in the captured flow], which services get called and in what order? What gets persisted, and at which step does the user-facing state become consistent with the persisted state?
 - What happens when the user does [key action] while [concurrent condition]?
 - How does this feature behave for a first-time user vs. a returning user?
 

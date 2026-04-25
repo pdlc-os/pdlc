@@ -32,6 +32,10 @@ Requiring a minimum of 10 findings forces the reviewer past surface-level concer
 
 Adversarial review asks "what's wrong with this idea?" (attitude-driven, critical). Edge case analysis asks "what paths are unhandled?" (method-driven, mechanical). Adversarial catches design flaws and assumption conflicts. Edge cases catch unhandled user flows, boundary conditions, and error paths. Running both ensures complementary coverage — neither subsumes the other.
 
+### UX Discovery is conditional, visual-required, and grounded in existing UI
+
+A separate UX questioning round exists (Step 4.5) instead of folding UX into Bloom's Taxonomy or Socratic Discovery for three reasons. **First**, UX-heavy features need a focused round — backend-only features should pay no UX-questioning cost, so the round is conditional on Step 1's "this feature has UI/UX elements" assessment. **Second**, UX answers are only meaningful when the user sees options; text-only "describe your layout preference" prompts produce vague answers and re-decisions during build. The visual companion is therefore required for this step (re-offered if previously declined; the round is skipped with a logged reason if unavailable). **Third**, every option presented in the round is grounded in the project's existing UI inventory — shipped UX patterns from OVERVIEW + episodes, the repo component library, design tokens, and prior DECISIONS.md UX entries — so new features inherit the established design language rather than introducing disjointed look-and-feel. Deviations are allowed but require explicit rationale captured in the brainstorm log, with substantive deviations flagged for DECISIONS.md.
+
 ### Brainstorm log is separate from STATE.md
 
 Different retention and scope. The brainstorm log (`docs/pdlc/brainstorm/`) is a content record for a single feature's discovery: ideas, Q&A, adversarial findings, edge case triage. STATE.md is a project-wide operational state: current phase, active task, party mode, append-only phase history. Keeping them separate lets brainstorm logs be archived without losing project state, and keeps STATE.md lean.

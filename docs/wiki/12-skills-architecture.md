@@ -54,6 +54,7 @@ skills/
           04-synthesis.md             <- external context + summary
           05-blooms-taxonomy-design.md <- 3-round design questioning (Neo), max 3 q/round + synthesis
           06-progressive-thinking.md  <- agent team meeting (Oracle facilitates)
+          07-ux-discovery.md          <- Muse leads, max 3 visual-first questions (conditional on UI/UX + visual companion)
       02-define.md                    <- PRD generation + approval
       03-design.md                    <- architecture, data model, API contracts
       04-plan.md                      <- Beads tasks + dependencies

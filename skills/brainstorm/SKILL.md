@@ -214,14 +214,15 @@ Update `docs/pdlc/memory/ROADMAP.md`: find the row matching `[feature-name]` and
 
 ## Lead Agent Assignments
 
-Inception has two lead agents with a handoff at the Define→Design boundary:
+Inception has three lead agents. Oracle and Neo are the primary leads with a handoff at the Define→Design boundary; Muse takes the lead for one conditional step (UX Discovery, Step 4.5) inside Oracle's Discover sub-phase.
 
 | Sub-phases | Lead Agent | Why |
 |------------|-----------|-----|
-| Discover + Define (Steps 0–8) | **Oracle** (Product Manager) | Problem framing, user discovery, requirements, PRD writing |
-| Design + Plan (Steps 9–19) | **Neo** (Architect) | Architecture, data model, API contracts, task decomposition |
+| Discover + Define (Steps 0–8, except Step 4.5) | **Oracle** (Product Manager) | Problem framing, user discovery, requirements, PRD writing |
+| Discover Step 4.5 — UX Discovery (conditional) | **Muse** (UX Designer) | UI/UX questioning grounded in the project's existing component library, shipped UX patterns, and design tokens. Runs inside Oracle's Discover sub-phase only when the feature has UI/UX elements **and** the visual companion is available. Skipped (with logged reason) otherwise. Control returns to Oracle for Synthesis (Steps 5–6). |
+| Design + Plan (Steps 9–19) | **Neo** (Architect) | Architecture, data model, API contracts, task decomposition. On UX-heavy features, Neo consumes UX Discovery outputs (selected layout / flow / state grid, design deviations, DECISIONS.md candidates) when generating design documents. |
 
-Read the lead agent's full persona from `agents/oracle.md` or `agents/neo.md` and embody their perspective throughout their sub-phases.
+Read each lead agent's full persona from `agents/oracle.md`, `agents/muse.md`, and `agents/neo.md` and embody their perspective during their respective steps.
 
 Before the first user-facing message, read `skills/formatting.md` for the visual patterns, then output a **Phase Transition Banner** for "BRAINSTORM" (with the feature name) followed by:
 
@@ -249,13 +250,23 @@ Read `skills/brainstorm/steps/02-define.md` and execute every step completely (S
 
 Return here when the PRD is approved and STATE.md shows `Design`.
 
-### — HANDOFF: Oracle → Neo —
+### — HANDOFF: Oracle → Neo (and Muse → Neo, if UX Discovery ran) —
 
-After the PRD is approved and before starting Design, output an **Agent Handoff** block (per `skills/formatting.md`) with:
+After the PRD is approved and before starting Design, output an **Agent Handoff** block (per `skills/formatting.md`).
+
+**Always include the Oracle → Neo exchange:**
 
 > **Oracle (Product Manager):** "The PRD is locked and approved — great work getting the requirements nailed down! I had a blast shaping this with you. I'm handing you over to Neo now — there's nobody better to turn these requirements into a rock-solid architecture. You're in excellent hands."
 >
 > **Neo (Architect):** "Thanks, Oracle. Hey — Neo here, your Architect. I've read the PRD and I'm excited to get my hands on this. Time to translate all those requirements into architecture, data models, and API contracts. Let's design something we'll be proud to build."
+
+**If the brainstorm log contains a `## UX Discovery` section that completed (not skipped), append a Muse → Neo exchange** to the same handoff block:
+
+> **Muse (UX Designer):** "Neo — before you start writing the architecture, the UX Discovery captured the layout, the user flow, and the state grid for this feature. I've also flagged the design deviations from our existing patterns and which ones I think are DECISIONS.md candidates. The full record is in the brainstorm log under `## UX Discovery`. The flow I documented should be your starting point for the data-flow conversation in Bloom's Round 1 — please don't re-ask the user to walk through it; build on it instead."
+>
+> **Neo (Architect):** "Got it, Muse. I'll pull the UX Discovery outputs into the design doc — component reuse, state coverage, and your deviation flags will land in the architecture write-up. I'll also scan for DECISIONS.md candidates before kicking off Bloom's Taxonomy and confirm each with the user."
+
+If UX Discovery was skipped (visual companion unavailable, user declined, non-UI feature), omit the Muse → Neo exchange — the Oracle → Neo block alone is correct.
 
 ### Sub-phase 3 — DESIGN (Lead: Neo)
 

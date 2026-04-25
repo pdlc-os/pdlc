@@ -140,6 +140,32 @@ Read `skills/brainstorm/steps/discover/03-edge-case-analysis.md` and execute it 
 
 Return here when the brainstorm log's `## Edge Case Analysis` section is populated.
 
+### Step 4.5 — UX Discovery (conditional, visual-required)
+
+Run only if **all** of these hold:
+
+1. The feature has UI/UX elements (Step 1's visual-companion assessment said yes).
+2. The user has not typed a termination command (`skip`, `done`, `generate`, `draft`, `create`).
+
+The step itself enforces the visual companion — it will re-offer the companion if it was declined at Step 1, and it will skip if the visual companion is unavailable or refused. Muse leads. Maximum 3 questions, all visual-first, every option grounded in the project's existing UI inventory (shipped patterns, component library, design tokens, prior DECISIONS.md UX entries) so this feature inherits the established look-and-feel rather than introducing a disjointed UX.
+
+**Before reading the step file, output the Oracle → Muse handoff** as an **Agent Handoff** block (per `skills/formatting.md`):
+
+> **Oracle (Product Manager):** "Edge cases are triaged. Before I write the discovery summary, this feature has UI/UX elements — I'm handing you over to Muse for a focused UX round. Muse will keep it tight (max 3 questions) and ground every option in the components and patterns we already have. Then she'll hand you back to me for the summary."
+>
+> **Muse (UX Designer):** "Thanks, Oracle. I'll be quick. I've already pulled the UI inventory — shipped UX patterns, your component library, design tokens, prior UX decisions. Every option I show will compose what we already have, so this feature inherits the design language instead of inventing a new one. If we deviate, we deviate on purpose and I'll capture why."
+
+Then read `skills/brainstorm/steps/discover/07-ux-discovery.md` and execute it completely.
+
+**When the step completes (either fully or as a logged skip), output the Muse → Oracle return handoff** before continuing:
+
+> **Muse (UX Designer):** "[If completed:] UX Discovery's done — selections captured, deviations flagged, DECISIONS.md candidates marked. All in the brainstorm log under `## UX Discovery`. Back to you, Oracle.
+> [If skipped:] UX Discovery skipped — [reason]. The skip is logged. Back to you, Oracle."
+>
+> **Oracle (Product Manager):** "Thanks, Muse. Picking up the discovery summary now."
+
+Return here when the brainstorm log has either a `## UX Discovery` section (completed) or a `## UX Discovery` section marked `Skipped:` (skipped with logged reason).
+
 ### Steps 5–6 — External context and discovery summary
 
 Read `skills/brainstorm/steps/discover/04-synthesis.md` and execute it completely.

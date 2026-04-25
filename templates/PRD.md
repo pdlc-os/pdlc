@@ -144,6 +144,67 @@ Then <!-- expected outcome -->
 
 ---
 
+## User Experience
+
+<!-- This section is auto-populated from the UX Discovery step in Discover (Step 4.5).
+     OMIT this entire section if UX Discovery did not run (non-UI feature, visual companion
+     unavailable, or user declined). When UX Discovery did run, copy the selections directly
+     from the brainstorm log's `## UX Discovery` section. Each subsection cites the existing
+     component or shipped pattern that the selection composes, so this feature visibly
+     inherits the established design language.
+
+     Example structure:
+       ### Layout
+       Selected: Option A — PageShell + Sidebar + Card grid (same pattern as /dashboard).
+       Visual companion fragment: docs/pdlc/brainstorm/screens/[feature]/q1-layout.html
+
+       ### User Flow
+       Selected: Option B — wizard pattern, mirrors /onboarding flow.
+       Steps: entry → step 1 (input) → step 2 (review) → confirmation → exit.
+       Visual companion fragment: docs/pdlc/brainstorm/screens/[feature]/q2-flow.html
+
+       ### State Coverage
+       Empty: EmptyState component, copy = "No items yet — add your first to get started."
+       Loading: Skeleton (3 rows).
+       Error: InlineError above the form, retry CTA.
+       Success: Toast top-right, auto-dismiss 4s.
+
+       ### Design Deviations
+       - Deviation: Drawer instead of Modal for confirmation step.
+         Established pattern: Modal-based confirmation (used in /settings/danger-zone).
+         Rationale: The user needs to keep scrolling the underlying list visible while confirming.
+         DECISIONS.md candidate: yes — introduces a new "non-blocking confirmation" interaction pattern. -->
+
+<!-- Auto-populated by Claude from the UX Discovery section of the brainstorm log.
+     Omit this section entirely if UX Discovery was skipped. -->
+
+### Layout
+
+<!-- Selected layout option, citing existing components composed and the shipped feature whose
+     pattern it inherits. Reference the visual companion fragment. -->
+
+### User Flow
+
+<!-- Selected flow, citing the shipped flow pattern it mirrors (or noting "single-screen — no flow"
+     if Q2 was skipped). List entry, primary path, branch points, and exit. -->
+
+### State Coverage
+
+<!-- Empty / Loading / Error / Success state selections. Each cites the existing state component
+     and includes the user-facing copy or behaviour. Narrow to relevant states only — do not pad
+     to four states if the feature genuinely has fewer. -->
+
+### Design Deviations
+
+<!-- For each deviation from existing patterns:
+     - Deviation: [what changed]
+     - Established pattern: [name + shipped feature]
+     - Rationale: [verbatim user reason]
+     - DECISIONS.md candidate: [yes / no]
+     If no deviations, write: "No deviations — every selection composes existing components and patterns." -->
+
+---
+
 ## Non-Functional Requirements
 
 <!-- Performance, security, accessibility, and operational requirements.
