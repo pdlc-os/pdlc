@@ -127,9 +127,9 @@ For every shipped change:
 4. **Tag** with `git tag vX.Y.Z`.
 5. **Push** main and the tag: `git push origin main && git push origin vX.Y.Z`.
 6. **GitHub release** via `gh release create vX.Y.Z --title "vX.Y.Z — <one-line summary>" --notes "$(cat <<'EOF' ... EOF)"`. Notes use markdown sections like Changes / Files updated / Upgrade note.
-7. **npmjs publish** runs via release automation (or `npm publish` manually if no automation is configured).
+7. **`npm publish`** — mandatory, do not skip. PDLC's npmjs distribution is one of the three supported install paths; skipping this step leaves public users on a stale version. The first publish requires `npm login` (one-time per machine); subsequent publishes are non-interactive. If `npm publish` is skipped on a release, npm shows non-contiguous versions — the missed version is not backfilled later, so users who installed during the gap stay on the prior version until the next published one.
 
-The pattern is: one feat/fix/refactor commit + one chore: release commit per release.
+The pattern is: one feat/fix/refactor commit + one chore: release commit per release. All seven steps run for every release; none are optional.
 
 ### Hard rules
 
