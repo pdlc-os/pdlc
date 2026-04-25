@@ -36,10 +36,12 @@ Then immediately tell the user:
 
 > "I'm going to ask follow-up questions on the most impactful of these. You can type `skip` at any time to stop and proceed to the discovery summary."
 
-Convert the **top 5 most impactful findings** (by risk to the feature succeeding) into targeted follow-up questions. Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`:
+Convert the **top 3 most impactful findings** (by risk to the feature succeeding) into targeted follow-up questions. Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`:
 
-- **Socratic mode:** Ask them **one at a time** — one question per message, wait for the answer, prefer multiple-choice where options exist. After each answer, update your internal model — if the answer resolves other findings, drop those follow-ups; if it surfaces new concerns, add them.
-- **Sketch mode:** Present all 5 follow-ups as a single batched block. For each, draft a proposed answer from the existing discovery record (Socratic answers, divergent standouts, CONSTITUTION/INTENT) where possible, citing the source. Mark any question with no context-backed draft as `(no context — your input needed)`. Wait for one response that addresses the batch. If the user's response closes fewer than all 5, loop once more with a smaller batched block for the remaining items.
+- **Socratic mode:** Ask them **one at a time** — one question per message, wait for the answer, prefer multiple-choice where options exist. After each answer, update your internal model — if the answer resolves other findings, drop those follow-ups; if it surfaces new concerns, fold them into the remaining 3 rather than adding more.
+- **Sketch mode:** Present all 3 follow-ups as a single batched block. For each, draft a proposed answer from the existing discovery record (Socratic answers, divergent standouts, CONSTITUTION/INTENT) where possible, citing the source. Mark any question with no context-backed draft as `(no context — your input needed)`. Wait for one response that addresses the batch. Do not run a second batched loop — if items remain unclear, record them as known risks in the brainstorm log and let downstream steps surface them.
+
+Cap is **3 follow-up questions total**, regardless of mode. The remaining 7+ findings stay visible in the findings block above and feed downstream steps (Edge Case Analysis, PRD known-risks section) without dedicated user prompts.
 
 Continue until the top findings are addressed or the user types any termination command (`skip`, `generate`, `done`, `draft`, `create`).
 

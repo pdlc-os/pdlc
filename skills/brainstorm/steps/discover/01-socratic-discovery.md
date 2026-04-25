@@ -10,16 +10,17 @@ Before starting, print this notice:
 
 ---
 
-## Rounds and minimums
+## Rounds and caps
 
-The interview covers 4 discovery sections in priority order. **Minimum 5 questions per round** in both modes.
+The interview covers 3 discovery sections in priority order. **Maximum 4 questions per round** in both modes — keep questioning tight; downstream steps (Adversarial Review, Edge Case Analysis, Bloom's Taxonomy) will catch what is not surfaced here.
 
 | Round | Section | Why it matters |
 | ----- | ------- | -------------- |
 | 1 | **Problem Statement** | What problem this feature actually solves |
 | 2 | **Future State / Key Capabilities** | What gets built |
 | 3 | **Acceptance Criteria** | How we know it works |
-| 4 | **Current State** | Context for the problem |
+
+Out-of-scope items, risks, and current-state context are no longer asked here — Adversarial Review surfaces unstated assumptions and risks, and Edge Case Analysis covers boundary conditions and unhandled paths. Cover them in those steps, not here.
 
 ### Round 1 canonical questions
 
@@ -27,10 +28,8 @@ The interview covers 4 discovery sections in priority order. **Minimum 5 questio
 2. "Who specifically will use this feature — and in what context? (Reference the personas in INTENT.md if relevant, or describe a more specific sub-group.)"
 3. "What does success look like for this feature? What specific metric moves, and by how much?"
 4. "What are the technical constraints or dependencies for this feature? (Think: existing services it must integrate with, database schemas it must respect, APIs it calls, performance requirements.)"
-5. "What is explicitly out of scope for this feature? (Name at least 2 things you are deliberately not doing here.)"
-6. "What are the key risks or assumptions we are making? (What could invalidate this feature or make it harder than expected?)"
 
-Rounds 2–4 follow the same pattern — draft at least 5 questions per round using the priority table above, adapted to what has already been answered.
+Rounds 2–3 follow the same pattern — draft up to 4 questions per round using the priority table above, adapted to what has already been answered. Drop any question that is already clearly answered from prior context.
 
 ---
 
@@ -48,11 +47,11 @@ Per `skills/interaction-mode.md`, gather context before each round:
 - Read any prior brainstorm log for this or adjacent features
 - Re-read `[divergent-standouts]` from the current brainstorm log if divergent ideation ran
 
-Draft a proposed answer for each of the 5+ questions in the round using that context. Cite the source for every draft (e.g. `Source: INTENT.md — Target User`). Mark any question with no context-backed draft as `(no context — your input needed)`.
+Draft a proposed answer for each of the up-to-4 questions in the round using that context. Cite the source for every draft (e.g. `Source: INTENT.md — Target User`). Mark any question with no context-backed draft as `(no context — your input needed)`.
 
-Present the full round as a single batched block per `skills/interaction-mode.md` Step B. Wait for one response. Parse acceptances, edits, and replacements back to specific questions. If 2–4 items surface substantive follow-ups, present them as one more batched block; if only one, ask inline.
+Present the full round as a single batched block per `skills/interaction-mode.md` Step B. Wait for one response. Parse acceptances, edits, and replacements back to specific questions. Do not run a follow-up batched block — if items remain unclear, capture the gap and let Adversarial Review or Edge Case Analysis address it.
 
-Proceed through all 4 rounds this way.
+Proceed through all 3 rounds this way.
 
 ---
 
@@ -108,31 +107,15 @@ Continue until you have a clear, concrete picture of the feature. Stop when you 
 **Q4:** What are the technical constraints or dependencies?
 **A:** [answer]
 
-**Q5:** What is explicitly out of scope?
-**A:** [answer]
-
-**Q6:** What are the key risks or assumptions?
-**A:** [answer]
-
-#### Round 1 Follow-ups
-**Q:** [question]
-**A:** [answer]
-[repeat for each follow-up asked]
-
 ### Round 2 — Future State / Key Capabilities
 **Q:** [question]
 **A:** [answer]
-[repeat for each question asked]
+[repeat for each question asked, max 4]
 
 ### Round 3 — Acceptance Criteria
 **Q:** [question]
 **A:** [answer]
-[repeat for each question asked]
-
-### Round 4 — Current State
-**Q:** [question]
-**A:** [answer]
-[repeat for each question asked]
+[repeat for each question asked, max 4]
 ````
 
 Update `last-updated` in the frontmatter to now.

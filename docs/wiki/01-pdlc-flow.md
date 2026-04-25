@@ -57,17 +57,17 @@ flowchart TD
     INCEPTION["/pdlc brainstorm feature-name"] --> BSYNC{Sync\ncheck} --> DIVG{Divergent\nideation?}
     DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation\nCluster → Standouts]
     DIVG -->|No| SOCRATIC
-    IDEAS --> SOCRATIC[DISCOVER\n4-round Socratic interview]
+    IDEAS --> SOCRATIC[DISCOVER\n3-round Socratic interview\nmax 4 questions/round]
     SOCRATIC --> PROGRESSIVE[Progressive Thinking\n🗣 Agent team meeting\n6 rounds · Oracle facilitates]
-    PROGRESSIVE --> ADVERSARIAL[Adversarial Review\n10+ findings · Top 5 follow-ups]
-    ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · path tracing]
+    PROGRESSIVE --> ADVERSARIAL[Adversarial Review\n10+ findings · Top 3 follow-ups]
+    ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · max 3 prompts\n1 triage + up to 2 follow-ups]
     EDGE --> DSUM[Discovery summary]
     DSUM --> DCONF{Human confirms?}
     DCONF -->|Adjust| DSUM
     DCONF -->|Confirmed| PRD[DEFINE\nAuto-generate PRD]
     PRD --> PRDGATE{Approve PRD?}
     PRDGATE -->|Revise| PRD
-    PRDGATE -->|Approved| BLOOMS[DESIGN\nBloom's Taxonomy questioning\n6 rounds · Neo leads]
+    PRDGATE -->|Approved| BLOOMS[DESIGN\nBloom's Taxonomy questioning\n3 rounds · max 3 questions/round\n+ synthesis · Neo leads]
     BLOOMS --> DESIGNDOCS[Generate design docs\nARCHITECTURE · data-model\napi-contracts]
     DESIGNDOCS --> DGATE{Approve design?}
     DGATE -->|Revise| DESIGNDOCS

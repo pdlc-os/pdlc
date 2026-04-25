@@ -47,13 +47,13 @@ After prerequisites, Oracle switches to **Opus model** for the rest of init.
 ```mermaid
 flowchart LR
     subgraph DISCOVER["Discover - Oracle"]
-        DIV[Divergent\nIdeation] --> SOC[Socratic\n4 rounds] --> PROG["Progressive\nThinking"] --> ADV[Adversarial\nReview] --> EDGE[Edge Case\nAnalysis] --> SUM["Summary"]
+        DIV[Divergent\nIdeation] --> SOC[Socratic\n3 rounds · max 4 q/round] --> PROG["Progressive\nThinking"] --> ADV[Adversarial\nReview\ntop 3 follow-ups] --> EDGE[Edge Case\nAnalysis\nmax 3 prompts] --> SUM["Summary"]
     end
     subgraph DEFINE["Define - Oracle"]
         PRD["Generate PRD"]
     end
     subgraph DESIGN["Design - Neo"]
-        BLOOM[Bloom Taxonomy\n6 rounds] --> DOCS["Architecture\nData Model\nAPI Contracts"]
+        BLOOM[Bloom Taxonomy\n3 rounds · max 3 q/round\n+ synthesis] --> DOCS["Architecture\nData Model\nAPI Contracts"]
     end
     subgraph PLAN_PHASE["Plan - Neo"]
         TASKS["Beads tasks\n+ dependencies"]
@@ -69,7 +69,9 @@ flowchart LR
 
 Starts with a **remote sync check** — if local main is behind origin, a team meeting assesses the remote changes before proceeding. Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
 
-All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's 6-round design questioning — respect the **Interaction Mode** (Sketch or Socratic) captured in CONSTITUTION.md §9 during init. Sketch mode drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, prior brainstorm logs, and the 1–2 most recent episode files, then presents each round as a single batched block for confirm/edit/replace. Socratic mode asks one question at a time. Both cover identical depth; only the cadence differs.
+All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's design questioning — respect the **Interaction Mode** (Sketch or Socratic) captured in CONSTITUTION.md §9 during init. Sketch mode drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, prior brainstorm logs, and the 1–2 most recent episode files, then presents each round as a single batched block for confirm/edit/replace. Socratic mode asks one question at a time. Both cover identical depth; only the cadence differs.
+
+**Question budget.** The brainstorm phase is intentionally bounded so the human is asked roughly 25–30 questions end-to-end (down from ~55–65 in earlier versions). Specifically: Socratic interview = 3 rounds × max 4 questions, Adversarial Review = top 3 follow-ups, Edge Case Analysis = max 3 prompts (1 triage + up to 2 follow-ups), Bloom's = 3 rounds × max 3 questions plus 1 synthesis check. Approval gates (PRD, design, plan) and the build-start prompt add a small fixed overhead. Anything not surfaced by these bounded prompts is captured downstream in the PRD's known-risks section or as flagged items in the design doc — the user can refine those during review without dedicated questioning.
 
 **Roadmap claim (multi-dev coordination).** Before any brainstorming, `/pdlc brainstorm` resolves which feature the dev owns via the Beads claim lock (labels `roadmap` + `F-NNN`). No argument → `bd ready` picks the next priority-planned feature and `bd claim` is atomic across all developers on the same repo, so two devs can never pick up the same feature. Explicit F-NNN → claim if free, resume if already held by you, refuse with a pointer if held by someone else. The claim survives session crashes: the session-start hook reads Beads and reconciles STATE.md against it, so a session that died between claim-and-checkpoint always resumes cleanly without orphaning the feature. `/pdlc release <F-NNN>` force-releases a stuck claim when needed and records an ADR.
 
@@ -77,9 +79,9 @@ All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case 
 
 | Sub-phase | Lead | Key activities | Output |
 |-----------|------|---------------|--------|
-| **Discover** | Oracle | Divergent ideation (optional), Socratic interview (4 rounds), **Progressive Thinking** (required agent meeting), Adversarial review, Edge case analysis | Confirmed discovery summary |
+| **Discover** | Oracle | Divergent ideation (optional), Socratic interview (3 rounds, max 4 q/round), **Progressive Thinking** (required agent meeting), Adversarial review (top 3 follow-ups), Edge case analysis (max 3 prompts) | Confirmed discovery summary |
 | **Define** | Oracle | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
-| **Design** | Neo | Bloom's Taxonomy questioning (6 rounds), Architecture + data model + API contracts | `docs/pdlc/design/[feature]/` |
+| **Design** | Neo | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts | `docs/pdlc/design/[feature]/` |
 | **Plan** | Neo | Beads tasks with dependencies, dependency graph | Plan file |
 
 ### Phase 2 -- Construction (`/pdlc build`)

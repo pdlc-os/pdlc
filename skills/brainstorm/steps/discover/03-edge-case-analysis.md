@@ -47,12 +47,16 @@ After the table, ask the user to triage each unhandled finding into one of three
 >
 > You can respond with a list like: `1=in scope, 2=out of scope, 3=risk, 4=in scope` or address them one at a time."
 
-Process the user's triage. For any item marked **in scope**, ask a targeted follow-up to capture enough detail to write an acceptance criterion (e.g. "What should happen when X? What's the expected system response?"). Do not ask follow-ups for out-of-scope or risk items.
+Process the user's triage. For items marked **in scope**, ask targeted follow-ups to capture enough detail to write an acceptance criterion (e.g. "What should happen when X? What's the expected system response?"). Do not ask follow-ups for out-of-scope or risk items.
+
+**Cap: 2 follow-up questions maximum**, prioritised by risk. If more than 2 items are in scope, pick the top 2 by "Risk if Unhandled" severity. For the remainder, draft a placeholder acceptance criterion in the PRD using the feature's existing context — the user can refine those during PRD review without dedicated questioning here.
+
+Combined with the triage prompt, this step asks **at most 3 user-facing questions**: 1 triage block + up to 2 follow-ups.
 
 Apply `[interaction-mode]` from `skills/interaction-mode.md`:
 
-- **Socratic mode:** Ask one follow-up per message, sequentially, until every in-scope item has a captured answer.
-- **Sketch mode:** Present all in-scope follow-ups as a single batched block. For each, draft a proposed acceptance criterion from the feature's existing Socratic answers and discovery context (cite the source). Wait for one response, then loop once more with a smaller batched block if any remain unclear.
+- **Socratic mode:** Ask the up-to-2 follow-ups one per message, sequentially.
+- **Sketch mode:** Present the up-to-2 follow-ups as a single batched block. For each, draft a proposed acceptance criterion from the feature's existing Socratic answers and discovery context (cite the source). Wait for one response. Do not run a second batched loop — record any remaining ambiguity as a placeholder for PRD review.
 
 Store the triage decisions as `[edge-case-triage]` — they feed directly into the PRD's Requirements, Acceptance Criteria, and Known Risks sections.
 

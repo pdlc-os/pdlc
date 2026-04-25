@@ -1,96 +1,66 @@
 # Bloom's Taxonomy Design Questioning
 
-Neo leads this round. The goal is to flesh out the architecture, data model, and API contracts through structured questioning that progresses from foundational understanding to creative synthesis — using Bloom's revised taxonomy as the framework.
+Neo leads this round. The goal is to flesh out the architecture, data model, and API contracts through structured questioning that progresses from mechanics → tech-stack mapping → trade-offs and judgments — using a condensed Bloom's revised taxonomy as the framework. A final synthesis step closes the loop.
 
 **Before starting, inform the user:**
 
-> **Neo (Architect):** "Before I draft the design documents, I'd like to walk through some architecture questions with you. These are structured from foundational → analytical → creative so we build up a shared understanding layer by layer. This ensures the design docs reflect your actual intent, not my assumptions.
+> **Neo (Architect):** "Before I draft the design documents, I'd like to walk through a few architecture questions with you. We'll do 3 short rounds — mechanics, tech-stack mapping, and trade-offs — followed by a synthesis check. This ensures the design docs reflect your actual intent, not my assumptions.
 >
-> There are 6 rounds — we'll move quickly through the ones you've already answered during discovery and spend more time where the design needs sharpening."
+> Each round is at most 3 questions, and I'll skip anything that's already clear from the PRD."
 
-Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`. The round structure, focus areas, and minimum question counts below are identical in both modes — only the delivery cadence differs.
+Read `skills/interaction-mode.md` and apply the active `[interaction-mode]`. The round structure, focus areas, and per-round caps below are identical in both modes — only the delivery cadence differs.
 
-- **Socratic mode:** Ask questions one at a time, wait for each answer, adapt follow-ups based on what the user says.
-- **Sketch mode:** For each round, gather context (CONSTITUTION.md tech stack, INTENT.md, the approved PRD, the feature's existing Socratic answers, and the 1–2 most recent episode files' architecture docs). Draft a proposed answer for each question in the round with a cited source. Present the full round as a single batched block per `skills/interaction-mode.md` Step B. Wait for one response, parse acceptances/edits/replacements, then move to the next round.
+- **Socratic mode:** Ask questions one at a time, wait for each answer.
+- **Sketch mode:** For each round, gather context (CONSTITUTION.md tech stack, INTENT.md, the approved PRD, the feature's existing Socratic answers, and the 1–2 most recent episode files' architecture docs). Draft a proposed answer for each question in the round with a cited source. Present the full round as a single batched block per `skills/interaction-mode.md` Step B. Wait for one response, parse acceptances/edits/replacements, then move to the next round. Do not run a follow-up batched block within a round — capture any remaining ambiguity as a flagged item in the design doc rather than a new question.
 
 If the user says `skip` at any point, stop questioning and proceed to document generation with whatever has been collected.
 
----
-
-## Round 1 — Remember (Foundational facts)
-
-Establish the factual baseline. These may already be answered from discovery — if so, confirm and move on quickly.
-
-Focus areas:
-- What existing systems/services does this feature interact with?
-- What data entities already exist that this feature will use?
-- What authentication/authorization model is in place?
-- What are the current API patterns (REST/GraphQL, versioning, error format)?
-
-Ask 2–4 questions. Skip any that were clearly answered during Discover.
+**Total cap: 3 rounds × 3 questions = 9 questions maximum**, plus 1 synthesis validation question. Skip any question whose answer is already clear from the PRD or Socratic discovery.
 
 ---
 
-## Round 2 — Understand (Explain the mechanics)
+## Round 1 — Mechanics (Understand how it works)
 
-Verify the user can articulate *how* the feature works, not just *what* it does.
+Verify the user can articulate *how* the feature works end-to-end. Foundational facts (what services exist, what auth model is in place, what API patterns are standard) should already be inferable from CONSTITUTION.md and the PRD — read those, do not re-ask.
 
-Focus areas:
-- Walk me through the data flow for the primary user journey — what happens at each step?
-- How does the user's action translate into backend operations? What gets read, what gets written, in what order?
+Focus areas (pick the most relevant for this feature):
+- Walk me through the data flow for the primary user journey — what happens at each step, what gets read, what gets written, in what order?
 - What happens when the user does [key action] while [concurrent condition]?
 - How does this feature behave for a first-time user vs. a returning user?
 
-Ask 3–5 questions. Probe for specifics where the PRD was abstract.
+Ask up to 3 questions. Probe for specifics where the PRD was abstract.
 
 ---
 
-## Round 3 — Apply (Map to the tech stack)
+## Round 2 — Apply (Map to the tech stack)
 
 Ground the feature in the actual technology choices from CONSTITUTION.md.
 
-Focus areas:
-- Given your stack ([tech stack from Constitution]), which layer handles [key responsibility]?
-- Where does [specific business logic] live — client, API, service layer, database trigger?
+Focus areas (pick the most relevant for this feature):
+- Given your stack ([tech stack from Constitution]), which layer handles [key responsibility] — client, API, service layer, or database?
 - What existing [framework/library] patterns should this feature follow? (e.g., "Do we use the same middleware chain as the existing auth endpoints?")
 - Are there existing utilities, helpers, or base classes this should extend vs. build from scratch?
 
-Ask 2–4 questions. The goal is to prevent the design docs from being generic — they should be specific to the stack.
+Ask up to 3 questions. The goal is to prevent the design docs from being generic — they should be specific to the stack.
 
 ---
 
-## Round 4 — Analyze (Decompose and compare)
+## Round 3 — Trade-offs and Judgments (Decompose, compare, decide)
 
-Break the feature apart and examine trade-offs.
+Break the feature apart, examine trade-offs, and make the judgment calls that turn the design doc into an opinionated artifact rather than a list of options. This round merges the former Analyze and Evaluate rounds — surface the key trade-off and ask the user to decide on it.
 
-Focus areas:
-- What are the natural component boundaries? Where would you draw the line between [module A] and [module B]?
-- Compare: should this be [approach A] or [approach B]? (Present concrete alternatives based on what you've learned so far.)
-- What are the performance-sensitive paths? Where would high load or large data sets cause problems?
-- What are the failure modes? What happens when [dependency X] is down?
-- Where are the data consistency risks? (e.g., "If step 2 fails after step 1 succeeds, what state is the user left in?")
+Focus areas (pick the most relevant for this feature):
+- What are the natural component boundaries, and where are the performance-sensitive paths or failure modes? (Pick the highest-stakes one and ask about it concretely — e.g. "If [dependency X] is down, what's the expected behaviour?")
+- Compare: should this be [approach A] or [approach B]? Which do you prefer and why?
+- What's more important for this feature: [speed vs. correctness] / [simplicity vs. flexibility] / [consistency vs. availability]? If we had to cut one aspect to ship faster, what would you sacrifice?
 
-Ask 3–5 questions. This is where the most design insight comes from — push for concrete answers.
+Ask up to 3 questions. Record each judgment — these become architectural decisions in the design docs and potentially in DECISIONS.md.
 
 ---
 
-## Round 5 — Evaluate (Judge and prioritize)
+## Synthesis — Neo proposes, user validates
 
-Ask the user to make design judgment calls.
-
-Focus areas:
-- Given [trade-off from Round 4], which approach do you prefer and why?
-- What's more important for this feature: [speed vs. correctness], [simplicity vs. flexibility], [consistency vs. availability]?
-- If we had to cut one aspect of this design to ship faster, what would you sacrifice?
-- Are there any parts of this design where "good enough" is acceptable vs. where it needs to be exactly right?
-
-Ask 2–3 questions. Record each judgment — these become architectural decisions in the design docs and potentially in DECISIONS.md.
-
----
-
-## Round 6 — Create (Synthesize the design direction)
-
-Collaborative synthesis — Neo proposes, user validates.
+Not a question round — this is the final alignment check before document generation. **1 validation question total.**
 
 > **Neo (Architect):** "Based on everything we've discussed, here's how I see the architecture shaping up:"
 
@@ -98,12 +68,12 @@ Present a brief verbal sketch of:
 - The component structure (which modules, how they connect)
 - The data model (key entities and their relationships)
 - The API surface (main endpoints, request/response shapes)
-- The key design decisions (from Round 5 judgments)
+- The key design decisions (from Round 3 judgments)
 
 Ask:
 > "Does this match your mental model? Anything I'm misunderstanding or that you'd push back on before I write it up formally?"
 
-Iterate on any pushback. This is the final alignment check before document generation.
+Iterate on any pushback inline (no new round of questions — this is the synthesis closing).
 
 ---
 
@@ -114,23 +84,17 @@ After all rounds (or when the user skips), append to `[brainstorm-log]` under a 
 ```markdown
 ## Design Discovery (Bloom's Taxonomy)
 
-### Round 1 — Remember
+### Round 1 — Mechanics
 [Q&A pairs]
 
-### Round 2 — Understand
+### Round 2 — Apply
 [Q&A pairs]
 
-### Round 3 — Apply
+### Round 3 — Trade-offs and Judgments
 [Q&A pairs]
 
-### Round 4 — Analyze
-[Q&A pairs]
-
-### Round 5 — Evaluate
-[Q&A pairs]
-
-### Round 6 — Create
-[Neo's synthesis + user's validation/pushback]
+### Synthesis
+[Neo's design sketch + user's validation/pushback]
 ```
 
 ---

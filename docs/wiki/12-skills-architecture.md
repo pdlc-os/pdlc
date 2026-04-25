@@ -48,11 +48,11 @@ skills/
       00-divergent-ideation.md        <- optional: 100+ ideas
       01-discover.md                  <- orchestrator for discovery
         discover/
-          01-socratic-discovery.md    <- 4-round interview
-          02-adversarial-review.md    <- 10+ findings, top 5 follow-ups
-          03-edge-case-analysis.md    <- 9-category path tracing
+          01-socratic-discovery.md    <- 3-round interview, max 4 q/round
+          02-adversarial-review.md    <- 10+ findings, top 3 follow-ups
+          03-edge-case-analysis.md    <- 9-category path tracing, max 3 user prompts
           04-synthesis.md             <- external context + summary
-          05-blooms-taxonomy-design.md <- 6-round design questioning (Neo)
+          05-blooms-taxonomy-design.md <- 3-round design questioning (Neo), max 3 q/round + synthesis
           06-progressive-thinking.md  <- agent team meeting (Oracle facilitates)
       02-define.md                    <- PRD generation + approval
       03-design.md                    <- architecture, data model, API contracts

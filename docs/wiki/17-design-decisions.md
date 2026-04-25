@@ -24,9 +24,9 @@ Each mode trades off independence, speed, and fidelity:
 
 Users pick once per session. The choice is stored in STATE.md and never asked again.
 
-### Adversarial review requires 10+ findings
+### Adversarial review requires 10+ findings, but only top 3 become user follow-ups
 
-Requiring a minimum forces the reviewer past surface-level concerns into root causes — assumptions, scope leaks, dependency blindspots. If 10 issues aren't found, the feature concept is probably solid. If they're found easily, there are serious blindspots to address before building.
+Requiring a minimum of 10 findings forces the reviewer past surface-level concerns into root causes — assumptions, scope leaks, dependency blindspots. If 10 issues aren't found, the feature concept is probably solid. If they're found easily, there are serious blindspots to address before building. The full 10+ findings stay visible in the brainstorm log and feed downstream steps (Edge Case Analysis, PRD known-risks section); only the top 3 by risk become targeted user-facing follow-ups, keeping the prompt count tight without losing analytical depth.
 
 ### Edge case analysis is method-driven, orthogonal to adversarial review
 
