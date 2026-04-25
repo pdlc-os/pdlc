@@ -54,9 +54,23 @@ what the task/problem is, any relevant constraints from CONSTITUTION.md or the P
 [Include verbatim responses from agents who already spoke this round, labelled by name.
 Omit this section on the first round.]
 
+## Your Previous Position
+[Subagent and Solo modes only — required from cross-talk Round 2 onward.
+Sub-agents have no memory across spawns, so the primary agent must paste
+the agent's own prior-round response here verbatim, labelled by round.
+Omit in Agent Teams mode (the agent retains its own context). Omit on Round 1.]
+
+Example for Round 3:
+"Round 1 (your initial position): [verbatim]
+ Round 2 (your response after seeing [Other]'s point): [verbatim]"
+
 ## Your Contribution
 [Specific question this agent should address — e.g. "What architectural risks do you see?"
-or "React to what Phantom flagged about the auth surface."]
+or "React to what Phantom flagged about the auth surface."
+On cross-talk Round 2+, frame the question as a convergence check:
+"Given [Other]'s response and your own prior position above, has anything in
+your view changed? If yes, state your updated position. If no, explain
+specifically why their argument does not move you."]
 
 ## Guidelines
 - Respond as [Name] with the genuine expertise of your role.
@@ -87,6 +101,28 @@ To run a cross-talk round: spawn only the agents whose perspectives interact. Pa
 3. **Positions locked, no movement** — cross-talk is unproductive. Stop early even if rounds remain; further rounds will not change the outcome.
 
 If consensus is not reached after 3 rounds (or earlier per (3)), surface the disagreement in the MOM as an open question for the human. Cross-talk is a bounded attempt at agent-side resolution — it is not a substitute for human decisioning when agents fundamentally disagree.
+
+### How cross-talk runs in each spawn mode
+
+The mechanics differ because the modes have different communication channels.
+
+**Agent Teams mode (default).** Agents have their own context windows and can address each other directly in the shared meeting. The lead agent (Neo or the meeting convener) frames each round, hears the back-and-forth in real time, and decides after each round whether to call another. Each agent retains its own running context across rounds — no need to re-pass prior positions. This is the highest-fidelity mode and the one cross-talk was originally designed for.
+
+**Subagent mode.** Sub-agents cannot talk to each other — they only report back to the primary agent. Each "cross-talk round" is therefore a fresh re-spawn with state carried in the prompt:
+
+1. **Round 1**: primary spawns each participant in parallel using the standard template. `## What Others Said` is omitted. `## Your Previous Position` is omitted.
+2. **Identify cross-talk participants**: primary inspects Round 1 responses and selects the agents whose findings contradict or interconnect.
+3. **Cross-talk Round 2**: primary re-spawns each selected agent. The prompt now includes:
+   - `## What Others Said` — the verbatim Round 1 response from the relevant counterpart agent(s).
+   - `## Your Previous Position` — the agent's **own** Round 1 response, verbatim. (Sub-agents have no cross-spawn memory; without this they cannot detect their own evolution or hold a position firmly.)
+   - `## Your Contribution` — framed as a convergence check (see template).
+4. **Decide after Round 2** using the consensus / moved / locked check above. If proceeding, run Round 3.
+5. **Cross-talk Round 3**: re-spawn again. `## Your Previous Position` now includes **both** Round 1 and Round 2 verbatim, labelled by round, so the agent sees its own trajectory. `## What Others Said` is updated with the counterpart's Round 2 response.
+6. The primary holds all positions across rounds and detects lock by string-comparing the agent's response against its prior round (semantic drift is fine — what matters is whether the position changed substantively or restated).
+
+Each cross-talk round in subagent mode = N additional Agent calls where N is the number of participants in that cross-talk. Early exit therefore matters more here than in Agent Teams mode — running 3 rounds with 4 participants is 12 spawn calls.
+
+**Solo mode.** A single LLM roleplays all agents in one response. Cross-talk is simulated within the same response — the orchestrator narrates Round 1, then writes each agent's reaction to the others, repeating up to 3 times. Each "round" is a section of the same generation, not a new call. `## Your Previous Position` is implicit (the model sees the whole conversation). Lock detection is by inspection: if Round N's positions are essentially restatements of Round N-1, stop. Solo is the lowest-fidelity mode — risk of false consensus since one model maintains every persona.
 
 ---
 
