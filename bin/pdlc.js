@@ -1045,29 +1045,239 @@ async function postinstall() {
   headlessFollowup(local);
 }
 
+/**
+ * Detect whether this PDLC install is a git clone (GitHub-direct flow)
+ * vs. an npm-managed install. Returns true if PLUGIN_ROOT/.git exists as a
+ * directory. The clone path supports `pdlc upgrade` via `git pull`; the
+ * npm path supports it via `npm install -g @pdlc-os/pdlc@latest`.
+ */
+function isCloneInstall() {
+  try {
+    return fs.statSync(path.join(PLUGIN_ROOT, '.git')).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+const INSTALL_META_PATH = path.join(PLUGIN_ROOT, '.install-meta.json');
+
+function readInstallMeta() {
+  return readJson(INSTALL_META_PATH) || {};
+}
+
+function writeInstallMeta(meta) {
+  if (Object.keys(meta).length === 0) {
+    try { fs.unlinkSync(INSTALL_META_PATH); } catch {}
+    return;
+  }
+  writeJson(INSTALL_META_PATH, meta);
+}
+
+function describeTag(sha) {
+  try {
+    return execSync(`git describe --tags --exact-match ${sha}`, {
+      cwd: PLUGIN_ROOT, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clone-install upgrade flow. Returns `true` if the upgrade applied changes
+ * and the caller should continue with the post-upgrade refresh (install
+ * re-run, Beads/Dolt prompts, template migration). Returns `false` if the
+ * upgrade was a no-op, refused, dry-run, or failed.
+ */
+async function upgradeViaGit(opts) {
+  const meta = readInstallMeta();
+
+  // Handle --unpin
+  if (opts.unpin) {
+    if (meta.pinned_to) {
+      const wasPinnedTo = meta.pinned_to;
+      delete meta.pinned_to;
+      writeInstallMeta(meta);
+      log(`  Pin cleared (was: ${wasPinnedTo}).`);
+    } else {
+      log(`  Not currently pinned. Nothing to unpin.`);
+    }
+    if (!opts.to) {
+      // --unpin alone: don't auto-pull. User can run `pdlc upgrade` next.
+      return false;
+    }
+  }
+
+  // Refuse silent upgrade if pinned and no --to / --unpin
+  if (meta.pinned_to && !opts.to && !opts.unpin) {
+    log(`\n  PDLC is pinned to ${meta.pinned_to}.`);
+    log(`    To unpin and pull latest main:    pdlc upgrade --unpin`);
+    log(`    To pin to a different version:    pdlc upgrade --to vX.Y.Z`);
+    return false;
+  }
+
+  // Fetch
+  try {
+    log(`  Fetching from origin...`);
+    execSync('git fetch origin --tags --prune', {
+      cwd: PLUGIN_ROOT, stdio: ['ignore', 'pipe', 'pipe'],
+    });
+  } catch (err) {
+    log(`\n  git fetch failed at ${PLUGIN_ROOT}:`);
+    log(`    ${err.message.trim().split('\n').slice(-1)[0]}`);
+    log(`  Check network access to GitHub and try again.`);
+    return false;
+  }
+
+  // Compute target ref + summary
+  const targetRef = opts.to || 'origin/main';
+  let currentSHA, targetSHA;
+  try {
+    currentSHA = execSync('git rev-parse HEAD', {
+      cwd: PLUGIN_ROOT, encoding: 'utf8',
+    }).trim();
+    targetSHA = execSync(`git rev-parse ${targetRef}`, {
+      cwd: PLUGIN_ROOT, encoding: 'utf8',
+    }).trim();
+  } catch (err) {
+    log(`\n  Could not resolve ref '${targetRef}': ${err.message.trim()}`);
+    return false;
+  }
+
+  if (currentSHA === targetSHA) {
+    const tag = describeTag(currentSHA) || currentSHA.slice(0, 7);
+    log(`  PDLC        : already at ${tag}. Nothing to do.`);
+    return false;
+  }
+
+  // Count commits between current and target, regardless of direction
+  // (forward = upgrade to newer; backward = pin to older).
+  let commitsBetween = '?';
+  let direction = '';
+  try {
+    const forward = execSync(
+      `git rev-list --count ${currentSHA}..${targetSHA}`,
+      { cwd: PLUGIN_ROOT, encoding: 'utf8' }
+    ).trim();
+    const backward = execSync(
+      `git rev-list --count ${targetSHA}..${currentSHA}`,
+      { cwd: PLUGIN_ROOT, encoding: 'utf8' }
+    ).trim();
+    if (parseInt(forward, 10) > 0 && parseInt(backward, 10) === 0) {
+      commitsBetween = forward;
+      direction = ' forward';
+    } else if (parseInt(backward, 10) > 0 && parseInt(forward, 10) === 0) {
+      commitsBetween = backward;
+      direction = ' backward';
+    } else {
+      // Diverged — both branches have unique commits
+      commitsBetween = `${backward} behind, ${forward} ahead`;
+      direction = '';
+    }
+  } catch {}
+  const currentLabel = describeTag(currentSHA) || currentSHA.slice(0, 7);
+  const targetLabel = describeTag(targetSHA) || targetSHA.slice(0, 7);
+  log(`  ${currentLabel} -> ${targetLabel} (${commitsBetween}${direction === '' ? '' : ` commit${commitsBetween === '1' ? '' : 's'}${direction}`})`);
+
+  if (opts.check) {
+    log(`  --check mode: no changes applied.`);
+    return false;
+  }
+
+  // Refusals (skipped if --force OR --to specified)
+  if (!opts.force && !opts.to) {
+    const status = execSync('git status --porcelain', {
+      cwd: PLUGIN_ROOT, encoding: 'utf8',
+    });
+    if (status.trim()) {
+      log(`\n  Working tree at ${PLUGIN_ROOT} has uncommitted changes:`);
+      for (const line of status.trim().split('\n').slice(0, 10)) {
+        log(`      ${line}`);
+      }
+      log(`  Commit, stash, or run \`pdlc upgrade --force\` to discard them.`);
+      return false;
+    }
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: PLUGIN_ROOT, encoding: 'utf8',
+    }).trim();
+    if (branch !== 'main') {
+      log(`\n  Currently on branch '${branch}', not 'main'.`);
+      log(`  Run \`git -C ${PLUGIN_ROOT} checkout main\` first, or use \`pdlc upgrade --to <ref>\`.`);
+      return false;
+    }
+  }
+
+  // Apply
+  try {
+    if (opts.to) {
+      log(`  Checking out ${opts.to}...`);
+      execSync(`git checkout ${opts.to}`, {
+        cwd: PLUGIN_ROOT, stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      const updatedMeta = readInstallMeta();
+      updatedMeta.pinned_to = opts.to;
+      writeInstallMeta(updatedMeta);
+      log(`  Pinned to ${opts.to}. Future \`pdlc upgrade\` will refuse silent unpin.`);
+    } else if (opts.force) {
+      log(`  Force-resetting to origin/main (discarding local changes)...`);
+      execSync('git reset --hard origin/main', {
+        cwd: PLUGIN_ROOT, stdio: ['ignore', 'pipe', 'pipe'],
+      });
+    } else {
+      log(`  Pulling latest main...`);
+      execSync('git pull --ff-only origin main', {
+        cwd: PLUGIN_ROOT, stdio: ['ignore', 'pipe', 'pipe'],
+      });
+    }
+  } catch (err) {
+    log(`\n  Upgrade failed: ${err.message.trim().split('\n').slice(-1)[0]}`);
+    return false;
+  }
+
+  return true;
+}
+
 async function upgrade(opts = {}) {
   const local = opts.local || false;
   const scope = local ? 'locally' : 'globally';
   banner('Upgrading', VERSION);
 
-  log(`  Upgrading PDLC ${scope}...`);
+  // Branch on install mode
+  if (isCloneInstall()) {
+    log(`  Upgrading PDLC from clone at ${PLUGIN_ROOT}...`);
+    const applied = await upgradeViaGit(opts);
+    if (!applied) {
+      log('');
+      return;
+    }
+  } else {
+    // Validate flags that only make sense for clone installs
+    if (opts.to || opts.force || opts.unpin || opts.check) {
+      log(`  The --to / --force / --unpin / --check flags require a clone install.`);
+      log(`    This PDLC was installed via npm at ${PLUGIN_ROOT}.`);
+      log(`    For npm installs, use:  npm install -g @pdlc-os/pdlc@<version>`);
+      return;
+    }
 
-  // Upgrade PDLC
-  const pdlcCmd = local
-    ? 'npm update @pdlc-os/pdlc'
-    : 'npm install -g @pdlc-os/pdlc@latest';
+    log(`  Upgrading PDLC ${scope}...`);
 
-  try {
-    execSync(pdlcCmd, { stdio: 'inherit' });
-  } catch (err) {
-    log(`\n  PDLC upgrade failed. You can upgrade manually:\n  ${pdlcCmd}`);
-    return;
+    const pdlcCmd = local
+      ? 'npm update @pdlc-os/pdlc'
+      : 'npm install -g @pdlc-os/pdlc@latest';
+
+    try {
+      execSync(pdlcCmd, { stdio: 'inherit' });
+    } catch (err) {
+      log(`\n  PDLC upgrade failed. You can upgrade manually:\n  ${pdlcCmd}`);
+      return;
+    }
   }
 
-  // Re-read version after upgrade (the binary on disk may have changed,
-  // but we're still running the old one — read the new version from package.json)
+  // Re-read version after upgrade. Clear the require cache so we read the
+  // new package.json on disk, not the memoized old one from session start.
   let newVersion;
   try {
+    delete require.cache[require.resolve(path.join(PLUGIN_ROOT, 'package.json'))];
     newVersion = require(path.join(PLUGIN_ROOT, 'package.json')).version;
   } catch {
     newVersion = 'unknown';
@@ -1343,9 +1553,18 @@ async function main() {
     case 'uninstall':
       await uninstall({ local: hasLocal });
       break;
-    case 'upgrade':
-      await upgrade({ local: hasLocal });
+    case 'upgrade': {
+      const toIdx = rest.indexOf('--to');
+      const toRef = toIdx >= 0 ? rest[toIdx + 1] : null;
+      await upgrade({
+        local: hasLocal,
+        check: rest.includes('--check'),
+        force: rest.includes('--force'),
+        unpin: rest.includes('--unpin'),
+        to: toRef,
+      });
       break;
+    }
     case 'status':
       status();
       break;

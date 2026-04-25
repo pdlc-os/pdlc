@@ -38,7 +38,8 @@
     "hooks/",
     "scripts/",
     "templates/",
-    "bin/"
+    "bin/",
+    "install.sh"
   ],
   "publishConfig": {
     "access": "public"

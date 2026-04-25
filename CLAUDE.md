@@ -89,3 +89,50 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 - **Episode history:** `docs/pdlc/memory/episodes/index.md`
 - **Archived feature artifacts:** `docs/pdlc/archive/`
 - **State reconciliation protocol:** `skills/state-reconciliation.md`
+
+---
+
+## Release process (maintainer reference)
+
+This section documents how releases of PDLC itself are cut. Not relevant to consumers using PDLC in their own projects.
+
+### Three install paths, all maintained
+
+Every release must keep all three paths working. Feature work on `bin/pdlc.js`, `install.sh`, skills, and docs moves in lockstep.
+
+1. **npmjs (default for public users):**
+   ```bash
+   npm install -g @pdlc-os/pdlc
+   ```
+2. **GitHub via npm (corporate-friendly fallback):**
+   ```bash
+   npm install -g github:pdlc-os/pdlc
+   ```
+3. **Local clone (fully air-gapped — clones over HTTPS, no registry):**
+   ```bash
+   git clone https://github.com/pdlc-os/pdlc.git ~/.pdlc && bash ~/.pdlc/install.sh
+   ```
+   Subsequent updates use `pdlc upgrade` — no need to re-run the one-liner.
+
+### Release flow
+
+For every shipped change:
+
+1. **Commit the work** as `feat:` / `fix:` / `refactor:` / `docs:` / `chore:` (Conventional Commits) with a multi-paragraph body explaining the *why*, ending with the trailer `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`.
+2. **Bump `package.json` version** per semver:
+   - `patch` (e.g. 2.13.0 → 2.13.1) — bug fixes, doc-only changes, minor tweaks
+   - `minor` (e.g. 2.13.0 → 2.14.0) — new features (new commands, new skills, new agent capabilities)
+   - `major` (e.g. 2.13.0 → 3.0.0) — breaking changes to user-facing behavior
+3. **Commit the bump** as `chore: release vX.Y.Z` (with the same Co-Authored-By trailer).
+4. **Tag** with `git tag vX.Y.Z`.
+5. **Push** main and the tag: `git push origin main && git push origin vX.Y.Z`.
+6. **GitHub release** via `gh release create vX.Y.Z --title "vX.Y.Z — <one-line summary>" --notes "$(cat <<'EOF' ... EOF)"`. Notes use markdown sections like Changes / Files updated / Upgrade note.
+7. **npmjs publish** runs via release automation (or `npm publish` manually if no automation is configured).
+
+The pattern is: one feat/fix/refactor commit + one chore: release commit per release.
+
+### Hard rules
+
+- **Never skip hooks.** `--no-verify`, `--no-gpg-sign`, etc. are forbidden unless the user explicitly authorizes for a specific commit.
+- **Never run destructive git operations** (`push --force`, `reset --hard`, `branch -D`, `checkout .`) without explicit authorization.
+- **Doc parity:** any change to skills, agents, hooks, or wiki must update every doc surface that references the changed thing — skill files, `docs/wiki/*`, `README.md`, `CLAUDE.md`, and any flow diagrams — in the same commit.

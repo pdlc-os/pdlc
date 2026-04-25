@@ -3,3 +3,4 @@ node_modules/
 *.log
 /tmp/pdlc-*
 .claude/settings.local.json
+.install-meta.json

@@ -20,84 +20,50 @@ PDLC brings together TDD discipline, systematic debugging, a visual brainstormin
 
 ## Installation
 
-PDLC can be installed **locally** (per-repo, recommended for teams) or **globally** (all projects on your machine). Both Beads (the task manager) and PDLC itself are installed with the same scope — you'll be prompted to approve Beads installation automatically.
+PDLC can be installed three ways. Pick the first one your network allows — they all end at the same place: PDLC + the `superclaude` shortcut on your PATH, hooks registered with Claude Code, Beads/Dolt prompts on your way to setup.
 
-### Local install (recommended)
+### Option 1 — From npmjs (recommended for most users)
 
-Installs PDLC and Beads as devDependencies inside your repo. Hooks are written to `.claude/settings.local.json` so they only apply to this project.
+If your network can reach npmjs.com, this is the simplest path.
+
+**Global** (one install, used across all projects):
+
+```bash
+npm install -g @pdlc-os/pdlc
+```
+
+**Local** (per-repo dev dependency — for teams that want every developer to install PDLC the same way via the project's `package.json`):
 
 ```bash
 cd your-repo
 npm install --save-dev @pdlc-os/pdlc
 ```
 
-The postinstall script auto-detects local context, registers hooks in `.claude/settings.local.json`, and prompts you to install Beads locally too.
+In either case, the postinstall scaffolds Claude Code settings, registers hooks, and prompts you to install Beads. To re-run the interactive setup later, use `npx @pdlc-os/pdlc install` (add `--local` for the local variant).
 
-Or install explicitly with the `--local` flag:
+### Option 2 — From GitHub via npm (corporate-friendly fallback)
 
-```bash
-npx @pdlc-os/pdlc install --local
-```
-
-### Global install
-
-Registers hooks in `~/.claude/settings.json` so PDLC is available across all projects. Beads is installed globally too.
+If npmjs.com is blocked but `npm install -g github:user/repo` still works (most corporate networks fall here):
 
 ```bash
-npm install -g @pdlc-os/pdlc
+npm install -g github:pdlc-os/pdlc
 ```
 
-Or without a global install:
+Same setup as Option 1, just sourced from GitHub instead of the npm registry.
+
+### Option 3 — From a local clone (fully air-gapped, GitHub HTTPS only)
+
+If both above are blocked but you can clone GitHub repos over HTTPS, clone PDLC and run the installer:
 
 ```bash
-npx @pdlc-os/pdlc install
+git clone https://github.com/pdlc-os/pdlc.git ~/.pdlc && bash ~/.pdlc/install.sh
 ```
 
-Or directly from GitHub (always latest):
+The installer creates `~/.local/bin/pdlc` and `~/.local/bin/superclaude` symlinks pointing at the clone, then runs the same Claude Code setup as Options 1 and 2 (settings, hooks, slash commands, Beads/Dolt prompts).
 
-```bash
-npm install -g pdlc-os/pdlc
-```
+After install, **upgrade with `pdlc upgrade`** — no need to re-run the one-liner. `pdlc upgrade` runs `git pull` inside the clone and re-applies the setup. Flags: `--check` (dry-run), `--force` (discard local changes), `--to vX.Y.Z` (pin to a specific tag), `--unpin` (clear pin).
 
-### Install from source (offline / restricted networks)
-
-If the npm registry is blocked (e.g., corporate firewalls), build a tarball from the Git repository and install from that in two steps — the tarball first, then the interactive setup:
-
-```bash
-# Clone the repo and build the tarball
-git clone https://github.com/pdlc-os/pdlc.git
-cd pdlc
-npm pack
-```
-
-This produces a file like `pdlc-os-pdlc-2.6.1.tgz`.
-
-**Step 1 — install the package** (pass `--ignore-scripts` to skip the non-interactive postinstall):
-
-```bash
-# Global
-npm install -g /path/to/pdlc/pdlc-os-pdlc-2.6.1.tgz --ignore-scripts
-
-# Or local (from your project directory)
-cd /path/to/your-repo
-npm install --save-dev /path/to/pdlc/pdlc-os-pdlc-2.6.1.tgz --ignore-scripts
-```
-
-**Step 2 — run the interactive setup** in your terminal. This prints the PDLC banner, registers hooks, and prompts for Beads/Dolt — the exact same experience as the `npx` install path:
-
-```bash
-# Global
-pdlc install
-
-# Or local
-npx pdlc install --local
-```
-
-Why two steps? `npm install` runs its lifecycle scripts without a TTY, which suppresses the banner and makes the Beads/Dolt prompts silently no-op. Running `pdlc install` after the tarball install restores the full interactive flow.
-
-> **If you skip `--ignore-scripts`**, the install still succeeds — hooks and slash commands get registered silently, and you'll see a follow-up block telling you to run `pdlc install` to complete the setup. Either path works; the two-step pattern above is cleaner.
-
-> **Tip:** To share with teammates on the same restricted network, distribute the `.tgz` file via internal file share, Artifactory, or email. Each developer runs the two-step install against the tarball path.
+You can pick any clone location; `~/.pdlc/` is just the convention (similar to `~/.nvm/` or `~/.cargo/`). To install elsewhere, clone wherever you like and run `bash <clone-path>/install.sh`. PDLC stays out of any project's git tree because the clone lives in your home directory, not inside your app repos.
 
 ### Verify installation
 
@@ -165,21 +131,35 @@ Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.cl
 
 ### Upgrade
 
+`pdlc upgrade` auto-detects how PDLC was installed and upgrades it accordingly — no flags needed in the common case.
+
 ```bash
-# Local
+# Local (per-repo install via npm devDependency)
 npx @pdlc-os/pdlc upgrade --local
 
-# Global
-npx @pdlc-os/pdlc upgrade
+# Global (works for both npm-installed and clone-installed)
+pdlc upgrade
 ```
 
-The `upgrade` command:
+**What it does, regardless of install mode:**
 
-1. Upgrades PDLC to the latest version (matching your install scope)
-2. Re-registers hooks and slash commands with updated paths
-3. Prompts to upgrade Beads as well (defaults to yes)
-4. Prompts to upgrade Dolt as well (defaults to yes)
+1. Upgrades PDLC to the latest version (`npm install -g @pdlc-os/pdlc@latest` for npm installs; `git pull --ff-only origin main` for clone installs).
+2. Re-registers hooks and slash commands with the updated paths.
+3. Prompts to upgrade Beads (defaults to yes).
+4. Prompts to upgrade Dolt (defaults to yes).
 5. **Migrates project templates** — detects new sections added to CONSTITUTION.md, STATE.md, METRICS.md, etc. and appends them without touching your customizations. Creates missing files (e.g., METRICS.md if upgrading from a version that didn't have it). Ensures archive directories exist.
+
+**Clone-install-only flags** (refused for npm installs):
+
+- `pdlc upgrade --check` — dry run. Shows the version delta and exits without applying.
+- `pdlc upgrade --force` — discards local changes in the clone (`git reset --hard origin/main`). Use only if you've intentionally edited the clone and want to throw it away.
+- `pdlc upgrade --to vX.Y.Z` — checks out a specific tag/branch/commit and pins to it. Subsequent `pdlc upgrade` calls without args refuse to silently un-pin.
+- `pdlc upgrade --unpin` — clears the pin so `pdlc upgrade` returns to pulling latest main.
+
+**Refusals on clone installs** (skipped if `--force` or `--to` is given):
+
+- Refuses if the clone has uncommitted changes — commit, stash, or use `--force`.
+- Refuses if the clone is not on `main` — checkout main first, or use `--to <ref>` to upgrade to a specific tag without leaving the branch.
 
 Template versioning: each template has a `<!-- pdlc-template-version: X.Y.Z -->` comment. The upgrade command compares your file's version against the current template, finds missing sections, and appends them. Your customized content is never overwritten.
 
