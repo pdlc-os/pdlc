@@ -831,14 +831,16 @@ async function install(opts = {}) {
 
   await promptInstallPython3();
 
-  await promptInstallBeads(local);
-
-  if (isBeadsInstalled()) {
-    log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
-  }
+  // Beads installation is intentionally deferred to /setup (Phase 0
+  // Initialization). PDLC's `pdlc install` only sets up the tool itself
+  // (Claude Code hooks, slash commands, symlinks); project-level
+  // prerequisites like Beads and Dolt are prompted inside /setup so they
+  // run alongside the rest of the project bootstrap (CONSTITUTION,
+  // INTENT, Memory Bank, Roadmap). This keeps the tool install fast and
+  // network-friendly for users in restricted networks.
 
   log('\nStart a new Claude Code session to activate.');
-  log('Next step  : open a project and run /pdlc init\n');
+  log('Next step  : open a project and run /setup\n');
 }
 
 async function promptUninstallDolt() {
@@ -989,7 +991,7 @@ function status() {
  * Emit a prominent block telling the user to run `pdlc install` to finish
  * setup in a real terminal. Used when postinstall runs headless (no TTY)
  * — e.g., `npm install -g ./pdlc.tgz` from an offline tarball. The banner
- * graphic and Beads/Dolt prompts need a TTY, so we defer them.
+ * graphic and Python prompt need a TTY, so we defer them.
  */
 function headlessFollowup(local) {
   const cmd = local ? 'npx pdlc install --local' : 'pdlc install';
@@ -1005,8 +1007,9 @@ function headlessFollowup(local) {
   log(pad(''));
   log(pad('  ' + cmd));
   log(pad(''));
-  log(pad("It prints the PDLC banner and prompts for Beads/Dolt"));
-  log(pad('installation — identical to the `npx` install flow.'));
+  log(pad('It prints the PDLC banner and finishes registering hooks.'));
+  log(pad('Project prerequisites (Beads, Dolt) are installed when you'));
+  log(pad('run /setup inside Claude Code, not during this install.'));
   log('└' + rule + '┘');
   log('');
 }

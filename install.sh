@@ -14,7 +14,9 @@
 # This script is intentionally thin: it validates the environment, creates
 # the two ~/.local/bin symlinks (pdlc, superclaude), and hands off to
 # `node bin/pdlc.js install` which runs the full Claude Code setup
-# (settings, hooks, slash commands, Beads/Dolt/Python prompts).
+# (settings, hooks, slash commands, Python 3 prompt). Project prerequisites
+# like Beads and Dolt are deferred to `/setup` inside Claude Code so the
+# tool install itself stays fast and registry-friendly.
 
 set -euo pipefail
 
@@ -101,7 +103,8 @@ echo ""
 # ─── Hand off to the existing install command ────────────────────────────────
 # `pdlc install` runs the full Claude Code setup: settings merge, hooks,
 # slash commands, superclaude symlink (idempotent — overlaps fine with the
-# one we just created), PATH-on-rc-file offer, Beads/Dolt/Python prompts.
+# one we just created), PATH-on-rc-file offer, Python 3 prompt. Beads and
+# Dolt are not installed here — those happen inside /setup.
 #
 # We invoke it via `node $INSTALL_DIR/bin/pdlc.js` (absolute path) so this
 # script doesn't depend on the just-created symlink being on PATH yet.

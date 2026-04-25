@@ -20,7 +20,7 @@ PDLC brings together TDD discipline, systematic debugging, a visual brainstormin
 
 ## Installation
 
-PDLC can be installed three ways. Pick the first one your network allows — they all end at the same place: PDLC + the `superclaude` shortcut on your PATH, hooks registered with Claude Code, Beads/Dolt prompts on your way to setup.
+PDLC can be installed three ways. Pick the first one your network allows — they all end at the same place: PDLC + the `superclaude` shortcut on your PATH and hooks registered with Claude Code. Project prerequisites like Beads and Dolt are installed later when you run `/setup` inside Claude Code, so the tool install itself stays fast and network-friendly.
 
 ### Option 1 — From npmjs (recommended for most users)
 
@@ -39,7 +39,7 @@ cd your-repo
 npm install --save-dev @pdlc-os/pdlc
 ```
 
-In either case, the postinstall scaffolds Claude Code settings, registers hooks, and prompts you to install Beads. To re-run the interactive setup later, use `npx @pdlc-os/pdlc install` (add `--local` for the local variant).
+In either case, the postinstall scaffolds Claude Code settings and registers hooks. Project prerequisites (Beads, Dolt) are installed when you run `/setup` from inside any Claude Code session — they aren't part of this install. To re-run the interactive tool setup later, use `npx @pdlc-os/pdlc install` (add `--local` for the local variant).
 
 ### Option 2 — From GitHub via npm (corporate-friendly fallback)
 
@@ -59,7 +59,7 @@ If both above are blocked but you can clone GitHub repos over HTTPS, clone PDLC 
 git clone https://github.com/pdlc-os/pdlc.git ~/.pdlc && bash ~/.pdlc/install.sh
 ```
 
-The installer creates `~/.local/bin/pdlc` and `~/.local/bin/superclaude` symlinks pointing at the clone, then runs the same Claude Code setup as Options 1 and 2 (settings, hooks, slash commands, Beads/Dolt prompts).
+The installer creates `~/.local/bin/pdlc` and `~/.local/bin/superclaude` symlinks pointing at the clone, then runs the same Claude Code setup as Options 1 and 2 (settings, hooks, slash commands). Beads and Dolt are installed when you run `/setup` inside Claude Code afterward.
 
 After install, **upgrade with `pdlc upgrade`** — no need to re-run the one-liner. `pdlc upgrade` runs `git pull` inside the clone and re-applies the setup. Flags: `--check` (dry-run), `--force` (discard local changes), `--to vX.Y.Z` (pin to a specific tag), `--unpin` (clear pin).
 
@@ -175,7 +175,7 @@ When another developer clones or pulls a repo that already has PDLC initialized,
 npm install
 ```
 
-If `@pdlc-os/pdlc` is in `devDependencies`, this installs it and runs the postinstall hook automatically — registering PDLC hooks in `.claude/settings.local.json` and copying slash commands to `.claude/commands/`. You'll be prompted to install Dolt and Beads if they're not already on your machine.
+If `@pdlc-os/pdlc` is in `devDependencies`, this installs it and runs the postinstall hook automatically — registering PDLC hooks in `.claude/settings.local.json` and copying slash commands to `.claude/commands/`. Project prerequisites like Beads and Dolt are not installed at this point; the project's existing `/setup` history will have already prompted those when the project was first initialized, but if a teammate is on a fresh machine, running `/setup` again is a no-op for already-completed steps and a fast path through any missing prerequisites.
 
 **Step 2 — Verify:**
 
@@ -187,14 +187,14 @@ You should see:
 
 ```
 Install mode : local (this repo)
-Dolt         : ✓ installed
-Beads (bd)   : ✓ installed
 Hooks registered: statusLine, PostToolUse, PreToolUse, SessionStart
 ```
 
+If `bd` or `dolt` is missing on the machine (e.g. a brand-new dev workstation), `pdlc status` will report it. Run `/setup` from inside Claude Code to install them.
+
 **Step 3 — Start a Claude Code session:**
 
-PDLC reads `docs/pdlc/memory/STATE.md` on session start and resumes from wherever the project left off. You'll see the current phase, active feature, and any pending work. The full memory bank (Constitution, Intent, Roadmap, Decisions, etc.) is already in the repo — no need to re-run `/pdlc init`.
+PDLC reads `docs/pdlc/memory/STATE.md` on session start and resumes from wherever the project left off. You'll see the current phase, active feature, and any pending work. The full memory bank (Constitution, Intent, Roadmap, Decisions, etc.) is already in the repo — no need to re-run `/setup`.
 
 > **Note:** Each developer's `.claude/settings.local.json` is local to their machine (not committed to git). The hooks point to the PDLC package in their `node_modules/`, so each developer needs their own `npm install`. The project's `docs/pdlc/` files are shared via git — this is the team's shared memory.
 
@@ -427,8 +427,8 @@ The `pdlc-os` GitHub organisation hosts community-contributed extensions:
 | Node.js >= 18                                      | [nodejs.org](https://nodejs.org)         |                                                                                           |
 | Claude Code                                        | [claude.ai/code](https://claude.ai/code) |                                                                                           |
 | Python 3                                           | Prompted during PDLC install             | Used by the session-start hook for handoff parsing, roadmap-claim reconciliation, progress rendering, and conflict detection. Auto-installed via Homebrew on macOS/Linux-with-brew; distro/Windows package command is printed otherwise. Hook degrades gracefully if Python 3 is missing. |
-| [Dolt](https://github.com/dolthub/dolt)            | Prompted during PDLC install             | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
-| [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during PDLC install             | Task manager; same scope (local/global) as PDLC                                           |
+| [Dolt](https://github.com/dolthub/dolt)            | Prompted during `/setup`                 | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
+| [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during `/setup`                 | Task manager; installed globally via npm registry, with a clone-from-source fallback if the registry is restricted |
 | Git                                                | Built into macOS/Linux                   |                                                                                           |
 | [GitHub CLI (gh)](https://cli.github.com)          | Prompted during `/pdlc init` if needed   | Required for PR creation during `/pdlc ship`; setup guided during init                    |
 
