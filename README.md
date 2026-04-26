@@ -109,24 +109,38 @@ If you want the default behavior where Claude asks before each tool call, just r
 
 ### Uninstall
 
+`pdlc uninstall` is install-mode-aware — the same command handles npm-installed and clone-installed PDLC, doing the right cleanup for each.
+
 **Local** (from inside the repo):
 
 ```bash
-npx @pdlc-os/pdlc uninstall --local
+pdlc uninstall --local
 ```
-
-Removes PDLC hooks from `.claude/settings.local.json` and slash commands from `.claude/commands/`. You'll be prompted to uninstall Beads as well.
 
 **Global:**
 
 ```bash
-npx @pdlc-os/pdlc uninstall
+pdlc uninstall
 ```
 
-Removes PDLC hooks from `~/.claude/settings.json` and slash commands from `~/.claude/commands/`. You'll be prompted to uninstall Beads globally too.
+(You can also use `npx @pdlc-os/pdlc uninstall` if you reach npmjs — same command, npm-cached copy. For clone installs in restricted networks, use `pdlc uninstall` from PATH.)
+
+**What gets cleaned up, regardless of install path:**
+
+- PDLC hooks + statusLine in `~/.claude/settings.json` (or `.claude/settings.local.json` for local installs)
+- Slash commands in `~/.claude/commands/` (or `.claude/commands/`)
+- `~/.local/bin/superclaude` symlink
+- `~/.local/bin/pdlc` symlink (if it points at a PDLC binary)
+- The PATH sentinel block in your shell rc file
+- Beads uninstall prompt (defaults to no — your task data stays even if you remove the CLI)
+
+**Additional cleanup for clone installs only:**
+
+- The `.install-meta.json` pin file inside the clone (silent — irrelevant once the clone is removed)
+- An interactive prompt asking whether to also delete the clone directory itself (defaults to no — the directory is yours and you may want to inspect or move it). If you say yes, the clone is removed via `rm -rf` after a sanity check (refuses to delete `/`, `$HOME`, or empty paths).
 
 > **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
-> 
+>
 > **Note on Dolt:** If you uninstall Beads, you'll also be prompted to uninstall Dolt (the SQL database Beads uses). Dolt is a system-level binary — other tools may depend on it, so the uninstaller defaults to keeping it.
 
 ### Upgrade

@@ -615,6 +615,32 @@ function linkSuperclaudeToLocalBin() {
   }
 }
 
+// ─── pdlc binary symlink (created by install.sh, mirrors superclaude) ───────
+const LOCAL_BIN_PDLC = path.join(LOCAL_BIN_DIR, 'pdlc');
+
+function isPdlcBinaryTarget(target) {
+  const tail = path.join('bin', 'pdlc.js');
+  return target.endsWith(tail) || target.endsWith('/pdlc.js');
+}
+
+function unlinkPdlcFromLocalBin() {
+  if (process.platform === 'win32') return;
+
+  let existing = null;
+  try { existing = fs.lstatSync(LOCAL_BIN_PDLC); } catch { return; }
+  if (!existing.isSymbolicLink()) return;
+
+  const currentTarget = fs.readlinkSync(LOCAL_BIN_PDLC);
+  if (!isPdlcBinaryTarget(currentTarget)) return;
+
+  try {
+    fs.unlinkSync(LOCAL_BIN_PDLC);
+    log(`  pdlc        : ✓ removed symlink at ${LOCAL_BIN_PDLC}`);
+  } catch (err) {
+    log(`  pdlc        : ⚠️  Could not remove symlink — ${err.message}`);
+  }
+}
+
 function unlinkSuperclaudeFromLocalBin() {
   if (process.platform === 'win32') return;
 
@@ -897,6 +923,56 @@ async function promptUninstallBeads(local) {
   }
 }
 
+/**
+ * Clone-install-only cleanup. Removes the pin metadata file and offers to
+ * delete the clone directory. Runs at the very end of `uninstall()`, after
+ * settings/commands/symlinks/PATH cleanup. Skipped silently for npm installs.
+ *
+ * Safety: refuses to delete suspicious paths (empty, root, home directory).
+ * Even though PLUGIN_ROOT is always derived from __dirname, the guard is
+ * cheap insurance against future code paths that might shadow it.
+ */
+async function maybeCleanupCloneInstall() {
+  if (!isCloneInstall()) return;
+
+  // Pin metadata is invisible to the user \u2014 clean it up without asking.
+  try { fs.unlinkSync(INSTALL_META_PATH); } catch {}
+
+  // Sanity-check before any rm -rf.
+  if (!PLUGIN_ROOT || PLUGIN_ROOT === '/' || PLUGIN_ROOT === os.homedir()) {
+    log(`\n  Clone       : \u26a0\ufe0f  Refusing to suggest deletion of suspicious path ${PLUGIN_ROOT}`);
+    return;
+  }
+
+  log(`\n  PDLC was installed from a local clone at ${PLUGIN_ROOT}.`);
+
+  if (!process.stdin.isTTY) {
+    log(`  Clone       : kept (non-interactive mode). Remove manually with:`);
+    log(`                rm -rf ${PLUGIN_ROOT}`);
+    return;
+  }
+
+  const answer = await prompt(`  Also delete the clone directory? (y/N) `);
+  if (answer !== 'y' && answer !== 'yes') {
+    log(`  Clone       : kept at ${PLUGIN_ROOT}.`);
+    log(`                Remove manually with: rm -rf ${PLUGIN_ROOT}`);
+    return;
+  }
+
+  // Delete the clone. Node holds the file descriptors of currently-loaded
+  // .js files via the require cache; on POSIX the OS keeps inodes alive
+  // until the process exits, so it's safe to rm -rf the clone we're
+  // running from. The shell that invoked us continues fine because its
+  // working directory and PATH lookups are independent of these files.
+  try {
+    execSync(`rm -rf "${PLUGIN_ROOT}"`, { stdio: 'pipe' });
+    log(`  Clone       : \u2713 removed ${PLUGIN_ROOT}`);
+  } catch (err) {
+    log(`  Clone       : \u26a0\ufe0f  Could not remove ${PLUGIN_ROOT} \u2014 ${err.message}`);
+    log(`                Remove it manually: rm -rf ${PLUGIN_ROOT}`);
+  }
+}
+
 async function uninstall(opts = {}) {
   const local = opts.local || false;
   banner('Uninstalling', VERSION);
@@ -926,9 +1002,11 @@ async function uninstall(opts = {}) {
     removeCommands(repoRoot);
     log('  Slash commands removed from .claude/commands/');
     unlinkSuperclaudeFromLocalBin();
+    unlinkPdlcFromLocalBin();
     removeLocalBinFromRcFiles();
 
     await promptUninstallBeads(true);
+    await maybeCleanupCloneInstall();
     log('');
   } else {
     const global = readJson(GLOBAL_SETTINGS_PATH);
@@ -945,9 +1023,11 @@ async function uninstall(opts = {}) {
     log('\nPDLC uninstalled. Hooks and statusLine removed from ~/.claude/settings.json.');
     log('  Slash commands removed from ~/.claude/commands/');
     unlinkSuperclaudeFromLocalBin();
+    unlinkPdlcFromLocalBin();
     removeLocalBinFromRcFiles();
 
     await promptUninstallBeads(false);
+    await maybeCleanupCloneInstall();
     log('');
   }
 }
