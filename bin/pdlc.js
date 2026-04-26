@@ -869,60 +869,6 @@ async function install(opts = {}) {
   log('Next step  : open a project and run /setup\n');
 }
 
-async function promptUninstallDolt() {
-  if (!isDoltInstalled()) return;
-  if (!process.stdin.isTTY) return;
-
-  const uninstallCmd = getDoltUninstallCmd();
-
-  log('\n  Dolt is still installed.');
-  log('  \u26a0\ufe0f  Warning: Other tools on this system may depend on Dolt.');
-
-  const answer = await prompt('  Uninstall Dolt as well? (y/N) ');
-  if (answer === 'y' || answer === 'yes') {
-    log('\n  Uninstalling Dolt...');
-    try {
-      execSync(uninstallCmd, { stdio: 'inherit' });
-      log('  Dolt        : \u2713 uninstalled');
-    } catch (err) {
-      log('  Dolt uninstall failed. You can remove it manually:');
-      log(`  ${uninstallCmd}`);
-    }
-  } else {
-    log('  Keeping Dolt installed.');
-  }
-}
-
-async function promptUninstallBeads(local) {
-  if (!isBeadsInstalled()) return;
-  if (!process.stdin.isTTY) return;
-
-  const scope = local ? 'locally' : 'globally';
-  const uninstallCmd = local ? 'npm uninstall @beads/bd' : 'npm uninstall -g @beads/bd';
-
-  log('\n  Beads (bd) is still installed.');
-  log('  \u26a0\ufe0f  Warning: If this repo is already tracking tasks in Beads (.beads/ directory),');
-  log('  uninstalling Beads will remove the CLI but your task data in .beads/ will remain.');
-  log('  However, you will not be able to query or manage those tasks without Beads.');
-
-  const answer = await prompt(`  Uninstall Beads ${scope} as well? (y/N) `);
-  if (answer === 'y' || answer === 'yes') {
-    log(`\n  Uninstalling Beads ${scope}...`);
-    try {
-      execSync(uninstallCmd, { stdio: 'inherit' });
-      log(`  Beads (bd)  : \u2713 uninstalled ${scope}`);
-    } catch (err) {
-      log('  Beads uninstall failed. You can remove it manually:');
-      log(`  ${uninstallCmd}`);
-    }
-
-    // If Beads is removed, offer to remove Dolt too
-    await promptUninstallDolt();
-  } else {
-    log('  Keeping Beads installed.');
-  }
-}
-
 /**
  * Clone-install-only cleanup. Removes the pin metadata file and offers to
  * delete the clone directory. Runs at the very end of `uninstall()`, after
@@ -1005,7 +951,10 @@ async function uninstall(opts = {}) {
     unlinkPdlcFromLocalBin();
     removeLocalBinFromRcFiles();
 
-    await promptUninstallBeads(true);
+    // Beads and Dolt are intentionally left alone. They live in your project
+    // (.beads/ data + Dolt as a system service); a PDLC uninstall is not the
+    // right surface for removing them. If you reinstall PDLC later, your
+    // Beads task graph and Dolt data are preserved as-is.
     await maybeCleanupCloneInstall();
     log('');
   } else {
@@ -1026,7 +975,8 @@ async function uninstall(opts = {}) {
     unlinkPdlcFromLocalBin();
     removeLocalBinFromRcFiles();
 
-    await promptUninstallBeads(false);
+    // Beads and Dolt are intentionally left alone (see comment in the local
+    // branch above). Your data is preserved for any future reinstall.
     await maybeCleanupCloneInstall();
     log('');
   }

@@ -132,16 +132,15 @@ pdlc uninstall
 - `~/.local/bin/superclaude` symlink
 - `~/.local/bin/pdlc` symlink (if it points at a PDLC binary)
 - The PATH sentinel block in your shell rc file
-- Beads uninstall prompt (defaults to no — your task data stays even if you remove the CLI)
 
 **Additional cleanup for clone installs only:**
 
 - The `.install-meta.json` pin file inside the clone (silent — irrelevant once the clone is removed)
 - An interactive prompt asking whether to also delete the clone directory itself (defaults to no — the directory is yours and you may want to inspect or move it). If you say yes, the clone is removed via `rm -rf` after a sanity check (refuses to delete `/`, `$HOME`, or empty paths).
 
-> **Note on Beads:** If your repo is already tracking tasks in Beads (`.beads/` directory), uninstalling Beads removes the CLI but your task data remains on disk. You won't be able to query or manage those tasks without the `bd` command. The uninstaller warns you about this before proceeding and defaults to keeping Beads installed.
+> **Beads and Dolt are left alone.** PDLC uninstall does not touch them — Beads's `bd` CLI stays installed, Dolt stays installed, and the `.beads/` task data in your project is preserved as-is. If you reinstall PDLC later (via npm, GitHub, or the local clone path), your task graph and Dolt data are right where you left them. Beads and Dolt belong to your project, not to the PDLC tool install — they are managed by `/setup`, not by `pdlc install` / `pdlc uninstall`.
 >
-> **Note on Dolt:** If you uninstall Beads, you'll also be prompted to uninstall Dolt (the SQL database Beads uses). Dolt is a system-level binary — other tools may depend on it, so the uninstaller defaults to keeping it.
+> If you genuinely want to remove Beads or Dolt, do it directly with `npm uninstall -g @beads/bd` and `brew uninstall dolt` (or your platform equivalent). PDLC won't get in the way.
 
 ### Upgrade
 
