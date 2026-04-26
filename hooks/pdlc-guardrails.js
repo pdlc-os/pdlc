@@ -360,6 +360,24 @@ function main() {
 
   if (!command) allow();
 
+  // ── Metadata-command short-circuit ──────────────────────────────────────────
+  // git commit / git tag -m / gh release|pr|issue / gh api legitimately quote
+  // arbitrary text in their argument bodies — commit messages, release notes,
+  // PR descriptions. That text routinely mentions destructive command names
+  // ("rm -rf", "git reset --hard", "DROP TABLE", "curl -X POST") to describe
+  // what a release contains. Those substrings are message-body data; the outer
+  // command does not execute them. Without this short-circuit, every rule
+  // below false-positives on harmless metadata.
+  //
+  // Trade-off: a chained command like `git commit -m "x" && rm -rf /etc`
+  // would also bypass guardrails. The threat model here is accidental
+  // destruction (which doesn't chain through commit messages), not
+  // adversarial bypass (which the hook can't stop anyway). The simple
+  // full-bypass is the pragmatic answer.
+  if (isMetadataCommand(command)) {
+    allow();
+  }
+
   // ── Read CONSTITUTION.md ────────────────────────────────────────────────────
   const constitution   = readConstitution(cwd);
   const tier2Overrides = parseTier2Overrides(constitution);
@@ -477,13 +495,9 @@ function main() {
   // merely named CONSTITUTION.md or DECISIONS.md elsewhere on disk (test
   // fixtures, unrelated notes) are not the project's protected memory.
   // Also exempt when cwd is a system temp directory (test fixture scenario).
-  // Commands like `git commit -m "…CONSTITUTION.md §9…"` or `gh release create
-  // --notes` legitimately mention the file name in their argument text and
-  // must NOT trigger Tier 2 — those are metadata, not file modifications.
-  if (isMetadataCommand(command)) {
-    // git/gh commit/release/pr/issue bodies frequently reference PDLC memory files.
-    // Skip rule 2e for these — they don't touch the file system.
-  } else if (!isTempPath(cwd)) {
+  // (Metadata commands — git commit, gh release, etc. — are already short-
+  // circuited at the top of the Bash branch.)
+  if (!isTempPath(cwd)) {
     const protectedFile = writesToProtectedMemoryFile(command);
     if (protectedFile) {
       handleTier2(`changing ${protectedFile.toLowerCase().replace('.md', '')}`);

@@ -12,6 +12,8 @@ When in doubt about whether an action requires a guardrail check: check this doc
 
 Tier 1 actions are **blocked by default**. They require the full double-RED confirmation protocol before PDLC will allow them to proceed. Even after confirmation, they are logged as Tier 1 events in `docs/pdlc/memory/STATE.md`.
 
+> **Metadata-command short-circuit (applies to all Tier 1 and Tier 2 Bash rules below):** `git commit`, `git tag -m`, `gh release|pr|issue`, and `gh api` legitimately quote arbitrary text in their argument bodies — commit messages, release notes, PR descriptions. Those bodies routinely *describe* destructive operations (`rm -rf`, `git reset --hard`, `DROP TABLE`, `curl -X POST`) without executing them. The hook treats these outer commands as message-data wrappers and skips all Tier 1/Tier 2 Bash checks. Edit/Write tool checks on protected files are unaffected.
+
 ### Tier 1 actions:
 
 **1. Force-push to main or master**
