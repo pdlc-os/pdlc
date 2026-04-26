@@ -32,7 +32,7 @@ function tier1Block(reason, command) {
     `\x1b[41m\x1b[37m ⛔ PDLC HARD BLOCK — TIER 1 SAFETY ⛔ \x1b[0m\n` +
     `\x1b[31mThis action is blocked: ${reason}.\n\n` +
     `To override, run the double-RED confirmation protocol:\n` +
-    `  \`/pdlc override "${safeCmd}"\`\n\n` +
+    `  \`/override "${safeCmd}"\`\n\n` +
     `This requires two explicit confirmations and is permanently logged.\x1b[0m`;
   block(msg);
 }
@@ -196,19 +196,31 @@ function isMetadataCommand(cmd) {
   return METADATA_COMMAND_PATTERNS.some(re => re.test(cmd));
 }
 
-// ── CONSTITUTION.md write-target detection ──────────────────────────────────
-// Only matches when CONSTITUTION.md is the actual operand of a write operation —
-// not when it merely appears inside a string argument. Patterns covered:
-//   sed/awk/tee/mv/cp …… CONSTITUTION.md
-//   echo/printf …… > CONSTITUTION.md
-//   > CONSTITUTION.md  or  >> CONSTITUTION.md  (any redirection target)
-const CONSTITUTION_WRITE_PATTERNS = [
-  /\b(sed|awk|tee|mv|cp|rm|install|cat)\s+[^|;&]*\bCONSTITUTION\.md\b/,
-  />>?\s*[^|;&]*CONSTITUTION\.md\b/,
+// ── Protected memory file write-target detection ───────────────────────────
+// Catches Bash-redirection writes to PDLC's protected memory files. Scoped to
+// `docs/pdlc/memory/` so files merely *named* CONSTITUTION.md or DECISIONS.md
+// elsewhere on disk (test fixtures, unrelated user notes) don't trip this.
+// Mirrors the Edit/Write tool path's `getProtectedFileMatch()` logic.
+//
+// Patterns covered:
+//   sed/awk/tee/mv/cp …… docs/pdlc/memory/CONSTITUTION.md
+//   echo/printf …… > docs/pdlc/memory/DECISIONS.md
+//   > path/.../docs/pdlc/memory/CONSTITUTION.md  (any redirection target)
+const PROTECTED_MEMORY_WRITE_PATTERNS = [
+  /\b(sed|awk|tee|mv|cp|rm|install|cat)\s+[^|;&]*docs\/pdlc\/memory\/(CONSTITUTION|DECISIONS)\.md\b/,
+  />>?\s*[^|;&]*docs\/pdlc\/memory\/(CONSTITUTION|DECISIONS)\.md\b/,
 ];
 
-function writesToConstitutionFile(cmd) {
-  return CONSTITUTION_WRITE_PATTERNS.some(re => re.test(cmd));
+// Returns the matched basename ('CONSTITUTION.md' or 'DECISIONS.md') or null.
+function writesToProtectedMemoryFile(cmd) {
+  for (const re of PROTECTED_MEMORY_WRITE_PATTERNS) {
+    if (re.test(cmd)) {
+      if (/docs\/pdlc\/memory\/CONSTITUTION\.md\b/.test(cmd)) return 'CONSTITUTION.md';
+      if (/docs\/pdlc\/memory\/DECISIONS\.md\b/.test(cmd))    return 'DECISIONS.md';
+      return 'memory file';
+    }
+  }
+  return null;
 }
 
 // ── Protected PDLC files ─────────────────────────────────────────────────────
@@ -240,6 +252,52 @@ function getProtectedFileMatch(filePath) {
   return null;
 }
 
+// First-time create detection — Tier 2 protects against state drift in existing
+// files. A file that does not yet exist has no prior state to drift from, so
+// `/setup` Step 5 (which Writes CONSTITUTION.md and DECISIONS.md from templates)
+// is naturally an "init mode" pass-through. Subsequent overwrites on the same
+// path still trip Tier 2.
+function fileExistsOnDisk(filePath) {
+  try {
+    fs.accessSync(filePath, fs.constants.F_OK);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// Temp-path detection for `rm -rf` exemption — system temp roots are designed
+// to be ephemeral, and blocking deletes inside them interrupts test fixtures,
+// scratch workflows, and `mktemp -d` cleanup. Only subpaths of these roots are
+// exempt; `rm -rf /tmp` itself still trips the normal guardrails.
+const TEMP_PATH_PREFIXES = [
+  '/tmp/',
+  '/var/tmp/',
+  '/var/folders/',
+  '/private/tmp/',
+  '/private/var/tmp/',
+  '/private/var/folders/',
+];
+
+function unwrapQuotes(s) {
+  if (!s) return s;
+  s = s.trim();
+  if (s.length >= 2) {
+    const first = s[0];
+    const last  = s[s.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      return s.slice(1, -1);
+    }
+  }
+  return s;
+}
+
+function isTempPath(target) {
+  if (!target) return false;
+  const t = unwrapQuotes(target);
+  return TEMP_PATH_PREFIXES.some(prefix => t.startsWith(prefix));
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 function main() {
   let input = {};
@@ -265,6 +323,14 @@ function main() {
     const tier2Overrides = parseTier2Overrides(constitution);
 
     if (match.tier === 2) {
+      // Init-mode pass-through: a Write that creates the file for the first
+      // time has no existing state to protect, so Tier 2 doesn't apply. Logged
+      // as Tier 3 for visibility. /setup Step 5a/5e relies on this when
+      // generating CONSTITUTION.md and DECISIONS.md from templates.
+      if (toolName === 'Write' && !fileExistsOnDisk(filePath)) {
+        warn(`⚠️ Tier 3 logged: Write creating new ${match.file} (init mode — Tier 2 bypassed; no prior state to protect)`);
+      }
+
       // Check if this specific file has been downgraded to tier 3
       const label = `changing ${match.file.toLowerCase().replace('.md', '')}`;
       if (isTier2Downgraded(label, tier2Overrides)) {
@@ -274,7 +340,7 @@ function main() {
           `⚠️  PDLC Tier 2 Confirmation Required\n\n` +
           `About to ${toolName.toLowerCase()} protected file: ${match.file}\n\n` +
           `This file is part of PDLC's memory bank and is normally managed by PDLC commands.\n` +
-          `Direct edits may cause state drift that \`/pdlc doctor\` will flag.\n\n` +
+          `Direct edits may cause state drift that \`/diagnose\` will flag.\n\n` +
           `Type 'yes' to confirm or 'no' to cancel.`
         );
       }
@@ -334,26 +400,31 @@ function main() {
     const rmMatch = command.match(/rm\s+(?:-[a-zA-Z]+\s+)+(.+)$/);
     const target  = rmMatch ? rmMatch[1].trim() : '';
 
-    // Block if target is absolute and appears to be outside the project
-    const isAbsolute = target.startsWith('/');
-    const isInProject = isAbsolute && target.startsWith(cwd);
-    const isDotDot    = target.includes('../') || target.includes('/..');
-    const isHome      = /^~\/|^\/home\/|^\/Users\//.test(target) && !isInProject;
-    const isSystemPath = /^(\/etc|\/var|\/usr|\/bin|\/sbin|\/lib|\/opt|\/sys|\/proc|\/dev)/.test(target);
+    // Skip the Tier 1 check entirely when the target is a subpath of a system
+    // temp root. Tier 2 (rule 2a) below also skips for these. Bare temp roots
+    // (e.g. `rm -rf /tmp`) do not match the prefixes and still trip both rules.
+    if (!isTempPath(target)) {
+      // Block if target is absolute and appears to be outside the project
+      const isAbsolute = target.startsWith('/');
+      const isInProject = isAbsolute && target.startsWith(cwd);
+      const isDotDot    = target.includes('../') || target.includes('/..');
+      const isHome      = /^~\/|^\/home\/|^\/Users\//.test(target) && !isInProject;
+      const isSystemPath = /^(\/etc|\/var|\/usr|\/bin|\/sbin|\/lib|\/opt|\/sys|\/proc|\/dev)/.test(target);
 
-    if (isSystemPath || (isAbsolute && !isInProject) || isDotDot || isHome) {
-      tier1Block(
-        `rm -rf on a path outside the project directory (${target || 'unknown'})`,
-        command
-      );
+      if (isSystemPath || (isAbsolute && !isInProject) || isDotDot || isHome) {
+        tier1Block(
+          `rm -rf on a path outside the project directory (${target || 'unknown'})`,
+          command
+        );
+      }
+      // Otherwise falls through to Tier 2 check below
     }
-    // Otherwise falls through to Tier 2 check below
   }
 
   // 1d. Deploy commands when test gates haven't passed
   if (isDeployCommand(command) && !testGatesHavePassed(cwd)) {
     tier1Block(
-      'deploy attempted before test gates have passed — run `/pdlc ship` to go through the proper Ship flow',
+      'deploy attempted before test gates have passed — run `/ship` to go through the proper Ship flow',
       command
     );
   }
@@ -370,14 +441,24 @@ function main() {
     }
   }
 
-  // 2a. rm -rf (non-Tier-1 cases — reached here only if not blocked above)
+  // 2a. rm -rf (non-Tier-1 cases — reached here only if not blocked above).
+  //     Subpaths of system temp roots (/tmp/, /var/tmp/, /var/folders/, and
+  //     their /private/-prefixed macOS canonical forms) are exempt — these
+  //     directories are designed to be ephemeral.
   if (/rm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r)\s+/.test(command)) {
-    handleTier2('rm -rf');
+    const rmMatch = command.match(/rm\s+(?:-[a-zA-Z]+\s+)+(.+)$/);
+    const target  = rmMatch ? rmMatch[1].trim() : '';
+    if (!isTempPath(target)) {
+      handleTier2('rm -rf');
+    }
   }
 
-  // 2b. git reset --hard
+  // 2b. git reset --hard — exempt when running inside a system temp directory
+  //     (typical scratch-clone test fixtures have no real work to lose).
   if (/git\s+reset\s+--hard\b/.test(command)) {
-    handleTier2('git reset --hard');
+    if (!isTempPath(cwd)) {
+      handleTier2('git reset --hard');
+    }
   }
 
   // 2c. Production DB access
@@ -390,17 +471,23 @@ function main() {
     handleTier2('any external api call that writes/posts/sends');
   }
 
-  // 2e. Modifying CONSTITUTION.md
+  // 2e. Modifying CONSTITUTION.md or DECISIONS.md via Bash redirection
   //
-  // Only fire when the file is the actual target of a write/edit operation.
-  // Commands like `git commit -m "…CONSTITUTION.md §9…"` or `gh release create --notes`
-  // legitimately mention the file name in their argument text and must NOT trigger a
-  // Tier 2 block — those are metadata operations, not file modifications.
+  // Only fire when the path being written is under `docs/pdlc/memory/` — files
+  // merely named CONSTITUTION.md or DECISIONS.md elsewhere on disk (test
+  // fixtures, unrelated notes) are not the project's protected memory.
+  // Also exempt when cwd is a system temp directory (test fixture scenario).
+  // Commands like `git commit -m "…CONSTITUTION.md §9…"` or `gh release create
+  // --notes` legitimately mention the file name in their argument text and
+  // must NOT trigger Tier 2 — those are metadata, not file modifications.
   if (isMetadataCommand(command)) {
     // git/gh commit/release/pr/issue bodies frequently reference PDLC memory files.
     // Skip rule 2e for these — they don't touch the file system.
-  } else if (writesToConstitutionFile(command)) {
-    handleTier2('changing constitution.md');
+  } else if (!isTempPath(cwd)) {
+    const protectedFile = writesToProtectedMemoryFile(command);
+    if (protectedFile) {
+      handleTier2(`changing ${protectedFile.toLowerCase().replace('.md', '')}`);
+    }
   }
 
   // ── All clear ───────────────────────────────────────────────────────────────

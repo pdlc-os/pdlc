@@ -64,7 +64,7 @@ if [[ ! -f "$state_file" ]]; then
   # PDLC not yet initialized for this project
   emit_json "📦 PDLC is installed but not initialized for this project.
 
-Run \`/setup\` (or \`/pdlc init\`) to set up PDLC — Oracle will walk you through project setup, scaffolding, and roadmap planning."
+Run \`/setup\` to set up PDLC — Oracle will walk you through project setup, scaffolding, and roadmap planning."
   exit 0
 fi
 
@@ -289,15 +289,15 @@ if beads_feature_ids and not state_claim_fid:
     fid = sorted(beads_feature_ids)[0]
     lines.append("")
     lines.append("⚠️ **Roadmap claim detected in Beads but not reflected in STATE.md** — " + fid + " is claimed by you.")
-    lines.append("Resume with `/pdlc brainstorm " + fid + "` — PDLC will rebuild STATE.md from the Beads claim and any existing brainstorm/PRD/design artifacts.")
+    lines.append("Resume with `/brainstorm " + fid + "` — PDLC will rebuild STATE.md from the Beads claim and any existing brainstorm/PRD/design artifacts.")
 elif state_claim_fid and not beads_feature_ids:
     lines.append("")
     lines.append("⚠️ **STATE.md references roadmap claim " + state_claim_fid + " but Beads shows no active claim** — the claim may have been force-released or the Beads DB reset.")
-    lines.append("Options: (1) re-claim with `/pdlc brainstorm " + state_claim_fid + "`, (2) pick a different feature, or (3) run `/pdlc doctor`.")
+    lines.append("Options: (1) re-claim with `/brainstorm " + state_claim_fid + "`, (2) pick a different feature, or (3) run `/diagnose`.")
 elif beads_feature_ids and state_claim_fid and state_claim_fid not in beads_feature_ids:
     other = sorted(beads_feature_ids)[0]
     lines.append("")
-    lines.append("⚠️ **Conflict:** STATE.md claims " + state_claim_fid + " but Beads shows " + other + " claimed by you. Pick one to resume, or run `/pdlc doctor`.")
+    lines.append("⚠️ **Conflict:** STATE.md claims " + state_claim_fid + " but Beads shows " + other + " claimed by you. Pick one to resume, or run `/diagnose`.")
 
 print("\n".join(lines))
 ' "$state_file" 2>/dev/null || true)"
@@ -401,7 +401,7 @@ if $has_pending_party && $has_pending_decision; then
   1. Interrupted party meeting (${meeting_type:-unknown})
   2. Interrupted decision
 
-These will be resolved in order (meeting first, then decision). Run \`/pdlc decide\` to start recovery, or resume the active workflow.
+These will be resolved in order (meeting first, then decision). Run \`/decide\` to start recovery, or resume the active workflow.
 
 Read \`skills/state-reconciliation.md\` for the full reconciliation protocol."
 elif $has_pending_party; then
@@ -415,7 +415,7 @@ elif $has_pending_party; then
 elif $has_pending_decision; then
   pending_notice="${pending_notice}
 
-⚠️ **Interrupted decision detected.** Run \`/pdlc decide\` to resume or discard the pending decision."
+⚠️ **Interrupted decision detected.** Run \`/decide\` to resume or discard the pending decision."
 fi
 
 # Check for paused feature (hotfix in progress)
@@ -427,7 +427,7 @@ if [[ -f "$paused_feature" ]]; then
   fi
   pending_notice="${pending_notice}
 
-⏸️ **Feature paused:** \`${paused_name:-unknown}\` was paused for a hotfix. If the hotfix is complete, resume with \`/pdlc hotfix\` or the paused feature's phase command."
+⏸️ **Feature paused:** \`${paused_name:-unknown}\` was paused for a hotfix. If the hotfix is complete, resume with \`/hotfix\` or the paused feature's phase command."
 fi
 
 # Check for ROADMAP.md inconsistency with STATE.md

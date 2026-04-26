@@ -3,6 +3,7 @@ name: pdlc
 description: "PDLC — Product Development Lifecycle commands (init, brainstorm, build, ship)"
 argument-hint: <command> [args]
 ---
+<!-- pdlc-managed: this file is owned by @pdlc-os/pdlc; do not edit by hand -->
 
 Route to the correct PDLC skill based on the first word in `$ARGUMENTS`.
 

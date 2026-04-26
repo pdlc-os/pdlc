@@ -2,6 +2,7 @@
 name: setup
 description: "Initialize PDLC for this project — alias for /pdlc init"
 ---
+<!-- pdlc-managed: this file is owned by @pdlc-os/pdlc; do not edit by hand -->
 
 Read `${PDLC_PLUGIN_ROOT}/skills/init/SKILL.md` and execute it completely. Pass `$ARGUMENTS` through verbatim.
 

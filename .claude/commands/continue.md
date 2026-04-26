@@ -3,6 +3,7 @@ name: continue
 description: "Resume a paused feature — alias for /pdlc resume"
 argument-hint: <feature-name>
 ---
+<!-- pdlc-managed: this file is owned by @pdlc-os/pdlc; do not edit by hand -->
 
 Read `${PDLC_PLUGIN_ROOT}/skills/resume/SKILL.md` and execute it completely. Pass `$ARGUMENTS` through verbatim.
 

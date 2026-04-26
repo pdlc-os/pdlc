@@ -2,6 +2,7 @@
 name: ship
 description: "Run the Operation phase — alias for /pdlc ship"
 ---
+<!-- pdlc-managed: this file is owned by @pdlc-os/pdlc; do not edit by hand -->
 
 Read `${PDLC_PLUGIN_ROOT}/skills/ship/SKILL.md` and execute it completely. Pass `$ARGUMENTS` through verbatim.
 

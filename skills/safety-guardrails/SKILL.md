@@ -26,6 +26,7 @@ Tier 1 actions are **blocked by default**. They require the full double-RED conf
 - Trigger: any `rm -rf` (or `rimraf`, `del -rf`, or equivalent) targeting paths that contain files not created or modified by the current feature branch.
 - Determination: compare the target path against `git diff --name-only main...HEAD`. If the target contains files not in the diff, this is Tier 1.
 - Why it's Tier 1: deletes work that exists outside the current change set, potentially destroying unrelated code, config, or data.
+- **System temp-path exemption:** subpaths under `/tmp/`, `/var/tmp/`, `/var/folders/`, and their `/private/`-prefixed macOS canonical forms (e.g. `/private/var/folders/...`) are exempt — these directories are designed to be ephemeral, and blocking deletes inside them interrupts test fixtures and `mktemp -d` cleanup. Bare temp roots themselves (`rm -rf /tmp`) are not exempt; only subpaths.
 
 **4. Deploy with failing test gates**
 - Trigger: any attempt to execute Step 5 (Trigger CI/CD) in the Ship protocol when the Constitution test gates have not passed.
@@ -44,10 +45,12 @@ Tier 2 actions can be **downgraded to Tier 3** (proceed with logged warning only
 **1. Any rm -rf**
 - Trigger: `rm -rf` or equivalent bulk-delete command targeting any path, regardless of scope.
 - Pause message: "About to delete [target path] recursively. This will permanently remove all files and directories at that path. Confirm? (yes/no)"
+- **System temp-path exemption:** same as Tier 1 rule 3 — subpaths of `/tmp/`, `/var/tmp/`, `/var/folders/`, and their `/private/`-prefixed canonical forms pass through silently (no pause, no log). Bare temp roots are still gated.
 
 **2. git reset --hard**
 - Trigger: `git reset --hard [any ref]`.
 - Pause message: "About to run `git reset --hard [ref]`. This will discard all uncommitted changes and move HEAD to [ref]. This cannot be undone. Confirm? (yes/no)"
+- **Temp-cwd exemption:** when the working directory is a subpath of `/tmp/`, `/var/tmp/`, `/var/folders/`, or their `/private/`-prefixed canonical forms, the reset passes through without confirmation. Scratch clones used for test fixtures have no real work to lose.
 
 **3. Production database commands**
 - Trigger: `psql`, `mysql`, `sqlite3`, or any ORM migration runner invoked with a production connection string (identified by: `DATABASE_URL` or `DB_URL` containing `prod`, `production`, or a non-localhost, non-test host; or connection strings explicitly labeled `prod` in env files).
@@ -58,8 +61,10 @@ Tier 2 actions can be **downgraded to Tier 3** (proceed with logged warning only
 - Pause message: "About to make a [METHOD] request to [URL]. This is an external write operation. Confirm? (yes/no)"
 
 **5. Modifying CONSTITUTION.md or DECISIONS.md**
-- Trigger: any write, edit, or overwrite of `docs/pdlc/memory/CONSTITUTION.md` or `docs/pdlc/memory/DECISIONS.md`.
+- Trigger: any write, edit, or overwrite of `docs/pdlc/memory/CONSTITUTION.md` or `docs/pdlc/memory/DECISIONS.md`. Files merely *named* CONSTITUTION.md or DECISIONS.md elsewhere on disk (test fixtures, unrelated user notes) are not the project's protected memory and do not trip this rule — the path must contain `docs/pdlc/memory/`.
 - Pause message: "About to modify [file]. This changes the rules/decisions governing this project. Confirm? (yes/no)"
+- **First-time-create exception:** a `Write` to a path that does not yet exist on disk is treated as Tier 3 (logged, not paused). `/setup` Step 5 generates these files from templates — there is no prior state to drift from, so Tier 2's protection doesn't apply. Subsequent overwrites or any `Edit` still pause and confirm.
+- **Temp-cwd exemption:** when the working directory is a subpath of `/tmp/`, `/var/tmp/`, `/var/folders/`, or their `/private/`-prefixed canonical forms, Bash-redirection writes (rule 2e) to a `docs/pdlc/memory/CONSTITUTION.md` / `DECISIONS.md` path pass through without confirmation — typical of scratch clones used for test fixtures.
 
 **6. Closing all open Beads tasks at once**
 - Trigger: any command that marks all remaining open Beads tasks as done in a single operation (e.g. `bd done --all`, or a scripted loop closing every task).

@@ -245,6 +245,31 @@ Record the user's choice: if declined, set `Party Mode` to `subagents` in STATE.
 
 ---
 
+## 1c-iii. Scan for plugin / skill conflicts.
+
+Run a one-shot scan for other Claude Code plugins or raw skill clones that could collide with PDLC's slash commands (today: `obra/superpowers` ships a `/brainstorm` command that shadows PDLC's when installed as raw files):
+
+```bash
+pdlc check-conflicts --repo-root "$(pwd)"
+```
+
+Interpret based on exit code:
+- **0** with no output beyond a check mark — no conflicts; continue.
+- **0** with an `ℹ️` block — informational only; the conflicting tool is installed as a proper Claude Code plugin and its commands are namespaced (e.g. `/superpowers:brainstorm`). No action needed; continue.
+- **2** — a raw-clone install was detected. Show the report verbatim to the user, then ask:
+
+  > "PDLC detected another tool installed as raw skills/commands at the location(s) above. Its `/brainstorm` (or other commands) will shadow PDLC's. Pick one:
+  > - **A** — let me reinstall the conflicting tool as a proper Claude Code plugin (commands get namespaced; both coexist cleanly).
+  > - **B** — let me remove the conflicting raw files now (PDLC takes ownership of `/brainstorm`).
+  > - **C** — keep both as-is and accept that one shadows the other.
+  > - **defer** — continue with init for now; I'll re-flag at `/diagnose`."
+
+  If the user picks **A**, walk through the `claude plugins install <tool>@<marketplace>` command and ask them to remove the raw files. If **B**, remove the listed files (use the `rm` commands from the report; remember Tier 2 confirm fires for paths inside the project — temp paths are exempt). If **C** or **defer**, continue with init; the conflict will surface again at `/diagnose` Check 9.
+
+This is informational at init time — not a blocker. The finding is recorded so future sessions know the user accepted the conflict.
+
+---
+
 ## 1d. Detect CI/CD pipeline.
 
 Check for an existing CI/CD setup in this order:

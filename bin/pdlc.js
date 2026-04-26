@@ -13,6 +13,8 @@ const VERSION = require(path.join(PLUGIN_ROOT, 'package.json')).version;
 const GLOBAL_SETTINGS_PATH = path.join(os.homedir(), '.claude', 'settings.json');
 const PLUGIN_SETTINGS_PATH = path.join(PLUGIN_ROOT, 'config', 'claude-settings.json');
 
+const { detectPluginConflicts, formatReport: formatConflictReport } = require('./pdlc-conflict-check');
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function readJson(filePath) {
@@ -293,7 +295,7 @@ function printBeadsStatus() {
     console.log(`  Beads (bd)  : \u2713 installed (${beadsVersion()})`);
   } else {
     console.log(`  Beads (bd)  : \u2717 not found`);
-    console.log(`                Required for /pdlc init and the Construction phase.`);
+    console.log(`                Required for /setup and the Construction phase.`);
     console.log(`                Install: npm install -g @beads/bd`);
   }
 }
@@ -319,7 +321,7 @@ async function promptInstallDolt() {
   log(`\n  Dolt is a SQL database required by Beads for task storage.`);
 
   if (!process.stdin.isTTY) {
-    log(`  Install it before running /pdlc init:`);
+    log(`  Install it before running /setup:`);
     log(`  ${installCmd}`);
     return false;
   }
@@ -334,7 +336,7 @@ async function promptInstallDolt() {
         return true;
       }
     } catch (err) {
-      log('\n  Dolt installation failed. Install it manually before running /pdlc init:');
+      log('\n  Dolt installation failed. Install it manually before running /setup:');
       log(`  ${installCmd}`);
       return false;
     }
@@ -358,10 +360,10 @@ async function promptInstallBeads(local) {
   const scope = local ? 'locally (devDependency)' : 'globally';
   const installCmd = local ? 'npm install --save-dev @beads/bd' : 'npm install -g @beads/bd';
 
-  log(`\n  Beads (bd) is required by PDLC for task management during /pdlc init and /pdlc build.`);
+  log(`\n  Beads (bd) is required by PDLC for task management during /setup and /build.`);
 
   if (!process.stdin.isTTY) {
-    log(`  Install it ${scope} before running /pdlc init:`);
+    log(`  Install it ${scope} before running /setup:`);
     log(`  ${installCmd}`);
     return;
   }
@@ -379,11 +381,11 @@ async function promptInstallBeads(local) {
         log(`\n  Beads (bd)  : \u2713 installed ${scope}`);
       }
     } catch (err) {
-      log('\n  Beads installation failed. Install it manually before running /pdlc init:');
+      log('\n  Beads installation failed. Install it manually before running /setup:');
       log(`  ${installCmd}`);
     }
   } else {
-    log('\n  Beads is required before you can run /pdlc init. Install it manually:');
+    log('\n  Beads is required before you can run /setup. Install it manually:');
     log(`  ${installCmd}`);
   }
 }
@@ -864,6 +866,23 @@ async function install(opts = {}) {
   // run alongside the rest of the project bootstrap (CONSTITUTION,
   // INTENT, Memory Bank, Roadmap). This keeps the tool install fast and
   // network-friendly for users in restricted networks.
+
+  // Plugin-conflict scan — detect tools whose commands/skills overlap with
+  // PDLC's namespace (today: obra/superpowers' /brainstorm). Informational
+  // for proper plugin installs (namespaced, no real collision); a warning
+  // for raw-clone installs (unnamespaced, would shadow PDLC).
+  try {
+    const repoRoot     = local ? (opts.repoRoot || process.cwd()) : null;
+    const conflictRes  = detectPluginConflicts({ repoRoot });
+    const conflictRpt  = formatConflictReport(conflictRes);
+    if (conflictRpt) {
+      log('');
+      log(conflictRpt);
+    }
+  } catch (_) {
+    // Never fail install on a check error — the user can re-run
+    // `pdlc check-conflicts` manually if curious.
+  }
 
   log('\nStart a new Claude Code session to activate.');
   log('Next step  : open a project and run /setup\n');
@@ -1544,6 +1563,7 @@ Usage:
   npx @pdlc-os/pdlc upgrade             Upgrade PDLC + Beads globally
   npx @pdlc-os/pdlc upgrade --local     Upgrade PDLC + Beads locally
   npx @pdlc-os/pdlc status              Show install status
+  npx @pdlc-os/pdlc check-conflicts     Scan for plugin/skill conflicts (e.g. obra/superpowers)
   npx @pdlc-os/pdlc --version           Print version
 
 Local install (recommended for teams):
@@ -1554,19 +1574,20 @@ Global install:
   npm install -g @pdlc-os/pdlc           Installs hooks for all projects
 
 Slash commands (inside a Claude Code session after install):
-  /pdlc init        Phase 0 \u2014 Initialization: Constitution \xb7 Intent \xb7 Memory Bank \xb7 Beads
-  /pdlc brainstorm  Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
-  /pdlc build       Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
-  /pdlc ship        Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
-  /pdlc decide    Record a decision in the Decision Registry (any phase)
-  /pdlc whatif       Explore a hypothetical scenario with read-only team analysis
-  /pdlc doctor       Run a comprehensive health check on PDLC state and code alignment
-  /pdlc rollback     Revert a shipped feature with post-mortem and fix options
-  /pdlc hotfix       Emergency compressed build-ship cycle for production issues
-  /pdlc abandon      Abandon the current feature and clean up artifacts
-  /pdlc pause        Pause the current feature and save state for later
-  /pdlc resume       Resume a paused feature from its saved checkpoint
-  /pdlc override  Override a Tier 1 safety block (double-RED confirmation)
+  /setup        Phase 0 \u2014 Initialization: Constitution \xb7 Intent \xb7 Memory Bank \xb7 Beads
+  /brainstorm   Phase 1 \u2014 Inception: Discover \u2192 Define \u2192 Design \u2192 Plan
+  /build        Phase 2 \u2014 Construction: Build \u2192 Review \u2192 Test
+  /ship         Phase 3 \u2014 Operation: Ship \u2192 Verify \u2192 Reflect
+  /decide       Record a decision in the Decision Registry (any phase)
+  /whatif       Explore a hypothetical scenario with read-only team analysis
+  /diagnose     Run a comprehensive health check on PDLC state and code alignment
+  /rollback     Revert a shipped feature with post-mortem and fix options
+  /hotfix       Emergency compressed build-ship cycle for production issues
+  /abandon      Abandon the current feature and clean up artifacts
+  /pause        Pause the current feature and save state for later
+  /continue     Resume a paused feature from its saved checkpoint
+  /release      Force-release a stuck roadmap claim so another dev can pick it up
+  /override     Override a Tier 1 safety block (double-RED confirmation)
 
 Marketplace: https://github.com/pdlc-os
 `);
@@ -1601,6 +1622,21 @@ async function main() {
     case 'status':
       status();
       break;
+    case 'check-conflicts': {
+      const json     = rest.includes('--json');
+      const repoIdx  = rest.indexOf('--repo-root');
+      const repoRoot = repoIdx >= 0 ? rest[repoIdx + 1] : process.cwd();
+      const result   = detectPluginConflicts({ repoRoot });
+      if (json) {
+        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+      } else {
+        const report = formatConflictReport(result);
+        process.stdout.write((report || '✓ No plugin conflicts detected — PDLC has clean ownership of its slash commands.') + '\n');
+      }
+      const hasRaw = result.summary === 'raw-only' || result.summary === 'mixed';
+      process.exit(hasRaw ? 2 : 0);
+      break;
+    }
     case 'postinstall':
       await postinstall();
       break;

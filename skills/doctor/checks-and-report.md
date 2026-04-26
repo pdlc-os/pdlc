@@ -95,6 +95,26 @@ Verify the current codebase respects the Constitution:
 
 ---
 
+## Check 9 — Plugin / skill conflicts
+
+Detect other Claude Code plugins or raw skill clones whose commands/skills overlap with PDLC's namespace. Today this primarily targets `obra/superpowers`, which ships a `/brainstorm` slash command that, when installed as raw files (rather than via `claude plugins install`), shadows PDLC's `/brainstorm`.
+
+Run:
+```bash
+pdlc check-conflicts --repo-root "$(pwd)"
+```
+
+Interpret the exit code:
+- **0** — clean, or only proper plugin installs detected (commands are namespaced as `/<plugin>:<cmd>`, so no real collision; a one-line FYI may print).
+- **2** — at least one raw-clone conflict detected (same-name commands at the unnamespaced level — needs user attention).
+
+**Findings:**
+- Raw-clone conflict (exit 2) → `[WARNING] [tool] is installed as raw skills/commands at [path] — /brainstorm or other commands may shadow PDLC's. Run \`pdlc check-conflicts\` for resolution options.`
+- Plugin install only (informational) → `[INFO] [tool] is installed as a Claude Code plugin alongside PDLC. Commands are namespaced; no collision.`
+- Clean → no entry in the report.
+
+---
+
 ## Report — Present findings to user
 
 Compile all findings into a report sorted by severity:

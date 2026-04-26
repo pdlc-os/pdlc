@@ -73,6 +73,19 @@ npx @pdlc-os/pdlc status
 
 Shows install mode (local/global), plugin root path, hook registration, and Beads status.
 
+### Check for plugin / skill conflicts
+
+```bash
+npx @pdlc-os/pdlc check-conflicts
+```
+
+Scans for other Claude Code plugins or raw skill clones whose slash commands could shadow PDLC's. Today it detects [`obra/superpowers`](https://github.com/obra/superpowers) — a separate skill collection that ships its own `/brainstorm` command. The check distinguishes:
+
+- **Proper plugin install** (via `claude plugins install`) — informational only; commands are auto-namespaced as `/<plugin>:<cmd>` so PDLC's `/brainstorm` and `/superpowers:brainstorm` coexist without collision. Exits 0.
+- **Raw-clone install** (files copied directly into `~/.claude/commands/` or `~/.claude/skills/`) — real conflict. Same-name commands shadow each other unpredictably. Exits 2 and prints resolution options.
+
+The check runs automatically at the end of `pdlc install` and as Check 9 of `/diagnose`. Run it manually any time you suspect a conflict.
+
 ### The `superclaude` shortcut
 
 Installing PDLC also registers a `superclaude` command. It's a thin wrapper equivalent to:
