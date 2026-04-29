@@ -1,6 +1,6 @@
 # Security in PDLC
 
-> *This page is the canonical reference for how PDLC handles security. It is written to stand on its own — a security reviewer reading only this page should be able to assess whether PDLC's controls are sufficient for their project's risk profile.*
+> *Canonical reference for how PDLC handles security. Reads end-to-end as a self-contained document.*
 
 ## Security is paramount in PDLC
 
@@ -14,7 +14,7 @@ Security in PDLC is enforced through a **layered defense model** rather than a s
 
 The layers are intentionally redundant. A single missed check in any one layer is caught by another. **The only path to ship with a known security issue is a deliberate, recorded acceptance** — `/override` for Tier 1 hard blocks, `/decide` to formally defer findings, or a "Mitigate later"/"Accept" decision at the design-approval gate. There is no silent-ship path.
 
-For an external reviewer assessing PDLC's security controls, the headline is: **the redundancy is the strength**. No single layer is responsible for catching everything; each layer specializes; together they create overlapping coverage where the sum is meaningfully stronger than any one stop.
+**The redundancy is the strength.** No single layer is responsible for catching everything; each layer specializes; together they create overlapping coverage where the sum is meaningfully stronger than any one stop.
 
 For Phantom's full audit catalog (what is checked: OWASP Top 10 / API Top 10 / LLM Top 10, Mobile, Cryptography correctness, Cloud / IaC, etc.), see [`agents/extensions/phantom-security-audit.md`](../../agents/extensions/phantom-security-audit.md). For the safety-guardrails reference, see [`skills/safety-guardrails/SKILL.md`](../../skills/safety-guardrails/SKILL.md).
 
