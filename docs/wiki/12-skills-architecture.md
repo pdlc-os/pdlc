@@ -56,7 +56,8 @@ skills/
           06-progressive-thinking.md  <- agent team meeting (Oracle facilitates)
           07-ux-discovery.md          <- Muse leads, max 3 visual-first questions (conditional on UI/UX + visual companion)
       02-define.md                    <- PRD generation + approval
-      03-design.md                    <- architecture, data model, API contracts
+      03-design.md                    <- architecture, data model, API contracts (+ Step 10.5 threat-modeling handoff)
+      threat-model.md                 <- Step 10.5 helper: Phantom-led threat-modeling party (triage + STRIDE + handoffs)
       04-plan.md                      <- Beads tasks + dependencies
 
   build/
@@ -78,9 +79,11 @@ skills/
   ship/
     SKILL.md                          <- orchestrator
     steps/
-      01-ship.md                      <- merge, changelog, semver, CI/CD
+      01-ship.md                      <- merge, changelog, semver, Step 9.0 lint, CI/CD
       02-verify.md                    <- smoke tests + sign-off
       03-reflect.md                   <- retro + episode + roadmap + next feature
+      custom-deploy-review.md         <- Step 9.2 helper: Deployment Review Party (when user provides custom artifact)
+      fix-lint.md                     <- Step 9.0 helper: Pulse's first action — auto-detect tech stack, apply lint/format fixes
 
   decision/
     SKILL.md                          <- decision review party + reconciliation
@@ -124,8 +127,26 @@ templates/                              <- versioned templates for memory files
   PRD.md
   review.md
   episode.md
+  threat-model.md                     <- Step 10.5 deliverable template
+
+agents/
+  oracle.md, neo.md, bolt.md, ...     <- 9 built-in agent personas
+  extensions/                         <- agent-wide extensions (load on every invocation)
+    phantom-security-audit.md         <- example: extends Phantom with stack-aware security catalog
+  custom-template/
+    agent.md                          <- template for user-authored custom agents
+
   formatting.md                       <- ANSI color scheme + visual patterns
 ```
+
+### Two extension layers
+
+PDLC distinguishes two kinds of extensions, by what loads them:
+
+- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` — the agent's persona file directs the read; fires on every invocation of that agent.
+- **Phase / step-specific extensions** alongside the owning step file (e.g. `skills/ship/steps/fix-lint.md`, `skills/brainstorm/steps/threat-model.md`, `skills/ship/steps/custom-deploy-review.md`) — the step file references the helper; fires only when that step runs.
+
+See [`21-agent-extensions.md`](21-agent-extensions.md) for the authoring conventions.
 
 
 ---

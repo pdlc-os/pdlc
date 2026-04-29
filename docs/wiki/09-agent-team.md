@@ -27,16 +27,37 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 ### Lead agents by phase
 
-| Phase / Sub-phase | Lead Agent | Also leads `/pdlc decide` |
-|-------------------|-----------|----------------------------|
+| Phase / Sub-phase | Lead Agent | Also leads `/decide` |
+|-------------------|-----------|----------------------|
 | Init | Oracle | Yes |
 | Brainstorm — Discover + Define | Oracle | Yes |
+| Brainstorm — Discover Step 4.5 (UX Discovery, conditional) | Muse | — *(returns to Oracle)* |
 | Brainstorm — Design + Plan | Neo | Yes |
+| Brainstorm — Design Step 10.5 (Threat Modeling Party) | **Phantom** | — *(returns to Neo)* |
 | Build (all sub-phases) | Neo | Yes |
 | Ship — Ship + Verify | Pulse | Yes |
 | Ship — Reflect | Jarvis | Yes |
 | Ship — Next Feature | Oracle | Yes |
 | Idle / between phases | — | Oracle |
+
+Step 4.5 (UX Discovery) and Step 10.5 (Threat Modeling) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-threat-modeling.md`](20-threat-modeling.md) for the threat-modeling handoff pattern.
+
+### Agent extension framework
+
+PDLC supports two extension patterns that let projects layer additional behavior onto built-in agents and skills without forking:
+
+- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` — load on every invocation of that agent. *Example: `phantom-security-audit.md` extends Phantom with stack-aware security catalogs.*
+- **Phase / step-specific extensions** at `skills/<phase>/steps/<topic>.md` — load only when a specific step references them. *Example: `skills/ship/steps/fix-lint.md` invoked by Ship Step 9.0 as Pulse's first action on takeover.*
+
+See [`21-agent-extensions.md`](21-agent-extensions.md) for the full authoring guide and conventions.
+
+### Model declarations use tier aliases
+
+Every built-in agent's `model:` frontmatter uses **tier aliases** (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs. Tier aliases resolve to the current latest model in that tier at runtime, so agents stay current as Anthropic ships new models without requiring a PDLC release.
+
+PDLC's tier choice per role: **Opus** for Bolt, Friday, Neo, Oracle, Pulse (leadership and complex-reasoning roles); **Sonnet** for Echo, Jarvis, Muse, Phantom (focused specialist work). Custom agents you author should use the same convention; reserve specific-version pinning for the rare case where reproducibility (compliance, regression testing) demands it.
+
+Override per-session via the `CLAUDE_CODE_SUBAGENT_MODEL` environment variable. See [`17-design-decisions.md`](17-design-decisions.md) for rationale.
 
 
 ---

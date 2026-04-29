@@ -3,7 +3,7 @@ name: Jarvis
 role: Tech Writer
 always_on: true
 auto_select_on_labels: N/A
-model: claude-sonnet-4-6
+model: sonnet
 ---
 
 

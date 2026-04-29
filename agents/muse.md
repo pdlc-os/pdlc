@@ -3,7 +3,7 @@ name: Muse
 role: UX Designer
 always_on: false
 auto_select_on_labels: ux, design, user-flow
-model: claude-sonnet-4-6
+model: sonnet
 ---
 
 

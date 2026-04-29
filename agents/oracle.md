@@ -3,7 +3,7 @@ name: Oracle
 role: Product Manager
 always_on: false
 auto_select_on_labels: requirements, scope, product
-model: claude-opus-4-6
+model: opus
 ---
 
 

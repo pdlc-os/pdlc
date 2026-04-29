@@ -52,8 +52,8 @@ flowchart LR
     subgraph DEFINE["Define - Oracle"]
         PRD["Generate PRD"]
     end
-    subgraph DESIGN["Design - Neo"]
-        BLOOM[Bloom Taxonomy\n3 rounds · max 3 q/round\n+ synthesis] --> DOCS["Architecture\nData Model\nAPI Contracts"]
+    subgraph DESIGN["Design - Neo (+ Phantom for Step 10.5)"]
+        BLOOM[Bloom Taxonomy\n3 rounds · max 3 q/round\n+ synthesis] --> DOCS["Architecture\nData Model\nAPI Contracts"] --> THREAT["Threat Modeling\nStep 10.5 · Phantom\nSTRIDE per boundary\nSkip / Lite / Full triage"]
     end
     subgraph PLAN_PHASE["Plan - Neo"]
         TASKS["Beads tasks\n+ dependencies"]
@@ -81,8 +81,8 @@ All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case 
 |-----------|------|---------------|--------|
 | **Discover** | Oracle | Divergent ideation (optional), Socratic interview (3 rounds, max 4 q/round), **Progressive Thinking** (required agent meeting), Adversarial review (top 3 follow-ups), Edge case analysis (max 3 prompts), **UX Discovery** (Muse leads — conditional on UI/UX features + visual companion; max 3 visual-first questions grounded in existing UI inventory) | Confirmed discovery summary |
 | **Define** | Oracle | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
-| **Design** | Neo | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts | `docs/pdlc/design/[feature]/` |
-| **Plan** | Neo | Beads tasks with dependencies, dependency graph | Plan file |
+| **Design** | Neo (Phantom for Step 10.5) | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts. **Threat Modeling Party at Step 10.5** — Phantom takes lead between design-doc generation and PRD link updates: triage → Skip / Lite (Phantom solo) / Full (full team party using PDLC's party-mode + progressive-thinking machinery). Output is `threat-model.md` reviewed alongside the other three design docs at the Step 12 approval gate. See [`20-threat-modeling.md`](20-threat-modeling.md). | `docs/pdlc/design/[feature]/` (4 files: ARCHITECTURE, data-model, api-contracts, threat-model) |
+| **Plan** | Neo | Beads tasks with dependencies, dependency graph. **Mitigate-now threats** from Step 10.5 land here as Plan-phase tasks; **Mitigate-later** threats are recorded as ADRs in `DECISIONS.md`. | Plan file |
 
 ### Phase 2 -- Construction (`/pdlc build`)
 
@@ -125,7 +125,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph SHIP["Ship + Verify - Pulse"]
-        MERGE[Merge to main\nCHANGELOG + semver] --> CICD[CI/CD] --> SMOKE["Smoke tests"]
+        MERGE[Merge to main\nCHANGELOG + semver] --> LINT["Lint Pass\nStep 9.0 · Pulse first action\nfix-lint extension"] --> CICD[CI/CD] --> SMOKE["Smoke tests"]
     end
     subgraph REFLECT["Reflect - Jarvis"]
         RETRO[Retrospective\nEpisode + ROADMAP update]
@@ -144,7 +144,7 @@ flowchart LR
 
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
-| **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag. Pulse then asks whether the user has a custom deploy/CI/CD/build artifact — if yes, composes it with the default pipeline and runs a **Deployment Review Party** (full team assesses; consolidated plan presented for approval; user preference wins on non-Tier-1 conflicts). CI/CD is triggered with either the consolidated plan or the default (auto-detected: GitHub Actions, npm deploy, Makefile, or scaffolded). Outcome recorded in `DEPLOYMENTS.md`. |
+| **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag. **Step 9.0 — Lint Pass:** Pulse's first action on takeover, before any deployment-artifact prompt. Auto-detects the project's tech stack and applies lint/format fixes per `skills/ship/steps/fix-lint.md` so the codebase ships clean. Pulse then asks whether the user has a custom deploy/CI/CD/build artifact — if yes, composes it with the default pipeline and runs a **Deployment Review Party** (full team assesses; consolidated plan presented for approval; user preference wins on non-Tier-1 conflicts). CI/CD is triggered with either the consolidated plan or the default (auto-detected: GitHub Actions, npm deploy, Makefile, or scaffolded). Outcome recorded in `DEPLOYMENTS.md`. |
 | **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with trend summary, artifacts archived, Beads compacted |
 | **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |

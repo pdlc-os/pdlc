@@ -70,7 +70,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 ## Reference
 
 - **Flow diagram:** `docs/pdlc/reference/flow-diagram.md`
-- **Agent roster (9 built-in + any custom agents from `.pdlc/agents/`):** `docs/pdlc/reference/agents.md` — full personas in `agents/*.md`
+- **Agent roster (9 built-in + any custom agents from `.pdlc/agents/`):** `docs/pdlc/reference/agents.md` — full personas in `agents/*.md`. **Model field convention:** every agent's frontmatter `model:` field uses tier aliases (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs (`claude-opus-4-7` etc.) so agents stay current as Anthropic ships new model versions. Pin a specific version only when reproducibility (compliance, regression testing) demands it. Override per-session with the `CLAUDE_CODE_SUBAGENT_MODEL` env var.
 - **Approval gates & 3-Strike:** `docs/pdlc/reference/approval-gates.md`
 - **Safety guardrails:** `skills/safety-guardrails/SKILL.md`
 - **Interaction Mode (Sketch/Socratic) protocol:** `skills/interaction-mode.md`

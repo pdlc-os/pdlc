@@ -3,7 +3,7 @@ name: Neo
 role: Architect
 always_on: true
 auto_select_on_labels: N/A
-model: claude-opus-4-6
+model: opus
 ---
 
 # Soul Spec — Neo (Architect)

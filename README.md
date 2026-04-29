@@ -377,6 +377,19 @@ During inception, PDLC can run a local browser-based UI (Material Design, light/
 
 Add custom skills (`.pdlc/skills/<name>/SKILL.md`), custom agents (`.pdlc/agents/<name>.md`), and custom test layers (CONSTITUTION.md table) without forking. Templates are provided for both skills and agents. Custom agents are automatically included in team meetings when task labels match.
 
+PDLC also supports two extension patterns for layering behavior onto built-in agents and skills:
+
+- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` load on every invocation of the named agent. *Example: a project's stack-aware security audit catalog extending Phantom.*
+- **Phase / step-specific extensions** alongside the owning step file load only when a specific step references them. *Example: a deploy-time lint pass invoked at Ship Step 9.0 as Pulse's first action.*
+
+Agent `model:` declarations use **tier aliases** (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs, so agents stay current as Anthropic ships new models without requiring a PDLC release. See [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) for the authoring guide.
+
+### Security review built into Inception
+
+Threat modeling is integrated into Brainstorm Design as **Step 10.5** — a Phantom-led step inserted between design-doc generation and the design approval gate. A 3-question triage decides depth (Skip / Lite / Full); Full mode convenes the team for STRIDE-per-trust-boundary analysis using PDLC's existing party-mode + progressive-thinking + cross-talk machinery. The resulting `threat-model.md` joins ARCHITECTURE / data-model / api-contracts as the fourth design artifact reviewed at the Step 12 approval gate. Mitigate-now decisions become Plan-phase tasks; mitigate-later and accept decisions become ADRs. See [Threat Modeling](docs/wiki/20-threat-modeling.md).
+
+Phantom's security audit catalog covers OWASP Web Top 10, OWASP API Security Top 10, OWASP LLM Top 10 (with emerging concerns: MCP server security, RAG isolation, cost amplification), Mobile (iOS/Android/RN/Flutter), Cryptography correctness (JWT alg-confusion, password-hashing parameters, TLS config), 6 backend stacks (Java/Spring, Node, Python, Go, Ruby/Rails, .NET), Cloud & IaC (Terraform/CloudFormation/AWS/GCP), Tech currency & EOL, Software supply chain integrity (SBOM, SLSA, signed artifacts), and 9 compliance regimes (GDPR, CCPA/CPRA, PCI DSS v4.0, SOC 2, HIPAA, COPPA/GDPR-K/AADC, BIPA, DORA, NIS2).
+
 ---
 
 ## Documentation
@@ -421,6 +434,8 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 17  | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
 | 18  | [Extensibility](docs/wiki/18-extensibility.md)       | Custom skills, custom agents, custom test layers — extend PDLC without forking             |
 | 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/release`       |
+| 20  | [Threat Modeling](docs/wiki/20-threat-modeling.md) | Brainstorm Design Step 10.5 — Phantom-led STRIDE party with explicit Neo↔Phantom handoffs; triage tiers (Skip / Lite / Full); 3-layer Progressive Thinking; output reviewed at the design approval gate |
+| 21  | [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) | Two extension patterns (agent-wide vs phase-specific), authoring conventions, tier-aliased model declarations, existing extensions catalog |
 
 ---
 

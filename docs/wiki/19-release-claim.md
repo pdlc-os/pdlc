@@ -72,4 +72,4 @@ Running doctor before releasing a claim is good hygiene — it confirms the clai
 
 ---
 
-[← Previous: Extensibility](18-extensibility.md) | [Back to README](../../README.md)
+[← Previous: Extensibility](18-extensibility.md) | [Back to README](../../README.md) | [Next: Threat Modeling →](20-threat-modeling.md)

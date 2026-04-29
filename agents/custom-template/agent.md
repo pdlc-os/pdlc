@@ -3,7 +3,7 @@ name: YourAgentName
 role: Your Role Title
 always_on: false
 auto_select_on_labels: label1,label2,label3
-model: claude-sonnet-4-6
+model: sonnet
 ---
 
 <!-- 
@@ -23,7 +23,7 @@ model: claude-sonnet-4-6
   - role: Short role title (e.g., "Data Engineer", "Compliance Auditor")
   - always_on: true = participates in every task/review; false = only when labels match
   - auto_select_on_labels: comma-separated labels that trigger this agent's inclusion
-  - model: claude-opus-4-6 (complex reasoning) or claude-sonnet-4-6 (focused work)
+  - model: tier alias — `opus` (complex reasoning / leadership), `sonnet` (focused specialist work), `haiku` (fast utility), or `inherit` (use the parent session's model). Tier aliases resolve to the latest model in that tier at runtime — preferred over pinning specific versions like `claude-opus-4-7`. Pin a version only when reproducibility (compliance, regression testing) demands it.
 -->
 
 # Soul Spec — [YourAgentName] ([Your Role Title])

@@ -3,7 +3,7 @@ name: Friday
 role: Frontend Engineer
 always_on: false
 auto_select_on_labels: frontend, ui, components
-model: claude-opus-4-6
+model: opus
 ---
 
 # Soul Spec — Friday (Frontend Engineer)

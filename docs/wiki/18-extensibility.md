@@ -90,7 +90,7 @@ name: DataScience
 role: Data Engineer
 always_on: false
 auto_select_on_labels: ml,data,pipeline,etl
-model: claude-sonnet-4-6
+model: sonnet
 ---
 ```
 
@@ -100,7 +100,7 @@ model: claude-sonnet-4-6
 | `role` | Yes | Short role title |
 | `always_on` | No (default: false) | `true` = participates in every task and review |
 | `auto_select_on_labels` | No | Comma-separated labels — agent is included when any task has a matching label |
-| `model` | No (default: sonnet) | `claude-opus-4-6` for complex reasoning, `claude-sonnet-4-6` for focused work |
+| `model` | No (default: `inherit`) | **Use tier aliases:** `opus` for complex reasoning / leadership roles, `sonnet` for focused specialist work, `haiku` for fast utility roles. Tier aliases resolve to the latest model in that tier at runtime — preferred over pinning specific versions like `claude-opus-4-7`, which goes stale. Pin a specific version only when reproducibility (compliance, regression testing) requires it. See [`17-design-decisions.md`](17-design-decisions.md) for the rationale. |
 
 ### How custom agents participate
 
@@ -115,7 +115,7 @@ model: claude-sonnet-4-6
 name: DataScience
 role: Data Engineer
 auto_select_on_labels: ml,data,pipeline
-model: claude-sonnet-4-6
+model: sonnet
 ---
 
 # Soul Spec — DataScience (Data Engineer)
@@ -200,4 +200,4 @@ your-project/
 
 ---
 
-[← Previous: Design Decisions](17-design-decisions.md) | [Back to README](../../README.md)
+[← Previous: Design Decisions](17-design-decisions.md) | [Back to README](../../README.md) | [Next: Release a stuck claim →](19-release-claim.md)
