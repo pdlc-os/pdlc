@@ -214,15 +214,16 @@ Update `docs/pdlc/memory/ROADMAP.md`: find the row matching `[feature-name]` and
 
 ## Lead Agent Assignments
 
-Inception has three lead agents. Oracle and Neo are the primary leads with a handoff at the Define→Design boundary; Muse takes the lead for one conditional step (UX Discovery, Step 4.5) inside Oracle's Discover sub-phase.
+Inception has four lead agents. Oracle and Neo are the primary leads with a handoff at the Define→Design boundary; Muse takes the lead for one conditional step (UX Discovery, Step 4.5) inside Oracle's Discover sub-phase; Phantom takes the lead for one step (Threat Modeling, Step 10.5) inside Neo's Design sub-phase, with explicit Neo→Phantom and Phantom→Neo handoffs.
 
 | Sub-phases | Lead Agent | Why |
 |------------|-----------|-----|
 | Discover + Define (Steps 0–8, except Step 4.5) | **Oracle** (Product Manager) | Problem framing, user discovery, requirements, PRD writing |
 | Discover Step 4.5 — UX Discovery (conditional) | **Muse** (UX Designer) | UI/UX questioning grounded in the project's existing component library, shipped UX patterns, and design tokens. Runs inside Oracle's Discover sub-phase only when the feature has UI/UX elements **and** the visual companion is available. Skipped (with logged reason) otherwise. Control returns to Oracle for Synthesis (Steps 5–6). |
-| Design + Plan (Steps 9–19) | **Neo** (Architect) | Architecture, data model, API contracts, task decomposition. On UX-heavy features, Neo consumes UX Discovery outputs (selected layout / flow / state grid, design deviations, DECISIONS.md candidates) when generating design documents. |
+| Design + Plan (Steps 9–19, except Step 10.5) | **Neo** (Architect) | Architecture, data model, API contracts, task decomposition. On UX-heavy features, Neo consumes UX Discovery outputs (selected layout / flow / state grid, design deviations, DECISIONS.md candidates) when generating design documents. |
+| Design Step 10.5 — Threat Modeling Party | **Phantom** (Security Reviewer) | STRIDE-per-trust-boundary analysis of the just-generated design (`ARCHITECTURE.md`, `data-model.md`, `api-contracts.md`). Triage decides depth: **Skip** (no new attack surface), **Lite** (Phantom solo), or **Full** (full team party using the existing party-mode orchestrator + Progressive Thinking pattern). Output is `threat-model.md` reviewed alongside the other design artifacts at the Step 12 approval gate. Control returns to Neo for Step 11 (PRD link updates) and Step 12 (approval gate). |
 
-Read each lead agent's full persona from `agents/oracle.md`, `agents/muse.md`, and `agents/neo.md` and embody their perspective during their respective steps.
+Read each lead agent's full persona from `agents/oracle.md`, `agents/muse.md`, `agents/neo.md`, and `agents/phantom.md` (plus `agents/extensions/phantom-security-audit.md`) and embody their perspective during their respective steps.
 
 Before the first user-facing message, read `skills/formatting.md` for the visual patterns, then output a **Phase Transition Banner** for "BRAINSTORM" (with the feature name) followed by:
 

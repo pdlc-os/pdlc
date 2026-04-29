@@ -90,7 +90,15 @@ Do not attempt to force-push.
 
 ### Step 9 — Deploy (Pulse coordinates)
 
-Pulse leads the deploy sub-phase: ask the user about custom deployment artifacts, reconcile them with the default pipeline if provided, trigger the deploy, and record the outcome.
+Pulse leads the deploy sub-phase: **lint the codebase first**, then ask the user about custom deployment artifacts, reconcile them with the default pipeline if provided, trigger the deploy, and record the outcome.
+
+#### Step 9.0 — Lint the codebase (Pulse's first action on takeover)
+
+Before any deployment-artifact prompt or pipeline work, Pulse runs a lint pass on the codebase to surface formatting, style, and static-analysis issues that should not ship to production. Pulse follows the instructions in `skills/ship/steps/fix-lint.md` to determine which linters to run, how to interpret findings, and what to fix vs. defer. Where the extension and this skill conflict on the same point, **the extension takes precedence**.
+
+If `skills/ship/steps/fix-lint.md` does not exist, skip this sub-step with a one-line note to the user — *"Lint extension not configured — skipping. Add `skills/ship/steps/fix-lint.md` to enable a deploy-time lint pass."* — and proceed directly to Step 9.1.
+
+When the lint pass completes (or once Pulse and the user have agreed which findings to defer), proceed to Step 9.1.
 
 #### Step 9.1 — Custom deployment artifact prompt
 

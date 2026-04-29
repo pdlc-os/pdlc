@@ -99,9 +99,38 @@ If this feature requires no new API endpoints, write: "No new API endpoints. Thi
 
 ---
 
+### Step 10.5 — Threat Modeling Party (Phantom leads)
+
+After the three design documents are generated and committed, **before** PRD link updates and the design approval gate, the team pressure-tests the design for security threats. Neo hands lead off to Phantom for the duration of this step; Phantom hands lead back at the end.
+
+#### Neo → Phantom handoff (always)
+
+Output an **Agent Handoff** block (per `skills/formatting.md`) before any threat-model work begins:
+
+> **Neo (Architect):** "Phantom — design documents are generated and committed at `docs/pdlc/design/[feature-name]/` (`ARCHITECTURE.md`, `data-model.md`, `api-contracts.md`). Before we lock the design at Step 12, the team needs to pressure-test it for security threats. You're up — run the triage, and convene the party if it warrants. I'll continue Step 11 (PRD link updates) and walk us into the design approval gate at Step 12 once your threat model is in place. The three design docs are the source of truth for the trust-boundary walk, and if UX Discovery ran (Step 4.5), pull the user-flow diagram into your modeling — attackers think like users do."
+>
+> **Phantom (Security Reviewer):** "On it. I'll triage the new attack surface against ARCHITECTURE.md and data-model.md, decide whether a full party is warranted, and bring you back a `threat-model.md` plus MOM if we convene. If the triage comes out Skip, you'll have the file as a one-line record so the audit trail is complete either way."
+
+#### Run the threat-modeling skill
+
+Read `skills/brainstorm/steps/threat-model.md` and execute it completely. The skill handles its own triage (Skip / Lite / Full), runs the party if needed (using the existing party-mode orchestrator from `skills/build/party/orchestrator.md` and Progressive Thinking pattern from `skills/brainstorm/steps/discover/06-progressive-thinking.md`), writes `docs/pdlc/design/[feature-name]/threat-model.md`, and writes the MOM at `docs/pdlc/mom/MOM_threat-model_[feature-name]_[YYYY-MM-DD].md` if a full party convened.
+
+The threat model uses the template at `templates/threat-model.md`. Preserve the `<!-- pdlc-template-version -->` comment as with all other templates.
+
+#### Phantom → Neo handoff back (always)
+
+After triage and (if applicable) the party complete, Phantom hands lead back to Neo. The exact text varies by triage outcome — see the three handoff variants in `skills/brainstorm/steps/threat-model.md` (Phase E). Neo resumes lead at Step 11 and carries all four design artifacts forward to the Step 12 approval gate.
+
+---
+
 ### Step 11 — Update PRD design doc links
 
-Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to the three files just created.
+Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to **all four** design artifacts now in `docs/pdlc/design/[feature-name]/`:
+
+- `ARCHITECTURE.md`
+- `data-model.md`
+- `api-contracts.md`
+- `threat-model.md` *(always present — Skip mode produces a one-line record so the audit trail is complete)*
 
 ---
 
@@ -113,12 +142,17 @@ Tell the user:
 > - `ARCHITECTURE.md`
 > - `data-model.md`
 > - `api-contracts.md`
+> - `threat-model.md` *(triage outcome: [Skip / Lite / Full])*
 >
-> Please review them. Reply **approve** to continue to Plan, or provide feedback and I will revise."
+> Please review them. The threat model surfaces [N] threats requiring decisions — for each, the party recommended a path (mitigate now / mitigate later / accept / transfer). You can confirm each recommendation, override it, or reject and require redesign. **Open questions for you** are listed at the bottom of `threat-model.md` — please address each before approval.
+>
+> Reply **approve** to continue to Plan, or provide feedback and I will revise."
 
 Wait for explicit approval. Do not proceed to Plan until the user approves.
 
-If the user provides feedback: revise the relevant design doc(s), save the updated files, and re-present for approval. Repeat until approved.
+If the user provides feedback on the design: revise the relevant design doc(s), save the updated files, and re-present for approval. Repeat until approved.
+
+If the user provides feedback on the threat model (override a recommendation, add a missed threat, change a severity): update `threat-model.md` accordingly, fill in the **Approval Outcomes** table at the bottom of that file, and re-present. For any threat tagged "Mitigate later" or "Accept" after human decision, **draft an ADR entry in `docs/pdlc/memory/DECISIONS.md`** before proceeding — deferring or accepting known security debt is a deliberate decision worth durable record.
 
 Update `[brainstorm-log]` frontmatter:
 ```
