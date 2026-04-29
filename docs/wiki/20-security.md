@@ -1,26 +1,130 @@
 # Security in PDLC
 
-Security is paramount in PDLC, and it's enforced through a **layered defense model** rather than a single security checkpoint. A feature shipped through PDLC passes through multiple independent security mechanisms — configuration-level commitments, dedicated lifecycle stops, continuous agent participation, runtime guardrails, and a finding-lifecycle that keeps threats alive across phases. The layers are intentionally redundant: a single missed check in any one layer is caught by another. The only failure mode is *deliberately accepted risk* recorded as an ADR — which is the intended behavior, not a gap.
+> *This page is the canonical reference for how PDLC handles security. It is written to stand on its own — a security reviewer reading only this page should be able to assess whether PDLC's controls are sufficient for their project's risk profile.*
 
-This page is the canonical reference for **how PDLC does security**. For Phantom's full audit catalog (the *what* — OWASP Top 10, API Top 10, LLM Top 10, Mobile, Cryptography correctness, etc.), see [`agents/extensions/phantom-security-audit.md`](../../agents/extensions/phantom-security-audit.md). For the safety guardrails referenced here, see [`skills/safety-guardrails/SKILL.md`](../../skills/safety-guardrails/SKILL.md).
+## Security is paramount in PDLC
+
+Security in PDLC is enforced through a **layered defense model** rather than a single security checkpoint. A feature shipped through PDLC passes through five independent security mechanisms:
+
+1. **Configuration** — the security contract is captured once at init time in `CONSTITUTION.md`.
+2. **Dedicated lifecycle stops** — explicit security activities at specific points in the feature lifecycle (threat modeling at design time, security review at construction time, security gates at ship time).
+3. **Continuous agent participation** — Phantom (the Security Reviewer agent) is `always_on: true` and contributes to every task, every meeting, every decision, every retrospective.
+4. **Hook layer** — runtime guardrails fire on every Bash, Edit, and Write tool call regardless of phase.
+5. **Lifecycle of findings** — threats found at design time propagate forward through Plan → Build → Ship → Reflect with named owners and re-evaluation triggers.
+
+The layers are intentionally redundant. A single missed check in any one layer is caught by another. **The only path to ship with a known security issue is a deliberate, recorded acceptance** — `/override` for Tier 1 hard blocks, `/decide` to formally defer findings, or a "Mitigate later"/"Accept" decision at the design-approval gate. There is no silent-ship path.
+
+For an external reviewer assessing PDLC's security controls, the headline is: **the redundancy is the strength**. No single layer is responsible for catching everything; each layer specializes; together they create overlapping coverage where the sum is meaningfully stronger than any one stop.
+
+For Phantom's full audit catalog (what is checked: OWASP Top 10 / API Top 10 / LLM Top 10, Mobile, Cryptography correctness, Cloud / IaC, etc.), see [`agents/extensions/phantom-security-audit.md`](../../agents/extensions/phantom-security-audit.md). For the safety-guardrails reference, see [`skills/safety-guardrails/SKILL.md`](../../skills/safety-guardrails/SKILL.md).
 
 ---
 
-## The layered defense model
+## The five-layer defense model
 
 | Layer | What it covers | Where it lives |
 |---|---|---|
-| **1. Configuration** | The contract — what security rules apply to this project, captured once at init time | `CONSTITUTION.md` §1 / §4 / §7 / §8; `DECISIONS.md` ADRs |
-| **2. Lifecycle stops** | Dedicated security activities at specific points in the feature lifecycle | Brainstorm Design Step 10.5, Build Review, Build Test Layer 7, Ship Step 9.0 / 9.2 / Verify |
-| **3. Continuous agent participation** | Phantom is `always_on: true` — contributes to every task, every meeting, every decision | All phases — Build, Review, parties, retro |
-| **4. Hook layer** | Tier 1 / 2 / 3 guardrails fire on every Bash / Edit / Write tool call regardless of phase | `hooks/pdlc-guardrails.js` |
-| **5. Lifecycle-of-findings** | Threats found at design time propagate forward through Plan / Build / Ship / Reflect with named owners and re-evaluation triggers | `docs/pdlc/design/<feature>/threat-model.md`, ADRs in `DECISIONS.md`, episode files |
-
-The combination is what makes security *paramount*. No single layer is responsible for catching everything; together, they create overlapping coverage where each layer specializes in a different failure class.
+| **1. Configuration** | The security contract — what rules apply to this project, captured once at init | `CONSTITUTION.md` §1 / §4 / §7 / §8; `DECISIONS.md` ADRs |
+| **2. Dedicated lifecycle stops** | Explicit security activities at specific lifecycle points | Brainstorm Step 10.5, Build Review, Build Test Layer 7, Ship Step 9.0 / 9.2 / Verify |
+| **3. Continuous agent participation** | Phantom always-on; contributes to every task, meeting, decision, retro | All phases — Build, Review, parties, retrospectives |
+| **4. Hook layer** | Tier 1 / 2 / 3 guardrails on every Bash / Edit / Write tool call | `hooks/pdlc-guardrails.js` |
+| **5. Lifecycle of findings** | Threats stay alive across phases with named owners and re-evaluation triggers | `docs/pdlc/design/<feature>/threat-model.md`, ADRs in `DECISIONS.md`, episode files |
 
 ---
 
-## Layer 1 — Configuration
+## What happens when a security issue is found
+
+PDLC uses a **three-tier severity model**. The behavior depends on how severe the finding is — and every behavior creates a durable record so nothing ships silently.
+
+### Severity → action mapping
+
+| Severity | Action | Bypass path | Record created |
+|---|---|---|---|
+| **Tier 1 — Critical** | **Hard block.** Cannot proceed. | `/override` (double-RED confirmation) | Permanent entry in `STATE.md` + ADR in `DECISIONS.md`. Permanently logged. |
+| **Tier 2 — Major** | **Pause and confirm.** Execution stops; explicit "yes" required. | Type `yes` at the prompt | Recorded in `STATE.md` "Guardrail log" |
+| **Tier 3 — Minor** | **Logged warning.** Proceeds without interruption. | None needed | Recorded in `STATE.md` "Guardrail log" with rationale |
+
+### Tier 1 — Hard blocks (security findings)
+
+These cannot ship without an explicit `/override`:
+
+- **Hardcoded secrets / credentials in repo** — Phantom-driven detection (covered by the secret-scan in Layer 7 tests, Phantom's per-task review, and the pre-merge guardrails hook).
+- **Critical dependency vulnerabilities** — known critical CVE in any project dependency (covered by Layer 7 dep-audit and Phantom's per-task review).
+- **Failing test gates** — including Layer 7 Security tests (dep audit, secret scan, OWASP). Deploying with failing test gates is itself Tier 1 per CLAUDE.md.
+- **Force-push to `main` / `master`** — bypasses review records and history integrity.
+- **Phantom's "Blocking concerns"** *(per `agents/phantom.md`)*:
+  - IDOR / broken access control allowing cross-user data access.
+  - Unauthenticated endpoint that performs a state-mutating action or exposes sensitive data.
+  - Unsanitized user input reaching SQL / NoSQL / shell execution context.
+- **Critical findings from the Deployment Review Party** *(when user provides custom deploy artifact)* — hardcoded secrets in the artifact, exposed credentials, unsafe shell commands. Per [`custom-deploy-review.md`](../../skills/ship/steps/custom-deploy-review.md), these escalate to Tier 1 even though deployment review is normally a soft-gate party.
+
+### Tier 2 — Pause-and-confirm (security findings)
+
+These pause execution and require explicit "yes":
+
+- **Phantom's findings rated CRITICAL or HIGH that aren't in the Tier 1 hard-block list above** — e.g., a high-severity SSRF finding the user wants to defer.
+- **Editing `CONSTITUTION.md` / `DECISIONS.md`** — including drafting the ADR that records a deferred or accepted security finding. Intentional friction: even *recording* an accepted risk is itself a Tier 2 confirmation point.
+- **Production database commands** — `psql` / `mysql` / `sqlite3` against connection strings indicating production. Most common path for accidental data exposure.
+- **External API calls that write/post/send** — `curl -X POST/PUT/DELETE` to non-localhost URLs, including Slack webhooks, payment processors, GitHub API write calls.
+- **`git reset --hard`** — discards uncommitted work, including in-progress security fixes.
+
+### Tier 3 — Logged warnings (security findings)
+
+These ship through but get recorded:
+
+- **Phantom's "Soft warnings"** *(per `agents/phantom.md`)*:
+  - Missing rate limiting on authenticated endpoints (defense-in-depth)
+  - CVE rated Medium or below with no available patch
+  - Missing security headers (HSTS, CSP, X-Frame-Options) — defense-in-depth, not primary control
+  - Error messages more verbose than necessary but not exposing secrets
+  - Authz check correct but in an inconsistent layer compared to the codebase
+- **Skipping a non-Layer-7 test layer** with rationale.
+- **Constitution-rule overrides** with rationale (deviations from project-defined rules in CONSTITUTION.md §1–§7).
+
+### Override paths and accountability records
+
+Sometimes a project has to ship with a known issue. PDLC's design ensures every such case is **deliberate and recorded** — there's no silent-ship path:
+
+| Override path | When used | Record created |
+|---|---|---|
+| **`/override "<command>"`** *(double-RED)* | Any Tier 1 hard block | Permanent entry in `STATE.md` + ADR in `DECISIONS.md` with rationale |
+| **`/decide`** | Formally accepting or deferring a security finding | ADR in `DECISIONS.md` with full Decision Review Party MOM |
+| **Step 12 approval gate** "Mitigate later" / "Accept" decision | A threat from Step 10.5 the user wants to ship with | ADR in `DECISIONS.md`; threat tagged in `threat-model.md` Approval Outcomes table; tech-debt entry recorded at Reflect |
+| **`CONSTITUTION.md §8` Safety Guardrail Overrides** | Long-standing project policy to downgrade specific actions | The CONSTITUTION.md is the record; every override fires Tier 3 logged-warning even when downgraded |
+
+### The "no silent ship" principle
+
+PDLC explicitly does **not** allow:
+
+- ❌ Skipping Layer 7 Security tests with no rationale (rationale is mandatory; the skip is logged in STATE.md).
+- ❌ Silently bypassing Phantom's Blocking concerns (Tier 1 cannot be ignored — only `/override`d with explicit double-RED).
+- ❌ Shipping a "Mitigate now" threat without implementation (Phantom's design-drift check at Build Review catches this).
+- ❌ Editing `DECISIONS.md` or `CONSTITUTION.md` without acknowledgment (Tier 2 pause-and-confirm even when *recording* an accepted risk).
+- ❌ Closing all open Beads tasks (including security-related ones) at once (Tier 2 pause-and-confirm prevents bulk dismissal).
+
+---
+
+## Where security gates fire across the ship pipeline
+
+A single feature may pass through up to seven security gates between Build start and Ship Verify:
+
+| # | Gate | Location | What blocks shipping |
+|---|---|---|---|
+| 1 | **Phantom's per-task review** *(continuous)* | Build Loop, every task | Phantom's Blocking concerns → Tier 1 hard block. Soft warnings → Tier 3 logged. |
+| 2 | **Party Review security pillar** | Build Review (Phantom is one of 4 always-on parallel reviewers) | Critical findings gate the merge. |
+| 3 | **Layer 7 — Security tests** *(always-on)* | Build Test sub-phase | Test failures → Tier 1 hard block on the deploy that follows. |
+| 4 | **Pre-merge guardrails hook** *(every commit)* | `hooks/pdlc-guardrails.js` on every Bash/Edit/Write tool call | Hardcoded secrets, force-push to main, DROP TABLE without migration → Tier 1 hard block. |
+| 5 | **Threat-model "Mitigate now" verification** | Build Review (Phantom re-checks the threat model) | If a Step-10.5 "Mitigate now" threat doesn't have a corresponding implementation, Phantom flags design drift requiring resolution before merge. |
+| 6 | **Deployment Review Party** *(conditional)* | Ship Step 9.2, only when user provides custom artifact | Phantom's critical findings on deploy artifacts (secrets, missing auth on prod, unsafe shell) → Tier 1 hard block. |
+| 7 | **Pre-deploy security check** | Ship Verify sub-phase | Dependency audit + secret scan + security-headers verification before smoke-test sign-off. Failures gate the deploy. |
+
+A feature that starts with no security risk-surface (Step 10.5 triage = Skip) still passes through gates 1, 2, 3, 4, 7. Gates 5 and 6 are conditional on threat-model findings and custom-artifact presence respectively.
+
+---
+
+## The five layers in detail
+
+### Layer 1 — Configuration
 
 The security contract is captured once at init time and referenced by every subsequent phase. Four sections of `CONSTITUTION.md` carry security weight:
 
@@ -31,63 +135,22 @@ The security contract is captured once at init time and referenced by every subs
 | **§7 — Test Gates** | Mandates **Layer 7 — Security tests** as part of every Build (dependency audit, secret scan, OWASP check); skipping any layer is Tier 3 logged | Build Test sub-phase enforces |
 | **§8 — Safety Guardrail Overrides** | The only legitimate way to relax Tier 1 / 2 / 3 — e.g., downgrade a Tier 2 to Tier 3 with rationale | The guardrails hook reads this at every tool call |
 
-Decisions accepting or deferring known security risk become ADRs in `docs/pdlc/memory/DECISIONS.md`. The ADR record is durable: every "Mitigate later" threat from Step 10.5 lands here, every "Accept" decision from Step 12 lands here, every Tier 1 override executed via `/override` lands here. Future audits can trace the *why* behind any accepted risk.
+Decisions accepting or deferring known security risk become ADRs in `docs/pdlc/memory/DECISIONS.md`. The ADR record is durable: every "Mitigate later" threat from Step 10.5, every "Accept" decision from Step 12, every Tier 1 override executed via `/override`. Future audits can trace the *why* behind any accepted risk.
 
----
-
-## Layer 2 — Dedicated lifecycle stops
+### Layer 2 — Dedicated lifecycle stops
 
 These are explicit, named security activities at specific points in the feature lifecycle. Each has its own gate, output artifact, and approval path.
 
-### Threat Modeling Party — Brainstorm Design Step 10.5 *(major section, see deep dive below)*
+- **Threat Modeling Party — Brainstorm Design Step 10.5** *(major section, see deep dive below)* — Phantom-led party between design-doc generation and the design approval gate. Triage tier (Skip / Lite / Full) decides depth. Output: `threat-model.md` reviewed alongside ARCHITECTURE / data-model / api-contracts at the Step 12 approval gate.
+- **Party Review (security pillar) — Build Review** — Phantom is one of four always-on parallel reviewers. Runs his full Decision Checklist + extension catalog on the diff. Cross-talk rounds (up to 3) link related findings to shared root causes. Critical findings gate the merge.
+- **Layer 7 — Security Tests — Build Test** — always-on test layer (per CONSTITUTION §7 default). Three sub-checks: full dependency audit (re-scans the entire dependency tree), secret scan on diff, OWASP automated SAST/DAST sweep. Skip requires Tier 3 logged warning with explicit rationale.
+- **Deployment Review Party — Ship Step 9.2** *(conditional)* — triggered only when the user provides a custom deploy / CI/CD / build artifact at Ship Step 9.1. Phantom's findings on deployment artifacts are escalated: hardcoded secrets, exposed credentials, missing auth on production endpoints, unsafe shell commands all become **Tier 1 hard blocks** even though deployment review is normally a soft-gate party.
+- **Pre-deploy security check — Ship Verify** — automated check before smoke-test sign-off. Dependency audit against the deployed environment, secret scan of deployed configuration / environment variables, security-headers verification against deployed endpoints (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy).
+- **Lint pass — Ship Step 9.0** — Pulse's first action on takeover, per [`skills/ship/steps/fix-lint.md`](../../skills/ship/steps/fix-lint.md). Not strictly a security check but security-adjacent: linters used (ESLint security plugins, gosec, Bandit) include SAST rules that catch many security smells (insecure deserialization patterns, weak crypto usage, command-injection vectors).
 
-Phantom-led party between design-doc generation and the design approval gate. Triage tier (Skip / Lite / Full) decides depth. Output: `threat-model.md` reviewed alongside ARCHITECTURE / data-model / api-contracts at the Step 12 approval gate.
+### Layer 3 — Continuous agent participation
 
-### Party Review (security pillar) — Build Review
-
-Phantom is one of **four always-on parallel reviewers** (Neo / Echo / Phantom / Jarvis). Phantom runs his **full Decision Checklist + extension catalog** on the diff:
-
-- Every item in `agents/phantom.md`'s Decision Checklist (8 base checks)
-- Every applicable item in the extension's checklist (Cryptography, API Top 10, LLM, Mobile, Dependency staleness, Tech currency / EOL, Supply chain, Compliance regimes — 8 additional groups)
-
-Cross-talk rounds (up to 3) link related findings to shared root causes — e.g., Phantom's hardcoded-secret finding plus Pulse's missing-env-var-handoff finding routed for a single fix. **Critical findings gate the merge.** Phantom's "Blocking concerns" (IDOR, hardcoded secrets, unauthenticated state-mutating endpoints, parameterless queries with user input) require resolution or explicit `/override`.
-
-### Layer 7 — Security Tests — Build Test sub-phase
-
-Always-on test layer (per CONSTITUTION §7 default). Three sub-checks:
-
-1. **Full dependency audit** — re-scans the entire dependency tree (not just the diff) to catch transitive vulnerabilities introduced by upgrade chains.
-2. **Secret scan on diff** — checks new/modified files for accidentally-committed credentials, tokens, keys, connection strings.
-3. **OWASP check** — automated SAST / DAST sweep against the just-built artifact.
-
-The layer can only be skipped via Tier 3 logged warning with explicit rationale recorded in `STATE.md`.
-
-### Deployment Review Party — Ship Step 9.2 *(conditional)*
-
-Triggered only when the user provides a custom deploy / CI/CD / build artifact at Ship Step 9.1. The full team assesses the composed plan (user artifact + PDLC defaults). Phantom's findings on deployment artifacts are escalated:
-
-- **Tier 1 hard blocks**: hardcoded secrets in the artifact, exposed credentials, missing auth on production endpoints, unsafe shell commands.
-- **Soft warnings** (user decides): missing security headers, verbose logging, defense-in-depth gaps.
-
-User preference wins on non-Tier-1 conflicts — the goal is to surface risks for informed choice, not to block legitimate operational patterns.
-
-### Pre-deploy security check — Ship Verify sub-phase
-
-Automated check before smoke-test sign-off:
-
-- **Dependency audit** against the deployed environment's dependency graph.
-- **Secret scan** of deployed configuration / environment variables.
-- **Security headers verification** against the deployed endpoints (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy).
-
-### Lint pass — Ship Step 9.0
-
-Pulse's first action on takeover, per [`skills/ship/steps/fix-lint.md`](../../skills/ship/steps/fix-lint.md). Not strictly a security check, but security-adjacent: linters used (ESLint security plugins, gosec, Bandit) include SAST rules that catch many security smells (insecure deserialization patterns, weak crypto usage, command-injection vectors).
-
----
-
-## Layer 3 — Continuous agent participation (Phantom always-on)
-
-Phantom's frontmatter is `always_on: true`. He participates in **every task, every review, every meeting, every decision** without needing label-based selection. The continuous-layer security checks Phantom contributes to every task during Build:
+Phantom's frontmatter is `always_on: true`. He participates in every task, every review, every meeting, every decision, every retrospective without needing label-based selection. Per-task during Build:
 
 | Check | Scope | What Phantom looks for |
 |---|---|---|
@@ -98,66 +161,17 @@ Phantom's frontmatter is `always_on: true`. He participates in **every task, eve
 | **Dependency CVE check** | Every task adding/updating deps | New or updated dependencies checked against `npm audit` / `pip-audit` / `bundler-audit` / `govulncheck` / equivalent |
 | **Distillation digest preserve** | Every Phantom-authored doc | ADR IDs, security constraints, "must not" rules preserved verbatim in any digest |
 
-Beyond these per-task checks, Phantom's expanded extension catalog (active via `agents/extensions/phantom-security-audit.md`) adds:
+### Layer 4 — Hook layer (always-on guardrails)
 
-- **OWASP API Security Top 10** — BOLA, BOPLA, broken auth/function-level auth, unrestricted resource consumption, SSRF, business-flow abuse, improper inventory, unsafe consumption of APIs.
-- **OWASP LLM Top 10** *(when LLM features present)* — prompt injection (direct + indirect), insecure output handling, training data poisoning, model DoS, supply chain, sensitive info disclosure, insecure plugin design, excessive agency, overreliance, model theft. Plus emerging concerns: MCP server security, RAG isolation, cost amplification, tool/function-calling boundaries.
-- **Mobile** *(iOS / Android / RN / Flutter)* — Keychain / KeyStore, ATS / Network Security Config, code signing, IPC security, biometric APIs, OTA update signing.
-- **Cryptography correctness** — banned algorithms, JWT alg confusion, password-hashing parameters, certificate validation, TLS config, cryptographic agility.
-- **Backend stacks** — Java/Spring, Node/Express, Python (Django/Flask/FastAPI), Go, Ruby/Rails, .NET/ASP.NET Core. Per-stack scans for deserialization, framework footguns, dependency hygiene.
-- **Cloud & IaC** — Terraform, CloudFormation/CDK, Helm, IaC scanners; AWS-specific (S3, IAM, KMS, CloudTrail, GuardDuty); GCP-specific (IAM bindings, service-account impersonation, VPC SC).
-- **Tech currency & EOL** — language runtimes, frameworks, databases, container base images, OS distros vs [endoflife.date](https://endoflife.date).
-- **Software supply chain integrity** — SBOM (CycloneDX / SPDX), SLSA framework, signed artifacts, reproducible builds, typosquatting / dependency-confusion, install-script auditing.
-- **Compliance regimes** — GDPR, CCPA/CPRA, PCI DSS v4.0, SOC 2, HIPAA, COPPA/GDPR-K/AADC, BIPA, DORA, NIS2.
+The `hooks/pdlc-guardrails.js` PreToolUse hook fires on every Bash, Edit, and Write tool call — regardless of phase, regardless of which agent is active. Three tiers (full reference in [`14-safety-guardrails.md`](14-safety-guardrails.md)):
 
-See the extension file for the full catalog.
+- **Tier 1 hard blocks** — security-relevant rules listed in the [Tier 1 — Hard blocks](#tier-1--hard-blocks-security-findings) section above.
+- **Tier 2 pause-and-confirm** — security-relevant rules listed in the [Tier 2 — Pause-and-confirm](#tier-2--pause-and-confirm-security-findings) section above.
+- **Tier 3 logged warnings** — Phantom's accepted soft warnings, test-layer skips, Constitution-rule overrides, downgraded actions per CONSTITUTION §8.
 
----
+**Metadata-command short-circuit:** `git commit`, `git tag -m`, `gh release|pr|issue`, and `gh api` legitimately quote arbitrary text in their argument bodies (commit messages, release notes, PR descriptions). Those bodies routinely *describe* destructive operations (`rm -rf`, `git reset --hard`, `DROP TABLE`, `curl -X POST`) without executing them. The hook treats these outer commands as message-data wrappers and skips all Tier 1 / Tier 2 Bash checks. Edit/Write tool checks on protected files are unaffected.
 
-## Layer 4 — Hook layer (always-on guardrails)
-
-The `hooks/pdlc-guardrails.js` PreToolUse hook fires on every Bash, Edit, and Write tool call — regardless of phase, regardless of which agent is active. Three tiers:
-
-### Tier 1 — Hard blocks (security-relevant rules)
-
-Cannot proceed without a `/override` (double-RED confirmation, permanently logged):
-
-- **Force-push to `main` / `master`** — irreversible history rewrite affecting all collaborators.
-- **`DROP TABLE` without prior migration file** — irreversible data destruction without audit trail.
-- **`rm -rf` outside the project directory** — system path destruction. *(Temp-path subpaths exempt — `/tmp/`, `/var/tmp/`, `/var/folders/`, and `/private/`-prefixed canonical forms — to support test-fixture cleanup.)*
-- **Deploy with failing test gates** — ships broken or insecure code to production.
-- **Hardcoded secrets** — Phantom-driven detection of credentials, tokens, keys committed to the repo.
-- **Critical dependency vulnerabilities** — known critical CVE in a project dependency.
-
-### Tier 2 — Pause and confirm (security-relevant rules)
-
-Pauses execution and requires explicit "yes" confirmation:
-
-- **`rm -rf`** (any path not blocked at Tier 1) — broad delete, even within project.
-- **`git reset --hard`** — discards uncommitted work. *(Exempt when `cwd` is in a system temp subtree — scratch test clones have no real work to lose.)*
-- **Production database commands** — `psql` / `mysql` / `sqlite3` against connection strings indicating production.
-- **External API calls that write/post/send** — `curl -X POST/PUT/DELETE`, `wget --post`, `axios.post`/`put`/`delete` to non-localhost URLs. Includes Slack webhooks, email APIs, payment processors, GitHub API write calls.
-- **Editing `CONSTITUTION.md` / `DECISIONS.md`** — changes the rules / decisions governing this project. *(First-time-create exempt — no prior state to drift from on creation.)*
-- **Closing all open Beads tasks at once** — bulk close of remaining work.
-
-### Tier 3 — Logged warnings
-
-Proceeds without interruption but records the event in `STATE.md` "Guardrail log" section:
-
-- **Phantom's accepted security warnings** — any "Soft warning" findings the user opted to accept rather than fix this round.
-- **Test-layer skips with rationale** — including Layer 7 Security tests skipped.
-- **Constitution-rule overrides with rationale** — explicit deviations from project-defined rules.
-- **Tier 3-downgraded actions** — Tier 2 actions explicitly downgraded via `CONSTITUTION.md §8`.
-
-### Metadata-command short-circuit
-
-`git commit`, `git tag -m`, `gh release|pr|issue`, and `gh api` legitimately quote arbitrary text in their argument bodies (commit messages, release notes, PR descriptions). Those bodies routinely *describe* destructive operations (`rm -rf`, `git reset --hard`, `DROP TABLE`, `curl -X POST`) without executing them. The hook treats these outer commands as message-data wrappers and skips all Tier 1 / Tier 2 Bash checks. Edit/Write tool checks on protected files are unaffected.
-
-See [`14-safety-guardrails.md`](14-safety-guardrails.md) for the full guardrails reference.
-
----
-
-## Layer 5 — Lifecycle-of-findings (threats stay alive)
+### Layer 5 — Lifecycle of findings
 
 Security findings are not one-shot. They propagate forward through the lifecycle with named owners, due dates, and re-evaluation triggers:
 
@@ -176,7 +190,7 @@ The lifecycle ensures nothing accepted at design time is silently forgotten by s
 
 ## Threat Modeling Party — deep dive (Brainstorm Design Step 10.5)
 
-The single most security-deliberate addition to the lifecycle. Phantom-led party that pressure-tests the just-generated design before approval.
+The single most security-deliberate addition to PDLC. Phantom-led party that pressure-tests the just-generated design before approval.
 
 ### When it runs
 
@@ -188,7 +202,7 @@ Step 11   — Update PRD design doc links (now includes threat-model.md)
 Step 12   — Design approval gate (human reviews all four artifacts together)
 ```
 
-This placement is load-bearing: the design artifacts are concrete enough to model threats against, but design isn't yet locked, so threat findings can drive design revisions before approval. Earlier than Step 10 there's no design to attack; later than Step 12 the design is approved and mitigations become retrofit.
+This placement is load-bearing: the design artifacts are concrete enough to model threats against, but design isn't yet locked, so threat findings can drive design revisions before approval.
 
 ### Lead handoff (Neo → Phantom → Neo)
 
@@ -202,9 +216,9 @@ The handoff is explicit and always fires, regardless of triage outcome. Both dir
 
 **At the end of Step 10.5 (Phantom → Neo)** — three banner variants depending on triage outcome (Full / Lite / Skip), each summarizing the threats found and the handback expectation. Full text in `skills/brainstorm/steps/threat-model.md` (Phases A and E).
 
-### Triage gate (always runs first)
+### Triage gate
 
-Phantom reads the three design documents and answers three questions:
+Phantom answers three questions about the design:
 
 1. **Trust boundary changes?** New auth surface, new external integration, new role/permission, new data egress, new sensitive-data handler.
 2. **Regulated data?** PII, payment, health, biometric, children's data.
@@ -216,11 +230,9 @@ Phantom reads the three design documents and answers three questions:
 | 1 / 3 | **Lite** | Phantom drafts `threat-model.md` solo — single-pass STRIDE walk, no party. ~10 min of focused work. |
 | 2 or 3 / 3 | **Full** | Convene the **Threat Modeling Party**. |
 
-The Skip mode still produces a `threat-model.md` (with rationale recorded) so the audit trail is complete — and the human can override the triage at Step 12 if they disagree.
+Skip mode still produces a `threat-model.md` (with rationale recorded) so the audit trail is complete — and the human can override the triage at Step 12 if they disagree.
 
-### Full party flow
-
-When triage = Full, Phantom convenes the team using PDLC's existing party-mode orchestrator. Participants and their lenses:
+### Full party participants
 
 | Agent | Threat-modeling lens |
 |---|---|
@@ -272,7 +284,7 @@ That chain is impossible to find with single-agent analysis — it requires Phan
 
 A Full party produces two files; Lite produces one; Skip produces a stub:
 
-- **`docs/pdlc/design/<feature>/threat-model.md`** — always present. The structured deliverable, using `templates/threat-model.md` as the template. Sections: triage record, trust boundaries, threats identified (with STRIDE / severity / DREAD / mitigation proposal / human decision slot), low-severity appendix, open questions for human, approval outcomes table (filled at Step 12), revision history.
+- **`docs/pdlc/design/<feature>/threat-model.md`** — always present. Structured deliverable, using `templates/threat-model.md` as the template. Sections: triage record, trust boundaries, threats identified (with STRIDE / severity / DREAD / mitigation proposal / human decision slot), low-severity appendix, open questions for human, approval outcomes table (filled at Step 12), revision history.
 - **`docs/pdlc/mom/MOM_threat-model_<feature>_<date>.md`** — Full mode only. Meeting minutes per existing party-mode pattern: participants, layer-by-layer findings, severity reasoning, proposal-by-proposal debate, dissents, cross-talk highlights.
 
 Both files are linked from the PRD's Design Docs section at Step 11, then reviewed alongside the other three design artifacts at the Step 12 approval gate.
@@ -286,6 +298,28 @@ Three load-bearing choices:
 3. **Party + Progressive Thinking + cross-talk, not a checklist.** STRIDE checklists exist; what's harder is finding chained threats across agent perspectives. The cross-talk protocol (up to 3 rounds with early-exit) is what differentiates this from a static catalog walk.
 
 See [`17-design-decisions.md`](17-design-decisions.md) for the longer rationale.
+
+---
+
+## Phantom's audit catalog summary
+
+Beyond the per-task continuous checks listed in Layer 3, Phantom's expanded extension catalog (active via `agents/extensions/phantom-security-audit.md`) covers:
+
+- **OWASP Web Top 10** — injection, broken auth, broken access control, security misconfig, sensitive-data exposure, XXE, insecure deserialization, known-vulnerable components, insufficient logging, SSRF.
+- **OWASP API Security Top 10** — BOLA, BOPLA (mass assignment / over-data exposure), broken auth/function-level auth, unrestricted resource consumption, SSRF, business-flow abuse, security misconfig, improper inventory management, unsafe consumption of APIs.
+- **OWASP LLM Top 10** *(when LLM features present)* — prompt injection (direct + indirect), insecure output handling, training data poisoning, model DoS, supply chain, sensitive info disclosure, insecure plugin design, excessive agency, overreliance, model theft. Plus emerging concerns: MCP server security, RAG isolation, cost amplification, tool/function-calling boundaries, persistent prompt context.
+- **Mobile** *(iOS / Android / RN / Flutter)* — Keychain / KeyStore, ATS / Network Security Config, code signing, IPC security, biometric APIs, OTA update signing.
+- **Cryptography correctness** — banned algorithms (MD5/SHA1/DES/RC4/ECB), JWT alg confusion (alg:none, HS-vs-RS, kid validation, jwk injection), CSPRNG audit, password-hashing parameters (bcrypt cost, argon2id memory/iterations), key derivation, certificate validation, TLS config, cryptographic agility.
+- **Backend stacks** — Java/Spring (deserialization, JPA query security, dep CVEs/staleness), Node/Express (middleware, prototype pollution, SSRF), Python (Django/Flask/FastAPI; pickle/yaml deserialization, ORM injection), Go (data races, panic-as-DoS, unsafe usage, HTTP timeouts), Ruby/Rails (Marshal.load deserialization, ERB injection, ReDoS, ActiveRecord SQLi), .NET/ASP.NET Core (BinaryFormatter, Data Protection key ring, EF Core query injection).
+- **Cloud & IaC** — Terraform (state encryption, secrets in state), CloudFormation/CDK (IAM least privilege, drift), Helm (signed charts), AWS-specific (S3 policies, IAM, KMS, CloudTrail, GuardDuty, Lambda, VPC endpoints), GCP-specific (IAM bindings, service-account impersonation, VPC SC, Cloud KMS, Audit Logs).
+- **Tech currency & EOL** — language runtimes, frameworks, databases, container base images, OS distros vs [endoflife.date](https://endoflife.date). EOL components → CRITICAL; ≤90-day EOL → HIGH; ≤1-year EOL → MEDIUM.
+- **Software supply chain integrity** — SBOM (CycloneDX/SPDX) per release, SLSA framework target Level 3, signed artifacts via Sigstore (`cosign`), reproducible builds, build-environment hardening (ephemeral CI runners), typosquatting / dependency-confusion mitigation, install-script auditing, source-code-hosting hardening.
+- **Compliance regimes** — GDPR, CCPA/CPRA, PCI DSS v4.0, SOC 2, HIPAA, COPPA/GDPR-K/AADC, BIPA, DORA, NIS2.
+- **Database** — SQL (privileges, encryption, RLS for multi-tenant separation, column-level encryption), NoSQL (Redis ACLs, MongoDB operator injection, Elasticsearch painless sandbox, DynamoDB IAM conditions), vector DBs (namespace isolation, embedding leakage, RAG-content prompt injection), data warehouses (RBAC, masking, column-level security).
+- **Infrastructure & DevOps** — Docker (base-image vulns, USER directive, BuildKit secrets, multi-stage), Kubernetes (RBAC, network policies, Pod Security Standards `restricted`, service-mesh mTLS, admission controllers OPA Gatekeeper / Kyverno), runtime security (Falco / Tracee), CI/CD (secret management, OIDC federation, workflow permissions, third-party action signing).
+- **Monitoring & alerting** — auth-failure monitoring, authz-bypass detection, unusual data-access patterns, WAF integration, SIEM integration, audit-logging integrity (append-only, tamper-evident, retention).
+
+See `agents/extensions/phantom-security-audit.md` for the full catalog with detection techniques and remediation guidance per category.
 
 ---
 
@@ -363,19 +397,21 @@ Putting all five layers together, here's where security touchpoints fire across 
 
 ---
 
-## Net assessment
+## Concrete worked example
 
-Security in PDLC is **layered**, not single-pointed:
+Suppose Phantom flags two findings during Build Review:
 
-- **Configuration layer** — CONSTITUTION.md captures the contract once.
-- **Lifecycle layer** — explicit security party (Step 10.5) at design time; explicit security review pillar (Party Review) at construction time; explicit security gate (pre-deploy + deployment review) at ship time.
-- **Continuous layer** — Phantom's `always_on: true` flag means he contributes to every task, every meeting, every decision, every retro — not just the dedicated security stops.
-- **Hook layer** — guardrails fire on every tool call regardless of phase.
-- **Lifecycle-of-findings layer** — threats found at Step 10.5 don't disappear; they propagate forward through Plan / Build / Ship / Reflect with named owners and re-evaluation triggers.
+1. **CVE-2024-XXXX in `lodash` (CRITICAL)** — known critical vulnerability with a patch available
+2. **Missing CSP header** — defense-in-depth, no immediate exploit
 
-The combination is intentionally redundant. A single missed check in any one layer is caught by another. The only failure mode is *deliberately accepted risk* recorded in DECISIONS.md as an ADR — which is the intended behavior, not a gap.
+What happens if the team tries to ship?
 
-Security is paramount in PDLC because **no single layer is responsible for it**. Every layer specializes; together they create overlapping coverage where the sum is meaningfully stronger than any one stop.
+| Finding | PDLC's response |
+|---|---|
+| Critical lodash CVE | **Tier 1 hard block.** Build Review's critical-findings gate refuses to merge. Three options: (a) update lodash and re-run review (most common); (b) `/override` with explicit rationale (rare; permanently logged in STATE.md + ADR in DECISIONS.md); (c) `/decide` to formally defer with an ADR (still requires `/override` to merge, but the deferral is documented). Without one of these, Build does not transition to Ship. |
+| Missing CSP header | **Tier 3 logged warning.** Recorded in `STATE.md` Guardrail log; team can address in a follow-up feature. Ship proceeds. The episode file Jarvis drafts at Reflect notes the open warning so it doesn't get lost. |
+
+The principle illustrated: **the answer to "can I ship with this issue?" is always one of three things** — *yes, recorded* / *yes, but pause and confirm* / *only with double-RED override and permanent record*. There is no path to ship silently with security issues, by design.
 
 ---
 
