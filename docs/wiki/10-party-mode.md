@@ -66,7 +66,21 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 | **Threat Modeling** | **Phantom** | 3 (Surface → Prioritize → Mitigate) + up to 3 cross-talk per layer | Yes — chained threats only surface across agents | Phantom leads with explicit Neo→Phantom and Phantom→Neo handoffs at the boundaries. Runs at Brainstorm Design Step 10.5 only when triage produces 2+/3 yeses (Full); a 1/3 triage runs Lite mode (Phantom solo, no party); 0/3 skips with a one-line audit-trail record. STRIDE per trust boundary; DREAD-flavored severity; 4 mitigation buckets (mitigate now / later / accept / transfer). Output is `threat-model.md` reviewed at the Step 12 design approval gate alongside the other three design docs. See [`20-security.md`](20-security.md). |
 | **Sync Assessment** | Phase lead | 1 (parallel assessment of remote diff) | Only if conflict risk is Medium/High | 6 agents assess remote changes from their domain. Lightweight (~1-2 min). Only fires when local is behind remote. |
 
-**Cross-talk cap:** Up to 3 cross-talk rounds per meeting, with early exit on consensus (except Progressive Thinking, which has conflict resolution built into its structure). Most disagreements resolve in 1–2 rounds; rounds 2 and 3 only run when agents are still moving toward consensus. If positions stay locked between rounds, cross-talk stops early. If consensus is not reached after 3 rounds (or earlier when locked), the disagreement is surfaced in the MOM as an open question for the human. See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules.
+**Cross-talk cap:** Up to 3 cross-talk rounds per meeting, with early exit on consensus (except Progressive Thinking, which has conflict resolution built into its structure). Most disagreements resolve in 1–2 rounds; rounds 2 and 3 only run when agents are still moving toward consensus. If positions stay locked between rounds, cross-talk stops early.
+
+**Pitch Round + Vote (when cross-talk fails):** if cross-talk terminates without consensus (3 rounds exhausted or early-exited on locked positions), the meeting runs a second bounded resolution attempt before any human escalation:
+
+1. **Pitch Round** — each disagreeing agent delivers a 1–3 paragraph closing argument addressing the strongest counterargument from cross-talk and explaining why their position should win on the merits. Only parties to the disagreement pitch.
+2. **Vote** — all meeting participants vote on the pitched positions; abstention is valid when the disagreement is outside the agent's domain. The lead votes too, unless they are themselves a party to the dispute (in which case they recuse from voting AND from the threshold-based authority described next).
+3. **Threshold determines lead's authority:**
+   - **Supermajority** (≥66.7% on one position) — lead **must** follow the supermajority; cannot override on their own. Escalating to human is the only escape.
+   - **Simple majority** (>50% but <66.7%) — lead **strongly considers** but may override; override requires an explicit rationale in the MOM.
+   - **No majority** (no position >50%) — lead's discretionary call, citing the strongest pitch.
+4. **MOM records each pitch verbatim, each agent's vote (or abstention), the threshold reached, and the lead's decision** with rationale. Every override-with-rationale becomes a durable receipt.
+
+If pitch+vote still doesn't yield a workable resolution (or the lead recused and escalated), the disagreement surfaces in the MOM as an open question for the human, with the vote tally attached as input data. **Pitch+vote does not apply to Tier 1 hard blocks** — security/safety blocks cannot be voted out. It also does not apply to Threat Modeling Party at Step 10.5 in a binding way (the human owns final acceptance at the Step 12 design approval gate by design; pitch+vote informs the *party recommendation* the human reviews).
+
+See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" and "Pitch Round + Vote" for the full rules.
 
 **Tool access by mode:**
 - **Agent Teams** (default): Agents can use tools (Read, Grep, Bash) to verify claims — e.g., read source code, check test files

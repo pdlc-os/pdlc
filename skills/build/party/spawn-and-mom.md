@@ -100,7 +100,7 @@ To run a cross-talk round: spawn only the agents whose perspectives interact. Pa
 2. **Positions moved but didn't converge** — there's progress. Run another round if rounds remain.
 3. **Positions locked, no movement** — cross-talk is unproductive. Stop early even if rounds remain; further rounds will not change the outcome.
 
-If consensus is not reached after 3 rounds (or earlier per (3)), surface the disagreement in the MOM as an open question for the human. Cross-talk is a bounded attempt at agent-side resolution — it is not a substitute for human decisioning when agents fundamentally disagree.
+If consensus is not reached after 3 rounds (or earlier per (3)), the meeting proceeds to the **Pitch Round + Vote** (described below) before any human escalation. Cross-talk is a bounded attempt at agent-side resolution through dialogue; pitch+vote is a second bounded attempt that elicits each disagreeing agent's *closing argument* and quantifies the team's overall sentiment. Only after both layers fail does the disagreement surface for human decisioning.
 
 ### How cross-talk runs in each spawn mode
 
@@ -123,6 +123,87 @@ The mechanics differ because the modes have different communication channels.
 Each cross-talk round in subagent mode = N additional Agent calls where N is the number of participants in that cross-talk. Early exit therefore matters more here than in Agent Teams mode — running 3 rounds with 4 participants is 12 spawn calls.
 
 **Solo mode.** A single LLM roleplays all agents in one response. Cross-talk is simulated within the same response — the orchestrator narrates Round 1, then writes each agent's reaction to the others, repeating up to 3 times. Each "round" is a section of the same generation, not a new call. `## Your Previous Position` is implicit (the model sees the whole conversation). Lock detection is by inspection: if Round N's positions are essentially restatements of Round N-1, stop. Solo is the lowest-fidelity mode — risk of false consensus since one model maintains every persona.
+
+---
+
+## Pitch Round + Vote
+
+When cross-talk fails (3 rounds exhausted without convergence, or early-exit on locked positions), the meeting runs a **Pitch Round + Vote** before any human escalation. This is a second, bounded attempt at agent-side resolution that operates on different rhetorical work than cross-talk:
+
+- **Cross-talk** is dialogue — agents react to each other and may shift positions mid-round.
+- **Pitch Round** is each disagreeing agent's *closing argument* given the points of contention surfaced in cross-talk. Positions lock at end of pitch.
+- **Vote** quantifies the team's overall sentiment, including agents who stayed quiet during cross-talk but hold a clear position.
+
+Some agents — and not only the lead — may have read the cross-talk record without speaking; the pitch+vote step gives them a structured way to register their position. The lead also gets clear, threshold-based authority guidance instead of having to interpret unquantified sentiment.
+
+### When pitch+vote runs
+
+Triggered by:
+- Cross-talk Round 3 ended without consensus (3 rounds exhausted), OR
+- Cross-talk early-exited on locked positions (rounds remained but no movement).
+
+Skipped when:
+- Cross-talk reached consensus (no disagreement to resolve).
+- The disagreement is on a **Tier 1 hard block** — Tier 1 cannot be voted out; the lead cannot override Tier 1 by majority. (The lead can still escalate Tier 1 to `/override` separately, but that's a different mechanism.)
+- The meeting is **What-If Analysis** (`/whatif`) — read-only, no decision to vote on. Disagreement is recorded in the MOM as alternatives.
+- The meeting is the **Threat Modeling Party** at Step 10.5 — pitch+vote informs the *party recommendation* per threat, but the human owns final acceptance at the Step 12 design approval gate by design. The vote is data the human sees; it is not a binding decision.
+
+### Step 1 — Pitch Round (parties to the dispute only)
+
+Each agent holding a divergent position delivers one final pitch:
+
+- **One spawn per disagreeing agent.** Not every meeting participant pitches — only the parties to the disagreement. (If the disagreement is 3-way, three pitches; if 2-way, two pitches.)
+- **The pitch is a closing argument**, not new analysis. Each disagreeing agent restates their position, addresses the strongest counterargument from cross-talk, and explains why their position should win on the merits.
+- **Format** — 1–3 short paragraphs maximum per pitch. The pitch is intended to inform the vote, not to re-litigate the cross-talk.
+- **Agent Teams mode**: pitches are delivered in the shared meeting; all participants see them.
+- **Subagent mode**: orchestrator collects each pitch and includes them all in the vote prompt.
+- **Solo mode**: orchestrator writes each pitch as a section in the same generation, then the vote.
+
+### Step 2 — Vote (all meeting participants)
+
+After the pitches:
+
+- **Who votes:** all meeting participants. The lead votes too — their vote is one vote among others.
+  - **Exception:** if the lead is themselves a party to the dispute, they recuse from voting AND from the threshold-based decision authority described below; the meeting outcome goes directly to human escalation regardless of vote tally.
+- **What's voted on:** each agent picks one of the pitched positions, OR explicitly **abstains** if the disagreement is outside their domain (e.g., Muse on a backend data-model disagreement, Friday on an ops-tooling dispute). Abstention is a valid response — the goal is signal, not coverage.
+- **One vote per agent per disagreement.** If a meeting has multiple unresolved disagreements, run pitch+vote once per disagreement.
+- **The vote is recorded verbatim** in the MOM with each agent's chosen position (or "abstain").
+
+### Step 3 — Threshold and authority
+
+The vote tally determines what the lead is authorized to do. Abstentions are excluded from the denominator:
+
+| Outcome | Threshold | Lead's authority |
+|---|---|---|
+| **Supermajority** | One position has **≥66.7%** of cast votes (the 2/3 rule) | **Lead must go with the supermajority.** They synthesize the supermajority position into the meeting outcome. The only escape is to escalate the entire decision to human — the lead cannot override a supermajority and decide differently themselves. |
+| **Simple majority** | One position has **>50% but <66.7%** of cast votes | **Lead strongly considers the majority but may override.** If the lead overrides, they record an explicit rationale in the MOM. The override + rationale is the durable receipt; future audits can see why the lead went against the majority. |
+| **No majority** | No position has **>50%** of cast votes (could be three-way split, or many abstentions) | **Lead's discretionary call.** They use best judgment, citing the strongest pitch and any decisive consideration. The lead's reasoning is recorded in the MOM. |
+
+**3+ position case:** the same thresholds apply per-position. If position A has 5 votes, B has 3, and C has 2 (10 cast), A has 50% — that's "no majority," lead's discretionary call. If position A has 7 votes out of 10, A has 70% — supermajority, lead must follow.
+
+**Lead recused (party to dispute):** skip Step 3 entirely. Bring the vote tally to the human as part of the escalation context. The human sees: each pitch verbatim, each agent's vote, the abstentions, the threshold reached, and the note that the lead recused because they were a party.
+
+### Step 4 — Per-meeting follow-through
+
+After the lead applies the threshold rule (or recuses), the meeting proceeds to the per-meeting resolution defined in `skills/build/party/deadlock-protocol.md` Type 3, **with the pitch+vote outcome carried forward as input.** For example:
+
+- **Design Roundtable** — if the lead can decide (per threshold), they pick the implementation approach; if not (lead recused or escalated), the build hard-blocks for human choice with vote data attached.
+- **Strike Panel** — the ranked approaches reflect the vote tally; if the panel can't choose a clear winner, the third approach ("Take the wheel — human decides") incorporates the vote as data.
+- **Decision Review** — vote tally is brought to the human as part of the recommendation.
+- **Party Review** — if no majority emerges on a linked finding's root cause, fall through to "Fix both independently" (the existing pattern) — but the MOM now includes the vote so the team can see the leaning.
+
+### What gets recorded in the MOM
+
+For every pitch+vote that runs:
+
+- **Triggering disagreement** — one-line summary of the unresolved point from cross-talk.
+- **Each pitch** — agent name, role, full pitch text (1–3 paragraphs).
+- **Vote tally** — each agent's vote OR explicit abstention, listed by agent.
+- **Threshold reached** — supermajority / simple majority / no majority, with percentages.
+- **Lead's decision** — what the lead decided, citing whether they followed the vote, overrode it (with rationale), or used discretion.
+- **If lead recused** — note the recusal and that the disagreement was escalated to human with the vote tally as input.
+
+The MOM becomes the durable receipt — every vote and every override-with-rationale is searchable across future audits.
 
 ---
 

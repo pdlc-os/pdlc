@@ -88,6 +88,8 @@ Each agent contributes threats from their lens. Use the existing **cross-talk pr
 
 Output of Layer 1: a flat list of candidate threats, each tagged with the trust boundary, the STRIDE category, and the contributing agent(s).
 
+**Pitch+vote within the party (non-binding):** if cross-talk doesn't converge on a specific threat — disagreement on severity, mitigation bucket, or whether the threat is real — run a Pitch Round + Vote per `skills/build/party/spawn-and-mom.md` → "Pitch Round + Vote." **In threat modeling, the vote informs the party's *recommendation* per threat — it is not a binding decision.** The human owns final acceptance at the Step 12 design approval gate by design; the vote tally and pitches are recorded in `threat-model.md` (under the threat's "Cross-talk note" / "Open Questions" sections) and the MOM as input data the human sees when reviewing the threat. Tier 1 hard blocks (e.g., a hardcoded-secret finding in a custom deployment artifact at Ship Step 9.2) cannot be voted out — they remain hard blocks regardless of pitch+vote outcome.
+
 #### Layer 2 — Prioritize (convergent)
 
 Phantom assigns severity (CRITICAL / HIGH / MEDIUM / LOW) to each Layer 1 threat using a DREAD-flavored rubric:

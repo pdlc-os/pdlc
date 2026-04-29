@@ -100,18 +100,45 @@ Retry once with a stripped-down prompt (remove cross-talk context, reduce to the
 
 ## Deadlock Type 3 — Consensus Failure (Agents Cannot Agree)
 
-Applies to: Design Roundtable cross-talk, Strike Panel cross-talk, Party Review cross-talk.
+Applies to: Design Roundtable cross-talk, Strike Panel cross-talk, Party Review cross-talk, Decision Review cross-talk, Deployment Review cross-talk, Threat Modeling Party cross-talk.
 
-Cross-talk runs up to 3 rounds with early exit on consensus (see `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds"). This deadlock is reached when cross-talk terminates without consensus — either because positions locked with no movement (early exit) or because 3 rounds were exhausted without convergence.
+Cross-talk runs up to 3 rounds with early exit on consensus (see `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds"). When cross-talk terminates without consensus — either because positions locked with no movement (early exit) or because 3 rounds were exhausted without convergence — the meeting proceeds to the **Pitch Round + Vote** before per-meeting resolution kicks in.
+
+### Resolution flow
+
+```
+Cross-talk fails (locked or exhausted)
+  ↓
+Pitch Round + Vote   ← bounded second attempt; see spawn-and-mom.md
+  ↓
+[if lead can decide per threshold] → meeting outcome adopts pitch+vote result
+[if lead recused or escalates]     → per-meeting resolution below
+```
+
+The pitch+vote step is documented in full at `skills/build/party/spawn-and-mom.md` → "Pitch Round + Vote." Brief summary:
+
+- **Pitch Round** — each disagreeing agent delivers a closing argument (1–3 paragraphs) on why their position should win.
+- **Vote** — all meeting participants vote (lead too, unless they're a party to the dispute and have recused). Abstentions are valid.
+- **Threshold + lead authority:**
+  - **Supermajority** (≥66.7% on one position) → lead **must** follow the supermajority; cannot override.
+  - **Simple majority** (>50% but <66.7%) → lead **strongly considers** but may override with explicit MOM rationale.
+  - **No majority** (no position >50%) → lead's discretionary call.
+- **Pitch+vote does not apply to Tier 1 hard blocks** — security/safety blocks aren't subject to vote.
+
+The per-meeting resolution below activates when:
+- The lead is a party to the dispute and recused (decision goes directly to human with vote tally as input), OR
+- Even after pitch+vote and the lead's threshold-based decision, a residual ambiguity remains (e.g., no majority + lead's discretionary call still needs an architectural choice between two equally-pitched options).
 
 ### Detection
 
-After cross-talk terminates:
+After cross-talk + pitch+vote terminate:
 - Agents produce contradictory conclusions with no clear majority
 - Neo (or orchestrator) cannot synthesize a single decision from the responses
 - Either the loop hit 3 rounds, or it stopped earlier because positions stayed locked between rounds
 
 ### Resolution by meeting type
+
+In all cases below, **the pitch+vote tally is presented to the human alongside the disagreement framing** when the lead recused or chose to escalate. The human sees: each agent's pitch verbatim, each vote, the abstentions, and the lead's stated reason for escalating despite the vote (if any). For meetings where pitch+vote yielded a clear lead-decided outcome (per the threshold rule), the per-meeting resolution below is bypassed — the lead's decision stands.
 
 **Design Roundtable:**
 Do not proceed to Step 9 (TDD). Pause and present the disagreement to the human as a blocking gate:

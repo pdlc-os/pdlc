@@ -111,7 +111,7 @@ A single feature may pass through up to seven security gates between Build start
 | # | Gate | Location | What blocks shipping |
 |---|---|---|---|
 | 1 | **Phantom's per-task review** *(continuous)* | Build Loop, every task | Phantom's Blocking concerns → Tier 1 hard block. Soft warnings → Tier 3 logged. |
-| 2 | **Party Review security pillar** | Build Review (Phantom is one of 4 always-on parallel reviewers) | Critical findings gate the merge. |
+| 2 | **Party Review security pillar** | Build Review (Phantom is one of 4 always-on parallel reviewers) | Critical findings gate the merge. Disagreements among reviewers on severity or root cause go through cross-talk and, if cross-talk fails, **pitch+vote** before any human escalation — except Tier 1 hard blocks, which cannot be voted out. |
 | 3 | **Layer 7 — Security tests** *(always-on)* | Build Test sub-phase | Test failures → Tier 1 hard block on the deploy that follows. |
 | 4 | **Pre-merge guardrails hook** *(every commit)* | `hooks/pdlc-guardrails.js` on every Bash/Edit/Write tool call | Hardcoded secrets, force-push to main, DROP TABLE without migration → Tier 1 hard block. |
 | 5 | **Threat-model "Mitigate now" verification** | Build Review (Phantom re-checks the threat model) | If a Step-10.5 "Mitigate now" threat doesn't have a corresponding implementation, Phantom flags design drift requiring resolution before merge. |
