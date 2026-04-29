@@ -1,6 +1,6 @@
 {
   "name": "@pdlc-os/pdlc",
-  "version": "2.15.1",
+  "version": "2.15.2",
   "description": "Product Development Lifecycle — a Claude Code plugin for small startup-style teams",
   "keywords": [
     "claude-code",
