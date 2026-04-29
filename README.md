@@ -98,7 +98,7 @@ Use it when you want Claude Code to run tool calls (Bash, Edit, Write) **without
 
 ```bash
 superclaude                 # start Claude Code with prompts disabled
-superclaude /pdlc ship      # launch directly into a slash command
+superclaude /ship      # launch directly into a slash command
 ```
 
 If you want the default behavior where Claude asks before each tool call, just run `claude` as usual. The two commands coexist — `superclaude` doesn't change anything about `claude`.
@@ -231,25 +231,25 @@ PDLC reads `docs/pdlc/memory/STATE.md` on session start and resumes from whereve
 Once installed, open any project in Claude Code:
 
 ```
-/pdlc init
+/setup
 ```
 
 PDLC first asks which **interaction mode** you prefer — **Sketch** (agent drafts answers from your context, questions batched per round; default) or **Socratic** (one question at a time, answered from scratch). Then it asks 7 questions about your project, scaffolds the memory bank, and **Oracle brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5-15 features in `ROADMAP.md`. Then start your first feature:
 
 ```
-/pdlc brainstorm user-authentication
+/brainstorm user-authentication
 ```
 
 Work through Inception (discovery, PRD, design, plan), then:
 
 ```
-/pdlc build
+/build
 ```
 
 Build, review, and test the feature with TDD and multi-agent review. When ready:
 
 ```
-/pdlc ship
+/ship
 ```
 
 Merge, deploy, reflect, and commit the episode record. Before triggering the deploy, Pulse asks whether you have a custom deploy/CI/CD/build artifact to use — if you do, the full team runs a **Deployment Review Party** to verify the composed plan from every angle (architecture, security, tests, ops, UX, PRD conformance) and presents a consolidated plan for your approval. Your preferences take precedence; Critical security findings (hardcoded secrets, exposed credentials) are Tier 1 blocks requiring explicit override. After shipping, **Oracle reviews the roadmap and offers the next feature** — you can continue, pause, or switch to something else. The cycle repeats until the roadmap is complete.
@@ -257,13 +257,13 @@ Merge, deploy, reflect, and commit the episode record. Before triggering the dep
 At any point during inception or construction, record a decision or explore a scenario:
 
 ```
-/pdlc decide We should use PostgreSQL instead of MongoDB
+/decide We should use PostgreSQL instead of MongoDB
 ```
 
 This triggers a **Decision Review Party** where the full team — 9 built-in agents plus any custom agents you've added to `.pdlc/agents/` that match the context — assesses cross-cutting impacts, produces minutes of meeting, and reconciles downstream effects (Beads tasks, PRDs, design docs, tests, roadmap sequencing) — all with your approval before any changes are applied.
 
 ```
-/pdlc whatif What if we switched from REST to GraphQL?
+/whatif What if we switched from REST to GraphQL?
 ```
 
 This runs a **read-only What-If Analysis** — the full team (built-in agents plus any matching custom agents) assesses the hypothetical without changing any files. You can explore further, discard, or accept it as a formal decision.
@@ -271,7 +271,7 @@ This runs a **read-only What-If Analysis** — the full team (built-in agents pl
 If a feature turns out to be unviable, abandon it cleanly:
 
 ```
-/pdlc abandon
+/abandon
 ```
 
 This closes all Beads tasks, marks the feature as Dropped in the roadmap, creates an abandonment episode, and hands off to the next feature. All artifacts (PRD, design docs, branch) are preserved for reference.
@@ -279,16 +279,16 @@ This closes all Beads tasks, marks the feature as Dropped in the roadmap, create
 If a teammate's claim on a roadmap feature is stuck (they left the team, machine unavailable, long pause), another dev can force-release it:
 
 ```
-/pdlc release F-005
+/release F-005
 ```
 
-The claim is released in Beads, the ROADMAP is updated, and an ADR captures who released it and why. `/pdlc release` refuses your own active claim — use `/pdlc abandon` for that. Because `/pdlc brainstorm` resolves claims through Beads (atomic), two developers can never accidentally start on the same priority-next feature in the first place.
+The claim is released in Beads, the ROADMAP is updated, and an ADR captures who released it and why. `/release` refuses your own active claim — use `/abandon` for that. Because `/brainstorm` resolves claims through Beads (atomic), two developers can never accidentally start on the same priority-next feature in the first place.
 
 Need to step away or switch context? Pause cleanly and resume later:
 
 ```
-/pdlc pause
-/pdlc resume
+/pause
+/continue
 ```
 
 Pause saves your exact position (phase, sub-phase, active task). Resume rebases on main, reclaims your Beads task, and picks up where you left off.
@@ -296,7 +296,7 @@ Pause saves your exact position (phase, sub-phase, active task). Resume rebases 
 If production is on fire:
 
 ```
-/pdlc hotfix fix-login-crash
+/hotfix fix-login-crash
 ```
 
 This **auto-pauses** your current feature, creates a hotfix branch, runs a compressed TDD build-ship cycle (no brainstorm/design), and after shipping the fix, **auto-resumes** your paused feature with an impact assessment and rebase.
@@ -304,7 +304,7 @@ This **auto-pauses** your current feature, creates a hotfix branch, runs a compr
 If a shipped feature needs to be reverted:
 
 ```
-/pdlc rollback user-authentication
+/rollback user-authentication
 ```
 
 This reverts the merge commit, runs a **Post-Mortem Party** with the full team (built-in agents plus any matching custom agents) to diagnose the root cause, and presents 3 ranked fix approaches. You can fix and re-ship, abandon the feature, or pause.
@@ -312,7 +312,7 @@ This reverts the merge commit, runs a **Post-Mortem Party** with the full team (
 If something feels off — after pulling a teammate's changes, after a rollback, or after a long break:
 
 ```
-/pdlc doctor
+/diagnose
 ```
 
 This runs a **comprehensive health check** — 8 checks covering state file integrity, ROADMAP/STATE consistency, Beads task graph (including `bd doctor` for internal Beads health), document-vs-code drift, git rollback and multi-user detection, and Constitution compliance. Read-only by default, with optional fix mode.
@@ -340,7 +340,6 @@ Every `/pdlc <subcommand>` has a top-level alias so you can skip the `/pdlc` pre
 
 Custom skills you add under `.pdlc/skills/<name>/` remain as `/pdlc <name>` only — top-level namespace is reserved for built-ins.
 
-> **Note on v2.12 renames:** `/pdlc decision` is now `/pdlc decide`, and `/pdlc override-tier1` is now `/pdlc override`. The old names still work through v2.12 with a deprecation notice and will be removed in v2.13.
 
 ---
 
@@ -364,7 +363,7 @@ Multiple developers can work on the same PDLC-enabled repo. Every phase starts w
 
 ### Scenario planning at any stage
 
-Use `/pdlc whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/pdlc decide` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
+Use `/whatif` at any point during inception or construction to explore hypothetical changes with a full 9-agent read-only analysis — no files are modified. If the analysis looks promising, convert it to a formal decision. Use `/decide` to pivot the design mid-flight — the team assesses blast radius across code, tests, architecture, roadmap, and documentation before anything changes.
 
 ### Full decision traceability
 
@@ -421,7 +420,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 16  | [Visual Companion](docs/wiki/16-visual-companion.md) | Browser-based Material Design UI for mockups and diagrams during Inception                 |
 | 17  | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
 | 18  | [Extensibility](docs/wiki/18-extensibility.md)       | Custom skills, custom agents, custom test layers — extend PDLC without forking             |
-| 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/pdlc release`       |
+| 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/release`       |
 
 ---
 
@@ -456,7 +455,7 @@ The `pdlc-os` GitHub organisation hosts community-contributed extensions:
 | [Dolt](https://github.com/dolthub/dolt)            | Prompted during `/setup`                 | SQL database required by Beads; installed via Homebrew (macOS) or official script (Linux) |
 | [Beads (bd)](https://github.com/gastownhall/beads) | Prompted during `/setup`                 | Task manager; installed globally via npm registry, with a clone-from-source fallback if the registry is restricted |
 | Git                                                | Built into macOS/Linux                   |                                                                                           |
-| [GitHub CLI (gh)](https://cli.github.com)          | Prompted during `/pdlc init` if needed   | Required for PR creation during `/pdlc ship`; setup guided during init                    |
+| [GitHub CLI (gh)](https://cli.github.com)          | Prompted during `/setup` if needed   | Required for PR creation during `/ship`; setup guided during init                    |
 
 ---
 
