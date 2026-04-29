@@ -14,13 +14,13 @@ The lead agent for the decision flow matches whoever is leading the current phas
 
 | Phase | Sub-phase | Lead Agent |
 |-------|-----------|-----------|
-| Initialization | any | **Oracle** (Product Manager) |
-| Inception | Discover, Define | **Oracle** (Product Manager) |
+| Initialization | any | **Atlas** (Product Manager) |
+| Inception | Discover, Define | **Atlas** (Product Manager) |
 | Inception | Design, Plan | **Neo** (Architect) |
 | Construction | any | **Neo** (Architect) |
 | Operation | Ship, Verify | **Pulse** (DevOps) |
 | Operation | Reflect | **Jarvis** (Tech Writer) |
-| Idle / between phases | — | **Oracle** (Product Manager) |
+| Idle / between phases | — | **Atlas** (Product Manager) |
 
 Read the lead agent's full persona from their agent file and embody their perspective throughout the decision flow.
 
@@ -126,7 +126,7 @@ Each agent reviews their owned artifacts and evaluates whether this decision has
 | Agent | Reviews | Checks |
 |-------|---------|--------|
 | **Neo** (Architect) | `docs/pdlc/design/[feature]/ARCHITECTURE.md`, data model, API contracts | Does this change the system architecture, component boundaries, data model, or API contracts? Does it introduce or remove a dependency? |
-| **Oracle** (PM) | `docs/pdlc/memory/ROADMAP.md`, active PRD, `docs/pdlc/memory/INTENT.md`, brainstorm log | Does this affect feature priority/sequencing, requirements, acceptance criteria, scope, problem statement, or value proposition? Should features be resequenced? |
+| **Atlas** (PM) | `docs/pdlc/memory/ROADMAP.md`, active PRD, `docs/pdlc/memory/INTENT.md`, brainstorm log | Does this affect feature priority/sequencing, requirements, acceptance criteria, scope, problem statement, or value proposition? Should features be resequenced? |
 | **Bolt** (Backend) | Backend source code, `docs/pdlc/design/[feature]/api-contracts.md` | Does this require backend code changes — services, DB schema, migrations, business logic, API endpoints? What is the estimated blast radius? |
 | **Friday** (Frontend) | Frontend source code, UI components, state management | Does this require frontend changes — components, state, routing, API client calls? |
 | **Echo** (QA) | Existing test suites, test gates in CONSTITUTION.md | Does this require new tests, modifications to existing tests, or changes to test gates? Which test layers are affected? |
@@ -152,7 +152,7 @@ Notes: [any caveats, dependencies, or concerns]
 After individual assessments, convene the full team. All agents discuss:
 
 1. **Cross-cutting concerns** — Where one agent's impact triggers another's (e.g., a backend schema change that requires frontend updates AND test modifications)
-2. **Roadmap resequencing** — If Oracle identifies that this decision affects feature priority, the team discusses the new order. Priority in ROADMAP.md uses a separate integer column — resequencing just means updating Priority numbers, no ADR IDs change.
+2. **Roadmap resequencing** — If Atlas identifies that this decision affects feature priority, the team discusses the new order. Priority in ROADMAP.md uses a separate integer column — resequencing just means updating Priority numbers, no ADR IDs change.
 3. **Risk consensus** — Agents align on overall risk level: is this a minor tweak or a significant course correction?
 4. **Disagreements** — If agents disagree on impact (e.g., Neo says architecture is fine but Bolt says the code impact is significant), surface the disagreement explicitly for the user.
 

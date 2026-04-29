@@ -317,13 +317,13 @@ Append to Phase History:
 | [now] | operation_complete | Idle | — | none |
 ```
 
-### Step 18 — Handoff: Jarvis → Oracle and next feature prompt
+### Step 18 — Handoff: Jarvis → Atlas and next feature prompt
 
 Output an **Agent Handoff** block (per `skills/formatting.md`) with:
 
-> **Jarvis (Tech Writer):** "That's a wrap on `[feature-name]`! Episode [NNN] is committed, the changelog and roadmap are updated, and everything is documented. It's been great capturing this journey. I'm handing you back to Oracle to figure out what's next."
+> **Jarvis (Tech Writer):** "That's a wrap on `[feature-name]`! Episode [NNN] is committed, the changelog and roadmap are updated, and everything is documented. It's been great capturing this journey. I'm handing you back to Atlas to figure out what's next."
 >
-> **Oracle (Product Manager):** "Oracle here — welcome back! Let me pull up the roadmap and see where we stand."
+> **Atlas (Product Manager):** "Atlas here — welcome back! Let me pull up the roadmap and see where we stand."
 
 Read `docs/pdlc/memory/ROADMAP.md`. Identify the **next unshipped feature** by priority order (lowest priority number with status `Planned`). Call it `[next-feature]` with ID `[next-id]`.
 

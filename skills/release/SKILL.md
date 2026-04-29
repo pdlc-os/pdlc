@@ -99,7 +99,7 @@ Append a new ADR:
 **Date:** [today]
 **Source:** User (explicit — `/pdlc release [feature-id]`)
 **Phase:** Administrative
-**Agent:** Oracle
+**Agent:** Atlas
 **Feature:** [feature-name]
 **Previous claimer:** [email]
 **Status:** Active

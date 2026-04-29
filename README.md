@@ -234,7 +234,7 @@ Once installed, open any project in Claude Code:
 /setup
 ```
 
-PDLC first asks which **interaction mode** you prefer — **Sketch** (agent drafts answers from your context, questions batched per round; default) or **Socratic** (one question at a time, answered from scratch). Then it asks 7 questions about your project, scaffolds the memory bank, and **Oracle brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5-15 features in `ROADMAP.md`. Then start your first feature:
+PDLC first asks which **interaction mode** you prefer — **Sketch** (agent drafts answers from your context, questions batched per round; default) or **Socratic** (one question at a time, answered from scratch). Then it asks 7 questions about your project, scaffolds the memory bank, and **Atlas brainstorms a feature roadmap with you** — identifying, describing, and prioritizing 5-15 features in `ROADMAP.md`. Then start your first feature:
 
 ```
 /brainstorm user-authentication
@@ -252,7 +252,7 @@ Build, review, and test the feature with TDD and multi-agent review. When ready:
 /ship
 ```
 
-Merge, deploy, reflect, and commit the episode record. Before triggering the deploy, Pulse asks whether you have a custom deploy/CI/CD/build artifact to use — if you do, the full team runs a **Deployment Review Party** to verify the composed plan from every angle (architecture, security, tests, ops, UX, PRD conformance) and presents a consolidated plan for your approval. Your preferences take precedence; Critical security findings (hardcoded secrets, exposed credentials) are Tier 1 blocks requiring explicit override. After shipping, **Oracle reviews the roadmap and offers the next feature** — you can continue, pause, or switch to something else. The cycle repeats until the roadmap is complete.
+Merge, deploy, reflect, and commit the episode record. Before triggering the deploy, Pulse asks whether you have a custom deploy/CI/CD/build artifact to use — if you do, the full team runs a **Deployment Review Party** to verify the composed plan from every angle (architecture, security, tests, ops, UX, PRD conformance) and presents a consolidated plan for your approval. Your preferences take precedence; Critical security findings (hardcoded secrets, exposed credentials) are Tier 1 blocks requiring explicit override. After shipping, **Atlas reviews the roadmap and offers the next feature** — you can continue, pause, or switch to something else. The cycle repeats until the roadmap is complete.
 
 At any point during inception or construction, record a decision or explore a scenario:
 

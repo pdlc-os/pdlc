@@ -18,7 +18,7 @@ flowchart LR
     style BRAINSTORM fill:#1e3a5f,color:#fff
 ```
 
-Run once per project. **Oracle** leads.
+Run once per project. **Atlas** leads.
 
 **Prerequisites (Steps 1a-1e, Haiku model):** These use the Haiku model for speed — they're straightforward CLI operations. The install chain follows dependency order:
 1. **Git** — init repo + `.gitignore` if needed
@@ -30,7 +30,7 @@ Run once per project. **Oracle** leads.
 6. **CI/CD detection** — checks for GitHub Actions, npm deploy, Makefile, etc. Informational only — if not found, Pulse will help set it up during `/pdlc ship`
 7. **Baseline security scan** — `npm audit` for dependency vulnerabilities + secret scan for hardcoded credentials. Informational — surfaces pre-existing issues before any features are built
 
-After prerequisites, Oracle switches to **Opus model** for the rest of init.
+After prerequisites, Atlas switches to **Opus model** for the rest of init.
 
 **Interaction mode prompt**: before the 7 questions, PDLC asks whether you want **Sketch mode** (agent drafts answers from existing context and batches questions per round; default) or **Socratic mode** (one question at a time, answered from scratch). Both cover identical depth. The choice is persisted in `CONSTITUTION.md` §9 and applies to every questioning step in Init and every future Brainstorm phase. Change it anytime by editing §9.
 
@@ -38,7 +38,7 @@ After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
 **Brownfield** (existing code): PDLC offers to deep-scan the repository, mapping structure, reading key files, analyzing tests and git history. Scan findings are presented for approval, then used to pre-populate memory files. All inferred content is marked `(inferred -- please verify)`.
 
-**Roadmap Ideation**: Oracle brainstorms 5-15 candidate features, validates priority sequence for dependency conflicts, and captures the backlog in `ROADMAP.md` with permanent `F-NNN` IDs. Auto-launches the first priority feature on confirmation.
+**Roadmap Ideation**: Atlas brainstorms 5-15 candidate features, validates priority sequence for dependency conflicts, and captures the backlog in `ROADMAP.md` with permanent `F-NNN` IDs. Auto-launches the first priority feature on confirmation.
 
 **PDLC scaffolds:** CONSTITUTION, INTENT, STATE, ROADMAP, DECISIONS, CHANGELOG, OVERVIEW, episodes/index, and `.beads/`.
 
@@ -46,10 +46,10 @@ After prerequisites, Oracle switches to **Opus model** for the rest of init.
 
 ```mermaid
 flowchart LR
-    subgraph DISCOVER["Discover - Oracle"]
+    subgraph DISCOVER["Discover - Atlas"]
         DIV[Divergent\nIdeation] --> SOC[Socratic\n3 rounds · max 4 q/round] --> PROG["Progressive\nThinking"] --> ADV[Adversarial\nReview\ntop 3 follow-ups] --> EDGE[Edge Case\nAnalysis\nmax 3 prompts] --> UXD[UX Discovery\nMuse · max 3 q\nvisual-required\nif UI/UX feature] --> SUM["Summary"]
     end
-    subgraph DEFINE["Define - Oracle"]
+    subgraph DEFINE["Define - Atlas"]
         PRD["Generate PRD"]
     end
     subgraph DESIGN["Design - Neo (+ Phantom for Step 10.5)"]
@@ -67,7 +67,7 @@ flowchart LR
     style FROMINIT fill:#1e3a5f,color:#fff
 ```
 
-Starts with a **remote sync check** — if local main is behind origin, a team meeting assesses the remote changes before proceeding. Oracle leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
+Starts with a **remote sync check** — if local main is behind origin, a team meeting assesses the remote changes before proceeding. Atlas leads Discover + Define, then hands off to Neo for Design + Plan. The feature's ROADMAP.md status is set to `In Progress` when brainstorm begins.
 
 All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case triage, and Bloom's design questioning — respect the **Interaction Mode** (Sketch or Socratic) captured in CONSTITUTION.md §9 during init. Sketch mode drafts proposed answers from CONSTITUTION, INTENT, CLAUDE.md, prior brainstorm logs, and the 1–2 most recent episode files, then presents each round as a single batched block for confirm/edit/replace. Socratic mode asks one question at a time. Both cover identical depth; only the cadence differs.
 
@@ -79,8 +79,8 @@ All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case 
 
 | Sub-phase | Lead | Key activities | Output |
 |-----------|------|---------------|--------|
-| **Discover** | Oracle | Divergent ideation (optional), Socratic interview (3 rounds, max 4 q/round), **Progressive Thinking** (required agent meeting), Adversarial review (top 3 follow-ups), Edge case analysis (max 3 prompts), **UX Discovery** (Muse leads — conditional on UI/UX features + visual companion; max 3 visual-first questions grounded in existing UI inventory) | Confirmed discovery summary |
-| **Define** | Oracle | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
+| **Discover** | Atlas | Divergent ideation (optional), Socratic interview (3 rounds, max 4 q/round), **Progressive Thinking** (required agent meeting), Adversarial review (top 3 follow-ups), Edge case analysis (max 3 prompts), **UX Discovery** (Muse leads — conditional on UI/UX features + visual companion; max 3 visual-first questions grounded in existing UI inventory) | Confirmed discovery summary |
+| **Define** | Atlas | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
 | **Design** | Neo (Phantom for Step 10.5) | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts. **Threat Modeling Party at Step 10.5** — Phantom takes lead between design-doc generation and PRD link updates: triage → Skip / Lite (Phantom solo) / Full (full team party using PDLC's party-mode + progressive-thinking machinery). Output is `threat-model.md` reviewed alongside the other three design docs at the Step 12 approval gate. See [`20-security.md`](20-security.md). | `docs/pdlc/design/[feature]/` (4 files: ARCHITECTURE, data-model, api-contracts, threat-model) |
 | **Plan** | Neo | Beads tasks with dependencies, dependency graph. **Mitigate-now threats** from Step 10.5 land here as Plan-phase tasks; **Mitigate-later** threats are recorded as ADRs in `DECISIONS.md`. | Plan file |
 
@@ -130,7 +130,7 @@ flowchart LR
     subgraph REFLECT["Reflect - Jarvis"]
         RETRO[Retrospective\nEpisode + ROADMAP update]
     end
-    subgraph NEXT["Next Feature - Oracle"]
+    subgraph NEXT["Next Feature - Atlas"]
         ROADMAP{Next on\nroadmap?}
     end
     FROMBUILD(["from /pdlc build"]) --> SYNC3["Sync Check"] --> SHIP --> REFLECT --> NEXT
@@ -147,11 +147,11 @@ flowchart LR
 | **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag. **Step 9.0 — Lint Pass:** Pulse's first action on takeover, before any deployment-artifact prompt. Auto-detects the project's tech stack and applies lint/format fixes per `skills/ship/steps/fix-lint.md` so the codebase ships clean. Pulse then asks whether the user has a custom deploy/CI/CD/build artifact — if yes, composes it with the default pipeline and runs a **Deployment Review Party** (full team assesses; consolidated plan presented for approval; user preference wins on non-Tier-1 conflicts). CI/CD is triggered with either the consolidated plan or the default (auto-detected: GitHub Actions, npm deploy, Makefile, or scaffolded). Outcome recorded in `DEPLOYMENTS.md`. |
 | **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
 | **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with trend summary, artifacts archived, Beads compacted |
-| **Next Feature** | Oracle | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
+| **Next Feature** | Atlas | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
 ### Abandoning a feature with `/pdlc abandon`
 
-If a feature is discovered to be unviable mid-inception or mid-build, abandon it cleanly. Oracle leads.
+If a feature is discovered to be unviable mid-inception or mid-build, abandon it cleanly. Atlas leads.
 
 | Step | What happens |
 |------|-------------|
@@ -161,7 +161,7 @@ If a feature is discovered to be unviable mid-inception or mid-build, abandon it
 | **Update ROADMAP** | Status set to `Dropped` with date and episode reference |
 | **Episode** | Compact abandonment episode with reason, work completed, lessons learned |
 | **Preserve** | PRD, design docs, brainstorm log, and feature branch kept for reference (not deleted) |
-| **Next feature** | Oracle presents next roadmap item — continue, pause, or switch |
+| **Next feature** | Atlas presents next roadmap item — continue, pause, or switch |
 
 Abandonment is permanent in ROADMAP.md. To revisit the feature later, add it as a new entry with a new `F-NNN` ID.
 
@@ -224,7 +224,7 @@ If a shipped feature needs to be reverted (production incident, critical bug, fa
 |------|-------------|
 | **Sync + Revert** | Remote sync check, then `git revert` of the merge commit, push to origin, rollback tag |
 | **State update** | ROADMAP set to `Rolled Back`, CHANGELOG rollback entry, episode file updated |
-| **Post-Mortem Party** | Oracle leads the full team (9 built-in + matching custom agents) through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
+| **Post-Mortem Party** | Atlas leads the full team (9 built-in + matching custom agents) through 3 rounds: root cause diagnosis → cross-examination → fix proposals |
 | **Options** | **Fix and re-ship** (3 ranked approaches with effort/risk), **Abandon** (drop feature, move to next), or **Pause** |
 
 The post-mortem meeting is required — it cannot be skipped. Every rollback produces an ADR entry and a MOM file.

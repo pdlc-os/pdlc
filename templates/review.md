@@ -27,7 +27,7 @@
 | Echo | QA Engineer | yes |
 | Phantom | Security Reviewer | yes |
 | Jarvis | Tech Writer | yes |
-| <!-- Bolt / Friday / Muse / Oracle / Pulse --> | <!-- Role --> | <!-- yes --> |
+| <!-- Bolt / Friday / Muse / Atlas / Pulse --> | <!-- Role --> | <!-- yes --> |
 
 ---
 

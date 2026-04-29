@@ -25,7 +25,7 @@ List every agent that participated in this feature cycle. For each agent, record
 
 Pull this information from: the review files, the episode file, STATE.md history, and the Beads task records (`bd show [task-id]` for each completed task).
 
-Agents to check: Neo, Echo, Phantom, Jarvis (always-on), plus any auto-selected agents (Bolt, Friday, Muse, Oracle, Pulse) that participated based on task labels.
+Agents to check: Neo, Echo, Phantom, Jarvis (always-on), plus any auto-selected agents (Bolt, Friday, Muse, Atlas, Pulse) that participated based on task labels.
 
 ### Step 2 — Shipping streak
 

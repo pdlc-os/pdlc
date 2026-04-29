@@ -50,7 +50,7 @@
 - **Proposed action (party recommendation):** Mitigate now | Mitigate later | Accept | Transfer
   - **If "Mitigate now":** [specific design change; Bolt's effort estimate; Neo's architectural-fit confirmation; will land as Plan-phase Beads task]
   - **If "Mitigate later":** [tech-debt entry to be created in `docs/pdlc/memory/DECISIONS.md` as ADR; re-evaluation trigger]
-  - **If "Accept":** [Oracle's business justification; residual-risk assessment; ADR in `DECISIONS.md`]
+  - **If "Accept":** [Atlas's business justification; residual-risk assessment; ADR in `DECISIONS.md`]
   - **If "Transfer":** [transfer mechanism — insurance, contract, vendor SLA, third-party tokenization]
 - **Decision (human, at Step 12 approval):** *[blank until human reviews; one of: confirm party recommendation / override to: ___ / reject and require redesign]*
 - **Cross-talk note:** *[fill in if this threat was discovered or sharpened via cross-talk between agents — capture the chain]*

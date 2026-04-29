@@ -6,27 +6,27 @@ Party mode brings multiple agents together for structured discussions. Five meet
 
 | Meeting | Phase | Trigger | Participants | Output |
 |---------|-------|---------|-------------|--------|
-| **Progressive Thinking** | Inception / Discover | After Socratic discovery completes (required, cannot skip) | Oracle (facilitates) + all 8 other agents | Refined feature understanding: confirmed facts, inferences, consequences, risks, priorities |
+| **Progressive Thinking** | Inception / Discover | After Socratic discovery completes (required, cannot skip) | Atlas (facilitates) + all 8 other agents | Refined feature understanding: confirmed facts, inferences, consequences, risks, priorities |
 | **Wave Kickoff** | Construction / Build | Start of a new Beads wave (2+ tasks) | Neo + domain agents + Echo (if 3+ tasks) | Wave execution plan, dependency updates |
 | **Design Roundtable** | Construction / Build | Complex task claimed (auto-suggested) | Neo + Echo + domain agent | Implementation Decision for TDD |
 | **Party Review** | Construction / Review | All tasks complete | Neo + Echo + Phantom + Jarvis | Unified review file with linked findings |
 | **Strike Panel** | Construction / Build | 3rd failed auto-fix attempt | Neo + Echo + domain agent | 3 ranked approaches for human |
 | **Decision Review** | Any phase | `/pdlc decide` or deferred findings | Full team † | MOM with impact assessment, roadmap resequencing, recommended changes |
 | **What-If Analysis** | Any phase | `/pdlc whatif` | Full team † | Read-only MOM with feasibility, effort, risks, trade-offs, recommendation |
-| **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | Full team † (Oracle leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
+| **Post-Mortem** | Operation / Rollback | `/pdlc rollback` | Full team † (Atlas leads) | Root cause diagnosis, cross-examination, 3 ranked fix approaches |
 | **Deployment Review** | Operation / Ship | User provides a custom deploy/CI/CD/build artifact | Full team † (Pulse leads) | Consolidated deploy plan: adopted from user, PDLC scaffolding, recommended modifications, Tier 1 blocks |
-| **Sync Assessment** | Pre-flight (brainstorm, build, ship, hotfix, rollback) | Local main behind origin | Neo + Oracle + Bolt + Friday + Echo + Phantom (6 agents) | Remote diff analysis, conflict risk, pull/review/proceed recommendation |
+| **Sync Assessment** | Pre-flight (brainstorm, build, ship, hotfix, rollback) | Local main behind origin | Neo + Atlas + Bolt + Friday + Echo + Phantom (6 agents) | Remote diff analysis, conflict risk, pull/review/proceed recommendation |
 
 <sub>† **Full team** = the 9 built-in agents plus any custom agents in `.pdlc/agents/` that are `always_on: true` or whose `auto_select_on_labels` match the current context.</sub>
 
 ### Meeting map across phases
 
 ```
-Init ──────────────── (no meetings — Oracle works solo with user)
+Init ──────────────── (no meetings — Atlas works solo with user)
 
 Brainstorm
   Discover ─────────── Progressive Thinking (required, agents-only)
-  Define ───────────── (no meetings — Oracle generates PRD)
+  Define ───────────── (no meetings — Atlas generates PRD)
   Design ───────────── Threat Modeling Party at Step 10.5 (Phantom-led, only on Full triage)
   Plan ─────────────── (no meetings — Neo generates tasks)
 
@@ -54,14 +54,14 @@ Each meeting follows a base pattern (Round 1 → optional Cross-talk → Conclus
 
 | Meeting | Leader | Rounds | Cross-talk | How it works |
 |---------|--------|--------|-----------|-------------|
-| **Progressive Thinking** | Oracle | 6 (Concrete → Inferential → Consequential → Speculative → Conflicting → Strategic) | Built into Rounds 5-6 | Oracle questions agents, not the user. Conflict resolution built in. User escalation only when agents disagree and can't resolve. Cannot be skipped. |
+| **Progressive Thinking** | Atlas | 6 (Concrete → Inferential → Consequential → Speculative → Conflicting → Strategic) | Built into Rounds 5-6 | Atlas questions agents, not the user. Conflict resolution built in. User escalation only when agents disagree and can't resolve. Cannot be skipped. |
 | **Wave Kickoff** | Neo | 1 + optional dependency updates | Only if tasks conflict | Neo frames coordination question, domain agents identify hidden dependencies and shared-state conflicts. Max 4 agents. |
 | **Design Roundtable** | Neo | 1 + up to 3 cross-talk (positions → reactions) | Always — agents react to each other | Neo frames the design question, agents propose approaches, then react to each other's proposals across up to 3 cross-talk rounds. Converges to single Implementation Decision. |
 | **Party Review** | Neo | 1 + up to 3 cross-talk (independent review → cross-linking) | Always — interconnected findings routed between agents | All 4 agents review the same diff with different mandates simultaneously. Up to 3 cross-talk rounds link related findings to shared root causes. |
 | **Strike Panel** | Neo | 1 + up to 3 cross-talk (diagnosis → ranked approaches) | Yes — agents react to diagnoses | Focused on a specific test failure. Produces 3 ranked approaches for the human to choose from. |
 | **Decision Review** | Phase lead | 1 + up to 3 cross-talk (individual assessment → team discussion) | Yes — cross-cutting concerns | Full team (9 built-in + matching custom agents) assess owned artifacts. Includes roadmap resequencing discussion. |
 | **What-If Analysis** | Phase lead | 1 + up to 3 cross-talk (individual assessment → team discussion) | Yes — cross-cutting concerns | Same pattern as Decision Review but read-only — no files modified. |
-| **Post-Mortem** | Oracle | 1 + up to 3 cross-examination + 1 fix proposals (root cause → cross-examination → fix proposals) | Yes — agents cross-examine each other's findings | Oracle facilitates. Each agent diagnoses from their domain. Cross-examination follows the canonical bounded loop (up to 3 rounds, exit on consensus). Produces 3 ranked fix approaches. Required — cannot be skipped. |
+| **Post-Mortem** | Atlas | 1 + up to 3 cross-examination + 1 fix proposals (root cause → cross-examination → fix proposals) | Yes — agents cross-examine each other's findings | Atlas facilitates. Each agent diagnoses from their domain. Cross-examination follows the canonical bounded loop (up to 3 rounds, exit on consensus). Produces 3 ranked fix approaches. Required — cannot be skipped. |
 | **Deployment Review** | Pulse | 1 + up to 3 cross-talk + 1 consolidated plan (per-agent assessment → cross-talk → consolidated plan) | Yes — overlapping findings routed for single-fix resolution | Pulse leads. Runs only when user provides a custom deploy/CI/CD/build artifact. Critical security findings (hardcoded secrets, exposed credentials) become Tier 1 blocks. User preference wins on non-Tier-1 conflicts. |
 | **Threat Modeling** | **Phantom** | 3 (Surface → Prioritize → Mitigate) + up to 3 cross-talk per layer | Yes — chained threats only surface across agents | Phantom leads with explicit Neo→Phantom and Phantom→Neo handoffs at the boundaries. Runs at Brainstorm Design Step 10.5 only when triage produces 2+/3 yeses (Full); a 1/3 triage runs Lite mode (Phantom solo, no party); 0/3 skips with a one-line audit-trail record. STRIDE per trust boundary; DREAD-flavored severity; 4 mitigation buckets (mitigate now / later / accept / transfer). Output is `threat-model.md` reviewed at the Step 12 design approval gate alongside the other three design docs. See [`20-security.md`](20-security.md). |
 | **Sync Assessment** | Phase lead | 1 (parallel assessment of remote diff) | Only if conflict risk is Medium/High | 6 agents assess remote changes from their domain. Lightweight (~1-2 min). Only fires when local is behind remote. |

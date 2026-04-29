@@ -1,7 +1,7 @@
 # Metrics
 <!-- pdlc-template-version: 2.1.0 -->
 <!-- Append-only. Jarvis adds a row after every shipped feature.
-     Used by Oracle for roadmap planning and by Doctor for trend analysis.
+     Used by Atlas for roadmap planning and by Doctor for trend analysis.
      Do not delete rows — they form the project's delivery history. -->
 
 **Project:** <!-- Your project name -->

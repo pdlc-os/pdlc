@@ -4,9 +4,9 @@
 
 ```mermaid
 flowchart LR
-    INIT["/pdlc init\n🟦 Oracle"] --> BRAINSTORM["/pdlc brainstorm\n🟦 Oracle → 🟩 Neo"]
+    INIT["/pdlc init\n🟦 Atlas"] --> BRAINSTORM["/pdlc brainstorm\n🟦 Atlas → 🟩 Neo"]
     BRAINSTORM --> BUILD["/pdlc build\n🟩 Neo"]
-    BUILD --> SHIP["/pdlc ship\n🟪 Pulse → 🟧 Jarvis → 🟦 Oracle"]
+    BUILD --> SHIP["/pdlc ship\n🟪 Pulse → 🟧 Jarvis → 🟦 Atlas"]
     SHIP -->|Next feature| BRAINSTORM
 
     DECISION["/pdlc decide\n⚡ Any phase"] -.->|impacts| BRAINSTORM & BUILD & SHIP
@@ -58,7 +58,7 @@ flowchart TD
     DIVG -->|Yes| IDEAS[100+ ideas\nDomain rotation\nCluster → Standouts]
     DIVG -->|No| SOCRATIC
     IDEAS --> SOCRATIC[DISCOVER\n3-round Socratic interview\nmax 4 questions/round]
-    SOCRATIC --> PROGRESSIVE[Progressive Thinking\n🗣 Agent team meeting\n6 rounds · Oracle facilitates]
+    SOCRATIC --> PROGRESSIVE[Progressive Thinking\n🗣 Agent team meeting\n6 rounds · Atlas facilitates]
     PROGRESSIVE --> ADVERSARIAL[Adversarial Review\n10+ findings · Top 3 follow-ups]
     ADVERSARIAL --> EDGE[Edge Case Analysis\n9 categories · max 3 prompts\n1 triage + up to 2 follow-ups]
     EDGE --> UXDISC[UX Discovery\nMuse leads · max 3 questions\nvisual companion required\ngrounded in existing UI]

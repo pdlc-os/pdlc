@@ -55,7 +55,7 @@ Write `.pending-party.json` with `meetingType: "sync-assessment"`.
 
 Output a **Meeting Announcement Block** per `skills/formatting.md`:
 - **Called by:** [Lead Agent Name] ([Role])
-- **Participants:** Neo, Oracle, Bolt, Friday, Echo, Phantom — 6 agents (skip Muse, Jarvis, Pulse unless the phase specifically needs them)
+- **Participants:** Neo, Atlas, Bolt, Friday, Echo, Phantom — 6 agents (skip Muse, Jarvis, Pulse unless the phase specifically needs them)
 - **Purpose:** Assess [N] remote commits on main before proceeding with [phase]
 - **Estimated time:** ~1–2 minutes
 
@@ -82,7 +82,7 @@ Each agent evaluates from their domain:
 | Agent | Assesses |
 |-------|----------|
 | **Neo** | Do the remote changes affect architecture? Are there new components, changed boundaries, or modified design docs? |
-| **Oracle** | Do the remote changes affect the roadmap, PRDs, or feature scope? Did someone ship a feature that changes priorities? |
+| **Atlas** | Do the remote changes affect the roadmap, PRDs, or feature scope? Did someone ship a feature that changes priorities? |
 | **Bolt** | Do the remote changes conflict with backend code we're working on? Schema changes, API modifications? |
 | **Friday** | Do the remote changes conflict with frontend code? Component changes, state management updates? |
 | **Echo** | Do the remote changes include new tests or modify existing ones that overlap with our work? |

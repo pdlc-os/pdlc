@@ -17,13 +17,13 @@ If the feature isn't found or isn't shipped, stop:
 
 ---
 
-## Lead Agent: Oracle (Product Manager)
+## Lead Agent: Atlas (Product Manager)
 
-Oracle leads the rollback — this is a product-level decision about reverting shipped work. Read `agents/oracle.md` for Oracle's full persona.
+Atlas leads the rollback — this is a product-level decision about reverting shipped work. Read `agents/atlas.md` for Atlas's full persona.
 
 Before the first user-facing message, read `skills/formatting.md` and output a **Phase Transition Banner** for "ROLLBACK" followed by:
 
-> **Oracle (Product Manager):** "This is serious — we're reverting a shipped feature. I'll coordinate the revert, run a post-mortem with the full team, and present your options. Let's figure out what happened and what to do next."
+> **Atlas (Product Manager):** "This is serious — we're reverting a shipped feature. I'll coordinate the revert, run a post-mortem with the full team, and present your options. Let's figure out what happened and what to do next."
 
 ---
 
@@ -124,14 +124,14 @@ Write `.pending-party.json` with `meetingType: "post-mortem"`.
 ### Meeting announcement
 
 Output a **Meeting Announcement Block** per `skills/formatting.md`:
-- **Called by:** Oracle (Product Manager)
+- **Called by:** Atlas (Product Manager)
 - **Participants:** the full team — 9 built-in agents plus any matching custom agents from `.pdlc/agents/`
 - **Purpose:** Post-mortem analysis of `[feature-name]` rollback
 - **Estimated time:** ~3–5 minutes
 
 ### Round 1 — What happened?
 
-Oracle asks each agent to analyze the failure from their domain:
+Atlas asks each agent to analyze the failure from their domain:
 
 | Agent | Question |
 |-------|----------|
@@ -156,16 +156,16 @@ Severity: [Critical / Major / Minor]
 
 ### Round 2 — Cross-examination
 
-Oracle identifies the most likely root cause(s) from Round 1. Routes specific findings between agents:
+Atlas identifies the most likely root cause(s) from Round 1. Routes specific findings between agents:
 - If Bolt says "API returned wrong schema" → route to Jarvis: "Was the contract correct?"
 - If Echo says "no test covered this path" → route to Neo: "Was this path in the architecture?"
-- If Phantom says "security warning was accepted" → route to Oracle: "Should the acceptance criteria have caught this?"
+- If Phantom says "security warning was accepted" → route to Atlas: "Should the acceptance criteria have caught this?"
 
-Cross-examination follows the canonical bounded cross-talk loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Most post-mortem findings resolve in 1–2 rounds; reach for round 3 only if Oracle still cannot pin down the root cause.
+Cross-examination follows the canonical bounded cross-talk loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Most post-mortem findings resolve in 1–2 rounds; reach for round 3 only if Atlas still cannot pin down the root cause.
 
 ### Round 3 — Fix recommendations
 
-Oracle asks the team to propose fixes. Each agent that identified a problem proposes a concrete fix:
+Atlas asks the team to propose fixes. Each agent that identified a problem proposes a concrete fix:
 
 ```
 Agent: [name]
@@ -175,7 +175,7 @@ Risk of fix: [Low / Medium / High — could the fix itself cause issues?]
 Prevents recurrence: [Yes / Partial / No]
 ```
 
-Oracle synthesizes the proposals into **3 ranked approaches**:
+Atlas synthesizes the proposals into **3 ranked approaches**:
 
 **Approach 1 (Recommended):** [Description — what to fix, how, estimated effort]
 **Approach 2 (Alternative):** [Description — different tradeoff]
@@ -198,7 +198,7 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
 
 ## Step 5 — Present options to user
 
-> **Oracle (Product Manager):** "Post-mortem complete. Here's what we found:
+> **Atlas (Product Manager):** "Post-mortem complete. Here's what we found:
 >
 > **Root cause:** [consensus from the meeting]
 > **Severity:** [Critical/Major/Minor]
@@ -229,7 +229,7 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
    Source: User (post-mortem)
    Phase: Operation
    Sub-phase: Rollback
-   Agent: Oracle
+   Agent: Atlas
    Status: Active
    MOM: [post-mortem MOM path]
    
@@ -282,8 +282,8 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
 
 6. Delete `.pending-party.json`.
 
-7. Handoff to Oracle for next feature (same flow as ship Step 18):
-   > **Oracle (Product Manager):** "Feature abandoned and archived. Let me check the roadmap for what's next."
+7. Handoff to Atlas for next feature (same flow as ship Step 18):
+   > **Atlas (Product Manager):** "Feature abandoned and archived. Let me check the roadmap for what's next."
    
    Read ROADMAP.md, present next priority feature, offer continue/pause/switch.
 

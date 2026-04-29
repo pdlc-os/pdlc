@@ -64,7 +64,7 @@ if [[ ! -f "$state_file" ]]; then
   # PDLC not yet initialized for this project
   emit_json "📦 PDLC is installed but not initialized for this project.
 
-Run \`/setup\` to set up PDLC — Oracle will walk you through project setup, scaffolding, and roadmap planning."
+Run \`/setup\` to set up PDLC — Atlas will walk you through project setup, scaffolding, and roadmap planning."
   exit 0
 fi
 

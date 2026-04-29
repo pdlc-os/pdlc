@@ -307,7 +307,7 @@ Re-invoke the appropriate phase skill (`/pdlc brainstorm`, `/pdlc build`, or `/p
 
 **If no feature was paused:**
 
-Update STATE.md to Idle. Handoff to Oracle for next feature (same as ship Step 18).
+Update STATE.md to Idle. Handoff to Atlas for next feature (same as ship Step 18).
 
 ---
 

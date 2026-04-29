@@ -16,13 +16,13 @@ The lead agent matches whoever is leading the current phase/sub-phase. Read `doc
 
 | Phase | Sub-phase | Lead Agent |
 |-------|-----------|-----------|
-| Initialization | any | **Oracle** (Product Manager) |
-| Inception | Discover, Define | **Oracle** (Product Manager) |
+| Initialization | any | **Atlas** (Product Manager) |
+| Inception | Discover, Define | **Atlas** (Product Manager) |
 | Inception | Design, Plan | **Neo** (Architect) |
 | Construction | any | **Neo** (Architect) |
 | Operation | Ship, Verify | **Pulse** (DevOps) |
 | Operation | Reflect | **Jarvis** (Tech Writer) |
-| Idle / between phases | — | **Oracle** (Product Manager) |
+| Idle / between phases | — | **Atlas** (Product Manager) |
 
 Read the lead agent's full persona from their agent file and embody their perspective throughout.
 
@@ -76,7 +76,7 @@ Each agent evaluates the scenario **hypothetically** — what would happen if th
 | Agent | Analyzes | Questions to answer |
 |-------|----------|-------------------|
 | **Neo** (Architect) | Architecture impact | How would this change the system design? What components are affected? Any new dependencies? |
-| **Oracle** (PM) | Product impact | How does this affect the roadmap, scope, user value? Does it change priorities? |
+| **Atlas** (PM) | Product impact | How does this affect the roadmap, scope, user value? Does it change priorities? |
 | **Bolt** (Backend) | Backend impact | What backend changes would be needed? DB schema? API changes? Migration complexity? |
 | **Friday** (Frontend) | Frontend impact | What UI changes? State management? New components? Breaking changes to existing UX? |
 | **Echo** (QA) | Test impact | What new tests would be needed? Which existing tests would break? Coverage gaps? |

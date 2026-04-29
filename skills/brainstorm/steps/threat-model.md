@@ -57,7 +57,7 @@ The full team — 9 built-in agents plus any matching custom agents from `.pdlc/
 | **Bolt** | Implementation feasibility of each mitigation; engineering effort estimate per fix |
 | **Echo** | Testability of each threat (can we write a regression test?); coverage gaps the threats reveal |
 | **Pulse** | Runtime/operational threats — DoS, resource exhaustion, observability gaps that hide in-progress attacks |
-| **Oracle** | Business impact per threat; which threats actually matter for *this* product/user/value-prop |
+| **Atlas** | Business impact per threat; which threats actually matter for *this* product/user/value-prop |
 | **Muse** | UX impact of mitigations (will MFA churn users? does the warning banner work? does the rate-limit error message frustrate or inform?) |
 | **Jarvis** | Documents the threat model and the MOM; ensures decisions are written down clearly with rationale |
 | **Friday** | Effort/timeline cost of mitigations vs. acceptance; surfaces hidden coordination cost |
@@ -94,10 +94,10 @@ Output of Layer 1: a flat list of candidate threats, each tagged with the trust 
 
 Phantom assigns severity (CRITICAL / HIGH / MEDIUM / LOW) to each Layer 1 threat using a DREAD-flavored rubric:
 
-- **Damage if exploited** — Oracle inputs business impact.
+- **Damage if exploited** — Atlas inputs business impact.
 - **Reproducibility** — Echo inputs based on test feasibility.
 - **Exploitability** — Phantom + Neo input attack feasibility (skill required, prerequisites).
-- **Affected users** — Oracle + Muse input scope (single user / cohort / all users / multi-tenant cross-leak).
+- **Affected users** — Atlas + Muse input scope (single user / cohort / all users / multi-tenant cross-leak).
 - **Discoverability** — Phantom inputs how easily an attacker would find this.
 
 Filter: drop **LOW-severity** threats from active discussion (they're recorded but not debated). Focus the rest of the party on **CRITICAL + HIGH + MEDIUM**.
@@ -110,7 +110,7 @@ For each prioritized threat, the party debates and Phantom records a proposal in
 |---|---|---|
 | **Mitigate now** | Threat is critical/high and the fix is achievable within the current feature's scope | Specific design change (Bolt assesses cost, Neo confirms architectural fit, Friday assesses timeline). The fix becomes a Plan-phase Beads task at Step 13–19. |
 | **Mitigate later** | Threat is real but the fix has scope/dependencies that exceed the current feature | Tech-debt entry to be created. Recorded as an ADR in `DECISIONS.md` because deferring known security debt is a deliberate accepted-risk decision. |
-| **Accept** | Risk is judged acceptable given business impact and mitigation cost | Oracle's business justification + Phantom's residual-risk assessment. Recorded as an ADR in `DECISIONS.md`. **Final acceptance is the human's call at Step 12, not the party's.** |
+| **Accept** | Risk is judged acceptable given business impact and mitigation cost | Atlas's business justification + Phantom's residual-risk assessment. Recorded as an ADR in `DECISIONS.md`. **Final acceptance is the human's call at Step 12, not the party's.** |
 | **Transfer** | Risk is moved to a third party (insurance, contractual, vendor SLA) | Description of the transfer mechanism. Rare but valid for some classes (e.g., payment tokenization shifts PCI DSS scope to the processor). |
 
 The party produces *proposals*; the human owns *decisions*. Step 12 is the decision gate.

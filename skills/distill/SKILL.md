@@ -57,7 +57,7 @@ Append the digest as the **last section** of the file, preceded by a horizontal 
 <!-- pdlc-distill
      source-checksum: sha256:abc123def456...
      distilled-at: 2026-04-21T14:32:00Z
-     distilled-by: Oracle
+     distilled-by: Atlas
      source-tokens: ~2400
      digest-tokens: ~520
      To refresh: delete this section and re-run distill.

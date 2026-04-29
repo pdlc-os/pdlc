@@ -18,7 +18,7 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 | **Bolt** | Backend Engineer | Opus | APIs, services, DB, business logic | Pragmatic, performance-aware, opinionated about data models |
 | **Friday** | Frontend Engineer | Opus | UI components, state, UX implementation | Detail-oriented, accessibility-conscious |
 | **Muse** | UX Designer | Sonnet | User flows, interaction design, mental models | Empathetic, non-technical framing, pushes back on dev-centric thinking |
-| **Oracle** | PM | Opus | Requirements clarity, scope, acceptance criteria | Scope guardian, pushes for testable definitions |
+| **Atlas** | PM | Opus | Requirements clarity, scope, acceptance criteria | Scope guardian, pushes for testable definitions |
 | **Pulse** | DevOps | Opus | CI/CD, infra, deployment, environment config | Ops-first, questions anything that doesn't deploy cleanly |
 
 > **Model strategy:** Opus (5 agents) handles complex reasoning — architecture, product decisions, backend/frontend engineering, deployment. Sonnet (4 agents) handles focused specialized work — testing, security review, documentation, UX design.
@@ -29,16 +29,16 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 
 | Phase / Sub-phase | Lead Agent | Also leads `/decide` |
 |-------------------|-----------|----------------------|
-| Init | Oracle | Yes |
-| Brainstorm — Discover + Define | Oracle | Yes |
-| Brainstorm — Discover Step 4.5 (UX Discovery, conditional) | Muse | — *(returns to Oracle)* |
+| Init | Atlas | Yes |
+| Brainstorm — Discover + Define | Atlas | Yes |
+| Brainstorm — Discover Step 4.5 (UX Discovery, conditional) | Muse | — *(returns to Atlas)* |
 | Brainstorm — Design + Plan | Neo | Yes |
 | Brainstorm — Design Step 10.5 (Threat Modeling Party) | **Phantom** | — *(returns to Neo)* |
 | Build (all sub-phases) | Neo | Yes |
 | Ship — Ship + Verify | Pulse | Yes |
 | Ship — Reflect | Jarvis | Yes |
-| Ship — Next Feature | Oracle | Yes |
-| Idle / between phases | — | Oracle |
+| Ship — Next Feature | Atlas | Yes |
+| Idle / between phases | — | Atlas |
 
 Step 4.5 (UX Discovery) and Step 10.5 (Threat Modeling) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-security.md`](20-security.md) for the threat-modeling handoff pattern.
 
@@ -55,7 +55,7 @@ See [`21-agent-extensions.md`](21-agent-extensions.md) for the full authoring gu
 
 Every built-in agent's `model:` frontmatter uses **tier aliases** (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs. Tier aliases resolve to the current latest model in that tier at runtime, so agents stay current as Anthropic ships new models without requiring a PDLC release.
 
-PDLC's tier choice per role: **Opus** for Bolt, Friday, Neo, Oracle, Pulse (leadership and complex-reasoning roles); **Sonnet** for Echo, Jarvis, Muse, Phantom (focused specialist work). Custom agents you author should use the same convention; reserve specific-version pinning for the rare case where reproducibility (compliance, regression testing) demands it.
+PDLC's tier choice per role: **Opus** for Bolt, Friday, Neo, Atlas, Pulse (leadership and complex-reasoning roles); **Sonnet** for Echo, Jarvis, Muse, Phantom (focused specialist work). Custom agents you author should use the same convention; reserve specific-version pinning for the rare case where reproducibility (compliance, regression testing) demands it.
 
 Override per-session via the `CLAUDE_CODE_SUBAGENT_MODEL` environment variable. See [`17-design-decisions.md`](17-design-decisions.md) for rationale.
 

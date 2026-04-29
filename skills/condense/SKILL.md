@@ -53,7 +53,7 @@ This skill does **not** restructure content (headers, bullets, tables, ordering)
 - **File paths and commands** — `/src/components/...`, `./config.yaml`, `npm install`, `git commit`, `bd claim`.
 - **IDs and numbers** — Beads task IDs, ADR IDs, feature F-IDs, episode numbers, version numbers, timestamps, counts, thresholds.
 - **Environment variables** — `$HOME`, `NODE_ENV`, etc.
-- **Proper nouns** — PDLC agent names (Neo, Echo, Phantom, Jarvis, Oracle, Muse, Pulse, Friday, Bolt), service names, project names, people, company names.
+- **Proper nouns** — PDLC agent names (Neo, Echo, Phantom, Jarvis, Atlas, Muse, Pulse, Friday, Bolt), service names, project names, people, company names.
 - **Quoted error messages and stack traces** — preserve the quoted text exactly.
 - **Frontmatter / YAML headers** — the `---` block at the top of markdown files.
 - **Tables** — compress cell text with the same rules, but keep the table structure (rows, columns, alignment) intact.

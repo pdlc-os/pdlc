@@ -1,6 +1,6 @@
 # Progressive Thinking — Agent Team Meeting
 
-Oracle leads this meeting. Unlike Socratic discovery (which questions the user), this is an **internal team meeting** where Oracle questions the other agents to stress-test and refine the feature understanding. The user observes but is only pulled in when agents cannot resolve a question themselves.
+Atlas leads this meeting. Unlike Socratic discovery (which questions the user), this is an **internal team meeting** where Atlas questions the other agents to stress-test and refine the feature understanding. The user observes but is only pulled in when agents cannot resolve a question themselves.
 
 **This step cannot be skipped by the user.** It is a required quality gate before Define.
 
@@ -10,12 +10,12 @@ Oracle leads this meeting. Unlike Socratic discovery (which questions the user),
 
 Read `skills/formatting.md` and output a **Meeting Announcement Block**:
 
-> **Oracle (Product Manager):** "Now that I have a solid understanding of the feature from our conversation, I'm going to run an internal team meeting to pressure-test what we've gathered. The agents will challenge each other using a progressive thinking framework — building from concrete facts up to strategic implications. I'll present the refined findings when they're done.
+> **Atlas (Product Manager):** "Now that I have a solid understanding of the feature from our conversation, I'm going to run an internal team meeting to pressure-test what we've gathered. The agents will challenge each other using a progressive thinking framework — building from concrete facts up to strategic implications. I'll present the refined findings when they're done.
 >
 > If the team gets stuck or can't resolve something, I'll bring the question to you."
 
-- **Called by:** Oracle (Product Manager)
-- **Participants:** Neo, Echo, Phantom, Bolt, Friday, Muse, Pulse, Jarvis — 8 agents (Oracle facilitates)
+- **Called by:** Atlas (Product Manager)
+- **Participants:** Neo, Echo, Phantom, Bolt, Friday, Muse, Pulse, Jarvis — 8 agents (Atlas facilitates)
 - **Purpose:** Progressive thinking refinement of `[feature-name]` discovery
 - **Estimated time:** ~3–5 minutes
 
@@ -29,11 +29,11 @@ Follow the orchestrator's durable checkpoint protocol (`skills/build/party/orche
 
 ## Meeting protocol
 
-Oracle facilitates 6 rounds of progressive thinking. Each round builds on the previous. In each round, Oracle poses the question(s) to the relevant agents, collects their responses, identifies gaps or conflicts, and either resolves them or escalates to the user.
+Atlas facilitates 6 rounds of progressive thinking. Each round builds on the previous. In each round, Atlas poses the question(s) to the relevant agents, collects their responses, identifies gaps or conflicts, and either resolves them or escalates to the user.
 
 ### Round 1 — Concrete (What do we know for certain?)
 
-Oracle asks all agents:
+Atlas asks all agents:
 > "Based on the discovery so far, what do we know for certain about this feature? State only facts — things explicitly confirmed by the user, documented in the PRD/brainstorm log, or verifiable from the codebase. No assumptions, no inferences."
 
 Each agent responds from their domain:
@@ -46,20 +46,20 @@ Each agent responds from their domain:
 - **Pulse**: confirmed deployment requirements, environment constraints
 - **Jarvis**: confirmed documentation requirements, API contract patterns
 
-Oracle synthesizes: "Here's what we know for certain: [consolidated list]"
+Atlas synthesizes: "Here's what we know for certain: [consolidated list]"
 
 ### Round 2 — Inferential (What can we reasonably infer?)
 
-Oracle asks:
+Atlas asks:
 > "Given what we know, what can we reasonably infer that the user hasn't explicitly stated? What patterns from the existing codebase or similar features suggest about how this should work?"
 
 Agents respond with inferences from their domains, clearly labeled as inferences (not facts).
 
-Oracle identifies any inference that two or more agents disagree on → flag for Round 5 or user escalation.
+Atlas identifies any inference that two or more agents disagree on → flag for Round 5 or user escalation.
 
 ### Round 3 — Consequential (What follows from our inferences?)
 
-Oracle asks:
+Atlas asks:
 > "If our inferences are correct, what are the downstream consequences? What does this mean for the implementation, testing, security, and deployment?"
 
 Agents trace the implications:
@@ -72,7 +72,7 @@ Agents trace the implications:
 
 ### Round 4 — Speculative (What might we be missing?)
 
-Oracle asks:
+Atlas asks:
 > "What haven't we considered? What scenarios, edge cases, or requirements might emerge that we haven't discussed? Think about what could go wrong, what the user might not have thought of, and what similar features in other products typically require."
 
 This is the creative/paranoid round. Agents are encouraged to be speculative:
@@ -83,18 +83,18 @@ This is the creative/paranoid round. Agents are encouraged to be speculative:
 
 ### Round 5 — Conflicting (Where do we disagree?)
 
-Oracle asks:
+Atlas asks:
 > "Looking at Rounds 1–4, where do our assessments conflict? Where did one agent's inference contradict another's? Let's surface these explicitly."
 
 For each conflict:
-1. Oracle states the disagreement clearly
+1. Atlas states the disagreement clearly
 2. The two (or more) agents involved present their reasoning
-3. Oracle attempts resolution — if one agent's reasoning is clearly stronger, accept it
+3. Atlas attempts resolution — if one agent's reasoning is clearly stronger, accept it
 4. **If the team cannot resolve**: escalate to the user
 
 **User escalation format:**
 
-> **Oracle (Product Manager):** "The team hit a point we can't resolve internally:
+> **Atlas (Product Manager):** "The team hit a point we can't resolve internally:
 >
 > **Question:** [the specific question]
 > **[Agent A]'s view:** [their position and reasoning]
@@ -106,10 +106,10 @@ Wait for the user's answer. Record it in the MOM and brainstorm log. Resume the 
 
 ### Round 6 — Strategic (What should we prioritize?)
 
-Oracle asks:
+Atlas asks:
 > "Given everything from Rounds 1–5, what are the top 3–5 things we must get right in the design? What are the highest-risk areas that need the most attention during construction? And what can we safely defer or simplify?"
 
-Agents each nominate their top priorities. Oracle synthesizes into a ranked list.
+Agents each nominate their top priorities. Atlas synthesizes into a ranked list.
 
 ---
 
@@ -135,7 +135,7 @@ Update `.pending-party.json`: set `"progress": "mom-written"`.
 
 ## Present findings to user
 
-> **Oracle (Product Manager):** "The team completed the progressive thinking analysis. Here's what came out of it:
+> **Atlas (Product Manager):** "The team completed the progressive thinking analysis. Here's what came out of it:
 >
 > **Confirmed facts:** [top items from Round 1]
 > **Key inferences:** [top items from Round 2]

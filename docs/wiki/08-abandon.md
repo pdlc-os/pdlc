@@ -1,6 +1,6 @@
 # Abandon — Drop an In-Progress Feature
 
-Run `/pdlc abandon` (alias: `/abandon`) to cleanly stop work on a feature that is no longer viable. Oracle (PM) leads — this is a product decision.
+Run `/pdlc abandon` (alias: `/abandon`) to cleanly stop work on a feature that is no longer viable. Atlas (PM) leads — this is a product decision.
 
 ---
 
@@ -16,13 +16,13 @@ Run `/pdlc abandon` (alias: `/abandon`) to cleanly stop work on a feature that i
 
 | Step | What happens |
 |------|-------------|
-| **Confirm** | Oracle shows current state (phase, open tasks, existing artifacts) and asks for the reason |
+| **Confirm** | Atlas shows current state (phase, open tasks, existing artifacts) and asks for the reason |
 | **Record** | ADR entry in DECISIONS.md with reason, work completed, phase reached |
 | **Close tasks** | All open Beads tasks closed with abandonment note. Beads purged and compacted. |
 | **Update ROADMAP** | Status set to `Dropped` with date and episode reference |
 | **Episode** | Compact abandonment episode: reason, work completed, decision record, lessons learned |
 | **Archive** | PRDs, design docs, reviews, brainstorm logs, MOMs moved to `docs/pdlc/archive/` |
-| **Next feature** | Oracle presents next roadmap item — continue, pause, or switch |
+| **Next feature** | Atlas presents next roadmap item — continue, pause, or switch |
 
 ### What's preserved vs archived
 

@@ -45,7 +45,7 @@ Each agent receives the user's artifact(s), the composed plan, and the context a
 | **Bolt** (Backend) | Backend deploy correctness | Migration ordering correct? Backward compatibility during the deploy window? Long-running jobs handled? DB connection pools drained/restored correctly? |
 | **Friday** (Frontend) | Frontend build & deploy | Build step produces the expected artifacts? Cache invalidation handled? Static assets versioned? Any breaking change to public routes? |
 | **Muse** (UX) | User-facing impact | Does the deploy introduce downtime, degraded UX, or a mid-session state change that affects users? Any feature-flag rollout the user's script skips? |
-| **Oracle** (PM) | PRD conformance | Does the composed deploy plan match the rollout expectations stated in the PRD (environments, phasing, feature flags)? Any scope creep introduced by the custom artifact? |
+| **Atlas** (PM) | PRD conformance | Does the composed deploy plan match the rollout expectations stated in the PRD (environments, phasing, feature flags)? Any scope creep introduced by the custom artifact? |
 | **Jarvis** (Tech Writer) | Traceability & docs | Is the deploy self-documenting — logs, versioned artifacts, a recorded source-of-truth? Will `DEPLOYMENTS.md` capture the custom artifact reference? Is the rollback command documented? |
 
 **Custom agents:** any agent in `.pdlc/agents/` with `always_on: true` or matching `auto_select_on_labels` also participates, answering from their focus areas per their persona file.
@@ -68,7 +68,7 @@ Pulse identifies overlapping findings (where two agents flagged the same underly
 
 - If Phantom flags a hardcoded secret AND Pulse flags a missing env-var handoff → route to both: "same root cause — the script should read from the secrets store. Propose the single fix."
 - If Echo flags a skipped test layer AND Neo flags an architectural invariant that test protects → route to both.
-- If Oracle flags missing PRD conformance AND Muse flags a UX impact → route to both.
+- If Atlas flags missing PRD conformance AND Muse flags a UX impact → route to both.
 
 Cross-talk follows the canonical bounded loop: **up to 3 rounds, exit early on consensus.** See `skills/build/party/spawn-and-mom.md` → "Cross-talk Rounds" for the full rules. Once cross-talk terminates (consensus reached, locked early, or 3 rounds exhausted), update `.pending-party.json`: set `"progress": "cross-talk-complete"`.
 

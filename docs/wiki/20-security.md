@@ -241,7 +241,7 @@ Skip mode still produces a `threat-model.md` (with rationale recorded) so the au
 | **Bolt** | Implementation feasibility of each mitigation; engineering effort estimate |
 | **Echo** | Testability of each threat; coverage gaps the threats reveal |
 | **Pulse** | Runtime/operational threats — DoS, resource exhaustion, observability gaps |
-| **Oracle** | Business impact per threat; which threats actually matter for *this* product |
+| **Atlas** | Business impact per threat; which threats actually matter for *this* product |
 | **Muse** | UX impact of mitigations (will MFA churn users? does the warning banner work?) |
 | **Jarvis** | Documents the threat model and MOM with rationale |
 | **Friday** | Effort/timeline cost of mitigations vs. acceptance |
@@ -260,7 +260,7 @@ The party adapts the existing **Progressive Thinking** pattern (`skills/brainsto
 
 - **Mitigate now** — design change goes into Plan-phase Beads tasks at Step 13–19
 - **Mitigate later** — recorded as ADR in `DECISIONS.md` (deferring known security debt is a deliberate decision)
-- **Accept** — Oracle's business justification + Phantom's residual-risk assessment, recorded as ADR
+- **Accept** — Atlas's business justification + Phantom's residual-risk assessment, recorded as ADR
 - **Transfer** — risk moved to a third party (insurance, vendor SLA)
 
 The party produces *proposals*; the human owns *decisions* at Step 12.

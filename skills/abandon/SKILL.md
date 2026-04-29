@@ -37,13 +37,13 @@ If a feature name was provided, verify it matches the active feature in STATE.md
 
 ---
 
-## Lead Agent: Oracle (Product Manager)
+## Lead Agent: Atlas (Product Manager)
 
-Oracle leads abandonment — this is a product decision about stopping work. Read `agents/oracle.md`.
+Atlas leads abandonment — this is a product decision about stopping work. Read `agents/atlas.md`.
 
 Before the first user-facing message, read `skills/formatting.md` and output a **Sub-phase Transition Header** for "ABANDON FEATURE" followed by:
 
-> **Oracle (Product Manager):** "Understood — sometimes the right call is to stop. Let me walk through the cleanup so nothing is left dangling."
+> **Atlas (Product Manager):** "Understood — sometimes the right call is to stop. Let me walk through the cleanup so nothing is left dangling."
 
 ---
 
@@ -100,7 +100,7 @@ Append to `docs/pdlc/memory/DECISIONS.md`:
 **Source:** User (explicit)
 **Phase:** [current phase]
 **Sub-phase:** [current sub-phase]
-**Agent:** Oracle
+**Agent:** Atlas
 **Feature:** [feature-name]
 **Status:** Active
 
@@ -187,7 +187,7 @@ Create a compact episode at `docs/pdlc/memory/episodes/[NNN]_abandoned_[feature-
 ADR-[NNN]: [link to DECISIONS.md entry]
 
 ## Lessons Learned
-[Oracle's brief assessment: what can be learned from this abandonment?
+[Atlas's brief assessment: what can be learned from this abandonment?
 Was the feature ill-conceived? Did circumstances change? Was it technically
 infeasible? This helps future roadmap planning.]
 
@@ -249,7 +249,7 @@ Read `docs/pdlc/memory/ROADMAP.md`. Find the next priority feature with status `
 
 **If abandoned during Inception (brainstorming):**
 
-> **Oracle (Product Manager):** "Feature `[feature-name]` has been dropped from brainstorming. The brainstorm log and any docs are archived for reference — nothing is lost if you want to revisit the idea later."
+> **Atlas (Product Manager):** "Feature `[feature-name]` has been dropped from brainstorming. The brainstorm log and any docs are archived for reference — nothing is lost if you want to revisit the idea later."
 
 > "Here's the roadmap:
 >
@@ -271,7 +271,7 @@ Handle the response:
 
 **If abandoned during Construction or Operation:**
 
-> **Oracle (Product Manager):** "Feature `[feature-name]` has been abandoned and cleaned up. Everything is documented — the PRD, design docs, and branch are preserved for reference in case you want to revisit later."
+> **Atlas (Product Manager):** "Feature `[feature-name]` has been abandoned and cleaned up. Everything is documented — the PRD, design docs, and branch are preserved for reference in case you want to revisit later."
 
 > "Here's where we stand on the roadmap:
 >

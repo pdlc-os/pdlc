@@ -224,7 +224,7 @@ Each episode file captures:
 | Backend Engineer | **Bolt** | API, services, DB, business logic |
 | Frontend Engineer | **Friday** | UI components, state, UX implementation |
 | UX Designer | **Muse** | User experience, flows, interaction design |
-| PM | **Oracle** | Requirements clarity, scope, acceptance criteria |
+| PM | **Atlas** | Requirements clarity, scope, acceptance criteria |
 | DevOps | **Pulse** | CI/CD, infra, deployment, environment config |
 
 #### Review Sub-phase
@@ -300,7 +300,7 @@ Each episode file captures:
 | *(resume)* | Auto-detect | If no command given, PDLC reads `docs/pdlc/memory/STATE.md` and resumes from last checkpoint |
 
 ### Plugin Primitives
-- **Skills** — markdown skill files per phase, per role (Neo, Oracle, Bolt, Friday, Echo, Phantom, Muse, Pulse, Jarvis), and per capability (TDD, review, test, ship, reflect)
+- **Skills** — markdown skill files per phase, per role (Neo, Atlas, Bolt, Friday, Echo, Phantom, Muse, Pulse, Jarvis), and per capability (TDD, review, test, ship, reflect)
 - **Hooks** — fire on events to: enforce guardrails (pre-tool), update `docs/pdlc/memory/STATE.md` (post-tool), sync Beads status on task pick-up and completion (post-tool), trigger episode drafting on PR merge
 - **MCP servers** — visual companion server (Inception), Beads integration, real Chromium browser (E2E tests)
 - **CLAUDE.md** — project-local config: active phase, current feature, pointers to `docs/pdlc/memory/CONSTITUTION.md` and `docs/pdlc/memory/STATE.md`

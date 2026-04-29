@@ -45,7 +45,7 @@ Set **Status**: `Draft` and **Date**: today's date.
 
 Save the file to: `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md`
 
-Apply Oracle's **Writing Quality Pass** (see `agents/oracle.md`) before presenting the PRD for approval.
+Apply Atlas's **Writing Quality Pass** (see `agents/atlas.md`) before presenting the PRD for approval.
 
 ---
 

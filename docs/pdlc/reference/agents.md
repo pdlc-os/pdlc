@@ -16,7 +16,7 @@
 | **Bolt** | Backend Engineer | API, services, DB, business logic |
 | **Friday** | Frontend Engineer | UI components, state, UX implementation |
 | **Muse** | UX Designer | User experience, flows, interaction design |
-| **Oracle** | PM | Requirements clarity, scope, acceptance criteria |
+| **Atlas** | PM | Requirements clarity, scope, acceptance criteria |
 | **Pulse** | DevOps | CI/CD, infra, deployment, environment config |
 
 Full agent personas are in `agents/*.md`.

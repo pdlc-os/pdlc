@@ -61,7 +61,7 @@ Operation has three lead agents with handoffs at the Verify→Reflect and Reflec
 |------------|-----------|-----|
 | Ship + Verify (Steps 3–12) | **Pulse** (DevOps) | Merge, versioning, CI/CD, deployment, smoke tests, environment verification |
 | Reflect (Steps 13–17) | **Jarvis** (Tech Writer) | Retro generation, episode finalization, CHANGELOG, OVERVIEW, ROADMAP updates |
-| Next Feature (Step 18) | **Oracle** (Product Manager) | Roadmap review, next feature selection, feature loop continuation |
+| Next Feature (Step 18) | **Atlas** (Product Manager) | Roadmap review, next feature selection, feature loop continuation |
 
 Read the lead agent's full persona from `agents/pulse.md` or `agents/jarvis.md` and embody their perspective throughout their sub-phases.
 
@@ -107,9 +107,9 @@ Read `skills/ship/steps/03-reflect.md` and execute every step completely (Steps 
 
 Return here when the episode is committed and ROADMAP.md is updated.
 
-### — HANDOFF: Jarvis → Oracle —
+### — HANDOFF: Jarvis → Atlas —
 
-Step 18 in `03-reflect.md` contains the Jarvis→Oracle handoff and next-feature prompt. The handoff and Oracle's roadmap review are part of that step — do not add a separate handoff here.
+Step 18 in `03-reflect.md` contains the Jarvis→Atlas handoff and next-feature prompt. The handoff and Atlas's roadmap review are part of that step — do not add a separate handoff here.
 
 Operation is complete when the user chooses to continue (loops to brainstorm), pause (idle), or switch features (updates roadmap then loops to brainstorm).
 

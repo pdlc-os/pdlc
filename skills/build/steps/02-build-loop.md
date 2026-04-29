@@ -89,12 +89,12 @@ Auto-select based on task labels:
 - Label contains `backend` → include **Bolt** (Backend Engineer)
 - Label contains `frontend` → include **Friday** (Frontend Engineer)
 - Label contains `ux` → include **Muse** (UX Designer)
-- Label contains `product` → include **Oracle** (PM)
+- Label contains `product` → include **Atlas** (PM)
 - Label contains `devops` → include **Pulse** (DevOps)
 
 Tell the user which agents are active for this task:
 
-> "Agent team assembled: Neo, Echo, Phantom, Jarvis[, Bolt][, Friday][, Muse][, Oracle][, Pulse]"
+> "Agent team assembled: Neo, Echo, Phantom, Jarvis[, Bolt][, Friday][, Muse][, Atlas][, Pulse]"
 
 Each agent's responsibilities are defined in `agents/[name].md`. Embody each agent's perspective as you work through the task.
 

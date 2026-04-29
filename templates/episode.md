@@ -168,7 +168,7 @@
 
 <!-- List all agents that participated in this feature's delivery.
      Always-on agents are pre-filled. Remove any that did not participate.
-     Add auto-selected agents (Bolt, Friday, Muse, Oracle, Pulse) that were activated. -->
+     Add auto-selected agents (Bolt, Friday, Muse, Atlas, Pulse) that were activated. -->
 
 **Always-on:**
 - **Neo** (Architect) — architecture review and PRD conformance
@@ -180,7 +180,7 @@
 - <!-- **Bolt** (Backend Engineer) — API routes, business logic, DB migrations -->
 - <!-- **Friday** (Frontend Engineer) — UI components, state management -->
 - <!-- **Muse** (UX Designer) — interaction design, accessibility -->
-- <!-- **Oracle** (PM) — requirements clarity, acceptance criteria -->
+- <!-- **Atlas** (PM) — requirements clarity, acceptance criteria -->
 - <!-- **Pulse** (DevOps) — CI/CD, deployment, environment config -->
 
 ---

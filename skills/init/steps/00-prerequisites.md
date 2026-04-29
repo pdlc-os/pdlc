@@ -1,7 +1,7 @@
 # Prerequisites and Tooling
 ## Step 1
 
-> **Model override:** Steps 1a–1e (all installation and setup tasks) use the **Haiku** model for speed and cost efficiency. These are straightforward CLI operations that don't require complex reasoning. After Step 1e completes, revert to the lead agent's assigned model (Oracle = Opus) for the rest of initialization.
+> **Model override:** Steps 1a–1e (all installation and setup tasks) use the **Haiku** model for speed and cost efficiency. These are straightforward CLI operations that don't require complex reasoning. After Step 1e completes, revert to the lead agent's assigned model (Atlas = Opus) for the rest of initialization.
 
 ---
 
@@ -323,7 +323,7 @@ If clean:
 
 This is a baseline — Phantom will do deeper security reviews during Construction, and security scans run again before every ship.
 
-> **End of model override.** Steps 1a–1e are complete. From this point forward, use Oracle's assigned model (Opus) for all remaining initialization steps.
+> **End of model override.** Steps 1a–1e are complete. From this point forward, use Atlas's assigned model (Opus) for all remaining initialization steps.
 
 ---
 
