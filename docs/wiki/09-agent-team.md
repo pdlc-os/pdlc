@@ -40,7 +40,7 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 | Ship — Next Feature | Oracle | Yes |
 | Idle / between phases | — | Oracle |
 
-Step 4.5 (UX Discovery) and Step 10.5 (Threat Modeling) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-threat-modeling.md`](20-threat-modeling.md) for the threat-modeling handoff pattern.
+Step 4.5 (UX Discovery) and Step 10.5 (Threat Modeling) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-security.md`](20-security.md) for the threat-modeling handoff pattern.
 
 ### Agent extension framework
 

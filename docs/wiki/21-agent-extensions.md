@@ -127,4 +127,4 @@ See [`17-design-decisions.md`](17-design-decisions.md) for the rationale and [`1
 
 ---
 
-[← Previous: Threat Modeling](20-threat-modeling.md) | [Back to README](../../README.md)
+[← Previous: Security](20-security.md) | [Back to README](../../README.md)

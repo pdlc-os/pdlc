@@ -384,11 +384,19 @@ PDLC also supports two extension patterns for layering behavior onto built-in ag
 
 Agent `model:` declarations use **tier aliases** (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs, so agents stay current as Anthropic ships new models without requiring a PDLC release. See [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) for the authoring guide.
 
-### Security review built into Inception
+### Security is paramount — five layers, no single point of failure
 
-Threat modeling is integrated into Brainstorm Design as **Step 10.5** — a Phantom-led step inserted between design-doc generation and the design approval gate. A 3-question triage decides depth (Skip / Lite / Full); Full mode convenes the team for STRIDE-per-trust-boundary analysis using PDLC's existing party-mode + progressive-thinking + cross-talk machinery. The resulting `threat-model.md` joins ARCHITECTURE / data-model / api-contracts as the fourth design artifact reviewed at the Step 12 approval gate. Mitigate-now decisions become Plan-phase tasks; mitigate-later and accept decisions become ADRs. See [Threat Modeling](docs/wiki/20-threat-modeling.md).
+Security in PDLC is enforced through a **layered defense model** rather than a single checkpoint. A feature shipped through PDLC passes through five independent security mechanisms — and the layers are intentionally redundant so that a missed check in any one layer is caught by another:
 
-Phantom's security audit catalog covers OWASP Web Top 10, OWASP API Security Top 10, OWASP LLM Top 10 (with emerging concerns: MCP server security, RAG isolation, cost amplification), Mobile (iOS/Android/RN/Flutter), Cryptography correctness (JWT alg-confusion, password-hashing parameters, TLS config), 6 backend stacks (Java/Spring, Node, Python, Go, Ruby/Rails, .NET), Cloud & IaC (Terraform/CloudFormation/AWS/GCP), Tech currency & EOL, Software supply chain integrity (SBOM, SLSA, signed artifacts), and 9 compliance regimes (GDPR, CCPA/CPRA, PCI DSS v4.0, SOC 2, HIPAA, COPPA/GDPR-K/AADC, BIPA, DORA, NIS2).
+1. **Configuration** — `CONSTITUTION.md` §1 / §4 / §7 / §8 capture the security contract once at init time; `DECISIONS.md` ADRs record every accepted-risk decision.
+2. **Dedicated lifecycle stops** — Brainstorm Design **Step 10.5 Threat Modeling Party** (Phantom-led STRIDE-per-trust-boundary analysis with Neo↔Phantom handoffs and Skip/Lite/Full triage); Build Review **security pillar** (Phantom one of 4 always-on parallel reviewers); Build Test **Layer 7 Security tests** (dep audit + secret scan + OWASP); Ship **Step 9.2 Deployment Review Party** (when custom artifact provided) and **pre-deploy security check** (dep audit + secret scan + headers).
+3. **Continuous agent participation** — Phantom is `always_on: true` and contributes to every task, every meeting, every decision, every retro. Per-task: OWASP Top 10, auth/authz layer audit, input validation, secrets management, dependency CVE check.
+4. **Hook layer** — `hooks/pdlc-guardrails.js` fires on every Bash / Edit / Write tool call. Tier 1 hard-blocks (force-push to main, DROP TABLE without migration, rm -rf outside project, deploy with failing tests, hardcoded secrets, critical dep vulnerabilities). Tier 2 pause-and-confirm (rm -rf, git reset --hard, prod DB commands, external write API calls, editing CONSTITUTION/DECISIONS).
+5. **Lifecycle-of-findings** — threats found at Step 10.5 propagate forward through Plan / Build / Ship / Reflect with named owners and re-evaluation triggers. Nothing accepted at design time is silently forgotten by ship time.
+
+Phantom's audit catalog covers OWASP Web Top 10, OWASP API Security Top 10, OWASP LLM Top 10 (with emerging concerns: MCP server security, RAG isolation, cost amplification), Mobile (iOS/Android/RN/Flutter), Cryptography correctness (JWT alg-confusion, password-hashing parameters, TLS config), 6 backend stacks (Java/Spring, Node, Python, Go, Ruby/Rails, .NET), Cloud & IaC (Terraform/CloudFormation/AWS/GCP), Tech currency & EOL, Software supply chain integrity (SBOM, SLSA, signed artifacts), and 9 compliance regimes (GDPR, CCPA/CPRA, PCI DSS v4.0, SOC 2, HIPAA, COPPA/GDPR-K/AADC, BIPA, DORA, NIS2).
+
+See [Security in PDLC](docs/wiki/20-security.md) for the full lifecycle walkthrough, frequency table, threat-modeling deep dive, and rationale.
 
 ---
 
@@ -434,7 +442,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 17  | [Design Decisions](docs/wiki/17-design-decisions.md) | Rationale for architectural choices: TDD, file-based memory, pivot/scenario planning, etc. |
 | 18  | [Extensibility](docs/wiki/18-extensibility.md)       | Custom skills, custom agents, custom test layers — extend PDLC without forking             |
 | 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/release`       |
-| 20  | [Threat Modeling](docs/wiki/20-threat-modeling.md) | Brainstorm Design Step 10.5 — Phantom-led STRIDE party with explicit Neo↔Phantom handoffs; triage tiers (Skip / Lite / Full); 3-layer Progressive Thinking; output reviewed at the design approval gate |
+| 20  | [Security in PDLC](docs/wiki/20-security.md) | The layered security model — configuration / lifecycle stops / continuous agent participation / hook layer / lifecycle-of-findings. Covers Brainstorm Design Step 10.5 (Threat Modeling Party), Build Review security pillar, Layer 7 security tests, Ship Step 9.2 (Deployment Review), pre-deploy security checks, and Tier 1/2/3 always-on guardrails |
 | 21  | [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) | Two extension patterns (agent-wide vs phase-specific), authoring conventions, tier-aliased model declarations, existing extensions catalog |
 
 ---
