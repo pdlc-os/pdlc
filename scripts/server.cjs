@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const http = require('http');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 
 // ========== WebSocket Protocol (RFC 6455) ==========
@@ -79,7 +80,17 @@ const URL_HOST = process.env.PDLC_URL_HOST || (HOST === '127.0.0.1' ? 'localhost
 const SESSION_DIR = process.env.PDLC_BRAINSTORM_DIR || '/tmp/pdlc-brainstorm';
 const CONTENT_DIR = path.join(SESSION_DIR, 'content');
 const STATE_DIR = path.join(SESSION_DIR, 'state');
+const FEATURE_NAME = process.env.PDLC_BRAINSTORM_FEATURE || null;
+const PROJECT_DIR = process.env.PDLC_PROJECT_DIR || null;
 let ownerPid = process.env.PDLC_OWNER_PID ? Number(process.env.PDLC_OWNER_PID) : null;
+
+// Wave 0 — portal manifest registration. The portal at localhost:7352 reads
+// this file to multiplex traffic across active backends (brainstorm visual
+// companion + future craft live-server). We update it on start and clear our
+// entry on shutdown. Harmless when the portal isn't running.
+const PORTAL_DIR = path.join(os.homedir(), '.pdlc', 'portal');
+const MANIFEST_PATH = path.join(PORTAL_DIR, 'manifest.json');
+const BACKEND_ID = `brainstorm-${process.pid}-${Date.now()}`;
 
 const MIME_TYPES = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript',
@@ -127,6 +138,66 @@ function getNewestScreen() {
   return files.length > 0 ? files[0].path : null;
 }
 
+// ========== Portal Manifest (Wave 0) ==========
+
+function readPortalManifest() {
+  try {
+    return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+  } catch (_) {
+    return { version: 1, active: null, secondary: [] };
+  }
+}
+
+function writePortalManifest(m) {
+  try {
+    if (!fs.existsSync(PORTAL_DIR)) fs.mkdirSync(PORTAL_DIR, { recursive: true });
+    fs.writeFileSync(MANIFEST_PATH, JSON.stringify(m, null, 2));
+  } catch (err) {
+    console.error('Failed to write portal manifest:', err.message);
+  }
+}
+
+function registerWithPortal(port) {
+  const entry = {
+    id: BACKEND_ID,
+    kind: 'brainstorm',
+    port: port,
+    host: HOST,
+    url: `http://${URL_HOST}:${port}`,
+    project: PROJECT_DIR,
+    feature: FEATURE_NAME,
+    started_at: new Date().toISOString(),
+    owner_pid: ownerPid,
+    backend_pid: process.pid
+  };
+  const manifest = readPortalManifest();
+  // Move current active (if not us) to secondary
+  if (manifest.active && manifest.active.id !== BACKEND_ID) {
+    manifest.secondary = manifest.secondary || [];
+    manifest.secondary.unshift(manifest.active);
+  }
+  manifest.active = entry;
+  writePortalManifest(manifest);
+}
+
+function unregisterFromPortal() {
+  const manifest = readPortalManifest();
+  let changed = false;
+  if (manifest.active && manifest.active.id === BACKEND_ID) {
+    manifest.active = null;
+    if (manifest.secondary && manifest.secondary.length > 0) {
+      manifest.active = manifest.secondary.shift();
+    }
+    changed = true;
+  }
+  if (manifest.secondary) {
+    const before = manifest.secondary.length;
+    manifest.secondary = manifest.secondary.filter(s => s.id !== BACKEND_ID);
+    if (manifest.secondary.length !== before) changed = true;
+  }
+  if (changed) writePortalManifest(manifest);
+}
+
 // ========== HTTP Request Handler ==========
 
 function handleRequest(req, res) {
@@ -159,6 +230,21 @@ function handleRequest(req, res) {
 
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
+  } else if (req.method === 'GET' && req.url === '/html2canvas.umd.js') {
+    // Wave 7b: vendored html2canvas (MIT, Niklas von Hertzen). Served from
+    // scripts/ alongside server.cjs. The frame template loads this for the
+    // annotation overlay's screenshot capture.
+    const filepath = path.join(__dirname, 'html2canvas.umd.js');
+    if (!fs.existsSync(filepath)) {
+      res.writeHead(404);
+      res.end('html2canvas.umd.js not found in scripts/ — annotation screenshot will not work.');
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/javascript; charset=utf-8',
+      'Cache-Control': 'public, max-age=86400'
+    });
+    res.end(fs.readFileSync(filepath));
   } else if (req.method === 'GET' && req.url.startsWith('/files/')) {
     const fileName = req.url.slice(7);
     const filePath = path.join(CONTENT_DIR, path.basename(fileName));
@@ -171,6 +257,76 @@ function handleRequest(req, res) {
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
     res.writeHead(200, { 'Content-Type': contentType });
     res.end(fs.readFileSync(filePath));
+  } else if (req.method === 'POST' && req.url === '/annotation') {
+    // Wave 7: annotation strokes + comment pins from the browser overlay.
+    // Body: {timestamp, screen_url, screen_size, scroll_top, strokes, comments, screenshot?}
+    // Wrote to: $STATE_DIR/annotations/annotation-<timestamp>.json (full payload)
+    //           $STATE_DIR/events JSONL (summary line)
+    const MAX_BODY = 8 * 1024 * 1024; // 8MB cap (allows screenshot data URLs in 7b)
+    let body = '';
+    let aborted = false;
+    req.on('data', (chunk) => {
+      if (aborted) return;
+      body += chunk;
+      if (body.length > MAX_BODY) {
+        aborted = true;
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'payload too large' }));
+        req.destroy();
+      }
+    });
+    req.on('end', () => {
+      if (aborted) return;
+      let data;
+      try {
+        data = JSON.parse(body);
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'invalid JSON: ' + err.message }));
+        return;
+      }
+      if (!data || typeof data !== 'object') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'expected JSON object' }));
+        return;
+      }
+      const ts = Number(data.timestamp) || Date.now();
+      const annotationsDir = path.join(STATE_DIR, 'annotations');
+      try {
+        if (!fs.existsSync(annotationsDir)) fs.mkdirSync(annotationsDir, { recursive: true });
+        const filename = 'annotation-' + ts + '.json';
+        const filepath = path.join(annotationsDir, filename);
+        fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
+
+        const summary = {
+          type: 'annotation',
+          timestamp: ts,
+          screen_url: data.screen_url || null,
+          stroke_count: Array.isArray(data.strokes) ? data.strokes.length : 0,
+          comment_count: Array.isArray(data.comments) ? data.comments.length : 0,
+          has_screenshot: !!data.screenshot,
+          annotation_file: path.relative(STATE_DIR, filepath)
+        };
+        const eventsFile = path.join(STATE_DIR, 'events');
+        fs.appendFileSync(eventsFile, JSON.stringify(summary) + '\n');
+
+        touchActivity();
+        console.log(JSON.stringify(Object.assign({ source: 'annotation-saved' }, summary)));
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'saved', file: filename, summary }));
+      } catch (err) {
+        console.error('Failed to save annotation:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'save failed: ' + err.message }));
+      }
+    });
+    req.on('error', (err) => {
+      if (aborted) return;
+      console.error('Annotation request error:', err.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'request error' }));
+    });
   } else {
     res.writeHead(404);
     res.end('Not found');
@@ -323,6 +479,7 @@ function startServer() {
       path.join(STATE_DIR, 'server-stopped'),
       JSON.stringify({ reason, timestamp: Date.now() }) + '\n'
     );
+    unregisterFromPortal();
     watcher.close();
     clearInterval(lifecycleCheck);
     server.close(() => process.exit(0));
@@ -367,6 +524,7 @@ function startServer() {
       });
       console.log(info);
       fs.writeFileSync(path.join(STATE_DIR, 'server-info'), info + '\n');
+      registerWithPortal(currentPort);
     });
   }
 

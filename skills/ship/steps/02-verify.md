@@ -67,6 +67,16 @@ Wait for the user to perform the check and report back.
 **11c. Auth flow (if applicable):**
 If the feature includes authentication (check PRD and design docs for `auth`, `login`, `OAuth`), ask the user to verify the auth flow works end-to-end in the deployed environment.
 
+### Step 11.5 — UX Verify (Muse, conditional)
+
+If `docs/pdlc/design/[feature-name]/ux-review.md` exists with triage outcome **Lite** or **Full** (Step 10.6 ran), execute the UX Verify step before the smoke-test approval gate. Read `skills/ship/steps/ux-verify.md` and run it completely — Muse's five focused checks (UX-writing drift, anti-pattern sweep, 8-state spot-check, accessibility regression, console / runtime issues) against the as-deployed artifact, with findings appended to the *Ship Verify* section of `ux-review.md` and trend numbers written to `METRICS.md`.
+
+If `ux-review.md` does not exist, or its triage was **Skip** at Step 10.6, silently skip Step 11.5 and proceed to Step 12. No log entry beyond a one-line note in the episode file at Reflect.
+
+P0 UX findings from this step **block the smoke-test approval gate** (Step 12) — they cannot be accepted-as-tradeoff. Resolution path: revert the deploy, patch the issue, re-deploy, re-run Verify (back to Step 11). Override path: `/pdlc override` with rationale, recorded as a Tier 1 event in `STATE.md`.
+
+The handoff at the start and end of this step is per `skills/ship/steps/ux-verify.md` (Phases A and D).
+
 ### Step 12 — Smoke test approval gate
 
 Present a summary of smoke test results:
@@ -76,8 +86,11 @@ Present a summary of smoke test results:
 > - HTTP health check: [pass/fail — [N] routes checked]
 > - Primary user journey (AC-1): [pass/fail — user-reported]
 > - Auth flow: [pass/fail / N/A]
+> - UX Verify (Muse): [pass / [N] P0 findings block ship / N P1+ findings logged / N/A — Step 10.6 was Skip or feature has no UX scorecard]
 >
 > **Manual sign-off required. Does the deployment look correct?** (yes/no)"
+
+**If UX Verify produced P0 findings:** do **not** present the standard yes/no prompt. Instead, surface the P0 findings explicitly per `skills/ship/steps/ux-verify.md` Phase D, and prompt the user to choose: **Fix forward** (revert + patch + re-deploy + re-verify) or **Override** (Tier 1 — requires typing `OVERRIDE UX-P0` to confirm). Log any override as a Tier 1 event in STATE.md.
 
 Wait for explicit `yes`. If the user says `no`: help them diagnose the issue. Do not proceed to Reflect until the user confirms the deployment is good.
 

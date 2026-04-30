@@ -9,6 +9,7 @@ Generate a Reflect Notes section for the episode file. Cover:
 - Echo: [test strategy and coverage work]
 - Phantom: [security checks performed, issues found/resolved]
 - Jarvis: [docs written, CHANGELOG authored]
+- Muse: [if Step 10.6 ran — design-laws audit findings at Brainstorm, as-built scorecard delta at Construction Review, ship-verify pass; total Nielsen, finding counts P0/P1/P2/P3, key UX decisions]
 - [Auto-selected agents]: [their contributions]
 
 **What went well:**
@@ -280,6 +281,34 @@ If this is the first episode, write: "First episode — no trends to compare yet
 > [Paste the key observations — 2-3 sentences]
 >
 > Full metrics: `docs/pdlc/memory/METRICS.md`"
+
+**UX scorecard trend (conditional — only when Step 10.6 ran with Lite/Full triage):**
+
+If `docs/pdlc/design/[feature-name]/ux-review.md` exists with triage outcome Lite or Full, also update the *UX Scorecard Trend* section of `METRICS.md`:
+
+1. **Append a row** to the UX Scorecard Trend table with the following columns:
+   - **Episode**: `[NNN]`
+   - **Feature**: `[feature-name]`
+   - **Triage**: Lite | Full
+   - **Nielsen (d / a / s)**: design-time total / as-built total / ship-verify total — read from `ux-review.md` (heuristics scorecard at Step 10.6, As-Built scorecard at Construction Review, Ship Verify section)
+   - **Audit-5d (d / a / s)**: same three points (`N/A` until the Audit Scorecard 5-dim section ships in `agents/extensions/muse-ux-design.md`)
+   - **Cognitive load failures (d / a / s)**: failure counts from the cognitive-load assessment at all three points
+   - **Findings P0 / P1 / P2 / P3**: total counts across all three audits combined
+   - **ADRs open / closed**: count UX-related ADRs in `DECISIONS.md` from this feature (open = "mitigate later" or "accept-as-tradeoff" still active; closed = mitigated since)
+   - **Date Shipped**: today
+
+2. **Read the four UX trend signals** against the table now populated:
+   - Cross-feature trend (Nielsen totals direction)
+   - Design-time → as-built delta (consistently negative?)
+   - As-built → ship-verify delta (consistently negative?)
+   - Open-finding accumulation (P1+ findings piling up in DECISIONS.md without closing?)
+
+3. **Replace the "Latest UX trend" line** in METRICS.md with one paragraph reading the four signals against this episode's row.
+
+4. **Surface to the user** as part of the retrospective if any signal is materially negative:
+   > "**UX trend signal:** [e.g., 'Design-time → as-built deltas have been consistently negative across the last 3 features (—4, —2, —3 on Nielsen) — the implementation is losing UX points relative to the design. Worth a retrospective callout.']"
+
+If `ux-review.md` does not exist or had Skip triage at Step 10.6, this entire UX-scorecard-trend block is silently omitted — no log, no row, no signal read.
 
 Commit METRICS.md with the archive commit (amend or separate commit).
 

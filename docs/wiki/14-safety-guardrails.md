@@ -12,6 +12,7 @@ Blocked by default. Requires the **double-RED confirmation protocol** to overrid
 - Deploy with failing Constitution test gates
 - Accepting hardcoded secrets detected by Layer 7 security scan
 - Shipping with critical dependency vulnerabilities (from `npm audit`)
+- Shipping with P0 UX findings from Ship Verify (Step 11.5) — verbatim ban-list copy violations ("An error occurred", "Something went wrong", "Invalid input", "Error: undefined", "Error 500…"), keyboard-broken interactives where the design committed to focus, accessibility regressions vs the as-built scorecard. Override path: `/pdlc override` with the `OVERRIDE UX-P0` confirmation token.
 
 ### Tier 2 — Pause and confirm
 

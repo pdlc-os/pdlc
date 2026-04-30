@@ -45,6 +45,16 @@ The script returns JSON:
 
 **Save `screen_dir` and `state_dir` from the response.** Tell the user the URL and to open it in their browser.
 
+**Stable portal URL alternative:** PDLC also ships a bookmarkable proxy at `http://localhost:7352/` that follows whichever visual backend is active. If the user has run `pdlc livemode` previously (or is comfortable bookmarking once), they can keep that tab open across features and the content will update automatically when a new brainstorm session starts. Either URL works — random-port URL for one-shot, portal URL for users who keep the tab around. See `docs/wiki/22-visual-portal.md`.
+
+**From inside a Claude Code session:** the user can run the portal launcher without dropping to a separate terminal — tell them to type `! pdlc livemode` at the prompt. The `!` prefix runs the command in the same session, starts the portal if it isn't running, opens the URL in their default browser, and the startup output (including the URL) lands directly in the conversation. Mention this when first surfacing the URL on a session — it's the smoothest path for users who'd rather stay in Claude Code.
+
+**Tell the user about the annotation toolbar (first time per session).** The visual companion's top-right toolbar lets the user mark up the rendered screen with strokes, drop numbered comment pins, capture a screenshot, and save everything back to PDLC. Surface this when they first open the URL — example phrasing:
+
+> "The annotation toolbar in the top-right lets you mark up what you see: ✏️ draw strokes on a region, 💬 drop a numbered comment pin (with a textbox for your note), 📷 capture a screenshot to send along, 💾 save everything to me, ❓ open the in-browser help. The help card auto-shows the first time you open the visual companion. Use the toolbar when text feedback in the terminal isn't enough — for example when 'this header feels too heavy' is more useful pinned right on the header. Otherwise just click options and reply in the terminal as usual."
+
+The toolbar is unobtrusive — features that don't need annotation (simple A/B click votes) work fine without touching it. The help button is always available; users can re-open the help card any time.
+
 **Finding connection info if you missed stdout:** The server writes its startup JSON to `$STATE_DIR/server-info`. Read that file if you need the URL and paths.
 
 **Note:** Pass `--project-dir $(pwd)` so mockups persist in `.pdlc/brainstorm/` and survive server restarts. Without it, files go to `/tmp` and are cleaned up on stop.
@@ -107,9 +117,10 @@ Write your HTML content to a new file in `screen_dir`:
 ### 3 — On your next turn, read events + terminal
 
 After the user responds:
-- Read `$STATE_DIR/events` if it exists — this contains their browser interactions (clicks, selections) as JSON lines
+- Read `$STATE_DIR/events` if it exists — this contains their browser interactions (clicks, selections, **annotations**) as JSON lines
 - Merge with the user's terminal text to get the full picture
 - The terminal message is the primary feedback; events provide structured interaction data
+- **Annotations** (strokes + comment pins drawn via the in-browser toolbar) appear as `{"type":"annotation",...}` summary lines pointing to the full payload at `$STATE_DIR/annotations/annotation-<timestamp>.json`. When the user has annotated a screen, read the full annotation file — it has stroke geometry (so you can describe *what* they marked), comment text per pin, and the screen URL annotated. Treat the comments verbatim like the user typed them in the terminal; treat strokes as positional emphasis on the screen they were drawn over.
 
 ### 4 — Iterate or advance
 

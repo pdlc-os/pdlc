@@ -124,7 +124,9 @@ Additional Flexy variables available beyond the base set: `--md-primary-light`, 
 
 ## Browser Events Format
 
-When the user clicks options, interactions are recorded to `$STATE_DIR/events` (one JSON object per line). The file is cleared automatically when you push a new screen.
+When the user clicks options or saves annotations, interactions are recorded to `$STATE_DIR/events` (one JSON object per line). The file is cleared automatically when you push a new screen.
+
+### Click events (option/card selection)
 
 ```jsonl
 {"type":"click","choice":"a","text":"Option A - Top Navigation","timestamp":1706000101}
@@ -133,6 +135,49 @@ When the user clicks options, interactions are recorded to `$STATE_DIR/events` (
 ```
 
 The full event stream shows the user's exploration — they may click multiple options before settling. The last `choice` event is typically the final selection, but the pattern of clicks can reveal hesitation worth asking about.
+
+### Annotation events (strokes + comment pins)
+
+The in-browser overlay toolbar (top-right of the visual companion) lets the user draw strokes and place numbered comment pins. When they hit Save, an `annotation` summary line is appended to `$STATE_DIR/events`:
+
+```jsonl
+{"type":"annotation","timestamp":1706000200,"screen_url":"/","stroke_count":3,"comment_count":2,"has_screenshot":false,"annotation_file":"annotations/annotation-1706000200.json"}
+```
+
+The full payload lives at `$STATE_DIR/<annotation_file>` and follows this schema:
+
+```json
+{
+  "timestamp": 1706000200,
+  "screen_url": "/",
+  "screen_size": {"width": 1440, "height": 900},
+  "scroll_top": 0,
+  "strokes": [
+    {"points": [{"x": 120, "y": 80}, {"x": 130, "y": 85}, ...], "color": "var(--md-error)", "width": 3}
+  ],
+  "comments": [
+    {"x": 200, "y": 150, "number": 1, "text": "this header feels too heavy"},
+    {"x": 380, "y": 240, "number": 2, "text": "spacing here is off"}
+  ]
+}
+```
+
+**How to read annotations as the agent:** treat each comment's `text` verbatim like the user typed it in the terminal — it's their feedback. Strokes are positional emphasis ("the user marked this region") and rarely need decoding pixel-by-pixel; the *fact that they drew over a region* is the signal, the geometry is auxiliary. If `has_screenshot` is true, the payload's `screenshot` field carries a base64 PNG data URL of the rendered `.main` element captured via html2canvas (vendored at `scripts/html2canvas.umd.js`, MIT-licensed, served at `/html2canvas.umd.js`). Screenshots are opt-in per annotation — the user explicitly clicks the camera button to stage one before saving.
+
+**Toolbar buttons (top-right of the rendered screen):**
+
+| Button | Action |
+|---|---|
+| ✏️ Draw | Toggle draw mode; click+drag on screen to add an SVG stroke |
+| 💬 Pin | Toggle pin mode; click on screen to drop a numbered comment with a textbox |
+| 🗑 Clear | Remove all strokes, pins, and any staged screenshot |
+| 📷 Screenshot | Capture the rendered state as PNG, stage for next save (button shows green dot when staged) |
+| 💾 Save | POST everything to `/annotation` |
+| ❓ Help | Toggle the in-browser help card explaining all five tools |
+
+The help card auto-shows on first visit (persisted via `localStorage` key `pdlc-annotation-help-seen`); users can re-open it any time via the ❓ button.
+
+`POST /annotation` is the endpoint the browser hits — the agent doesn't call it directly. The full payload is preserved for audit; the JSONL line is the lightweight summary for the agent's loop.
 
 If `$STATE_DIR/events` doesn't exist, the user didn't interact with the browser — use only their terminal text.
 

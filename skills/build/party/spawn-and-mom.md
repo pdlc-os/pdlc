@@ -146,7 +146,7 @@ Skipped when:
 - Cross-talk reached consensus (no disagreement to resolve).
 - The disagreement is on a **Tier 1 hard block** — Tier 1 cannot be voted out; the lead cannot override Tier 1 by majority. (The lead can still escalate Tier 1 to `/override` separately, but that's a different mechanism.)
 - The meeting is **What-If Analysis** (`/whatif`) — read-only, no decision to vote on. Disagreement is recorded in the MOM as alternatives.
-- The meeting is the **Threat Modeling Party** at Step 10.5 — pitch+vote informs the *party recommendation* per threat, but the human owns final acceptance at the Step 12 design approval gate by design. The vote is data the human sees; it is not a binding decision.
+- The meeting is the **Threat Modeling Party** at Step 10.5 or the **Design-Laws Roundtable** at Step 10.6 — pitch+vote informs the *party recommendation* per threat or finding, but the human owns final acceptance at the Step 12 design approval gate by design. The vote is data the human sees; it is not a binding decision. P0 UX findings from Step 10.6 are non-negotiable on the same basis as Tier 1 hard blocks.
 
 ### Step 1 — Pitch Round (parties to the dispute only)
 

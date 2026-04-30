@@ -1551,6 +1551,75 @@ function extractSections(content) {
   return sections;
 }
 
+// ─── pdlc livemode: launch the visual portal in the default browser ──────────
+//
+// The portal is the bookmarkable URL (default http://localhost:7352/) that
+// proxies to whichever PDLC backend is currently active — brainstorm visual
+// companion (mockup voting), future craft live-server (variant generation),
+// or both at once. This command starts the portal if it isn't already
+// running, then opens it in the OS-native default browser. Backend-agnostic:
+// the same command works for any visual surface PDLC has up.
+
+async function launchLivemode() {
+  const { execSync, spawn } = require('child_process');
+  const portalDir = path.join(os.homedir(), '.pdlc', 'portal');
+  const portalInfoPath = path.join(portalDir, 'portal-info.json');
+  const startScript = path.join(PLUGIN_ROOT, 'scripts', 'start-portal.sh');
+
+  let url = `http://localhost:${process.env.PDLC_PORTAL_PORT || 7352}/`;
+  let isRunning = false;
+
+  // Check portal-info to see whether a portal process is alive
+  if (fs.existsSync(portalInfoPath)) {
+    try {
+      const info = JSON.parse(fs.readFileSync(portalInfoPath, 'utf8'));
+      if (info.url) url = info.url;
+      if (info.pid) {
+        try { process.kill(info.pid, 0); isRunning = true; }
+        catch (_) { isRunning = false; }
+      }
+    } catch (_) { /* malformed portal-info, will start fresh */ }
+  }
+
+  if (!isRunning) {
+    log('Portal not running. Starting it now…');
+    if (!fs.existsSync(startScript)) {
+      log(`✗ Could not find ${startScript}. Are you running from a PDLC install?`);
+      process.exit(1);
+    }
+    try {
+      const result = execSync(`bash "${startScript}"`, { encoding: 'utf8', timeout: 15000 });
+      const lines = result.trim().split('\n');
+      const lastLine = lines[lines.length - 1];
+      try {
+        const parsed = JSON.parse(lastLine);
+        if (parsed.url) url = parsed.url;
+      } catch (_) { /* not JSON — just proceed with default url */ }
+      log(`✓ Portal started at ${url}`);
+    } catch (err) {
+      log(`✗ Failed to start portal: ${err.message}`);
+      if (err.stderr) log(err.stderr.toString());
+      process.exit(1);
+    }
+  } else {
+    log(`Portal already running at ${url}`);
+  }
+
+  // Launch URL in default browser
+  let opener;
+  if (process.platform === 'darwin') opener = ['open', [url]];
+  else if (process.platform === 'win32') opener = ['cmd', ['/c', 'start', '""', url]];
+  else opener = ['xdg-open', [url]];
+
+  try {
+    spawn(opener[0], opener[1], { detached: true, stdio: 'ignore' }).unref();
+    log(`Opened ${url}`);
+  } catch (err) {
+    log(`Could not open browser automatically: ${err.message}`);
+    log(`Open this URL manually: ${url}`);
+  }
+}
+
 function printUsage() {
   console.log(`
 pdlc v${VERSION} \u2014 Product Development Lifecycle plugin for Claude Code
@@ -1564,6 +1633,7 @@ Usage:
   npx @pdlc-os/pdlc upgrade --local     Upgrade PDLC + Beads locally
   npx @pdlc-os/pdlc status              Show install status
   npx @pdlc-os/pdlc check-conflicts     Scan for plugin/skill conflicts (e.g. obra/superpowers)
+  pdlc livemode                         Open the visual portal (http://localhost:7352/) in your default browser. Shows whichever PDLC backend is currently rendering — brainstorm mockups, craft variants, or the idle page. Starts the portal if not already running.
   npx @pdlc-os/pdlc --version           Print version
 
 Local install (recommended for teams):
@@ -1639,6 +1709,9 @@ async function main() {
     }
     case 'postinstall':
       await postinstall();
+      break;
+    case 'livemode':
+      await launchLivemode();
       break;
     case '--version':
     case '-v':

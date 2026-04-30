@@ -267,6 +267,7 @@ Then <!-- expected outcome -->
 - Data model: <!-- [data-model.md](../../design/[feature-name]/data-model.md) -->
 - API contracts: <!-- [api-contracts.md](../../design/[feature-name]/api-contracts.md) -->
 - Threat model: <!-- [threat-model.md](../../design/[feature-name]/threat-model.md) — always present; triage outcome may be Skip / Lite / Full -->
+- UX review: <!-- [ux-review.md](../../design/[feature-name]/ux-review.md) — always present; triage outcome may be Skip / Lite / Full -->
 - Additional: <!-- links to any other design files, UI direction, sequence diagrams, etc. -->
 
 ---

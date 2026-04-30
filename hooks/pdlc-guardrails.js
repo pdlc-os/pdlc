@@ -298,6 +298,46 @@ function isTempPath(target) {
   return TEMP_PATH_PREFIXES.some(prefix => t.startsWith(prefix));
 }
 
+// Extract the first argument after `rm` + flags. Handles double-quoted,
+// single-quoted, and bare-token forms. The earlier `(.+)$` regex was greedy
+// to end-of-string and broke on compound commands — e.g. for
+// `echo a; rm -rf "$X"; echo b` it captured `"$X"; echo b` as the target,
+// which then failed isTempPath even when $X resolved to /tmp/foo.
+function extractRmTarget(command) {
+  const m = command.match(/rm\s+(?:-[a-zA-Z]+\s+)+("[^"]*"|'[^']*'|\S+)/);
+  return m ? m[1] : '';
+}
+
+// Best-effort: find an earlier shell assignment of `varName` in the same
+// command string. Recognises VAR="..." (preserves embedded spaces) and
+// VAR=value (bare, no whitespace). Does not handle VAR=$(...), arithmetic
+// expansion, or arrays — returns null for those (caller treats as
+// unresolvable and falls through to existing path checks).
+function findShellAssignment(varName, command) {
+  const quoted = new RegExp('(?:^|[\\s;&|])' + varName + '=(?:"([^"]*)"|\'([^\']*)\')');
+  const qm = command.match(quoted);
+  if (qm) return qm[1] !== undefined ? qm[1] : qm[2];
+  const bare = new RegExp('(?:^|[\\s;&|])' + varName + '=(\\S+)');
+  const bm = command.match(bare);
+  if (bm) return bm[1];
+  return null;
+}
+
+// Resolve a `$VAR` / `${VAR}` reference at the start of an rm target using
+// an earlier assignment in the same command. Returns the resolved literal
+// string (with any literal suffix preserved), or the original target if
+// not statically resolvable. Conservative: handles a single variable at the
+// start of the target with an optional literal suffix; does not recurse,
+// does not chain across multiple variables.
+function resolveRmTarget(target, command) {
+  const unquoted = unwrapQuotes(target);
+  const m = unquoted.match(/^\$\{?([A-Za-z_][A-Za-z0-9_]*)\}?(.*)$/);
+  if (!m) return unquoted;
+  const value = findShellAssignment(m[1], command);
+  if (value === null) return unquoted;
+  return value + m[2];
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 function main() {
   let input = {};
@@ -414,24 +454,28 @@ function main() {
 
   // 1c. rm -rf on paths that look outside the project/feature scope
   if (/rm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r)\s+/.test(command)) {
-    // Extract the target path
-    const rmMatch = command.match(/rm\s+(?:-[a-zA-Z]+\s+)+(.+)$/);
-    const target  = rmMatch ? rmMatch[1].trim() : '';
+    // Extract the rm argument (handles "...", '...', and bare tokens) and
+    // resolve any $VAR / ${VAR} prefix using earlier assignments in the same
+    // command. The raw target is preserved for the block message; the
+    // resolved target is what we actually evaluate against path predicates.
+    const rawTarget = extractRmTarget(command);
+    const resolvedTarget = resolveRmTarget(rawTarget, command);
 
-    // Skip the Tier 1 check entirely when the target is a subpath of a system
-    // temp root. Tier 2 (rule 2a) below also skips for these. Bare temp roots
-    // (e.g. `rm -rf /tmp`) do not match the prefixes and still trip both rules.
-    if (!isTempPath(target)) {
+    // Skip the Tier 1 check entirely when the resolved target is a subpath
+    // of a system temp root. Tier 2 (rule 2a) below also skips for these.
+    // Bare temp roots (e.g. `rm -rf /tmp`) do not match the prefixes and
+    // still trip both rules.
+    if (!isTempPath(resolvedTarget)) {
       // Block if target is absolute and appears to be outside the project
-      const isAbsolute = target.startsWith('/');
-      const isInProject = isAbsolute && target.startsWith(cwd);
-      const isDotDot    = target.includes('../') || target.includes('/..');
-      const isHome      = /^~\/|^\/home\/|^\/Users\//.test(target) && !isInProject;
-      const isSystemPath = /^(\/etc|\/var|\/usr|\/bin|\/sbin|\/lib|\/opt|\/sys|\/proc|\/dev)/.test(target);
+      const isAbsolute = resolvedTarget.startsWith('/');
+      const isInProject = isAbsolute && resolvedTarget.startsWith(cwd);
+      const isDotDot    = resolvedTarget.includes('../') || resolvedTarget.includes('/..');
+      const isHome      = /^~\/|^\/home\/|^\/Users\//.test(resolvedTarget) && !isInProject;
+      const isSystemPath = /^(\/etc|\/var|\/usr|\/bin|\/sbin|\/lib|\/opt|\/sys|\/proc|\/dev)/.test(resolvedTarget);
 
       if (isSystemPath || (isAbsolute && !isInProject) || isDotDot || isHome) {
         tier1Block(
-          `rm -rf on a path outside the project directory (${target || 'unknown'})`,
+          `rm -rf on a path outside the project directory (${rawTarget || 'unknown'})`,
           command
         );
       }
@@ -464,9 +508,9 @@ function main() {
   //     their /private/-prefixed macOS canonical forms) are exempt — these
   //     directories are designed to be ephemeral.
   if (/rm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r)\s+/.test(command)) {
-    const rmMatch = command.match(/rm\s+(?:-[a-zA-Z]+\s+)+(.+)$/);
-    const target  = rmMatch ? rmMatch[1].trim() : '';
-    if (!isTempPath(target)) {
+    const rawTarget = extractRmTarget(command);
+    const resolvedTarget = resolveRmTarget(rawTarget, command);
+    if (!isTempPath(resolvedTarget)) {
       handleTier2('rm -rf');
     }
   }

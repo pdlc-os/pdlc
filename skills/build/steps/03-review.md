@@ -6,7 +6,7 @@ Once `bd ready` is empty (all tasks complete):
 
 Read `skills/build/party/orchestrator.md` then `skills/build/party/03-party-review.md` and execute the full party review protocol.
 
-The party review replaces the sequential four-pass review. All four agents (Neo, Echo, Phantom, Jarvis) run in parallel with cross-talk, producing a unified review file where interconnected findings are explicitly linked.
+The party review replaces the sequential four-pass review. All four always-on agents (Neo, Echo, Phantom, Jarvis) run in parallel with cross-talk, producing a unified review file where interconnected findings are explicitly linked. **Muse joins conditionally** when `docs/pdlc/design/[feature-name]/ux-review.md` exists with Lite/Full triage from Step 10.6 — her mandate is the as-built UX audit (compare design-time scorecard against implementation, flag deltas, surface new findings only visible in real code); her scorecard delta + new findings append to the *As-Built Audit* section of `ux-review.md`. Custom and label-matched agents also join when applicable. P0 UX findings from Muse cannot be accepted-as-tradeoff — they block merge until fixed or `/pdlc override` invoked.
 
 The review file is written to:
 ```

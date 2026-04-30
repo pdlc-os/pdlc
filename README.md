@@ -379,7 +379,7 @@ Add custom skills (`.pdlc/skills/<name>/SKILL.md`), custom agents (`.pdlc/agents
 
 PDLC also supports two extension patterns for layering behavior onto built-in agents and skills:
 
-- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` load on every invocation of the named agent. *Example: a project's stack-aware security audit catalog extending Phantom.*
+- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` load on every invocation of the named agent. *Examples: a stack-aware security audit catalog extending Phantom; a UX design catalog extending Muse with the Nielsen heuristics scorecard, 8-state coverage matrix, cognitive-load assessment, and topic catalogs.*
 - **Phase / step-specific extensions** alongside the owning step file load only when a specific step references them. *Example: a deploy-time lint pass invoked at Ship Step 9.0 as Pulse's first action.*
 
 Agent `model:` declarations use **tier aliases** (`opus` / `sonnet` / `haiku`) rather than version-pinned IDs, so agents stay current as Anthropic ships new models without requiring a PDLC release. See [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) for the authoring guide.
@@ -444,6 +444,7 @@ Detailed documentation is organized in the [docs/wiki](docs/wiki/) folder:
 | 19  | [Release a stuck claim](docs/wiki/19-release-claim.md) | When and how to force-release a stuck roadmap-level Beads claim with `/release`       |
 | 20  | [Security in PDLC](docs/wiki/20-security.md) | The layered security model — configuration / lifecycle stops / continuous agent participation / hook layer / lifecycle-of-findings. Covers Brainstorm Design Step 10.5 (Threat Modeling Party), Build Review security pillar, Layer 7 security tests, Ship Step 9.2 (Deployment Review), pre-deploy security checks, and Tier 1/2/3 always-on guardrails |
 | 21  | [Agent & Skill Extensions](docs/wiki/21-agent-extensions.md) | Two extension patterns (agent-wide vs phase-specific), authoring conventions, tier-aliased model declarations, existing extensions catalog |
+| 22  | [Visual Portal](docs/wiki/22-visual-portal.md) | Bookmarkable `http://localhost:7352/` that proxies to whichever PDLC backend is active; URL stability contract; manifest-driven multiplexing; auto-reload via SSE; `pdlc livemode` CLI |
 
 ---
 

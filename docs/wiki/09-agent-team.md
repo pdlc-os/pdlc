@@ -34,19 +34,20 @@ PDLC assigns named specialist agents to each area of concern. Each has a distinc
 | Brainstorm — Discover Step 4.5 (UX Discovery, conditional) | Muse | — *(returns to Atlas)* |
 | Brainstorm — Design + Plan | Neo | Yes |
 | Brainstorm — Design Step 10.5 (Threat Modeling Party) | **Phantom** | — *(returns to Neo)* |
+| Brainstorm — Design Step 10.6 (Design-Laws Audit) | **Muse** | — *(returns to Neo)* |
 | Build (all sub-phases) | Neo | Yes |
 | Ship — Ship + Verify | Pulse | Yes |
 | Ship — Reflect | Jarvis | Yes |
 | Ship — Next Feature | Atlas | Yes |
 | Idle / between phases | — | Atlas |
 
-Step 4.5 (UX Discovery) and Step 10.5 (Threat Modeling) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-security.md`](20-security.md) for the threat-modeling handoff pattern.
+Step 4.5 (UX Discovery), Step 10.5 (Threat Modeling), and Step 10.6 (Design-Laws Audit) are conditional / triaged sub-phases inside the larger Discover and Design sub-phases. Each carries an explicit handoff banner block in/out — see [`20-security.md`](20-security.md) for the threat-modeling handoff pattern, and `skills/brainstorm/steps/design-laws-audit.md` for the design-laws-audit handoff pattern.
 
 ### Agent extension framework
 
 PDLC supports two extension patterns that let projects layer additional behavior onto built-in agents and skills without forking:
 
-- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` — load on every invocation of that agent. *Example: `phantom-security-audit.md` extends Phantom with stack-aware security catalogs.*
+- **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` — load on every invocation of that agent. *Examples: `phantom-security-audit.md` extends Phantom with stack-aware security catalogs; `muse-ux-design.md` extends Muse with the Nielsen-10 heuristics scorecard, the Audit-5d scorecard, the 8-state coverage check, the cognitive-load assessment, the persona red-flag scan, and topic catalogs (typography, color, spatial, motion, interaction, responsive, UX writing, anti-patterns).*
 - **Phase / step-specific extensions** at `skills/<phase>/steps/<topic>.md` — load only when a specific step references them. *Example: `skills/ship/steps/fix-lint.md` invoked by Ship Step 9.0 as Pulse's first action on takeover.*
 
 See [`21-agent-extensions.md`](21-agent-extensions.md) for the full authoring guide and conventions.

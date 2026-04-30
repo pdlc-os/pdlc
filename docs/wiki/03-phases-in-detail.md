@@ -52,8 +52,8 @@ flowchart LR
     subgraph DEFINE["Define - Atlas"]
         PRD["Generate PRD"]
     end
-    subgraph DESIGN["Design - Neo (+ Phantom for Step 10.5)"]
-        BLOOM[Bloom Taxonomy\n3 rounds · max 3 q/round\n+ synthesis] --> DOCS["Architecture\nData Model\nAPI Contracts"] --> THREAT["Threat Modeling\nStep 10.5 · Phantom\nSTRIDE per boundary\nSkip / Lite / Full triage"]
+    subgraph DESIGN["Design - Neo (+ Phantom for Step 10.5, Muse for Step 10.6)"]
+        BLOOM[Bloom Taxonomy\n3 rounds · max 3 q/round\n+ synthesis] --> DOCS["Architecture\nData Model\nAPI Contracts"] --> THREAT["Threat Modeling\nStep 10.5 · Phantom\nSTRIDE per boundary\nSkip / Lite / Full triage"] --> UXAUDIT["Design-Laws Audit\nStep 10.6 · Muse\nNielsen 10 · 8-state\ncognitive load · anti-patterns\nSkip / Lite / Full triage"]
     end
     subgraph PLAN_PHASE["Plan - Neo"]
         TASKS["Beads tasks\n+ dependencies"]
@@ -81,8 +81,8 @@ All questioning steps — Socratic discovery, Adversarial follow-ups, Edge-case 
 |-----------|------|---------------|--------|
 | **Discover** | Atlas | Divergent ideation (optional), Socratic interview (3 rounds, max 4 q/round), **Progressive Thinking** (required agent meeting), Adversarial review (top 3 follow-ups), Edge case analysis (max 3 prompts), **UX Discovery** (Muse leads — conditional on UI/UX features + visual companion; max 3 visual-first questions grounded in existing UI inventory) | Confirmed discovery summary |
 | **Define** | Atlas | Auto-generate PRD from brainstorm log | `PRD_[feature]_[date].md` |
-| **Design** | Neo (Phantom for Step 10.5) | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts. **Threat Modeling Party at Step 10.5** — Phantom takes lead between design-doc generation and PRD link updates: triage → Skip / Lite (Phantom solo) / Full (full team party using PDLC's party-mode + progressive-thinking machinery). Output is `threat-model.md` reviewed alongside the other three design docs at the Step 12 approval gate. See [`20-security.md`](20-security.md). | `docs/pdlc/design/[feature]/` (4 files: ARCHITECTURE, data-model, api-contracts, threat-model) |
-| **Plan** | Neo | Beads tasks with dependencies, dependency graph. **Mitigate-now threats** from Step 10.5 land here as Plan-phase tasks; **Mitigate-later** threats are recorded as ADRs in `DECISIONS.md`. | Plan file |
+| **Design** | Neo (Phantom for Step 10.5, Muse for Step 10.6) | Bloom's Taxonomy questioning (3 rounds, max 3 q/round + synthesis), Architecture + data model + API contracts. **Threat Modeling Party at Step 10.5** — Phantom takes lead between design-doc generation and PRD link updates: triage → Skip / Lite (Phantom solo) / Full (full team party). Output `threat-model.md`. See [`20-security.md`](20-security.md). **Design-Laws Audit at Step 10.6** — Muse takes lead between threat-modeling and PRD link updates: triage → Skip / Lite (Muse solo) / Full (Design-Laws Roundtable). Nielsen 10 heuristics scorecard + 8-state coverage + cognitive-load + anti-pattern scan + UX-writing pass; catalog content from `agents/extensions/muse-ux-design.md`. Output `ux-review.md`. Both reviewed alongside the other design docs at the Step 12 approval gate. | `docs/pdlc/design/[feature]/` (5 files: ARCHITECTURE, data-model, api-contracts, threat-model, ux-review) |
+| **Plan** | Neo | Beads tasks with dependencies, dependency graph. **Mitigate-now threats** from Step 10.5 and **fix-now UX findings** from Step 10.6 land here as Plan-phase tasks; **Mitigate-later** threats and **accept-as-tradeoff** UX findings are recorded as ADRs in `DECISIONS.md`. | Plan file |
 
 ### Phase 2 -- Construction (`/pdlc build`)
 
@@ -117,15 +117,15 @@ flowchart TD
 | Sub-phase | Meetings | What happens |
 |-----------|----------|-------------|
 | **Build** | Wave Kickoff, Design Roundtable, Strike Panel | TDD per task. Wave standup for 2+ tasks. Optional roundtable for complex tasks. 3-strike cap. |
-| **Review** | Party Review | Neo, Echo, Phantom, Jarvis in parallel with cross-talk. Critical findings gate. Phantom security sign-off. Deferred findings via Decision Review. |
+| **Review** | Party Review | Neo, Echo, Phantom, Jarvis in parallel with cross-talk. **Muse joins conditionally** when `docs/pdlc/design/[feature]/ux-review.md` exists with Lite/Full triage from Step 10.6 — her mandate is the as-built UX audit (compare design-time scorecard against implementation, flag deltas, surface new findings only visible in real code). Critical findings gate. Phantom security sign-off. **P0 UX findings from Muse cannot be accepted-as-tradeoff** — they block merge until fixed or `/pdlc override` invoked. Deferred findings via Decision Review. As-built scorecard appends to `ux-review.md`. |
 | **Test** | -- | 7 layers (Unit, Integration, E2E, Perf, A11y, Visual Regression, **Security**). Layer 7 always runs: dependency audit, secret scan on diff, OWASP check. |
 
 ### Phase 3 -- Operation (`/pdlc ship`)
 
 ```mermaid
 flowchart LR
-    subgraph SHIP["Ship + Verify - Pulse"]
-        MERGE[Merge to main\nCHANGELOG + semver] --> LINT["Lint Pass\nStep 9.0 · Pulse first action\nfix-lint extension"] --> CICD[CI/CD] --> SMOKE["Smoke tests"]
+    subgraph SHIP["Ship + Verify - Pulse (+ Muse for Step 11.5)"]
+        MERGE[Merge to main\nCHANGELOG + semver] --> LINT["Lint Pass\nStep 9.0 · Pulse first action\nfix-lint extension"] --> CICD[CI/CD] --> SMOKE["Smoke tests"] --> UXVERIFY["UX Verify\nStep 11.5 · Muse\nUX-writing drift\nanti-pattern sweep\n8-state spot-check\n(conditional on Step 10.6)"]
     end
     subgraph REFLECT["Reflect - Jarvis"]
         RETRO[Retrospective\nEpisode + ROADMAP update]
@@ -145,8 +145,8 @@ flowchart LR
 | Sub-phase | Lead | What happens |
 |-----------|------|-------------|
 | **Ship** | Pulse | Remote sync check, merge commit to main, CHANGELOG entry, semantic version tag. **Step 9.0 — Lint Pass:** Pulse's first action on takeover, before any deployment-artifact prompt. Auto-detects the project's tech stack and applies lint/format fixes per `skills/ship/steps/fix-lint.md` so the codebase ships clean. Pulse then asks whether the user has a custom deploy/CI/CD/build artifact — if yes, composes it with the default pipeline and runs a **Deployment Review Party** (full team assesses; consolidated plan presented for approval; user preference wins on non-Tier-1 conflicts). CI/CD is triggered with either the consolidated plan or the default (auto-detected: GitHub Actions, npm deploy, Makefile, or scaffolded). Outcome recorded in `DEPLOYMENTS.md`. |
-| **Verify** | Pulse | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment + human sign-off |
-| **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with trend summary, artifacts archived, Beads compacted |
+| **Verify** | Pulse (Muse for Step 11.5) | Pre-deploy security check (dependency audit + secret scan + security headers), smoke tests against deployed environment, **UX Verify at Step 11.5 (conditional)** — when `ux-review.md` exists with Lite/Full triage from Step 10.6, Muse runs a final UX-writing drift catch + anti-pattern sweep + 8-state spot-check + accessibility regression check + console-error scan against the as-deployed artifact. P0 findings (verbatim ban-list copy, keyboard-broken interactives, a11y regressions) block ship as Tier 1 — override via `/pdlc override` with `OVERRIDE UX-P0`. P1+ findings get an ADR. Findings + scorecard append to `ux-review.md` Ship Verify section; trend numbers go to `METRICS.md`. Then human sign-off at Step 12. |
+| **Reflect** | Jarvis | Per-agent retro, metrics, episode finalization, ROADMAP.md marked `Shipped`, METRICS.md updated with delivery-trend summary **and the UX Scorecard Trend (when Step 10.6 ran)** — Nielsen totals at design-time / as-built / ship-verify per feature, finding counts P0/P1/P2/P3, and four trend signals (cross-feature direction, design-time → as-built delta, as-built → ship-verify delta, open-finding accumulation), artifacts archived, Beads compacted |
 | **Next Feature** | Atlas | Reviews roadmap, presents next priority. **Continue**, **pause**, or **switch** |
 
 ### Abandoning a feature with `/pdlc abandon`

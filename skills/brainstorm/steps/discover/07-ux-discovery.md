@@ -85,7 +85,7 @@ Recent UX decisions (from DECISIONS.md):
 Greenfield flag: [yes | no]
 ```
 
-If `greenfield flag = yes`, the questioning shifts: this feature is establishing the design language. Note this in the user-facing intro and record every choice as a foundational pattern in the brainstorm log so the next feature inherits it.
+If `greenfield flag = yes`, the questioning shifts: this feature is establishing the design language. Note this in the user-facing intro and record every choice as a foundational pattern in the brainstorm log so the next feature inherits it. When typography, palette, or other design-token choices come up, draw on `agents/extensions/muse-ux-design.md` → *Greenfield Design-Language Choices* — specifically the slop test (could this design be identifiable as AI-generated, and can the team name a real reference point?), the reflex-reject font list (14 fonts AI tools default to — accept only with deliberate rationale), and the 3-words selection procedure (concrete physical-object descriptors → reject the first three reflex picks → catalog browse with the three words). Log the rationale chain (3-words list, reflex-reject font that almost shipped, chosen alternative) so future audits can trace it.
 
 ---
 
@@ -168,6 +168,59 @@ If an option fails the accessibility floor, do not show it. Replace it with a co
 
 ---
 
+## Quality pass — cognitive load + persona red-flag scan
+
+After the user has made their selections at Q1, Q2, Q3, Muse runs two quick quality-pass checks against the selected options before completing the step. These are not new questions for the user — they are Muse's internal evaluations against the catalog, with results logged to the brainstorm log as discovery findings.
+
+### Cognitive-load 8-item self-assessment
+
+Muse rates each of the 8 cognitive-load items (per `agents/extensions/muse-ux-design.md` → *Cognitive Load Assessment*) against the selected layout, flow, and state options:
+
+1. Can the user complete primary tasks without distraction?
+2. Are information groups ≤4 items?
+3. Are related elements visually grouped at a glance?
+4. Is screen priority immediately recognizable?
+5. Is the user focused on one decision sequentially?
+6. Are options per decision ≤4?
+7. Can the user avoid referencing previous screens?
+8. Is complexity revealed progressively?
+
+Failure count of 0-1 is acceptable (no log entry beyond a one-liner in the Quality Pass section). 2-3 failures are *moderate* — log each failure as a discovery finding. ≥4 failures are *urgent* — log each failure AND raise a Decision Review trigger before progressing to Synthesis.
+
+### Persona red-flag pre-scan
+
+Muse selects 2-3 PDLC personas (per `agents/extensions/muse-ux-design.md` → *Persona Red-Flag Scan*) relevant to this feature's user base. Common pairings:
+
+- Developer-tool feature → power user + edge-case stress-tester.
+- Consumer-onboarding feature → first-time user + distracted-mobile user.
+- Admin / settings feature → power user + accessibility-dependent user.
+- Public-facing landing → first-time user + distracted-mobile user + accessibility-dependent user.
+- Internal B2B feature → power user + edge-case stress-tester.
+
+For each selected persona, Muse walks their red-flag list against the selected options and logs every hit as a discovery finding. Blocking red flags trigger a Decision Review escalation before progressing.
+
+### Decision Review trigger (inline)
+
+If either of the following is true, Muse pauses progression to Synthesis (Steps 5-6) and presents the finding **inline** to the human as a decision they resolve right here — no separate `/pdlc decide` invocation; Muse handles the decision-review pattern herself within this step:
+
+- Cognitive-load failure count ≥4 against the selected options, OR
+- Any persona red-flag is *blocking* (per the catalog's blocking-red-flag definitions — e.g., primary flow keyboard-unreachable, dead-end state with no recovery, primary mobile flow loses input on connection drop).
+
+When triggered, Muse presents:
+
+- **The finding(s)** — what failed and why it matters to the user (cite the specific cognitive-load item or persona red-flag).
+- **The catalog reference** — `agents/extensions/muse-ux-design.md` → *Cognitive Load Assessment* or *Persona Red-Flag Scan*, so the human can cross-check.
+- **Three resolution paths**, asking the human to pick one:
+  - **(a) Revise** — Muse adjusts the selected option to address the failure (e.g., regroups information into ≤4-item chunks, adds a recovery path, restructures the flow). Re-runs the Quality Pass on the revised selection.
+  - **(b) Accept-as-tradeoff** — keep the current selection. Muse drafts an ADR entry for `docs/pdlc/memory/DECISIONS.md` capturing the failure, the tradeoff rationale, and the re-evaluation trigger. The user confirms the ADR text before it's written.
+  - **(c) Bounce back to a prior question** — re-open Q1 (Look and feel), Q2 (Flow), or Q3 (State coverage) with the failure context as input. The visual companion presents fresh options narrowed by the constraint.
+
+Wait for the human's pick. After resolution, log the outcome in the brainstorm log under *Quality Pass* and proceed to Synthesis (Steps 5-6).
+
+If neither condition is true, log the findings (if any) to the brainstorm log under *Quality Pass* and proceed to Synthesis without prompting.
+
+---
+
 ## Brainstorm log update
 
 When UX Discovery completes (or when skipped), append to `[brainstorm-log]` a new section. Use the appropriate template based on outcome:
@@ -203,6 +256,17 @@ When UX Discovery completes (or when skipped), append to `[brainstorm-log]` a ne
 **Options presented:** [as above]
 **Selected:** [Option X]
 **Visual companion fragment:** `[screen_dir]/q3-states.html`
+
+### Quality Pass
+**Cognitive-load assessment:** [n/8 failures — 0-1 acceptable / 2-3 moderate / ≥4 urgent]
+- [If failures > 0: list each failed item and a one-line reason]
+
+**Personas selected:** [e.g., power user + first-time user]
+**Persona red-flag findings:**
+- [Persona name]: [red-flag hit, severity P0/P1/P2/P3, blocking? yes/no]
+
+**Decision Review triggered:** yes / no
+- [If yes: which condition triggered (cognitive-load ≥4 OR blocking persona red-flag); the human's pick (revise / accept-as-tradeoff / bounce-back); the resolution outcome — e.g., "revised Q3 state-grid to add explicit error-recovery path" or "accepted-as-tradeoff with ADR-NNN in DECISIONS.md"]
 
 ### Design Deviations
 [For each deviation from existing patterns:]

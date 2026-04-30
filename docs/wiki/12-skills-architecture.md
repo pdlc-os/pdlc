@@ -56,8 +56,9 @@ skills/
           06-progressive-thinking.md  <- agent team meeting (Atlas facilitates)
           07-ux-discovery.md          <- Muse leads, max 3 visual-first questions (conditional on UI/UX + visual companion)
       02-define.md                    <- PRD generation + approval
-      03-design.md                    <- architecture, data model, API contracts (+ Step 10.5 threat-modeling handoff)
+      03-design.md                    <- architecture, data model, API contracts (+ Step 10.5 threat-modeling, Step 10.6 design-laws-audit handoffs)
       threat-model.md                 <- Step 10.5 helper: Phantom-led threat-modeling party (triage + STRIDE + handoffs)
+      design-laws-audit.md            <- Step 10.6 helper: Muse-led Design-Laws Roundtable (triage + Nielsen + 8-state + cognitive load + anti-patterns + handoffs)
       04-plan.md                      <- Beads tasks + dependencies
 
   build/
@@ -80,10 +81,11 @@ skills/
     SKILL.md                          <- orchestrator
     steps/
       01-ship.md                      <- merge, changelog, semver, Step 9.0 lint, CI/CD
-      02-verify.md                    <- smoke tests + sign-off
+      02-verify.md                    <- smoke tests + sign-off (+ Step 11.5 UX Verify handoff to Muse when ux-review.md exists)
       03-reflect.md                   <- retro + episode + roadmap + next feature
       custom-deploy-review.md         <- Step 9.2 helper: Deployment Review Party (when user provides custom artifact)
       fix-lint.md                     <- Step 9.0 helper: Pulse's first action — auto-detect tech stack, apply lint/format fixes
+      ux-verify.md                    <- Step 11.5 helper: Muse-led ship-time UX pass (conditional on Step 10.6 ux-review.md existing)
 
   decision/
     SKILL.md                          <- decision review party + reconciliation
@@ -128,6 +130,7 @@ templates/                              <- versioned templates for memory files
   review.md
   episode.md
   threat-model.md                     <- Step 10.5 deliverable template
+  ux-review.md                        <- Step 10.6 deliverable template (also receives As-Built section at Construction Review and Ship-Verify section at Ship)
 
 agents/
   oracle.md, neo.md, bolt.md, ...     <- 9 built-in agent personas
@@ -144,7 +147,7 @@ agents/
 PDLC distinguishes two kinds of extensions, by what loads them:
 
 - **Agent-wide extensions** at `agents/extensions/<agent>-<topic>.md` — the agent's persona file directs the read; fires on every invocation of that agent.
-- **Phase / step-specific extensions** alongside the owning step file (e.g. `skills/ship/steps/fix-lint.md`, `skills/brainstorm/steps/threat-model.md`, `skills/ship/steps/custom-deploy-review.md`) — the step file references the helper; fires only when that step runs.
+- **Phase / step-specific extensions** alongside the owning step file (e.g. `skills/ship/steps/fix-lint.md`, `skills/ship/steps/ux-verify.md`, `skills/brainstorm/steps/threat-model.md`, `skills/brainstorm/steps/design-laws-audit.md`, `skills/ship/steps/custom-deploy-review.md`) — the step file references the helper; fires only when that step runs.
 
 See [`21-agent-extensions.md`](21-agent-extensions.md) for the authoring conventions.
 

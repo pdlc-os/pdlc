@@ -9,9 +9,9 @@ You are operating within the PDLC (Product Development Lifecycle) framework, a s
 | Phase | Command | Description |
 |-------|---------|-------------|
 | **Phase 0 — Initialization** | `/pdlc init` (alias: `/setup`) | First-time setup: Git/GitHub, Homebrew, Dolt, Beads, **Interaction Mode** (Sketch/Socratic), Constitution, Intent, Memory Bank, Roadmap ideation |
-| **Phase 1 — Inception** | `/pdlc brainstorm` (alias: `/brainstorm`) | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case + UX Discovery on UI features) → Define → Design (Bloom's Taxonomy + Threat Modeling Party at Step 10.5, Phantom-led) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
+| **Phase 1 — Inception** | `/pdlc brainstorm` (alias: `/brainstorm`) | Resolves the roadmap claim via Beads (atomic — multi-dev safe) → Discover (grounded divergent ideation + Socratic + Progressive Thinking + Adversarial + Edge Case + UX Discovery on UI features) → Define → Design (Bloom's Taxonomy + Threat Modeling Party at Step 10.5, Phantom-led + Design-Laws Audit at Step 10.6, Muse-led) → Plan. Every questioning step respects the Interaction Mode set in CONSTITUTION §9. |
 | **Phase 2 — Construction** | `/pdlc build` (alias: `/build`) | Build (TDD) → Review (Party Review + Phantom sign-off) → Test (7 layers incl. security) |
-| **Phase 3 — Operation** | `/pdlc ship` (alias: `/ship`) | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests) → Reflect (metrics + archive) → Next Feature |
+| **Phase 3 — Operation** | `/pdlc ship` (alias: `/ship`) | Ship (merge, tag, optional Deployment Review for custom artifacts, CI/CD trigger) → Verify (security + smoke tests + UX Verify on UX-audited features at Step 11.5, Muse-led) → Reflect (metrics + UX scorecard trend + archive) → Next Feature |
 | **Decision** | `/pdlc decide` (alias: `/decide`) | Record a decision with full team impact assessment (any phase) |
 | **What-If** | `/pdlc whatif` (alias: `/whatif`) | Read-only scenario exploration with team analysis (any phase) |
 | **Doctor** | `/pdlc doctor` (alias: `/diagnose`) | Comprehensive health check: state, docs, code, Beads, git history |
@@ -61,7 +61,7 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 | **Merge commit** | All PRs use merge commits (no squash, no rebase) to preserve full branch history. |
 | **Soft warnings only** | Security findings (Phantom) and test coverage gaps (Echo) are flagged but do not hard-block progress. Human decides: fix now, accept, or defer to tech debt. |
 | **Constitution overrides defaults** | Any rule in this document can be changed by editing `docs/pdlc/memory/CONSTITUTION.md`. The Constitution is the single source of truth for all project-specific rules. |
-| **Tier 1 hard blocks** | Force-push to `main`, dropping DB tables without a migration file, deleting files not created on the current branch, deploying with failing smoke tests, hardcoded secrets, critical dependency vulnerabilities — override via `/pdlc override` (double-RED confirmation, permanently logged). *Exception:* `rm -rf` on subpaths of `/tmp/`, `/var/tmp/`, `/var/folders/`, and their `/private/`-prefixed canonical forms is exempt (ephemeral system temp). Bare temp roots are not exempt. |
+| **Tier 1 hard blocks** | Force-push to `main`, dropping DB tables without a migration file, deleting files not created on the current branch, deploying with failing smoke tests (including P0 UX findings from Ship Verify Step 11.5), hardcoded secrets, critical dependency vulnerabilities — override via `/pdlc override` (double-RED confirmation, permanently logged). *Exception:* `rm -rf` on subpaths of `/tmp/`, `/var/tmp/`, `/var/folders/`, and their `/private/`-prefixed canonical forms is exempt (ephemeral system temp). Bare temp roots are not exempt. |
 | **Tier 2 pause & confirm** | `rm -rf`, `git reset --hard`, production DB migrations, editing `CONSTITUTION.md`/`DECISIONS.md` (via any tool — Bash, Edit, Write), closing all Beads tasks at once, any external API call that writes/posts/sends — PDLC stops and waits for explicit yes. *Exceptions:* (1) first-time `Write` of `CONSTITUTION.md` / `DECISIONS.md` (file does not yet exist on disk) is allowed as Tier 3 — `/setup` creates these from templates and there is no prior state to drift from; (2) `rm -rf` on subpaths of system temp roots passes through silently (same temp-path exemption as Tier 1); (3) `git reset --hard` and Bash-redirection writes to `docs/pdlc/memory/CONSTITUTION.md` / `DECISIONS.md` pass through silently when `cwd` is a subpath of a system temp root (test-fixture scenario). |
 | **Tier 3 logged warnings** | Skipping a test layer, overriding a Constitution rule, accepting a Phantom security warning without fixing, accepting an Echo coverage gap, editing `STATE.md`/`ROADMAP.md`/`INTENT.md`/`OVERVIEW.md`/`CHANGELOG.md` directly — PDLC proceeds and records the decision in `STATE.md`. |
 
@@ -89,6 +89,20 @@ This write is lightweight (one small JSON block) and is **not** a Tier 3 logged 
 - **Episode history:** `docs/pdlc/memory/episodes/index.md`
 - **Archived feature artifacts:** `docs/pdlc/archive/`
 - **State reconciliation protocol:** `skills/state-reconciliation.md`
+
+---
+
+## Visual portal URL contract
+
+PDLC ships a bookmarkable proxy at `http://localhost:7352/` that multiplexes whichever visual backend is currently active (brainstorm visual companion + future craft live-server). **The URL is stable across PDLC upgrades — it will not change without a major version bump.** Users can bookmark it; teammates can rely on it.
+
+The port mnemonic: **PDLC** on a numeric phone keypad — P=7, D=3, L=5, C=2. Typeable from memory.
+
+Override via `PDLC_PORTAL_PORT` env var if 7352 conflicts with something else on the user's machine. See `docs/wiki/22-visual-portal.md` for the full architecture and `scripts/portal.cjs` for the implementation.
+
+`pdlc livemode` (CLI) launches the URL in the default browser, starting the portal first if it isn't already running. Backend-agnostic — works whether the brainstorm visual companion or a future craft live-server is rendering.
+
+Inside a Claude Code session, the user can run it without leaving the interface via `! pdlc livemode` (the `!` prefix runs the command in this session and surfaces the startup output + URL directly in the conversation). When agents need to point users at the portal during a session, this is the smoothest invocation to suggest.
 
 ---
 

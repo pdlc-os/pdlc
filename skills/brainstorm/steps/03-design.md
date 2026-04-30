@@ -103,6 +103,8 @@ If this feature requires no new API endpoints, write: "No new API endpoints. Thi
 
 After the three design documents are generated and committed, **before** PRD link updates and the design approval gate, the team pressure-tests the design for security threats. Neo hands lead off to Phantom for the duration of this step; Phantom hands lead back at the end.
 
+> **Optional Muse coherence pre-check.** If Muse has been involved in this feature (UX Discovery ran at Step 4.5, or Muse contributed to Define) and observes that the proposed design is *fundamentally* incoherent — flows that don't add up, contradictions with `INTENT.md`, missing critical paths — Muse raises that concern here, before Phantom invests in threat-modeling. The check is informal: Muse skims the design docs and either signals "coherent enough to model" or flags specific incoherences. If flagged, Neo addresses the design before continuing to Phantom — bouncing back to Define on a broken design saves Phantom's effort. (This is the same coherence Muse will fully audit in Step 10.6; the pre-check is just a fast "is the design even shaped right?" pass.)
+
 #### Neo → Phantom handoff (always)
 
 Output an **Agent Handoff** block (per `skills/formatting.md`) before any threat-model work begins:
@@ -119,18 +121,45 @@ The threat model uses the template at `templates/threat-model.md`. Preserve the 
 
 #### Phantom → Neo handoff back (always)
 
-After triage and (if applicable) the party complete, Phantom hands lead back to Neo. The exact text varies by triage outcome — see the three handoff variants in `skills/brainstorm/steps/threat-model.md` (Phase E). Neo resumes lead at Step 11 and carries all four design artifacts forward to the Step 12 approval gate.
+After triage and (if applicable) the party complete, Phantom hands lead back to Neo. The exact text varies by triage outcome — see the three handoff variants in `skills/brainstorm/steps/threat-model.md` (Phase E). Neo resumes lead at Step 10.6 and carries the four design artifacts so far forward into the Design-Laws Audit; the fifth artifact (`ux-review.md`) is generated there.
+
+---
+
+### Step 10.6 — Design-Laws Audit (Muse leads)
+
+After threat-modeling completes — the four design artifacts (`ARCHITECTURE.md`, `data-model.md`, `api-contracts.md`, `threat-model.md`) are in place — and **before** PRD link updates and the design approval gate, the team pressure-tests the user-facing surface against the design laws (Nielsen 10 heuristics, 8-state coverage, cognitive load, anti-patterns, copy quality). Neo hands lead off to Muse for the duration of this step; Muse hands lead back at the end.
+
+#### Neo → Muse handoff (always)
+
+Output an **Agent Handoff** block (per `skills/formatting.md`) before any UX review work begins:
+
+> **Neo (Architect):** "Muse — design documents and threat model are in place at `docs/pdlc/design/[feature-name]/`. Before we lock the design at Step 12, the team needs to pressure-test the user-facing surface against the design laws — heuristics, 8-state coverage, cognitive load, anti-patterns, copy quality. You're up — run the triage, and convene the Roundtable if it warrants. I'll continue Step 11 (PRD link updates) and walk us into the design approval gate at Step 12 once your UX review is in place. The four design artifacts plus the PRD's user-flow descriptions are the source of truth for the audit. If UX Discovery ran (Step 4.5), pull in your own findings as starting context — you've already named the personas and the critical paths."
+>
+> **Muse (UX Designer):** "On it. I'll triage the user-facing surface against the design docs, decide whether a full Roundtable is warranted, and bring you back a `ux-review.md` plus MOM if we convene. If the triage comes out Skip, you'll have the file as a one-line record so the audit trail is complete either way. Phantom's threat model is one of my inputs — some of my findings will reference his constraints (e.g., a security-required confirmation modal I'd otherwise refuse on UX grounds)."
+
+#### Run the design-laws-audit skill
+
+Read `skills/brainstorm/steps/design-laws-audit.md` and execute it completely. The skill handles its own triage (Skip / Lite / Full), runs the Roundtable if needed (using the existing party-mode orchestrator from `skills/build/party/orchestrator.md`), writes `docs/pdlc/design/[feature-name]/ux-review.md`, and writes the MOM at `docs/pdlc/mom/MOM_design-laws_[feature-name]_[YYYY-MM-DD].md` if a full Roundtable convened.
+
+The UX review uses the template at `templates/ux-review.md`. Preserve the `<!-- pdlc-template-version -->` comment as with all other templates.
+
+The Nielsen scorecard, severity tags, 8-state coverage matrix, cognitive-load checklist, and anti-pattern refuse list are sourced from `agents/extensions/muse-ux-design.md` (the Muse UX Design Catalog), which Muse loads automatically per her persona directive.
+
+#### Muse → Neo handoff back (always)
+
+After triage and (if applicable) the Roundtable complete, Muse hands lead back to Neo. The exact text varies by triage outcome — see the three handoff variants in `skills/brainstorm/steps/design-laws-audit.md` (Phase E). Neo resumes lead at Step 11 and carries all five design artifacts forward to the Step 12 approval gate.
 
 ---
 
 ### Step 11 — Update PRD design doc links
 
-Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to **all four** design artifacts now in `docs/pdlc/design/[feature-name]/`:
+Update `docs/pdlc/prds/PRD_[feature-name]_[YYYY-MM-DD].md` to fill in the Design Docs section with relative links to **all five** design artifacts now in `docs/pdlc/design/[feature-name]/`:
 
 - `ARCHITECTURE.md`
 - `data-model.md`
 - `api-contracts.md`
 - `threat-model.md` *(always present — Skip mode produces a one-line record so the audit trail is complete)*
+- `ux-review.md` *(always present — Skip mode produces a one-line record so the audit trail is complete)*
 
 ---
 
@@ -143,8 +172,9 @@ Tell the user:
 > - `data-model.md`
 > - `api-contracts.md`
 > - `threat-model.md` *(triage outcome: [Skip / Lite / Full])*
+> - `ux-review.md` *(triage outcome: [Skip / Lite / Full])*
 >
-> Please review them. The threat model surfaces [N] threats requiring decisions — for each, the party recommended a path (mitigate now / mitigate later / accept / transfer). You can confirm each recommendation, override it, or reject and require redesign. **Open questions for you** are listed at the bottom of `threat-model.md` — please address each before approval.
+> Please review them. The threat model surfaces [N1] threats requiring decisions — for each, the party recommended a path (mitigate now / mitigate later / accept / transfer). The UX review surfaces [N2] findings — for each, Muse recommended fix now / mitigate later / accept-as-tradeoff. You can confirm each recommendation, override it, or reject and require redesign. **Open questions for you** are listed at the bottom of both `threat-model.md` and `ux-review.md` — please address each before approval. **Note:** P0 UX findings cannot be accepted-as-tradeoff — they block ship until resolved or `/pdlc override` is invoked.
 >
 > Reply **approve** to continue to Plan, or provide feedback and I will revise."
 

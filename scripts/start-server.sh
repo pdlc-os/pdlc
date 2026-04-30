@@ -67,20 +67,12 @@ if [[ -z "$URL_HOST" ]]; then
   fi
 fi
 
-# Some environments reap detached/background processes. Auto-foreground when detected.
-if [[ -n "${CODEX_CI:-}" && "$FOREGROUND" != "true" && "$FORCE_BACKGROUND" != "true" ]]; then
-  FOREGROUND="true"
-fi
-
-# Windows/Git Bash reaps nohup background processes. Auto-foreground when detected.
-if [[ "$FOREGROUND" != "true" && "$FORCE_BACKGROUND" != "true" ]]; then
-  case "${OSTYPE:-}" in
-    msys*|cygwin*|mingw*) FOREGROUND="true" ;;
-  esac
-  if [[ -n "${MSYSTEM:-}" ]]; then
-    FOREGROUND="true"
-  fi
-fi
+# Auto-foreground on platforms that reap detached/background processes.
+# Logic centralised in scripts/lib/platform-detect.sh — sourced by all PDLC
+# launchers (start-server.sh, start-portal.sh, future start-live-server.sh).
+# shellcheck source=lib/platform-detect.sh
+source "$SCRIPT_DIR/lib/platform-detect.sh"
+pdlc_detect_foreground_mode
 
 # Generate unique session ID, optionally prefixed with feature name
 SESSION_ID="$$-$(date +%s)"
@@ -130,6 +122,8 @@ if [[ "$FOREGROUND" == "true" ]]; then
     PDLC_HOST="$BIND_HOST" \
     PDLC_URL_HOST="$URL_HOST" \
     PDLC_OWNER_PID="$OWNER_PID" \
+    PDLC_BRAINSTORM_FEATURE="$FEATURE_NAME" \
+    PDLC_PROJECT_DIR="$PROJECT_DIR" \
     node server.cjs
   exit $?
 fi
@@ -141,6 +135,8 @@ nohup env \
   PDLC_HOST="$BIND_HOST" \
   PDLC_URL_HOST="$URL_HOST" \
   PDLC_OWNER_PID="$OWNER_PID" \
+  PDLC_BRAINSTORM_FEATURE="$FEATURE_NAME" \
+  PDLC_PROJECT_DIR="$PROJECT_DIR" \
   node server.cjs > "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 disown "$SERVER_PID" 2>/dev/null

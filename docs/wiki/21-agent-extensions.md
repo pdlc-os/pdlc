@@ -123,6 +123,7 @@ See [`17-design-decisions.md`](17-design-decisions.md) for the rationale and [`1
 | Extension | Path | Type | Loaded by |
 |---|---|---|---|
 | Security audit catalog | `agents/extensions/phantom-security-audit.md` | Agent-wide | `agents/phantom.md` directive |
+| UX design catalog | `agents/extensions/muse-ux-design.md` | Agent-wide | `agents/muse.md` directive |
 | Deploy-time lint pass | `skills/ship/steps/fix-lint.md` | Phase / step-specific | `skills/ship/steps/01-ship.md` Step 9.0 |
 
 ---
